@@ -9378,7 +9378,7 @@ action:
                                 default_color: *default_home_value_color
                             - alias: Text color
                               if:
-                                - '{{ if repeat.item.label_color_rgb is defined }}'
+                                - '{{ repeat.item.label_color_rgb is defined }}'
                                 - '{{ repeat.item.label_color_rgb is list }}'
                                 - '{{ repeat.item.label_color_rgb | count == 3 }}'
                                 - '{{ repeat.item.label_color_rgb != default_color }}'
@@ -9393,7 +9393,7 @@ action:
 
                             - alias: Icon color
                               if:
-                                - '{{ if repeat.item.icon_color_rgb is defined }}'
+                                - '{{ repeat.item.icon_color_rgb is defined }}'
                                 - '{{ repeat.item.icon_color_rgb is list }}'
                                 - '{{ repeat.item.icon_color_rgb | count == 3 }}'
                                 - '{{ repeat.item.icon_color_rgb != default_color }}'
@@ -9408,7 +9408,7 @@ action:
 
                             - alias: Icon
                               if:
-                                - '{{ if repeat.item.icon is defined }}'
+                                - '{{ repeat.item.icon is defined }}'
                                 - '{{ repeat.item.icon is string }}'
                                 - '{{ repeat.item.icon is match "mdi:" }}'
                                 - '{{ repeat.item.icon.split("mdi:")[1] in all_icons }}'
