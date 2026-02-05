@@ -25,7 +25,7 @@ jobs:
 
       # https://github.com/marketplace/actions/markdownlint-cli2-action
       - name: Identify changed files
-        uses: tj-actions/changed-files@v41
+        uses: tj-actions/changed-files@v46
         id: changed-files
         with:
           files: '**/*.md'
