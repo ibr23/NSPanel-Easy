@@ -26,7 +26,7 @@ The versioning process is fully automated:
 
 - Developers submit their changes as usual.
 - The workflow handles version updates, tagging, and integration into `main`.
-- No manual intervention is needed for versioning.
+- The workflow requires no manual intervention for versioning.
 
 ### Accessing the Version in Code
 
