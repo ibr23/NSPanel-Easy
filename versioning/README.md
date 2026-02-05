@@ -12,11 +12,10 @@ The system automates version updates and tagging to ensure consistent, conflict-
 
 ## How It Works
 
-1. **Temporary Branch Creation**: A unique branch is created for each workflow run.
-2. **Version Update**: The workflow updates the `VERSION` and `VERSION_YAML` files using the current date and release sequence.
-3. **Commit with Marker**: Changes are committed with a `[skip-versioning]` marker to prevent triggering the workflow again.
-4. **Merge into Main**: The temporary branch is merged into `main`.
-5. **Branch Cleanup**: The temporary branch is deleted after merging.
+1. **Version Update**: The workflow updates the `VERSION` and `VERSION_YAML` files using the current date and release sequence.
+2. **Commit with Marker**: Changes are committed with a `[skip-versioning]` marker to prevent triggering the workflow again.
+3. **Merge into Main**: The temporary branch is merged into `main`.
+4. **Branch Cleanup**: The temporary branch is deleted after merging.
 
 ## Usage
 
