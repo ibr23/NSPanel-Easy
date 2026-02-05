@@ -24,11 +24,11 @@ The versioning process is fully automated:
 - No manual intervention is needed for versioning.
 
 ### Accessing the Version in Code
-The version is accessible in the ESPHome YAML configuration file (`TX-Ultimate-Easy-ESPHome_core.yaml`) using the following syntax:
+The version is accessible in the ESPHome YAML configuration file (`nspanel_esphome_version.yaml`) using the following syntax:
 
 ```yaml
 substitutions:
-  version: <<: !include ../versioning/VERSION
+  <<: !include ../versioning/VERSION_YAML
 ```
 
 This ensures the correct version is dynamically included in the ESPHome setup.
