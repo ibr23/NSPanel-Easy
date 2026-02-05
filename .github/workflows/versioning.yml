@@ -143,7 +143,7 @@ jobs:
             exit 1
           fi
 
-          # Backup existing tag
+          # Capture existing tag SHA for logging
           if git rev-parse --verify stable >/dev/null 2>&1; then
             OLD_STABLE=$(git rev-parse stable)
             echo "Backing up current stable tag ($OLD_STABLE)"
@@ -168,7 +168,7 @@ jobs:
             exit 1
           fi
 
-          # Backup existing tag
+          # Capture existing tag SHA for logging
           if git rev-parse --verify latest >/dev/null 2>&1; then
             OLD_LATEST=$(git rev-parse latest)
             echo "Backing up current latest tag ($OLD_LATEST)"
