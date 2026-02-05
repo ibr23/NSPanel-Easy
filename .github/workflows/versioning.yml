@@ -126,8 +126,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          NEW_VERSION=$(cat ./versioning/VERSION)
           git push origin main
-          git push origin --tags --force
+          git push origin "v${NEW_VERSION}"
 
       - name: Update stable tag
         if: |
