@@ -625,8 +625,8 @@ class TestVersioningIntegration:
 
     def test_version_format_consistency(self):
         """Test VERSION format is consistent across files"""
-        VERSION_FILE = REPO_ROOT / "versioning" / "VERSION"
-        VERSION_YAML_FILE = REPO_ROOT / "versioning" / "VERSION_YAML"
+        version_file = REPO_ROOT / "versioning" / "VERSION"
+        version_yaml_file = REPO_ROOT / "versioning" / "VERSION_YAML"
 
         version = version_file.read_text().strip()
 
