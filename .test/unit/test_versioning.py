@@ -58,8 +58,8 @@ class TestVersionFiles:
         # Year should be 4 digits (allow test value 9999)
         assert 1000 <= year <= 9999, f"Year must be 4 digits: {year}"
 
-        # Month should be 1-99 (allow test value 99)
-        assert 1 <= month <= 99, f"Month must be 1-99: {month}"
+        # Month should be 1-12 (or allow 99 for test versions)
+        assert (1 <= month <= 12) or month == 99, f"Month must be 1-12 (or 99 for test): {month}"
 
         # Sequence should be positive
         assert sequence >= 1, f"Sequence must be positive: {sequence}"
