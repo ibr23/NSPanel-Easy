@@ -3,9 +3,6 @@ name: Validate Blueprint YAML
 
 # yamllint disable-line rule:truthy
 on:
-  push:
-    paths:
-      - "nspanel_easy_blueprint.yaml"
   pull_request:
     paths:
       - "nspanel_easy_blueprint.yaml"

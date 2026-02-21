@@ -3,10 +3,6 @@ name: Validate YAML (secondary files)
 
 # yamllint disable-line rule:truthy
 on:
-  push:
-    paths:
-      - '**/*.yml'
-      - '**/*.yaml'
   pull_request:
     paths:
       - '**/*.yml'

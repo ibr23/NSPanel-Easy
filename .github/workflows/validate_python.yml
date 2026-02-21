@@ -3,9 +3,6 @@ name: Validate Python (flake8)
 
 # yamllint disable-line rule:truthy
 on:
-  push:
-    paths:
-      - '**/*.py'
   pull_request:
     paths:
       - '**/*.py'

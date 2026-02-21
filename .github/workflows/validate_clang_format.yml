@@ -3,11 +3,6 @@ name: Validate C++ (Clang Format)
 
 # yamllint disable-line rule:truthy
 on:
-  push:
-    paths:
-      - '**/*.h'
-      - '**/*.c'
-      - '**/*.cpp'
   pull_request:
     paths:
       - '**/*.h'

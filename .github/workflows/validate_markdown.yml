@@ -3,9 +3,6 @@ name: Validate Markdown
 
 # yamllint disable-line rule:truthy
 on:
-  pull_request:
-    paths:
-      - '**/*.md'
   push:
     paths:
       - '**/*.md'

@@ -3,18 +3,6 @@ name: Build ESPHome
 
 # yamllint disable-line rule:truthy
 on:
-  push:
-    paths:
-      - "nspanel_esphome*.yaml"
-      - "esphome/nspanel_esphome*.yaml"
-      - "prebuilt/nspanel_esphome*.yaml"
-      - "prebuilt/wall_display*.yaml"
-      - ".github/workflows/esphome_build.yml"
-      - ".test/*.yaml"
-      - "*.h"
-      - "*.c"
-      - "*.cpp"
-      - "*.py"
   pull_request:
     paths:
       - "nspanel_esphome*.yaml"

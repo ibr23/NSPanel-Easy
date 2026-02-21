@@ -3,8 +3,6 @@ name: ShellCheck
 
 # yamllint disable-line rule:truthy
 on:
-  push:
-    paths: ['**/*.sh']
   pull_request:
     paths: ['**/*.sh']
   workflow_dispatch:
