@@ -12426,9 +12426,9 @@ action:
                           - action: persistent_notification.create
                             data:
                               notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                              title: NSPanel Blueprint Needs Update
+                              title: NSPanel Easy - Version mismatch - Blueprint
                               message: >
-                                Your NSPanel Blueprint version is outdated.
+                                Your NSPanel Easy Blueprint version is outdated.
 
                                 - Current Blueprint version: {{ blueprint_version }}
 
@@ -12463,12 +12463,12 @@ action:
                           - action: persistent_notification.create
                             data:
                               notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                              title: NSPanel ESPHome Needs Update
+                              title: NSPanel Easy - Version mismatch - ESPHome firmware
                               message: >
-                                Your NSPanel ESPHome version is outdated for the panel **{{
+                                The NSPanel Easy firmware (ESPHome) is outdated for the panel **{{
                                   device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
 
-                                - Current ESPHome version: {{ nspanel_event.esphome if nspanel_event.esphome is string and nspanel_event.esphome | length > 0 else oldest[1] }}
+                                - Current firmware version: {{ nspanel_event.esphome if nspanel_event.esphome is string and nspanel_event.esphome | length > 0 else oldest[1] }}
 
                                 - Expected version: {{ blueprint_version if newest[0] == "blueprint" else nspanel_event.tft }}
                                 ---
@@ -12498,7 +12498,7 @@ action:
                           - action: persistent_notification.create
                             data:
                               notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                              title: NSPanel TFT Display Needs Update
+                              title: NSPanel Easy - Version mismatch - TFT display
                               message: >
                                 The TFT version on your NSPanel is outdated for the panel **{{
                                   device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
@@ -12529,9 +12529,9 @@ action:
                           - action: persistent_notification.create
                             data:
                               notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                              title: NSPanel Blueprint Communication Issue
+                              title: NSPanel Easy - Communication Issue
                               message: >
-                                The ESPHome is unable to verify the Blueprint version for the NSPanel.
+                                The ESPHome firmware is unable to verify the Blueprint version for the NSPanel.
 
                                 - Panel Details: **{{ device_attr(nspanel_deviceid, "name") ~ (" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") }}**
 
