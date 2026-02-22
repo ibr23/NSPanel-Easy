@@ -1,6 +1,6 @@
 # NSPanel Easy
 
-[![Version][version-shield]](https://github.com/edwardtfn/NSPanel-Easy/tags)
+[![Version][version-shield]](https://github.com/edwardtfn/NSPanel-Easy/releases/latest)
 [![GitHub Activity][commits-shield]][commits]
 [![GitHub Last Commit][last-commit-shield]](https://github.com/edwardtfn/NSPanel-Easy/commits/main)
 [![Platform][platform-shield]](https://github.com/esphome)
@@ -77,7 +77,7 @@ NSPanel Easy comprises three tightly integrated components that must always be k
 - **API Reference:** Full list of available ESPHome actions in the [API Documentation](docs/api.md).
 - **Troubleshooting:** Running into issues? See our [Troubleshooting Guide](docs/install.md) or [TFT Upload Guide](docs/tft_upload.md).
 - **Feature Requests:** Share your ideas [here](https://github.com/edwardtfn/NSPanel-Easy/labels/new%20feature%20request).
-- **Changelog:** Browse [version tags](https://github.com/edwardtfn/NSPanel-Easy/tags) to see what's new in each release.
+- **Changelog:** Every merged PR automatically generates a [GitHub Release](https://github.com/edwardtfn/NSPanel-Easy/releases) with detailed notes.
 
 ## 🚀 Features
 
@@ -204,7 +204,7 @@ NSPanel Easy comprises three tightly integrated components that must always be k
 - Min/max temperatures and date display
 - Additional parameters: rain probability, sunshine hours, UV index, thunderstorm probability, wind speed
 
-### Utilities
+### Utilities Dashboard
 
 - Energy flow dashboard with grid, home consumption, and up to 6 custom groups
 - Real-time value updates with directional indicators
@@ -255,12 +255,14 @@ The Blueprint provides a visual interface for defining what appears on your pane
 
 We welcome contributions of all kinds — code, documentation, translations, and testing.
 
-- **Pull Requests:** Please target the `DEV` branch, not `main`.
+- **Pull Requests:** Open a PR against `main`. Each PR gets its own branch for development and review.
+- **Testing:** Browse [open Pull Requests](https://github.com/edwardtfn/NSPanel-Easy/pulls) to find features that need testing and feedback.
 - **Issues:** Report bugs or request features via [GitHub Issues](https://github.com/edwardtfn/NSPanel-Easy/issues).
 - **Discussions:** Join the conversation on [Discord][discord].
 
 > [!TIP]
-> Not a developer? You can still help by improving documentation, translating strings, or testing pre-release versions.
+> Not a developer? You can still help by improving documentation, translating strings, testing open PRs,
+> or [buying me an ice cream](https://buymeacoffee.com/edwardfirmo) 🍦
 
 ## 🌍 Community & Support
 
@@ -293,8 +295,8 @@ If NSPanel Easy has made your life easier,
 consider [buying me an ice cream](https://buymeacoffee.com/edwardfirmo) — every scoop keeps the project going! 🍦
 
 <!-- Link References -->
-[version-shield]: https://img.shields.io/github/v/tag/edwardtfn/NSPanel-Easy?label=version
-[version]: https://github.com/edwardtfn/NSPanel-Easy/tags
+[version-shield]: https://img.shields.io/github/v/release/edwardtfn/NSPanel-Easy?label=version
+[version]: https://github.com/edwardtfn/NSPanel-Easy/releases/latest
 
 [commits-shield]: https://img.shields.io/github/commit-activity/y/edwardtfn/NSPanel-Easy
 [commits]: https://github.com/edwardtfn/NSPanel-Easy/commits/main
