@@ -12485,7 +12485,7 @@ action:
                         conditions:
                           - '{{ versions.blueprint > 0 }}'
                           - '{{ versions.blueprint_min > 0 }}'
-                          - '{{ versions.blueprint_min != versions.blueprint }}'
+                          - '{{ versions.blueprint_min > versions.blueprint }}'
                         sequence:
                           - action: persistent_notification.create
                             data:
