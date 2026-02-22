@@ -21,6 +21,8 @@ substitutions:
   ota_password: ${wifi_password}
   project_tag: nspanel_easy
   TAG_BASE: nspanel.base
+  ref_url: https://github.com/edwardtfn/NSPanel-Easy
+  ref_name: v${version}
 
 button:
   - id: restart_nspanel  # Reboot ESP32
@@ -48,8 +50,8 @@ esphome:
 external_components:
   - source:
       type: git
-      url: https://github.com/edwardtfn/NSPanel-Easy
-      ref: v${version}
+      url: ${ref_url}
+      ref: ${ref_name}
     refresh: 300s
     components:
       - nspanel_easy

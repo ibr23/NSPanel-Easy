@@ -20,6 +20,16 @@ on:
     - cron: '0 10 * * *'
   workflow_dispatch:
 
+env:
+  # Repository URL and ref for external_components resolution.
+  # For fork PRs, points to the fork so the PR code is actually tested.
+  REF_URL: >-
+    https://github.com/${{
+      github.event.pull_request.head.repo.full_name
+      || github.repository
+    }}
+  REF_NAME: ${{ github.head_ref || github.ref_name }}
+
 permissions:
   contents: read
 
@@ -85,7 +95,7 @@ jobs:
       - name: Compile Core Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_basic.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_basic.yaml"
 
       - name: Package environment for artifact
         run: tar -czhf esphome-env.tar.gz -C ~ venv .platformio
@@ -121,7 +131,7 @@ jobs:
       - name: Compile Core Firmware (Arduino)
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_ard_basic.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_ard_basic.yaml"
 
   build_ble_tracker_latest:
     name: BLE Tracker (latest)
@@ -147,7 +157,7 @@ jobs:
       - name: Compile BLE Tracker Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_ble_tracker.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_ble_tracker.yaml"
 
   build_bluetooth_proxy_latest:
     name: Bluetooth Proxy (latest)
@@ -173,7 +183,7 @@ jobs:
       - name: Compile Bluetooth Proxy Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_bluetooth_proxy.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_bluetooth_proxy.yaml"
 
   build_climate_cool_latest:
     name: Climate Cool (latest)
@@ -199,7 +209,7 @@ jobs:
       - name: Compile Climate Cool Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_climate_cool.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_climate_cool.yaml"
 
   build_climate_heat_latest:
     name: Climate Heat (latest)
@@ -225,7 +235,7 @@ jobs:
       - name: Compile Climate Heat Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_climate_heat.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_climate_heat.yaml"
 
   build_climate_dual_latest:
     name: Climate Dual (latest)
@@ -251,7 +261,7 @@ jobs:
       - name: Compile Climate Dual Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_climate_dual.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_climate_dual.yaml"
 
   build_cover_latest:
     name: Cover (latest)
@@ -277,7 +287,7 @@ jobs:
       - name: Compile Cover Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_cover.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_cover.yaml"
 
   build_customizations_latest:
     name: Customizations (latest)
@@ -303,7 +313,7 @@ jobs:
       - name: Compile Customizations Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_climate_heat_customizations.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_climate_heat_customizations.yaml"
 
   build_climate_ble_proxy_latest:
     name: Climate Cool + Bluetooth Proxy (latest)
@@ -329,7 +339,7 @@ jobs:
       - name: Compile Climate Cool + BLE Proxy Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_climate_cool_bluetooth_proxy.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_climate_cool_bluetooth_proxy.yaml"
 
   # ===========================================================================
   # ESPHome Dev Chain
@@ -370,7 +380,7 @@ jobs:
       - name: Compile Core Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_basic.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_basic.yaml"
 
       - name: Package environment for artifact
         run: tar -czhf esphome-env.tar.gz -C ~ venv .platformio
@@ -406,7 +416,7 @@ jobs:
       - name: Compile Core Firmware (Arduino)
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_ard_basic.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_ard_basic.yaml"
 
   build_ble_tracker_dev:
     name: BLE Tracker (dev)
@@ -432,7 +442,7 @@ jobs:
       - name: Compile BLE Tracker Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_ble_tracker.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_ble_tracker.yaml"
 
   build_bluetooth_proxy_dev:
     name: Bluetooth Proxy (dev)
@@ -458,7 +468,7 @@ jobs:
       - name: Compile Bluetooth Proxy Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_bluetooth_proxy.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_bluetooth_proxy.yaml"
 
   build_climate_cool_dev:
     name: Climate Cool (dev)
@@ -484,7 +494,7 @@ jobs:
       - name: Compile Climate Cool Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_climate_cool.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_climate_cool.yaml"
 
   build_climate_heat_dev:
     name: Climate Heat (dev)
@@ -510,7 +520,7 @@ jobs:
       - name: Compile Climate Heat Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_climate_heat.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_climate_heat.yaml"
 
   build_climate_dual_dev:
     name: Climate Dual (dev)
@@ -536,7 +546,7 @@ jobs:
       - name: Compile Climate Dual Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_climate_dual.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_climate_dual.yaml"
 
   build_cover_dev:
     name: Cover (dev)
@@ -562,7 +572,7 @@ jobs:
       - name: Compile Cover Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_cover.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_cover.yaml"
 
   build_customizations_dev:
     name: Customizations (dev)
@@ -588,7 +598,7 @@ jobs:
       - name: Compile Customizations Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_climate_heat_customizations.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_climate_heat_customizations.yaml"
 
   build_climate_ble_proxy_dev:
     name: Climate Cool + Bluetooth Proxy (dev)
@@ -614,5 +624,5 @@ jobs:
       - name: Compile Climate Cool + BLE Proxy Firmware
         run: |
           source ~/venv/bin/activate
-          esphome compile ".test/esphome_idf_climate_cool_bluetooth_proxy.yaml"
+          esphome -s ref_name "$REF_NAME" -s ref_url "$REF_URL" compile ".test/esphome_idf_climate_cool_bluetooth_proxy.yaml"
 ...
