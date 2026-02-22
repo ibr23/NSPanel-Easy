@@ -12390,7 +12390,7 @@ action:
                   - variables:
                       versions:
                         blueprint: '{{ nspanel_event.blueprint | int(0) }}'
-                        esphome: '{{ nspanel_event.esphome | int(0) }}'
+                        esphome: '{{ nspanel_event.esphome }}'
                         tft: '{{ nspanel_event.tft | int(0) }}'
                         tft_min: >
                           {{
@@ -12457,7 +12457,7 @@ action:
                                 The NSPanel Easy firmware (ESPHome) is outdated for the panel **{{
                                   device_attr(nspanel_deviceid, "name") ~ ((" (" ~ nspanel_name ~ ")") if nspanel_name != device_attr(nspanel_deviceid, "name") else "") }}**.
 
-                                - Current firmware version: {{ nspanel_event.esphome if nspanel_event.esphome is string and nspanel_event.esphome | length > 0 else "Unknown" }}
+                                - Current firmware version: {{ versions.esphome if versions.esphome is string and nversions.esphome | length > 0 else "Unknown" }}
 
                                 - Current Blueprint version: {{ blueprint_version }}
 
