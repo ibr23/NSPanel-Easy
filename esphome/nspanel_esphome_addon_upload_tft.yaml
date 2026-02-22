@@ -275,6 +275,53 @@ script:
                         #else
                         return 0;
                         #endif  // USE_BLUETOOTH_PROXY
+
+            - lambda: |-
+                // BLE client
+                #ifdef USE_ESP32_BLE_TRACKER
+                App.feed_wdt();
+                // Stop BLE tracker scanning if active
+                auto *tracker = esp32_ble_tracker::global_esp32_ble_tracker;
+                if (tracker != nullptr) {
+                  ESP_LOGD("${TAG_UPLOAD_TFT}", "Stopping BLE tracker");
+                  tracker->stop_scan();
+                  ESP_LOGD("${TAG_UPLOAD_TFT}", "Setting scan active to false");
+                  tracker->set_scan_active(false);
+                  ESP_LOGD("${TAG_UPLOAD_TFT}", "Stopping continuous scan");
+                  tracker->set_scan_continuous(false);
+                }
+                #else
+                ESP_LOGD("${TAG_UPLOAD_TFT}", "BLE tracker component not present");
+                #endif  // USE_ESP32_BLE_TRACKER
+            - delay: !lambda |-
+                        // BLE client
+                        #ifdef USE_ESP32_BLE_TRACKER
+                        return 2000;
+                        #else
+                        return 0;
+                        #endif  // USE_ESP32_BLE_TRACKER
+
+            - lambda: |-
+                // BLE server
+                #ifdef USE_ESP32_BLE_SERVER
+                App.feed_wdt();
+                // Stop BLE server advertising if active
+                auto *ble = esp32_ble::global_ble;
+                if (ble != nullptr) {
+                  ESP_LOGD("${TAG_UPLOAD_TFT}", "Stopping BLE advertising");
+                  ble->advertising_stop();
+                }
+                #else
+                ESP_LOGD("${TAG_UPLOAD_TFT}", "BLE server component not present");
+                #endif  // USE_ESP32_BLE_SERVER
+            - delay: !lambda |-
+                        // BLE server
+                        #ifdef USE_ESP32_BLE_SERVER
+                        return 2000;
+                        #else
+                        return 0;
+                        #endif  // USE_ESP32_BLE_SERVER
+
             - lambda: |-
                 // Bluetooth proxy - Disable the BT controller
                 #ifdef USE_BLUETOOTH_PROXY
@@ -325,52 +372,6 @@ script:
                         #else
                         return 0;
                         #endif  // USE_BLUETOOTH_PROXY
-
-            - lambda: |-
-                // BLE client
-                #ifdef USE_ESP32_BLE_TRACKER
-                App.feed_wdt();
-                // Stop BLE tracker scanning if active
-                auto *tracker = esp32_ble_tracker::global_esp32_ble_tracker;
-                if (tracker != nullptr) {
-                  ESP_LOGD("${TAG_UPLOAD_TFT}", "Stopping BLE tracker");
-                  tracker->stop_scan();
-                  ESP_LOGD("${TAG_UPLOAD_TFT}", "Setting scan active to false");
-                  tracker->set_scan_active(false);
-                  ESP_LOGD("${TAG_UPLOAD_TFT}", "Stopping continuous scan");
-                  tracker->set_scan_continuous(false);
-                }
-                #else
-                ESP_LOGD("${TAG_UPLOAD_TFT}", "BLE tracker component not present");
-                #endif  // USE_ESP32_BLE_TRACKER
-            - delay: !lambda |-
-                        // BLE client
-                        #ifdef USE_ESP32_BLE_TRACKER
-                        return 2000;
-                        #else
-                        return 0;
-                        #endif  // USE_ESP32_BLE_TRACKER
-
-            - lambda: |-
-                // BLE server
-                #ifdef USE_ESP32_BLE_SERVER
-                App.feed_wdt();
-                // Stop BLE server advertising if active
-                auto *ble = esp32_ble::global_ble;
-                if (ble != nullptr) {
-                  ESP_LOGD("${TAG_UPLOAD_TFT}", "Stopping BLE advertising");
-                  ble->advertising_stop();
-                }
-                #else
-                ESP_LOGD("${TAG_UPLOAD_TFT}", "BLE server component not present");
-                #endif  // USE_ESP32_BLE_SERVER
-            - delay: !lambda |-
-                        // BLE server
-                        #ifdef USE_ESP32_BLE_SERVER
-                        return 2000;
-                        #else
-                        return 0;
-                        #endif  // USE_ESP32_BLE_SERVER
 
             - lambda: |-
                 ESP_LOGI("${TAG_UPLOAD_TFT}", "Free heap after: %u bytes, largest block: %u bytes",
