@@ -38,7 +38,6 @@ Our goal? To make the customization of your NSPanel seamless, intuitive, and fre
 - **Video Tutorial:** Prefer visual learning? Check out our [Step-by-Step Setup Video](docs/README.md).
 - **Troubleshooting:** Encounter an issue? Here's how to report it: [HowTo](docs/README.md).
 - **Feature Requests:** Got ideas? Share them [here](https://github.com/edwardtfn/NSPanel-Easy/labels/new%20feature%20request).
-- **What's Next?:** Discover what's next and what we are working on right now in our [Milestones](https://github.com/edwardtfn/NSPanel-Easy/milestones?direction=asc&sort=due_date)
 
 ## 🚀 Features
 
