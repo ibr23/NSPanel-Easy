@@ -16,4 +16,6 @@ SyncNextion2TXT.cmd
 .esphome
 /components/nspanel_easy/__pycache__
 
+#/versioning
+
 local
