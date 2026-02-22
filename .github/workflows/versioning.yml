@@ -121,8 +121,9 @@ jobs:
           EOF
           fi
 
-          # Store the message for use in subsequent steps
+          # Store for use in subsequent steps
           echo "TAG_MESSAGE_FILE=tag_message.txt" >> $GITHUB_ENV
+          echo "PR_TITLE=${PR_TITLE}" >> $GITHUB_ENV
 
       - name: Push changes and version tag
         id: push_tag
@@ -134,14 +135,23 @@ jobs:
           git push origin main
           git push origin "v${NEW_VERSION}"
 
+      - name: Build release name
+        id: release_name
+        if: github.event_name == 'push' && steps.push_tag.outcome == 'success'
+        run: |
+          VERSION="v${{ steps.push_tag.outputs.version }}"
+          if [ -n "$PR_TITLE" ]; then
+            echo "name=${VERSION} - ${PR_TITLE}" >> $GITHUB_OUTPUT
+          else
+            echo "name=${VERSION}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Create GitHub Release
         if: github.event_name == 'push' && steps.push_tag.outcome == 'success'
-        env:
-          PR_TITLE: ${{ github.event_name == 'push' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).title || '' }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.push_tag.outputs.version }}
-          name: v${{ steps.push_tag.outputs.version }} - ${{ env.PR_TITLE }}
+          name: ${{ steps.release_name.outputs.name }}
           generate_release_notes: true
 
       - name: Update stable tag
