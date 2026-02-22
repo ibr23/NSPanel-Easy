@@ -17,5 +17,6 @@ SyncNextion2TXT.cmd
 /components/nspanel_easy/__pycache__
 
 /versioning
+!/versioning/DO_NOT_SET_VERSION_MANUALLY
 
 local
