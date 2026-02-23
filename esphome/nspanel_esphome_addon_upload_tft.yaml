@@ -244,11 +244,11 @@ script:
           condition:
             - lambda: |-
                 // Any of the BT components
-                #if defined(USE_ESP32_BLE_TRACKER) || defined(USE_ESP32_BLE_SERVER) || defined(USE_BLUETOOTH_PROXY)
+                #if defined(USE_ESP32_BLE_CLIENT) || defined(USE_ESP32_BLE_SERVER) || defined(USE_BLUETOOTH_PROXY)
                 return true;
                 #else
                 return false;
-                #endif  // USE_ESP32_BLE_TRACKER || USE_ESP32_BLE_SERVER || USE_BLUETOOTH_PROXY
+                #endif  // USE_ESP32_BLE_CLIENT || USE_ESP32_BLE_SERVER || USE_BLUETOOTH_PROXY
           then:
             - lambda: |-
                 ESP_LOGI("${TAG_UPLOAD_TFT}", "Stopping Bluetooth stack to free memory for TFT upload");
@@ -278,7 +278,7 @@ script:
 
             - lambda: |-
                 // BLE tracker
-                #ifdef USE_ESP32_BLE_TRACKER
+                #ifdef USE_ESP32_BLE_CLIENT
                 App.feed_wdt();
                 // Stop BLE tracker scanning if active
                 auto *tracker = esp32_ble_tracker::global_esp32_ble_tracker;
@@ -292,14 +292,14 @@ script:
                 }
                 #else
                 ESP_LOGD("${TAG_UPLOAD_TFT}", "BLE tracker component not present");
-                #endif  // USE_ESP32_BLE_TRACKER
+                #endif  // USE_ESP32_BLE_CLIENT
             - delay: !lambda |-
                         // BLE tracker
-                        #ifdef USE_ESP32_BLE_TRACKER
+                        #ifdef USE_ESP32_BLE_CLIENT
                         return 2000;
                         #else
                         return 0;
-                        #endif  // USE_ESP32_BLE_TRACKER
+                        #endif  // USE_ESP32_BLE_CLIENT
 
             - lambda: |-
                 // BLE server
