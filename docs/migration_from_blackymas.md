@@ -62,6 +62,7 @@ substitutions:
   wifi_password: !secret wifi_password
   ota_password: ${wifi_password}  # IMPORTANT! For backward compatibility
 ```
+
 > [!NOTE] Setting OTA to use WiFi is only necessary if you are migrating wirelessly.
 > When migrating via USB/TTL you can freely select your OTA password or leave without one.
 
