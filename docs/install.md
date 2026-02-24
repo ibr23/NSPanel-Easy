@@ -115,7 +115,7 @@ Follow these steps to add a new device in the ESPHome Dashboard:
      friendly_name: "Your panel's friendly name"
      wifi_ssid: !secret wifi_ssid
      wifi_password: !secret wifi_password
-     nextion_update_url: "http://homeassistant.local:8123/local/nspanel_eu.tft"  # Optional
+     ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
      boot_sound: false
      # Add-on configuration (if needed)
      ## Upload TFT
@@ -137,7 +137,7 @@ Follow these steps to add a new device in the ESPHome Dashboard:
          - nspanel_esphome.yaml # Basic package
          # Optional advanced and add-on configurations
          # - esphome/nspanel_esphome_addon_climate_cool.yaml
-         - esphome/nspanel_esphome_addon_climate_heat.yaml
+         # - esphome/nspanel_esphome_addon_climate_heat.yaml
          # - esphome/nspanel_esphome_addon_climate_dual.yaml
          # - esphome/nspanel_esphome_addon_cover.yaml
          # - esphome/nspanel_esphome_addon_display_light.yaml  # Show the display as a light in Home Assistant
@@ -219,7 +219,7 @@ This connection is necessary to put the ESP32 into firmware transfer mode.
 Using a voltage higher than 3.3VDC, such as 5VDC, can damage your panel.
 4. To avoid short circuits, consider moving the panel's board away from the metal backing of the display.
 The use of a non-conductive tool, like the blue plastic one shown in the picture, can be helpful.
-![114730547 MP](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/5879533/575bc3de-a2ae-4440-a420-751325e55122)
+![moving_the_panels_board_away_from_the_metal_backing.jpg](pics/moving_the_panels_board_away_from_the_metal_backing.jpg)
 5. Note the cross-connection of `RX` and `TX` pins.
     The following pin-out should be used:
     <!-- markdownlint-disable MD033 -->
@@ -248,16 +248,16 @@ After ensuring your device is properly connected, proceed to update or install t
    This method will compile and transfer the firmware directly to your panel over Wi-Fi.
    - For **initial installations** or updates via a USB-to-Serial TTL adapter, select either **Plug into this computer** or **Manual download**.
    Both these options will compile the firmware and allow you to download it to your computer.
-   ![140043](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/5879533/3c08d3b7-df9b-4862-8ced-347deff41cb5)
+   ![esphome_dashboard_install_download_project.jpg](pics/esphome_dashboard_install_download_project.jpg)
 
 4. **Transfer Firmware via USB-to-Serial TTL:**
    - Navigate to [ESPHome Web](https://web.esphome.io/) on your computer.
    - Click **Connect** and choose the serial interface connected to your USB-to-Serial TTL adapter.
-     ![141609](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/5879533/fde27c26-3434-48f5-a028-6baee15ab35e)
+     ![esphome_web_connect.jpg](pics/esphome_web_connect.jpg)
 
    - Once connected, opt to install an existing firmware to your panel.
    Select the compiled firmware file and initiate the installation.
-   ![141248](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/5879533/ad6a5813-131c-43d5-9174-3a9f73d5b6bf)
+   ![esphome_web_install.jpg](pics/esphome_web_install.jpg)
 
 The firmware installation process will take a few minutes.
 After completion, reassemble your panel and mount it back on the wall.
@@ -505,6 +505,7 @@ substitutions:
   friendly_name: "Your Panel Name"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -561,6 +562,7 @@ substitutions:
   friendly_name: "Your Panel Name"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -604,6 +606,7 @@ substitutions:
   friendly_name: "Your Panel Name"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -666,6 +669,7 @@ Here's a complete workflow for integrating Bluetooth Proxy while managing memory
      friendly_name: "Your Panel Name"
      wifi_ssid: !secret wifi_ssid
      wifi_password: !secret wifi_password
+     ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
      boot_sound: false
      # Add-on configuration (if needed)
      ## Upload TFT
@@ -695,6 +699,7 @@ Here's a complete workflow for integrating Bluetooth Proxy while managing memory
      friendly_name: "Your Panel Name"
      wifi_ssid: !secret wifi_ssid
      wifi_password: !secret wifi_password
+     ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
      boot_sound: false
      # Add-on configuration (if needed)
      ## Upload TFT
@@ -743,7 +748,7 @@ substitutions:
   friendly_name: "Your Panel Name"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
-  nextion_update_url: "http://homeassistant.local:8123/local/nspanel_eu.tft"
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT

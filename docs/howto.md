@@ -93,10 +93,10 @@ use_blueprint:
 1. In Home Assistant, go to Settings > Automation & Scenes, select the tab Blueprints and find the blueprint named "NSPanel Configuration"
 2. Click the 3-dot menu and select "Re-import blueprint":
 
-    ![image](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/afb433e8-f29c-4b3f-8d6b-16a12b181422)
+    ![image](pics/ha_blueprint_dashboard_reimport.png)
 3. Click "Re-import" button:
 
-    ![image](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/1db36411-e5a4-4cef-bcef-575a08019a67)
+    ![image](pics/ha_blueprint_dashboard_reimport_confirm.png)
 4. Reload automations or restart Home Assistant.
 5. The new Blueprint is now available.
 Settings that have already been made are adopted.
@@ -122,11 +122,11 @@ These are the steps to flash your panel with an updated version from this projec
 
 3. As your panel is probably already connected to the Wi-Fi, you may select to install **Wirelessly**,
     as it is much easier and you don't have to disassemble your panel.
-    ![image](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/c9b53549-c78a-4a02-bcde-31582905d0c4)
+    ![image](pics/esphome_dashboard_install_wirelessly.png)
 
 The new firmware will be built and then flashed to your panel, which will restart at the end of this process and start sending logs again:
 
-![image](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/e63dcb4a-ef74-4665-9897-455e02950964)
+![image](pics/esphome_dashboard_install_completed.png)
 
 ## Update TFT
 >

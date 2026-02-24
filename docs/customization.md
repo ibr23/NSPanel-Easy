@@ -74,6 +74,7 @@ substitutions:
   friendly_name: "Your panel's friendly name"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
 
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -194,11 +195,15 @@ api:
 
 ### Custom OTA password
 
-By default, the Wi-Fi password will be used as your OTA password, but you can replace it.
+By default, the OTA password is blank and if first installed with that, your panel will reject an OTA with a password set.
+In order to bypass that, follow these steps:
 
 First, you need to change the default password using this code.
 
 ```yaml
+substitutions:
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+
 # change OTA password, remove after flashing
 esphome:
   on_boot:
@@ -206,18 +211,13 @@ esphome:
       then:
         - lambda: |-
             id(ota_std).set_auth_password("New password");
-ota:
-  - id: !extend ota_std
-    password: !secret wifi_password
 ```
 
-After flashing the device, you must remove the code above and replace it with the code below to start using this customization.
+After flashing the device, you must remove the `on_boot` code above and replace it with the code below to start using this customization.
 
 ```yaml
-# Use my global OTA password
-ota:
-  - id: !extend ota_std
-    password: !secret ota_password
+substitutions:
+  ota_password: !secret ota_password
 ```
 
 ### Web server credentials

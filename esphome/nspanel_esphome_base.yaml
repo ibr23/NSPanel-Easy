@@ -18,7 +18,7 @@ substitutions:
   GPIO_PSRAM_CLK_PIN: '5'
   GPIO_PSRAM_CS_PIN: '18'
   name: ${device_name}
-  ota_password: ${wifi_password}
+  ota_password: ""
   project_tag: nspanel_easy
   TAG_BASE: nspanel.base
   ref_url: https://github.com/edwardtfn/NSPanel-Easy

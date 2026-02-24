@@ -33,6 +33,7 @@ substitutions:
   friendly_name: "Your panel's friendly name"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
 
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -102,6 +103,7 @@ substitutions:
   friendly_name: "Your panel's friendly name"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
 
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -143,6 +145,7 @@ substitutions:
   friendly_name: "Your panel's friendly name"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
 
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -184,6 +187,7 @@ substitutions:
   friendly_name: "Your panel's friendly name"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
 
   # Add-on configuration (if needed)
   ## Upload TFT

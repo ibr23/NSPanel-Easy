@@ -44,6 +44,30 @@ This is the main change. Open your panel's YAML file in the ESPHome Dashboard an
 
 ### What to change
 
+#### OTA settings
+
+On the new version we broke the connection between OTA and WiFi passwords, so you can easily change any of those. However, this change requires some new manual configuration when migrating.
+
+Find your `substitutions` block and add the substitution `ota_password: ${wifi_password}`,
+as that is how OTA password was defined on Blackymas project, but not here.
+
+It will look something like this:
+
+```yaml
+substitutions:
+  # Settings - Editable values
+  device_name: "YOUR_NSPANEL_NAME"
+  friendly_name: "Your panel's friendly name"
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  ota_password: ${wifi_password}  # IMPORTANT! For backward compatibility
+```
+
+> [!NOTE] Setting OTA to use WiFi is only necessary if you are migrating wirelessly.
+> When migrating via USB/TTL you can freely select your OTA password or leave without one.
+
+#### Remote package reference
+
 Find your `remote_package` block. It currently looks something like this:
 
 ```yaml
@@ -82,6 +106,7 @@ packages:
 
 | Setting | Before (Blackymas) | After (NSPanel Easy) |
 | :------ | :------------------ | :------------------- |
+| `ota_password`   | It was set on the remote package to use your WiFi password | You have to add the substitution `ota_password: ${wifi_password}` for backward compatibility |
 | `url`   | `https://github.com/Blackymas/NSPanel_HA_Blueprint` | `https://github.com/edwardtfn/NSPanel-Easy` |
 | `ref`   | A version tag (e.g. `v4.3.30`) | `main` |
 | Add-on file paths | Root level (e.g. `nspanel_esphome_addon_climate_heat.yaml`) | Inside `esphome/` folder (e.g. `esphome/nspanel_esphome_addon_climate_heat.yaml`) |
@@ -101,6 +126,7 @@ substitutions:
   friendly_name: "My NSPanel"
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
+  ota_password: ${wifi_password}  # IMPORTANT! For backward compatibility
 
   # Add-on configuration (if needed)
   ## Upload TFT

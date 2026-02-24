@@ -68,9 +68,9 @@ If the value of the sensor needs to be corrected, this can be done via the tempe
 
 | Entity | Description | Example |
 | ---    | ---         | ---     |
-| Home page - Entity State 01-04 (Optional) | Up to four HA entities can be displayed on the home screen. | ![PXL_20240509_183412876](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/5879533/49fba8fb-ad1e-44e7-9958-99dd47e2ad95) |
-| Home page - Chips 01-07 (optional) | Used to display icons of HA binary entities on the home screen. The icon is displayed when the entity is on/open/true/active. Otherwise, no icon is displayed. | ![chip](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/5879533/1c7e798f-bae8-4998-b35e-149689ced27f) |
-| Custom button 01-06 (Optional) | 7 custom buttons that can be assigned to different entities from your Home Assistant. The behavior of these buttons will depend on the entity's domain, such as light, media player, etc. | ![192351376](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/5879533/be2f21e0-02eb-4b32-999f-e303df74f6b6) |
+| Home page - Entity State 01-04 (Optional) | Up to four HA entities can be displayed on the home screen. | ![home_page_entity_state_01_04.jpg](pics/home_page_entity_state_01_04.jpg) |
+| Home page - Chips 01-07 (optional) | Used to display icons of HA binary entities on the home screen. The icon is displayed when the entity is on/open/true/active. Otherwise, no icon is displayed. | ![chip](pics/home_page_chips.jpg) |
+| Custom button 01-06 (Optional) | 7 custom buttons that can be assigned to different entities from your Home Assistant. The behavior of these buttons will depend on the entity's domain, such as light, media player, etc. | ![home_page_custom_buttons.jpg](pics/home_page_custom_buttons.jpg) |
 
 ## Alarm Control Panel
 

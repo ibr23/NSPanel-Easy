@@ -59,24 +59,24 @@ in the following table.
 Clicking this button opens the Alarm Control Panel page. Here, you can adjust alarm settings with a
 single click or return to the Home page.
 
-![View of the Alarm Control Panel page on NSPanel](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/bc312981-3d5a-42c7-b0b4-203457ff549f)
+![View of the Alarm Control Panel page on NSPanel](pics/alarm_home.png)
 
 ### Description of states shown with the alarm icon
 
 <!-- markdownlint-disable MD013 -->
 State | Color | Icon | Icon Name | Description
 -- | -- | -- | -- | --
-disarmed | White | ![shield-off-outline](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/5b1c8219-3958-4096-9100-0b4ef47e7dac) | mdi:shield-off-outline | Disarmed and not actively monitoring for intrusions.
-armed_home | Green | ![shield-home-outline](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/1ed9347b-139a-4729-a795-b08934b56581) | mdi:shield-home-outline | Armed in home mode, protecting selected areas while occupants are present.
-armed_away | Green | ![shield-lock-outline](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/998db33c-3ec5-47dd-9686-c28eee81e9eb) | mdi:shield-lock-outline | Armed in away mode, protecting all configured zones while the home is unoccupied.
-armed_night | Green | ![shield-moon-outline](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/84528bca-577d-4a43-8366-e6f9e41bc7b4) | mdi:shield-moon-outline | Armed in night mode, typically protecting perimeter and selected zones during sleep.
-armed_vacation | Green | ![shield-airplane-outline](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/067218de-ec8c-4fce-a427-7848a7ae9f27) | mdi:shield-airplane-outline | Armed in vacation mode for extended absences, often with enhanced or modified protection rules.
-armed_custom_bypass | Green | ![shield-half-full](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/af7ed346-28eb-4796-b62b-2a51e9cb6272) | mdi:shield-half-full | Armed with custom bypass rules, allowing specific sensors or zones to be excluded.
-pending | Amber | ![shield-outline](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/31bcd613-04d6-455a-a443-3299211d487e) | mdi:shield-outline | Countdown in progress after activity is detected, before triggering.
-arming | Amber | ![shield-outline](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/31bcd613-04d6-455a-a443-3299211d487e) | mdi:shield-outline | Exit delay in progress while the system is arming.
-disarming | Amber | ![shield-off-outline](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/37c02584-dd65-4575-8d95-c7346de599e4) | mdi:shield-off-outline | Entry delay in progress while the system is disarming.
-triggered | Red | ![shield-alert-outline](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/ee1ec55b-e671-4aa0-9baa-77eb2a8c8c7f) | mdi:shield-alert-outline | Actively triggered and in an alert state.
-unknown/unavailable | White | ![shield-alert-outline](https://github.com/Blackymas/NSPanel_HA_Blueprint/assets/94725493/a382e5ab-2e16-453c-bc9b-b3dcd3825de7) | mdi:shield-alert-outline | State unknown or unavailable, typically due to a communication or system issue.
+disarmed | White | ![shield-off-outline](pics/alarm-shield-off-outline.svg) | mdi:shield-off-outline | Disarmed and not actively monitoring for intrusions.
+armed_home | Green | ![shield-home-outline](pics/alarm-shield-home-outline.svg) | mdi:shield-home-outline | Armed in home mode, protecting selected areas while occupants are present.
+armed_away | Green | ![shield-lock-outline](pics/alarm-shield-lock-outline.svg) | mdi:shield-lock-outline | Armed in away mode, protecting all configured zones while the home is unoccupied.
+armed_night | Green | ![shield-moon-outline](pics/alarm-shield-moon-outline.svg) | mdi:shield-moon-outline | Armed in night mode, typically protecting perimeter and selected zones during sleep.
+armed_vacation | Green | ![shield-airplane-outline](pics/alarm-shield-airplane-outline.svg) | mdi:shield-airplane-outline | Armed in vacation mode for extended absences, often with enhanced or modified protection rules.
+armed_custom_bypass | Green | ![shield-half-full](pics/alarm-shield-half-full.svg) | mdi:shield-half-full | Armed with custom bypass rules, allowing specific sensors or zones to be excluded.
+pending | Amber | ![shield-outline](pics/alarm-shield-outline.svg) | mdi:shield-outline | Countdown in progress after activity is detected, before triggering.
+arming | Amber | ![shield-outline](pics/alarm-shield-outline.svg) | mdi:shield-outline | Exit delay in progress while the system is arming.
+disarming | Amber | ![shield-off-outline](pics/alarm-shield-off-outline-amber.svg) | mdi:shield-off-outline | Entry delay in progress while the system is disarming.
+triggered | Red | ![shield-alert-outline](pics/alarm-shield-alert-outline.svg) | mdi:shield-alert-outline | Actively triggered and in an alert state.
+unknown/unavailable | White | ![shield-alert-outline](pics/alarm-shield-alert-outline-white.svg) | mdi:shield-alert-outline | State unknown or unavailable, typically due to a communication or system issue.
 <!-- markdownlint-enable MD013 -->
 
 > [!NOTE]

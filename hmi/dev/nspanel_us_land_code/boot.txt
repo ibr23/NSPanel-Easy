@@ -14,8 +14,8 @@ Page boot
         Swide down page ID : disabled
         Swide left page ID : disabled
         Swide right page ID: disabled
-        Fill               : solid color
-        Back. Color        : 17430
+        Fill               : picture
+        Back. Picture ID   : 32
     
     Events
         Preinitialize Event
@@ -27,501 +27,415 @@ Page boot
             ver_tft.txt="TFT: "+version.txt
             sendme
         
+        Postinitialize Event
+            line 216,55,450,55,WHITE
+            line 450,55,450,301,WHITE
+            line 216,55,216,301,WHITE
+            line 216,301,450,301,WHITE
+            line 218,57,448,57,WHITE
+            line 448,57,448,299,WHITE
+            line 218,57,218,299,WHITE
+            line 218,299,450,299,WHITE
+            vis log_title,1
+            line 14,55,200,55,WHITE
+            line 200,55,200,171,WHITE
+            line 14,55,14,171,WHITE
+            line 14,171,200,171,WHITE
+            line 16,57,198,57,WHITE
+            line 198,57,198,169,WHITE
+            line 16,57,16,169,WHITE
+            line 16,169,200,169,WHITE
+            vis ver_title,1
+            line 14,185,200,185,WHITE
+            line 200,185,200,301,WHITE
+            line 14,185,14,301,WHITE
+            line 14,301,200,301,WHITE
+            line 16,187,198,187,WHITE
+            line 198,187,198,299,WHITE
+            line 16,187,16,299,WHITE
+            line 16,299,200,299,WHITE
+            vis sys_title,1
+        
 Variable (string) version
     Attributes
-        ID            : 7
+        ID            : 6
         Scope         : global
-        Text          : 1
+        Text          : 2
         Max. Text Size: 7
     
 Variable (int32) log_len
     Attributes
-        ID   : 18
+        ID   : 15
         Scope: local
         Value: 0
     
 Variable (int32) log_pos
     Attributes
-        ID   : 19
+        ID   : 16
         Scope: local
         Value: 0
     
 Variable (int32) log_line_count
     Attributes
-        ID   : 20
+        ID   : 17
         Scope: local
         Value: 0
     
 Variable (int32) log_start_pos
     Attributes
-        ID   : 21
+        ID   : 18
         Scope: local
         Value: 0
     
 Variable (int32) log_end_pos
     Attributes
-        ID   : 22
+        ID   : 19
         Scope: local
         Value: 0
     
 Variable (string) log_temp
     Attributes
-        ID            : 23
+        ID            : 20
         Scope         : local
         Text          : 
         Max. Text Size: 2
     
 Variable (string) tmp_baudrate
     Attributes
-        ID            : 25
+        ID            : 22
         Scope         : local
         Text          : 
         Max. Text Size: 8
     
 Variable (int32) log_max_lines
     Attributes
-        ID   : 26
+        ID   : 23
         Scope: local
         Value: 14
     
 Variable (int32) counter
     Attributes
-        ID   : 27
+        ID   : 24
         Scope: local
         Value: 0
     
 Variable (string) va0
     Attributes
-        ID            : 29
+        ID            : 26
         Scope         : local
         Text          : 
         Max. Text Size: 10
     
 Variable (string) va1
     Attributes
-        ID            : 30
+        ID            : 27
         Scope         : local
         Text          : 
         Max. Text Size: 10
     
 Variable (string) csv
     Attributes
-        ID            : 31
+        ID            : 28
         Scope         : local
         Text          : 
         Max. Text Size: 50
     
 Text log_body
     Attributes
-        ID                  : 2
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 222
-        y coordinate        : 68
-        Width               : 240
-        Height              : 224
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 0
-        Back. Color         : 17430
-        Font Color          : 65535
-        Horizontal Alignment: left
-        Vertical Alignment  : top
-        Input Type          : character
-        Text                : 
-        Max. Text Size      : 800
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 2
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 222
+        y coordinate            : 68
+        Width                   : 228
+        Height                  : 224
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 0
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : left
+        Vertical Alignment      : top
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 800
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
-Text initializing
+Text nspanel_easy
     Attributes
-        ID                  : 3
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 15
-        y coordinate        : 15
-        Width               : 157
-        Height              : 30
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 3
-        Back. Color         : 17430
-        Font Color          : 65535
-        Horizontal Alignment: left
-        Vertical Alignment  : top
-        Input Type          : character
-        Text                : Initializing...
-        Max. Text Size      : 15
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
-    
-Text ver_box
-    Attributes
-        ID                  : 4
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 15
-        y coordinate        : 56
-        Width               : 185
-        Height              : 115
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : border
-        Associated Keyboard : none
-        Border Color        : 65535
-        Border Width        : 2
-        Font ID             : 0
-        Back. Color         : 17430
-        Font Color          : 0
-        Horizontal Alignment: center
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : 
-        Max. Text Size      : 0
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 3
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 15
+        y coordinate            : 15
+        Width                   : 157
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 3
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : left
+        Vertical Alignment      : top
+        Input Type              : character
+        Text                    : NSPanel Easy
+        Max. Text Size          : 12
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text ver_title
     Attributes
-        ID                  : 5
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 20
-        y coordinate        : 41
-        Width               : 67
-        Height              : 30
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 0
-        Back. Color         : 17430
-        Font Color          : 65535
-        Horizontal Alignment: left
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                :  Versions
-        Max. Text Size      : 9
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 4
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 20
+        y coordinate            : 41
+        Width                   : 67
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 0
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : left
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    :  Versions
+        Max. Text Size          : 9
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text ver_tft
     Attributes
-        ID                  : 6
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 20
-        y coordinate        : 72
-        Width               : 175
-        Height              : 30
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 0
-        Back. Color         : 17430
-        Font Color          : 65535
-        Horizontal Alignment: left
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : TFT: Waiting...
-        Max. Text Size      : 25
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 5
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 20
+        y coordinate            : 72
+        Width                   : 175
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 0
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : left
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : TFT: Waiting...
+        Max. Text Size          : 25
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text ver_firmware
     Attributes
-        ID                  : 8
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 20
-        y coordinate        : 102
-        Width               : 175
-        Height              : 30
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 0
-        Back. Color         : 17430
-        Font Color          : 65535
-        Horizontal Alignment: left
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : Firmware: Waiting...
-        Max. Text Size      : 30
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 7
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 20
+        y coordinate            : 102
+        Width                   : 175
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 0
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : left
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : Firmware: Waiting...
+        Max. Text Size          : 30
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text ver_blueprint
     Attributes
-        ID                  : 9
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 20
-        y coordinate        : 132
-        Width               : 175
-        Height              : 30
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 0
-        Back. Color         : 17430
-        Font Color          : 65535
-        Horizontal Alignment: left
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : Blueprint: Waiting...
-        Max. Text Size      : 30
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
-    
-Text sys_box
-    Attributes
-        ID                  : 10
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 15
-        y coordinate        : 186
-        Width               : 185
-        Height              : 115
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : border
-        Associated Keyboard : none
-        Border Color        : 65535
-        Border Width        : 2
-        Font ID             : 0
-        Back. Color         : 17430
-        Font Color          : 0
-        Horizontal Alignment: center
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : 
-        Max. Text Size      : 0
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 8
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 20
+        y coordinate            : 132
+        Width                   : 175
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 0
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : left
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : Blueprint: Waiting...
+        Max. Text Size          : 30
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text sys_title
     Attributes
-        ID                  : 11
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 20
-        y coordinate        : 171
-        Width               : 58
-        Height              : 30
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 0
-        Back. Color         : 17430
-        Font Color          : 65535
-        Horizontal Alignment: left
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                :  System
-        Max. Text Size      : 9
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 9
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 20
+        y coordinate            : 177
+        Width                   : 58
+        Height                  : 26
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 0
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : left
+        Vertical Alignment      : top
+        Input Type              : character
+        Text                    :  System
+        Max. Text Size          : 9
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text sys_ip
     Attributes
-        ID                  : 12
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 20
-        y coordinate        : 202
-        Width               : 175
-        Height              : 30
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 0
-        Back. Color         : 17430
-        Font Color          : 65535
-        Horizontal Alignment: left
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : IP: Waiting...
-        Max. Text Size      : 20
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 10
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 20
+        y coordinate            : 202
+        Width                   : 175
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 0
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : left
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : IP: Waiting...
+        Max. Text Size          : 20
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text sys_framework
     Attributes
-        ID                  : 13
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 20
-        y coordinate        : 232
-        Width               : 175
-        Height              : 30
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 0
-        Back. Color         : 17430
-        Font Color          : 65535
-        Horizontal Alignment: left
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : Framework: Waiting...
-        Max. Text Size      : 30
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 11
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 20
+        y coordinate            : 232
+        Width                   : 175
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 0
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : left
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : Framework: Waiting...
+        Max. Text Size          : 30
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text sys_baudrate
     Attributes
-        ID                  : 14
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 20
-        y coordinate        : 262
-        Width               : 175
-        Height              : 30
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 0
-        Back. Color         : 17430
-        Font Color          : 65535
-        Horizontal Alignment: left
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : Baud rate: Waiting...
-        Max. Text Size      : 30
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
-    
-Text log_box
-    Attributes
-        ID                  : 15
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 217
-        y coordinate        : 56
-        Width               : 250
-        Height              : 245
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : border
-        Associated Keyboard : none
-        Border Color        : 65535
-        Border Width        : 2
-        Font ID             : 0
-        Back. Color         : 17430
-        Font Color          : 0
-        Horizontal Alignment: center
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : 
-        Max. Text Size      : 0
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 12
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 20
+        y coordinate            : 262
+        Width                   : 175
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 0
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : left
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : Baud rate: Waiting...
+        Max. Text Size          : 30
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text log_title
     Attributes
-        ID                  : 16
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 222
-        y coordinate        : 41
-        Width               : 35
-        Height              : 30
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 0
-        Back. Color         : 17430
-        Font Color          : 65535
-        Horizontal Alignment: left
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                :  Log
-        Max. Text Size      : 9
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 13
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 222
+        y coordinate            : 41
+        Width                   : 35
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 0
+        Cropped Back. Picture ID: 32
+        Horizontal Alignment    : left
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    :  Log
+        Max. Text Size          : 9
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Progress Bar progress
     Attributes
@@ -545,7 +459,7 @@ Progress Bar progress
     
 Dual-state Button bt_reboot
     Attributes
-        ID                        : 24
+        ID                        : 21
         Scope                     : local
         Dragging                  : 0
         Send Component ID         : on press and release
@@ -584,7 +498,7 @@ Dual-state Button bt_reboot
         
 Timer log_scroll
     Attributes
-        ID         : 17
+        ID         : 14
         Scope      : local
         Period (ms): 400
         Enabled    : yes
@@ -632,7 +546,7 @@ Timer log_scroll
         
 Timer tm_esphome
     Attributes
-        ID         : 28
+        ID         : 25
         Scope      : local
         Period (ms): 1000
         Enabled    : yes

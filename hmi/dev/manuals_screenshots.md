@@ -6,13 +6,24 @@ Please select "Instruction codes: utf-8" in the Nextion simulator
 
 ```nextion
 page boot
-baud_rate.txt="115200 bps"
-esph_version.txt="4.2"
-bluep_version.txt="4.2"
-tft_version.txt="4.2"
-vis bt_reboot,1
-framework.txt="esp-idf"
-ip_addr.txt="192.168.0.123"
+log_scroll.en=0
+tm_esphome.en=0
+ver_firmware.txt="Firmware: 2026.2.4"
+ver_blueprint.txt="Blueprint: 1"
+sys_ip.txt="IP: 192.168.0.123"
+sys_framework.txt="Framework: ESP-IDF"
+sys_baudrate.txt="Baud rate: 115200 bps"
+log_body.txt="Boot: Set Home page elements\r"
+log_body.txt+="Boot: Sending display settings\r"
+log_body.txt+="Boot: Starting sequence\r"
+log_body.txt+="Boot: Waiting for Wi-Fi\r"
+log_body.txt+="Boot: Wi-Fi connected\r"
+log_body.txt+="Boot: API connected\r"
+log_body.txt+="Boot: Publish Nextion state\r"
+log_body.txt+="Boot: Waiting for Blueprint\r"
+log_body.txt+="Boot: Check TFT version\r"
+log_body.txt+="Boot:Waiting for TFT version\r"
+progress.val=65
 ```
 
 ![Boot EU](../../docs/pics/eu_boot.png)
