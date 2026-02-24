@@ -3,7 +3,7 @@ name: Validate Markdown
 
 # yamllint disable-line rule:truthy
 on:
-  push:
+  pull_request:
     paths:
       - '**/*.md'
   workflow_dispatch:
