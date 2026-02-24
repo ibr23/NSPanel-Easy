@@ -55,9 +55,9 @@ jobs:
         with:
           fetch-depth: '0'
 
-      # https://github.com/gaurav-nelson/github-action-markdown-link-check
+      # https://github.com/tcort/github-action-markdown-link-check
       - name: Markdown links
-        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        uses: tcort/github-action-markdown-link-check@v1.1.2
         with:
           # yamllint disable-line rule:truthy
           check-modified-files-only: yes
