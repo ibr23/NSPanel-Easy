@@ -66,9 +66,48 @@ substitutions:
 > [!NOTE] Setting OTA to use WiFi is only necessary if you are migrating wirelessly.
 > When migrating via USB/TTL you can freely select your OTA password or leave without one.
 
+#### Version settings
+
+Now you can control which firmware version your panel uses by setting a substitution.
+This prevents unwanted automatic updates that could break compatibility with your Blueprint.
+
+On the same `substitutions` block, add the substitution `version: latest`. It will look something like this:
+
+```yaml
+substitutions:
+  # Settings - Editable values
+  device_name: "YOUR_NSPANEL_NAME"
+  friendly_name: "Your panel's friendly name"
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  ota_password: ${wifi_password}  # IMPORTANT! For backward compatibility
+  version: latest                 # 'latest' for newest release, or specific version like '2026.2.4'
+```
+
+> [!TIP]
+> You can change `version: latest` to a specific version anytime (e.g., `version: 2026.2.4`)
+> if you want to pin to a particular release instead of always getting the newest.
+
 #### Remote package reference
 
 Find your `remote_package` block. It currently looks something like this:
+
+```yaml
+packages:
+  remote_package:
+    url: https://github.com/Blackymas/NSPanel_HA_Blueprint
+    ref: main
+    refresh: 300s
+    files:
+      - nspanel_esphome.yaml # Base package
+      # Add-ons you may have enabled:
+      # - nspanel_esphome_addon_climate_heat.yaml
+      # - nspanel_esphome_addon_climate_cool.yaml
+      # - nspanel_esphome_addon_climate_dual.yaml
+      # - nspanel_esphome_addon_cover.yaml
+```
+
+Or like this:
 
 ```yaml
 packages:
@@ -91,7 +130,7 @@ Change it to:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: ${version}
     refresh: 300s
     files:
       - nspanel_esphome.yaml # Base package
@@ -104,13 +143,14 @@ packages:
 
 ### Summary of changes
 
-| Setting | Before (Blackymas) | After (NSPanel Easy) |
-| :------ | :------------------ | :------------------- |
-| `ota_password`   | It was set on the remote package to use your WiFi password | You have to add the substitution `ota_password: ${wifi_password}` for backward compatibility |
-| `url`   | `https://github.com/Blackymas/NSPanel_HA_Blueprint` | `https://github.com/edwardtfn/NSPanel-Easy` |
-| `ref`   | A version tag (e.g. `v4.3.30`) | `main` |
-| Add-on file paths | Root level (e.g. `nspanel_esphome_addon_climate_heat.yaml`) | Inside `esphome/` folder (e.g. `esphome/nspanel_esphome_addon_climate_heat.yaml`) |
-| Base package | `nspanel_esphome.yaml` | `nspanel_esphome.yaml` *(no change)* |
+| Setting           | Before (Blackymas)                                           | After (NSPanel Easy)                                                                         |
+| :---------------- | :----------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
+| `ota_password`    | It was set on the remote package to use your WiFi password   | You have to add the substitution `ota_password: ${wifi_password}` for backward compatibility |
+| `version`         | Not supported                                                | You have to add the substitution `version: latest` to control which release to install      |
+| `url`             | `https://github.com/Blackymas/NSPanel_HA_Blueprint`          | `https://github.com/edwardtfn/NSPanel-Easy`                                                  |
+| `ref`             | `main` or a version tag (e.g. `v4.3.30`)                     | `${version}`                                                                                 |
+| Add-on file paths | Root level (e.g. `nspanel_esphome_addon_climate_heat.yaml`)  | Inside `esphome/` folder (e.g. `esphome/nspanel_esphome_addon_climate_heat.yaml`)            |
+| Base package      | `nspanel_esphome.yaml`                                       | `nspanel_esphome.yaml` *(no change)*                                                         |
 
 > [!IMPORTANT]
 > The **base package** (`nspanel_esphome.yaml`) stays at the root level - no path change needed.
@@ -127,6 +167,7 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ${wifi_password}  # IMPORTANT! For backward compatibility
+  version: latest                 # 'latest' for newest release, or specific version like '2026.2.4'
 
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -143,7 +184,7 @@ substitutions:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: ${version}
     refresh: 300s
     files:
       - nspanel_esphome.yaml # Base package
@@ -311,11 +352,43 @@ and you'll now receive updates from the new repository.
 Double-check that:
 
 - The `url` is exactly `https://github.com/edwardtfn/NSPanel-Easy`
-- The `ref` is `main` (not a version tag from the old repository).
-  After this first migration install, you'll be able to use version tags
-  in the same format (e.g. `ref: v5.0.0`) once NSPanel Easy publishes releases.
+- The `ref` is `${version}` (this uses your version substitution)
 - Add-on files use the `esphome/` prefix (e.g. `esphome/nspanel_esphome_addon_climate_heat.yaml`)
 - The base package `nspanel_esphome.yaml` does **not** have the `esphome/` prefix
+
+### Compilation error: "Undefined substitution: 'version'"
+
+This means you forgot to add the `version` substitution. Add this to your `substitutions` block:
+
+```yaml
+substitutions:
+  device_name: "YOUR_NSPANEL_NAME"
+  friendly_name: "Your panel's friendly name"
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  ota_password: ${wifi_password}
+  version: latest  # ← Add this line
+```
+
+### Compilation error: "Undefined substitution: 'ota_password'"
+
+This means you forgot to add the `ota_password` substitution. Add this to your `substitutions` block:
+
+```yaml
+substitutions:
+  device_name: "YOUR_NSPANEL_NAME"
+  friendly_name: "Your panel's friendly name"
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  ota_password: ${wifi_password}  # ← Add this line (for backward compatibility)
+  version: latest
+```
+
+If you want to use a custom OTA password instead, use:
+
+```yaml
+ota_password: "your_custom_ota_password"
+```
 
 ### My automation shows an error after changing the Blueprint path
 
@@ -337,6 +410,44 @@ The most common fix is to ensure your panel has enough free memory for the trans
 Try restarting the panel by cutting and restoring power.
 If it still doesn't come online, check the ESPHome logs for compilation or connectivity errors.
 
+### OTA update fails with a password error
+
+If you see an OTA password error during the wireless update, verify you have the `ota_password` substitution set correctly in your config.
+The most common cause is a mismatch between what's configured and what you're trying to use.
+
+**During migration (wireless update):**
+
+You must have:
+
+```yaml
+ota_password: ${wifi_password}
+```
+
+This uses your Wi-Fi password as the OTA password, matching the Blackymas behavior.
+
+**After successful migration:**
+
+For detailed instructions on customizing your OTA password settings, see the
+[Customization Guide](customization.md#custom-ota-password).
+
+> [!IMPORTANT]
+> Remember: OTA password and Wi-Fi password are now independent.
+> Change one without affecting the other.
+
+### Firmware compilation fails with "version not found"
+
+If the compilation fails saying it can't find the version you specified, check:
+
+```yaml
+version: latest    # ✅ Correct - 'latest' is always available
+version: 2026.2.4  # ✅ Correct - for specific released versions
+version: main      # ❌ Wrong - 'main' is not a valid version tag
+```
+
+Use `version: latest` to always get the newest release,
+or check the [Releases page](https://github.com/edwardtfn/NSPanel-Easy/releases)
+for available version tags to pin to a specific release.
+
 ---
 
 ## FAQ
@@ -348,8 +459,13 @@ A: No. Your `substitutions`, Wi-Fi credentials, and automation settings are pres
 A: No. The migration is done entirely over Wi-Fi (OTA update).
 
 **Q: Can I go back to Blackymas if needed?**
-A: Yes. Simply reverse the URL and ref changes in your YAML, re-flash,
+A: Yes. Simply reverse the URL and ref changes in your `remote_packages` area,
+remove the `version: latest` from `substitutions`, save your YAML, re-flash,
 and switch your automation's Blueprint path back to the old one.
+
+**Q: Can I pin my firmware to a specific version?**
+A: Yes! Change `version: latest` to a specific version like `version: 2026.2.4`
+to lock to that release and prevent automatic updates.
 
 **Q: Do I need to update all my panels at once?**
 A: No. You can migrate one panel at a time. Each panel is independent.
