@@ -7,17 +7,18 @@
 #####################################################################################################
 ---
 substitutions:
-  ##### DON'T CHANGE THIS ######
-  <<: !include ../versioning/VERSION_YAML
+  # Automatically updated by CI/CD on each release
+  # Value is imported from versioning/BUILD_VERSION.yaml
+  <<: !include ../versioning/BUILD_VERSION.yaml
+  # Minimum required versions for compatibility
   min_blueprint_version: 1
   min_tft_version: 2
   min_esphome_compiler_version: 2026.1.0
   TAG_VERSIONING: nspanel.versioning
-  ##############################
 
 esphome:
   project:
-    version: '"${version}"'
+    version: '"${BUILD_VERSION}"'
   platformio_options:
     build_flags:
       - -D NSPANEL_EASY_VERSIONING
@@ -87,7 +88,7 @@ script:
           fire_ha_event("version", {
             {"blueprint", std::to_string(static_cast<unsigned int>(version_blueprint))},
             {"min_blueprint_version", "${min_blueprint_version}"},
-            {"esphome", "${version}"},
+            {"esphome", "${BUILD_VERSION}"},
             {"tft", std::to_string(static_cast<unsigned int>(version_tft))},
             {"min_tft_version", "${min_tft_version}"}
           });
@@ -109,7 +110,7 @@ script:
 
           // Report ESPHome
           ESP_LOGCONFIG("${TAG_VERSIONING}", "ESPHome:");
-          ESP_LOGCONFIG("${TAG_VERSIONING}", "  Version: ${version}");
+          ESP_LOGCONFIG("${TAG_VERSIONING}", "  Version: ${BUILD_VERSION}");
           ESP_LOGCONFIG("${TAG_VERSIONING}", "  Compiler: %s", ESPHOME_VERSION);
 
           // Report framework
@@ -149,7 +150,7 @@ script:
     then:
       - lambda: |-
           char buf[32];
-          snprintf(buf, sizeof(buf), "${version}/%" PRIu8 "/%" PRIu8, version_blueprint, version_tft);
+          snprintf(buf, sizeof(buf), "${BUILD_VERSION}/%" PRIu8 "/%" PRIu8, version_blueprint, version_tft);
           version_info->publish_state(std::string(buf));
           blueprint_status_flags.version = version_blueprint == ${min_blueprint_version};
           check_versions->execute(!blueprint_status_flags.version or version_tft != ${min_tft_version});
