@@ -3,7 +3,7 @@
 ## Overview
 
 This project uses a time-based versioning scheme: `year.month.sequential_number`.  
-The system automates version updates and tagging to ensure consistent, conflict-free management of releases.
+The system automates build version updates and tagging to ensure consistent, conflict-free management of releases.
 
 ### Examples
 
@@ -12,7 +12,7 @@ The system automates version updates and tagging to ensure consistent, conflict-
 
 ## How It Works
 
-1. **Version Update**: The workflow updates the `VERSION` and `VERSION_YAML` files using the current date and release sequence.
+1. **Version Update**: The workflow updates the `BUILD_VERSION` and `BUILD_VERSION_YAML` files using the current date and release sequence.
 2. **Commit with Marker**: Changes are committed with a `[skip-versioning]` marker to prevent triggering the workflow again.
 3. **Merge into Main**: The temporary branch is merged into `main`.
 4. **Branch Cleanup**: The temporary branch is deleted after merging.
@@ -24,16 +24,16 @@ The system automates version updates and tagging to ensure consistent, conflict-
 The versioning process is fully automated:
 
 - Developers submit their changes as usual.
-- The workflow handles version updates, tagging, and integration into `main`.
+- The workflow handles build version updates, tagging, and integration into `main`.
 - The workflow requires no manual intervention for versioning.
 
-### Accessing the Version in Code
+### Accessing the Build Version in Code
 
-The version is accessible in the ESPHome YAML configuration file (`nspanel_esphome_version.yaml`) using the following syntax:
+The build version is accessible in the ESPHome YAML configuration file (`nspanel_esphome_versioning.yaml`) using the following syntax:
 
 ```yaml
 substitutions:
-  <<: !include ../versioning/VERSION_YAML
+  <<: !include ../versioning/BUILD_VERSION_YAML
 ```
 
 This ensures the correct version is dynamically included in the ESPHome setup.

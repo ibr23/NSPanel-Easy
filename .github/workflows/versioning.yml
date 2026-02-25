@@ -1,6 +1,6 @@
-# This GitHub Actions workflow handles version bumping, releases, and tag updates.
+# This GitHub Actions workflow handles build version bumping, releases, and tag updates.
 # It can be triggered either by:
-# 1. Pushing to main branch - automatically bumps version, creates a GitHub Release,
+# 1. Pushing to main branch - automatically bumps build version, creates a GitHub Release,
 #    and updates stable/latest tags
 # 2. Manual dispatch - allows independent control over stable and latest tags
 
@@ -12,8 +12,8 @@ on:  # yamllint disable-line rule:truthy
     branches:
       - main
     paths-ignore:
-      - '**/VERSION'
-      - '**/VERSION_YAML'
+      - '**/BUILD_VERSION'
+      - '**/BUILD_VERSION_YAML'
 
   workflow_dispatch:
     inputs:
@@ -90,17 +90,17 @@ jobs:
             } catch (error) {
               console.log('Could not get PR info:', error.message);
               return {
-                title: 'Version update',
-                body: 'Automated version bump',
+                title: 'Build version update',
+                body: 'Automated build version bump',
                 number: null,
                 found: false
               };
             }
 
-      - name: Bump version
+      - name: Bump build version
         run: |
-          chmod +x ./versioning/bump_version.sh
-          ./versioning/bump_version.sh
+          chmod +x ./versioning/bump_build_version.sh
+          ./versioning/bump_build_version.sh
 
       - name: Create tag message
         id: tag_message
@@ -108,17 +108,17 @@ jobs:
           PR_TITLE: ${{ github.event_name == 'push' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).title || '' }}
           PR_BODY: ${{ github.event_name == 'push' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).body  || '' }}
         run: |
-          NEW_VERSION=$(cat ./versioning/VERSION)
+          NEW_BUILD_VERSION=$(cat ./versioning/BUILD_VERSION)
 
           if [ "${{ github.event_name }}" == "push" ] && [ "${{ steps.pr_info.outcome }}" == "success" ]; then
             {
-              printf '# v%s - %s\n\n' "$NEW_VERSION" "$PR_TITLE"
+              printf '# v%s - %s\n\n' "$NEW_BUILD_VERSION" "$PR_TITLE"
               printf '%s\n' "$PR_BODY"
             } > tag_message.txt
           else
             # Manual dispatch or PR info unavailable - simpler message
             cat > tag_message.txt << EOF
-          # v${NEW_VERSION} - Manual tag update
+          # ${NEW_BUILD_VERSION} - Manual tag update
 
           Tag updated via manual workflow dispatch.
           EOF
@@ -128,32 +128,32 @@ jobs:
           echo "TAG_MESSAGE_FILE=tag_message.txt" >> $GITHUB_ENV
           echo "PR_TITLE=${PR_TITLE}" >> $GITHUB_ENV
 
-      - name: Push changes and version tag
+      - name: Push changes and build version tag
         id: push_tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          NEW_VERSION=$(cat ./versioning/VERSION)
-          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+          NEW_BUILD_VERSION=$(cat ./versioning/BUILD_VERSION)
+          echo "build_version=${NEW_BUILD_VERSION}" >> $GITHUB_OUTPUT
           git push origin main
-          git push origin "v${NEW_VERSION}"
+          git push origin "${NEW_BUILD_VERSION}"
 
       - name: Build release name
         id: release_name
         if: github.event_name == 'push' && steps.push_tag.outcome == 'success'
         run: |
-          VERSION="v${{ steps.push_tag.outputs.version }}"
+          BUILD_VERSION="${{ steps.push_tag.outputs.build_version }}"
           if [ -n "$PR_TITLE" ]; then
-            echo "name=${VERSION} - ${PR_TITLE}" >> $GITHUB_OUTPUT
+            echo "name=${BUILD_VERSION} - ${PR_TITLE}" >> $GITHUB_OUTPUT
           else
-            echo "name=${VERSION}" >> $GITHUB_OUTPUT
+            echo "name=${BUILD_VERSION}" >> $GITHUB_OUTPUT
           fi
 
       - name: Create GitHub Release
         if: github.event_name == 'push' && steps.push_tag.outcome == 'success'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ steps.push_tag.outputs.version }}
+          tag_name: ${{ steps.push_tag.outputs.build_version }}
           name: ${{ steps.release_name.outputs.name }}
           generate_release_notes: true
 
@@ -164,9 +164,9 @@ jobs:
             github.event_name == 'push'
           )
         run: |
-          # Verify version bump was successful
-          if [ ! -f "./versioning/VERSION" ]; then
-            echo "Error: VERSION file not found. Version bump may have failed."
+          # Verify build version bump was successful
+          if [ ! -f "./versioning/BUILD_VERSION" ]; then
+            echo "Error: BUILD_VERSION file not found. Build version bump may have failed."
             exit 1
           fi
 
@@ -177,8 +177,8 @@ jobs:
           fi
 
           # Update tag with detailed message
-          NEW_VERSION=$(cat ./versioning/VERSION)
-          echo "Updating stable tag to $NEW_VERSION"
+          NEW_BUILD_VERSION=$(cat ./versioning/BUILD_VERSION)
+          echo "Updating stable tag to $NEW_BUILD_VERSION"
           git tag -fa stable -F "$TAG_MESSAGE_FILE"
           git push origin stable --force
 
@@ -189,9 +189,9 @@ jobs:
             github.event_name == 'push'
           )
         run: |
-          # Verify version bump was successful
-          if [ ! -f "./versioning/VERSION" ]; then
-            echo "Error: VERSION file not found. Version bump may have failed."
+          # Verify build version bump was successful
+          if [ ! -f "./versioning/BUILD_VERSION" ]; then
+            echo "Error: BUILD_VERSION file not found. Build version bump may have failed."
             exit 1
           fi
 
@@ -202,8 +202,8 @@ jobs:
           fi
 
           # Update tag with detailed message
-          NEW_VERSION=$(cat ./versioning/VERSION)
-          echo "Updating latest tag to $NEW_VERSION"
+          NEW_BUILD_VERSION=$(cat ./versioning/BUILD_VERSION)
+          echo "Updating latest tag to $NEW_BUILD_VERSION"
           git tag -fa latest -F "$TAG_MESSAGE_FILE"
           git push origin latest --force
 

@@ -22,7 +22,7 @@ substitutions:
   project_tag: nspanel_easy
   TAG_BASE: nspanel.base
   ref_url: https://github.com/edwardtfn/NSPanel-Easy
-  ref_name: v${version}
+  version: latest
 
 button:
   - id: restart_nspanel  # Reboot ESP32
@@ -42,7 +42,7 @@ esphome:
   comment: NSPanel Easy
   project:
     name: edwardtfn.NSPanel-Easy
-    version: ${version}
+    version: ${BUILD_VERSION}
   platformio_options:
     build_flags:
       - -D NSPANEL_EASY_BASE
@@ -51,7 +51,7 @@ external_components:
   - source:
       type: git
       url: ${ref_url}
-      ref: ${ref_name}
+      ref: ${version}
     refresh: 300s
     components:
       - nspanel_easy

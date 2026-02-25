@@ -116,6 +116,7 @@ Follow these steps to add a new device in the ESPHome Dashboard:
      wifi_ssid: !secret wifi_ssid
      wifi_password: !secret wifi_password
      ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+     version: latest   # NSPanel-Easy release: 'latest', or specific version like '2026.2.4'
      boot_sound: false
      # Add-on configuration (if needed)
      ## Upload TFT
@@ -131,7 +132,7 @@ Follow these steps to add a new device in the ESPHome Dashboard:
    packages:
      remote_package:
        url: https://github.com/edwardtfn/NSPanel-Easy
-       ref: main
+       ref: ${version}
        refresh: 300s
        files:
          - nspanel_esphome.yaml # Basic package
@@ -506,6 +507,7 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+  version: latest   # NSPanel-Easy release: 'latest', or specific version like '2026.2.4'
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -535,7 +537,7 @@ api:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: ${version}
     refresh: 300s
     files:
       - esphome/nspanel_esphome_core.yaml        # Core NSPanel functionality
@@ -563,6 +565,7 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+  version: latest   # NSPanel-Easy release: 'latest', or specific version like '2026.2.4'
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -589,7 +592,7 @@ substitutions:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: ${version}
     refresh: 300s
     files:
       - esphome/nspanel_esphome_core.yaml
@@ -607,6 +610,7 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+  version: latest   # NSPanel-Easy release: 'latest', or specific version like '2026.2.4'
   boot_sound: false
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -635,7 +639,7 @@ api:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: ${version}
     refresh: 300s
     files:
       - esphome/nspanel_esphome_core.yaml

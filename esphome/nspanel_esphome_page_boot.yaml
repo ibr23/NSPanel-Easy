@@ -86,7 +86,7 @@ script:
       - lambda: |-
           ESP_LOGD("${TAG_PAGE_BOOT}", "Page boot constructor started");
           page_boot_exit_on_timeout->execute();
-          disp1->set_component_text("ver_firmware", "Firmware: ${version}");  // ESPHome version
+          disp1->set_component_text("ver_firmware", "Firmware: ${BUILD_VERSION}");  // ESPHome version
           #ifdef ARDUINO
           disp1->set_component_text("sys_framework", "Framework: Arduino");
           #elif defined(USE_ESP_IDF)

@@ -44,15 +44,15 @@ Take note of the branch (`dev`, `beta`, or `main`) or version name exactly as it
 
 ### For ESPHome Component
 
-1. Open your device's YAML config and find the key `ref:`, which is under `remote_package:` in the `packages:` area:
+1. Open your device's YAML config and find the `version:` substitution in the `substitutions:` section at the top:
 
-    ![Image](pics/esphome_dashboard_yaml_ref_main.png)
+    ![Image](pics/esphome_dashboard_yaml_version_latest.png)
 
-2. Change the value of `ref:` to the version you want to install, like `ref: dev` or `ref: v4.1.4`:
+2. Change the value from `version: latest` to the specific version you want to install, like `version: 2026.2.4`:
 
-    ![Image](pics/esphome_dashboard_yaml_ref_v414.png)
+    ![Image](pics/esphome_dashboard_yaml_version_2026_2_4.png)
 
-3. Save your settings and then install it.
+3. Save your settings and install it. ESPHome will automatically fetch the correct release based on the version you specified.
 
 <!-- markdownlint-disable MD028 -->
 > [!IMPORTANT]

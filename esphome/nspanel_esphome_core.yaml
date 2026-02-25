@@ -19,7 +19,7 @@ substitutions:
 
 packages:
   # yamllint disable rule:colons
-  version:           !include nspanel_esphome_version.yaml
+  versioning:        !include nspanel_esphome_versioning.yaml
   api:               !include nspanel_esphome_api.yaml
   base:              !include nspanel_esphome_base.yaml
   boot:              !include nspanel_esphome_boot.yaml
