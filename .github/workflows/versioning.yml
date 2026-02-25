@@ -1,19 +1,20 @@
 # This GitHub Actions workflow handles version bumping, releases, and tag updates.
-# It can be triggered either by:
+# It can be triggered by:
 # 1. Pushing to main branch - automatically bumps version, creates a GitHub Release,
 #    and updates stable/latest tags
 # 2. Manual dispatch - allows independent control over stable and latest tags
+#
+# The workflow skips execution if the commit message contains [skip-versioning] to prevent loops.
 
 ---
 name: Version, Release & Tags
 
 on:  # yamllint disable-line rule:truthy
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - main
-    paths-ignore:
-      - '**/VERSION'
-      - '**/VERSION_YAML'
 
   workflow_dispatch:
     inputs:
@@ -30,6 +31,8 @@ on:  # yamllint disable-line rule:truthy
 
 jobs:
   version-and-release:
+    # Only run if PR was merged (not just closed)
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true)
     runs-on: ubuntu-latest
     concurrency:
       group: version-and-release
@@ -43,50 +46,44 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check for skip marker
+        id: skip_check
+        if: github.event_name == 'pull_request'
+        run: |
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          if echo "$COMMIT_MESSAGE" | grep -q "\[skip-versioning\]"; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "Skipping workflow due to [skip-versioning] marker"
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Set up Git
+        if: github.event_name == 'workflow_dispatch' || steps.skip_check.outputs.skip == 'false'
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
 
+      - name: Set up yq
+        if: github.event_name == 'workflow_dispatch' || steps.skip_check.outputs.skip == 'false'
+        uses: mikefarah/yq@v4.43.1
+
       - name: Get PR information
         id: pr_info
-        if: github.event_name == 'push'
+        if: (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false')
         uses: actions/github-script@v7
         with:
           script: |
             try {
-              // Use GitHub's reliable API to find PRs associated with this commit
-              const { data: associatedPRs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                commit_sha: context.sha
-              });
+              // Get the PR that was just merged
+              const pr = context.payload.pull_request;
 
-              if (associatedPRs.length > 0) {
-                // Get the most recent merged PR
-                const pr = associatedPRs.find(pr => pr.state === 'closed' && pr.merged_at) || associatedPRs[0];
-
-                return {
-                  title: pr.title,
-                  body: pr.body || 'No description provided',
-                  number: pr.number,
-                  found: true
-                };
-              } else {
-                // Fallback for direct pushes or when no PR is found
-                const commit = await github.rest.repos.getCommit({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  ref: context.sha
-                });
-
-                return {
-                  title: 'Direct push to main',
-                  body: commit.data.commit.message,
-                  number: null,
-                  found: false
-                };
-              }
+              return {
+                title: pr.title,
+                body: pr.body || 'No description provided',
+                number: pr.number,
+                found: true
+              };
             } catch (error) {
               console.log('Could not get PR info:', error.message);
               return {
@@ -97,20 +94,99 @@ jobs:
               };
             }
 
-      - name: Bump version
+      - name: Read current version
+        id: current_version
+        if: github.event_name == 'workflow_dispatch' || steps.skip_check.outputs.skip == 'false'
         run: |
-          chmod +x ./versioning/bump_version.sh
-          ./versioning/bump_version.sh
+          VERSION=$(yq eval '.version' ./versioning/version.yaml)
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Calculate next version
+        id: next_version
+        if: github.event_name == 'workflow_dispatch' || steps.skip_check.outputs.skip == 'false'
+        run: |
+          CURRENT_VERSION="${{ steps.current_version.outputs.version }}"
+
+          # Validate the current version format
+          if ! [[ "$CURRENT_VERSION" =~ ^[0-9]{4}\.[0-9]{1,2}\.[0-9]+$ ]]; then
+            echo "Error: Invalid version format: $CURRENT_VERSION"
+            exit 1
+          fi
+
+          # Extract components
+          CURRENT_YEAR=$(date +%Y)
+          CURRENT_MONTH=$(date +%-m)  # #endif Avoid leading zero for the month
+          CURRENT_SEQ=$(echo "$CURRENT_VERSION" | awk -F. '{print $3}')
+
+          VERSION_YEAR=$(echo "$CURRENT_VERSION" | awk -F. '{print $1}')
+          VERSION_MONTH=$(echo "$CURRENT_VERSION" | awk -F. '{print $2}')
+
+          # Determine new version
+          if [[ "$CURRENT_YEAR" == "$VERSION_YEAR" && "$CURRENT_MONTH" == "$VERSION_MONTH" ]]; then
+            NEXT_SEQ=$((CURRENT_SEQ + 1))
+          else
+            NEXT_SEQ=1  # #endif Reset sequence for a new month
+          fi
+
+          NEXT_VERSION="${CURRENT_YEAR}.${CURRENT_MONTH}.${NEXT_SEQ}"
+          echo "version=${NEXT_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Update version.yaml file
+        if: github.event_name == 'workflow_dispatch' || steps.skip_check.outputs.skip == 'false'
+        env:
+          NEW_VERSION: ${{ steps.next_version.outputs.version }}
+        run: |
+          yq eval '.version = env(NEW_VERSION)' -i ./versioning/version.yaml
+
+      - name: Extract version information
+        id: versions
+        if: github.event_name == 'workflow_dispatch' || steps.skip_check.outputs.skip == 'false'
+        run: |
+          # Extract versions from version.yaml and nspanel_esphome_version.yaml
+          VERSION=$(yq eval '.version' ./versioning/version.yaml)
+          MIN_BLUEPRINT_VERSION=$(yq eval '.substitutions.min_blueprint_version' nspanel_esphome_version.yaml)
+          MIN_TFT_VERSION=$(yq eval '.substitutions.min_tft_version' nspanel_esphome_version.yaml)
+
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "min_blueprint_version=${MIN_BLUEPRINT_VERSION}" >> $GITHUB_OUTPUT
+          echo "min_tft_version=${MIN_TFT_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Update bug report template with current versions
+        if: github.event_name == 'workflow_dispatch' || steps.skip_check.outputs.skip == 'false'
+        env:
+          VERSION: ${{ steps.versions.outputs.version }}
+          MIN_BLUEPRINT_VERSION: ${{ steps.versions.outputs.min_blueprint_version }}
+          MIN_TFT_VERSION: ${{ steps.versions.outputs.min_tft_version }}
+        run: |
+          # Update TFT Version placeholder
+          yq eval '.body[3].attributes.placeholder = "e.g., ${MIN_TFT_VERSION}"' -i .github/ISSUE_TEMPLATE/bug.yml
+
+          # Update Firmware Version placeholder
+          yq eval '.body[4].attributes.placeholder = "e.g., ${VERSION}"' -i .github/ISSUE_TEMPLATE/bug.yml
+
+          # Update Blueprint Version placeholder
+          yq eval '.body[5].attributes.placeholder = "e.g., ${MIN_BLUEPRINT_VERSION}"' -i .github/ISSUE_TEMPLATE/bug.yml
+
+      - name: Commit version and template changes
+        id: commit
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && steps.skip_check.outputs.skip == 'false')
+        env:
+          NEW_VERSION: ${{ steps.next_version.outputs.version }}
+        run: |
+          git add ./versioning/version.yaml .github/ISSUE_TEMPLATE/bug.yml
+          git commit -m "Bump version to $NEW_VERSION [skip-versioning]"
+          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
 
       - name: Create tag message
         id: tag_message
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false')
         env:
-          PR_TITLE: ${{ github.event_name == 'push' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).title || '' }}
-          PR_BODY: ${{ github.event_name == 'push' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).body  || '' }}
+          PR_TITLE: ${{ github.event_name == 'pull_request' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).title || '' }}
+          PR_BODY: ${{ github.event_name == 'pull_request' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).body  || '' }}
         run: |
-          NEW_VERSION=$(cat ./versioning/VERSION)
+          NEW_VERSION="${{ steps.commit.outputs.version }}"
 
-          if [ "${{ github.event_name }}" == "push" ] && [ "${{ steps.pr_info.outcome }}" == "success" ]; then
+          if [ "${{ github.event_name }}" == "pull_request" ] && [ "${{ steps.pr_info.outcome }}" == "success" ]; then
             {
               printf '# v%s - %s\n\n' "$NEW_VERSION" "$PR_TITLE"
               printf '%s\n' "$PR_BODY"
@@ -128,19 +204,27 @@ jobs:
           echo "TAG_MESSAGE_FILE=tag_message.txt" >> $GITHUB_ENV
           echo "PR_TITLE=${PR_TITLE}" >> $GITHUB_ENV
 
-      - name: Push changes and version tag
-        id: push_tag
+      - name: Push changes
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          NEW_VERSION=$(cat ./versioning/VERSION)
-          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
           git push origin main
+
+      - name: Create version tag and push
+        id: push_tag
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEW_VERSION="${{ steps.commit.outputs.version }}"
+          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+          git tag -a "v${NEW_VERSION}" -F "$TAG_MESSAGE_FILE"
           git push origin "v${NEW_VERSION}"
 
       - name: Build release name
         id: release_name
-        if: github.event_name == 'push' && steps.push_tag.outcome == 'success'
+        if: (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false' || github.event_name == 'workflow_dispatch') && steps.push_tag.outcome == 'success'
         run: |
           VERSION="v${{ steps.push_tag.outputs.version }}"
           if [ -n "$PR_TITLE" ]; then
@@ -150,7 +234,7 @@ jobs:
           fi
 
       - name: Create GitHub Release
-        if: github.event_name == 'push' && steps.push_tag.outcome == 'success'
+        if: (github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false' || github.event_name == 'workflow_dispatch') && steps.push_tag.outcome == 'success'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.push_tag.outputs.version }}
@@ -159,14 +243,13 @@ jobs:
 
       - name: Update stable tag
         if: |
-          success() && (
-            github.event_name == 'workflow_dispatch' && inputs.update_stable ||
-            github.event_name == 'push'
-          )
+          (github.event_name == 'workflow_dispatch' && inputs.update_stable ||
+          github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false') &&
+          steps.push_tag.outcome == 'success'
         run: |
-          # Verify version bump was successful
-          if [ ! -f "./versioning/VERSION" ]; then
-            echo "Error: VERSION file not found. Version bump may have failed."
+          # Verify version update was successful
+          if [ ! -f "./versioning/version.yaml" ]; then
+            echo "Error: version.yaml file not found. Version update may have failed."
             exit 1
           fi
 
@@ -177,21 +260,20 @@ jobs:
           fi
 
           # Update tag with detailed message
-          NEW_VERSION=$(cat ./versioning/VERSION)
+          NEW_VERSION="${{ steps.commit.outputs.version }}"
           echo "Updating stable tag to $NEW_VERSION"
-          git tag -fa stable -F "$TAG_MESSAGE_FILE"
+          git tag -fa stable "v${NEW_VERSION}"
           git push origin stable --force
 
       - name: Update latest tag
         if: |
-          success() && (
-            github.event_name == 'workflow_dispatch' && inputs.update_latest ||
-            github.event_name == 'push'
-          )
+          (github.event_name == 'workflow_dispatch' && inputs.update_latest ||
+          github.event_name == 'pull_request' && steps.skip_check.outputs.skip == 'false') &&
+          steps.push_tag.outcome == 'success'
         run: |
-          # Verify version bump was successful
-          if [ ! -f "./versioning/VERSION" ]; then
-            echo "Error: VERSION file not found. Version bump may have failed."
+          # Verify version update was successful
+          if [ ! -f "./versioning/version.yaml" ]; then
+            echo "Error: version.yaml file not found. Version update may have failed."
             exit 1
           fi
 
@@ -202,9 +284,9 @@ jobs:
           fi
 
           # Update tag with detailed message
-          NEW_VERSION=$(cat ./versioning/VERSION)
+          NEW_VERSION="${{ steps.commit.outputs.version }}"
           echo "Updating latest tag to $NEW_VERSION"
-          git tag -fa latest -F "$TAG_MESSAGE_FILE"
+          git tag -fa latest "v${NEW_VERSION}"
           git push origin latest --force
 
       - name: Cleanup
