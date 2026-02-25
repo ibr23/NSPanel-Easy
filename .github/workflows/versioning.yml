@@ -144,8 +144,8 @@ jobs:
         run: |
           # Extract versions from version.yaml and nspanel_esphome_version.yaml
           VERSION=$(yq eval '.version' ./versioning/version.yaml)
-          MIN_BLUEPRINT_VERSION=$(yq eval '.substitutions.min_blueprint_version' nspanel_esphome_version.yaml)
-          MIN_TFT_VERSION=$(yq eval '.substitutions.min_tft_version' nspanel_esphome_version.yaml)
+          MIN_BLUEPRINT_VERSION=$(yq eval '.substitutions.min_blueprint_version' ./esphome/nspanel_esphome_version.yaml)
+          MIN_TFT_VERSION=$(yq eval '.substitutions.min_tft_version' ./esphome/nspanel_esphome_version.yaml)
 
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "min_blueprint_version=${MIN_BLUEPRINT_VERSION}" >> $GITHUB_OUTPUT
