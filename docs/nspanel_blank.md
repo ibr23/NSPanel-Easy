@@ -1,4 +1,4 @@
-# `nspanel_blank.tft`
+# NSPanel Blank - First TFT Installation
 
 The NSPanel consists of an ESP32 board (the panel itself, controlling the relays, buttons, communications, etc.)
 with a Nextion display connected to it.
@@ -8,8 +8,8 @@ and this is done by a `.tft` file.
 
 When you get your panel from Sonoff, their `tft` file is installed in the Nextion display using a so-called "Reparse mode",
 which makes it a bit challenging to replace the `tft` file when using ESPHome.
-Because of that, we highly recommend using `nspanel_blank.tft` first,
-which is just a fraction of the size of a regular `tft` file and will make the first replacement much easier.
+We highly recommend selecting **NSPanel Blank** as your first upload (this is the default for new installations),
+as it is just a fraction of the size of a regular `tft` file and will make the first replacement much easier.
 
 Once the NSPanel's original `tft` is replaced, it is much easier to install a new `tft` with ESPHome,
 so you can proceed directly to installing the final file (either `nspanel_eu.tft`, `nspanel_us.tft` or `nspanel_us_land.tft`).
@@ -22,15 +22,18 @@ please refer to the [Troubleshooting TFT transfer](tft_upload.md) guide.
 Go to your device's page (under **Settings** > **Devices & services** > **ESPHome**),
 select your **Upload TFT display - Model** and then press **Upload TFT display**.
 
-## What to do after installing `nspanel_blank.tft`?
+![Upload TFT display - Model selector](pics/ha_device_configuration_tft_upload_model_selector.png)
+
+## What to do after installing **NSPanel Blank**?
 
 ![Page Blank](pics/page_blank.png)
 
 Once you have successfully installed any of the `tft` files from this project,
-the `nspanel_blank.tft` file shouldn't be necessary anymore and you should be able to always install the final `tft` file directly.
+the **NSPanel Blank** model shouldn't be necessary anymore and you should be able to always install the final `tft` file directly.
 
-Follow the same steps described above, but now select the correct **final regional model**
-(**EU**, **US**, or **US_Land**) before pressing **Upload TFT display**.
+Follow the same steps described above, but now select the correct final regional model
+(e.g., **NSPanel EU**, **NSPanel US**, **NSPanel US Landscape**, or one of the **CJK languages** variants)
+before pressing **Upload TFT display**.
 Double-check this selection to avoid flashing the wrong region.
 
 ## Additional Tips and Resources
