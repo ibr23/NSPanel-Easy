@@ -45,6 +45,7 @@ After troubleshooting, if issues persist, consult the [Issues](https://github.co
 and feel free to create a new one asking for more personalized assistance.
 
 Please share as much info as possible, like:
+
 1. A description (or picture) of what is on your screen.
 2. Whether you are updating from a previous version of this same project,
    coming from another NSPanel customization (if so, which one?),
