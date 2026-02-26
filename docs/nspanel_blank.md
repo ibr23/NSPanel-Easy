@@ -12,7 +12,8 @@ We highly recommend selecting **NSPanel Blank** as your first upload (this is th
 as it is just a fraction of the size of a regular `tft` file and will make the first replacement much easier.
 
 Once the NSPanel's original `tft` is replaced, it is much easier to install a new `tft` with ESPHome,
-so you can proceed directly to installing the final file (either `nspanel_eu.tft`, `nspanel_us.tft` or `nspanel_us_land.tft`).
+so you can proceed directly to installing the final file
+(e.g., **NSPanel EU**, **NSPanel US**, **NSPanel US Landscape**, or one of the **CJK languages** variants).
 
 For more details on how to install the first `tft` file, especially if your panel is still displaying the original Sonoff screen,
 please refer to the [Troubleshooting TFT transfer](tft_upload.md) guide.
