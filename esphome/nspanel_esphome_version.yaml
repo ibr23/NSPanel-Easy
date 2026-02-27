@@ -7,13 +7,14 @@
 #####################################################################################################
 ---
 substitutions:
-  ##### DON'T CHANGE THIS ######
-  <<: !include ../versioning/VERSION_YAML
+  # Automatically updated by CI/CD on each release
+  # Value is imported from versioning/version.yaml
+  <<: !include ../versioning/version.yaml
+  # Minimum required versions for compatibility
   min_blueprint_version: 1
   min_tft_version: 2
   min_esphome_compiler_version: 2026.1.0
   TAG_VERSIONING: nspanel.versioning
-  ##############################
 
 esphome:
   project:
