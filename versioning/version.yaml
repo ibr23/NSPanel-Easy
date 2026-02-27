@@ -2,3 +2,4 @@
 # The GitHub action will take care of updating version number when the PR is merged to `main`
 ---
 version: 2026.2.13
+...

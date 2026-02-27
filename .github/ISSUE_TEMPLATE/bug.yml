@@ -17,11 +17,13 @@ body:
 
         > [!WARNING]
         > Omit any private or sensitive information, as this bug report will be publicly visible.
+
   - type: markdown
     attributes:
       value: |
         ## Version Information
         Provide version numbers for TFT, ESPHome, and Blueprint. These can be found on your device's boot screen and in the automation where the blueprint is set.
+
   - type: input
     attributes:
       label: TFT Version
@@ -29,6 +31,7 @@ body:
       placeholder: e.g., 2
     validations:
       required: false
+
   - type: input
     attributes:
       label: Firmware Version
@@ -36,6 +39,7 @@ body:
       placeholder: e.g., 2026.2.13
     validations:
       required: false
+
   - type: input
     attributes:
       label: Blueprint Version
@@ -43,6 +47,7 @@ body:
       placeholder: e.g., 1
     validations:
       required: false
+
   - type: dropdown
     attributes:
       label: Panel Model
@@ -53,15 +58,18 @@ body:
         - US (Landscape)
     validations:
       required: false
+
   - type: markdown
     attributes:
       value: |
         ## Bug Details
+
   - type: textarea
     attributes:
       label: What is the bug?
       description: Describe the bug clearly and concisely.
       placeholder: e.g., When I try this, I get this result, but I expected that...
+
   - type: textarea
     attributes:
       label: Steps to Reproduce
@@ -70,10 +78,12 @@ body:
         1. Go to '...'
         2. Click on '...'
         3. See error on '...'
+
   - type: markdown
     attributes:
       value: |
         ## Additional Information (Optional)
+
   - type: textarea
     attributes:
       label: Your Panel's YAML
@@ -82,6 +92,7 @@ body:
       placeholder: |
         # Example YAML configuration
         # ...
+
   - type: textarea
     attributes:
       label: ESPHome Logs
@@ -92,11 +103,15 @@ body:
 
         Please follow the guidelines below to ensure the logs are comprehensive:
 
-        - **Boot Issues**: If the problem occurs during boot, capture the logs from the start of your device to a minute or two after the boot completes. Look for errors or unusual messages during this period.
+        - **Boot Issues**: If the problem occurs during boot, capture the logs from the start of your device to a minute or two after the boot completes.
+          Look for errors or unusual messages during this period.
 
-        - **TFT File Update Issues**: For problems related to TFT file updates, include logs from the moment you press the **Update TFT Display** button until a few seconds after the device restarts. Pay attention to any error messages or warnings during the update process.
+        - **TFT File Update Issues**: For problems related to TFT file updates,
+          include logs from the moment you press the **Update TFT Display** button until a few seconds after the device restarts.
+          Pay attention to any error messages or warnings during the update process.
 
-        - **Other Issues**: For other types of problems, include logs that encompass the issue's onset and continue for a short duration thereafter. This will help in pinpointing the exact moment and nature of the issue.
+        - **Other Issues**: For other types of problems, include logs that encompass the issue's onset and continue for a short duration thereafter.
+          This will help in pinpointing the exact moment and nature of the issue.
 
 
         Remember, the more detailed the logs, the easier it is to identify and resolve the problem.
@@ -119,4 +134,4 @@ body:
 
 
         Your attention to sharing targeted and relevant log data is greatly appreciated and aids in efficient problem resolution.
-
+...
