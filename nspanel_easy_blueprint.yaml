@@ -12067,7 +12067,7 @@ action:
                               - alias: TFT Upload add-on missing
                                 conditions:
                                   - '{{ nspanel_event.upload_tft_installed is defined }}'
-                                  - '{{ not nspanel_event.upload_tft_installed }}'
+                                  - '{{ not (nspanel_event.upload_tft_installed | bool) }}'
                                 sequence:
                                   - action: persistent_notification.create
                                     data:
@@ -12089,9 +12089,9 @@ action:
                               - alias: TFT Upload auto-upload enabled
                                 conditions:
                                   - '{{ nspanel_event.upload_tft_installed is defined }}'
-                                  - '{{ nspanel_event.upload_tft_installed }}'
+                                  - '{{ nspanel_event.upload_tft_installed | bool }}'
                                   - '{{ nspanel_event.upload_tft_auto is defined }}'
-                                  - '{{ nspanel_event.upload_tft_auto }}'
+                                  - '{{ nspanel_event.upload_tft_auto | bool }}'
                                 sequence:
                                   - action: persistent_notification.create
                                     data:
