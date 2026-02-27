@@ -1,35 +1,31 @@
 # This GitHub Actions workflow handles version bumping, releases, and tag updates.
-# It can be triggered either by:
-# 1. Pushing to main branch - automatically bumps version, creates a GitHub Release,
-#    and updates stable/latest tags
-# 2. Manual dispatch - allows independent control over stable and latest tags
+#
+# Triggered by merging a PR to the main branch, it automatically:
+# 1. Bumps the CalVer version (YYYY.M.seq)
+# 2. Updates the bug report template with current version placeholders
+# 3. Commits the changes and pushes to main
+# 4. Creates a version tag and GitHub Release
+# 5. Updates the stable and latest floating tags
+#
+# The workflow skips execution if the merge commit message contains
+# [skip-versioning] to prevent loops from its own version bump commits.
 
 ---
 name: Version, Release & Tags
 
 on:  # yamllint disable-line rule:truthy
-  push:
+  pull_request:
+    types:
+      - closed
     branches:
       - main
     paths-ignore:
-      - '**/VERSION'
-      - '**/VERSION_YAML'
-
-  workflow_dispatch:
-    inputs:
-      update_stable:
-        description: "Update stable tag?"
-        required: true
-        default: false
-        type: boolean
-      update_latest:
-        description: "Update latest tag?"
-        required: true
-        default: false
-        type: boolean
+      - 'versioning/version.yaml'
 
 jobs:
   version-and-release:
+    # Only run if PR was actually merged (not just closed)
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     concurrency:
       group: version-and-release
@@ -37,56 +33,52 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
+      - name: Check for skip marker
+        id: skip_check
+        run: |
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          if echo "$COMMIT_MESSAGE" | grep -q "\[skip-versioning\]"; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "Skipping workflow due to [skip-versioning] marker"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # -------------------------------------------------------------------
+      # Version bump and file updates
+      # -------------------------------------------------------------------
+
       - name: Set up Git
+        if: steps.skip_check.outputs.skip == 'false'
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
 
+      - name: Set up yq
+        if: steps.skip_check.outputs.skip == 'false'
+        uses: mikefarah/yq@v4.43.1
+
       - name: Get PR information
         id: pr_info
-        if: github.event_name == 'push'
+        if: steps.skip_check.outputs.skip == 'false'
         uses: actions/github-script@v7
         with:
           script: |
             try {
-              // Use GitHub's reliable API to find PRs associated with this commit
-              const { data: associatedPRs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                commit_sha: context.sha
-              });
-
-              if (associatedPRs.length > 0) {
-                // Get the most recent merged PR
-                const pr = associatedPRs.find(pr => pr.state === 'closed' && pr.merged_at) || associatedPRs[0];
-
-                return {
-                  title: pr.title,
-                  body: pr.body || 'No description provided',
-                  number: pr.number,
-                  found: true
-                };
-              } else {
-                // Fallback for direct pushes or when no PR is found
-                const commit = await github.rest.repos.getCommit({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  ref: context.sha
-                });
-
-                return {
-                  title: 'Direct push to main',
-                  body: commit.data.commit.message,
-                  number: null,
-                  found: false
-                };
-              }
+              const pr = context.payload.pull_request;
+              return {
+                title: pr.title,
+                body: pr.body || 'No description provided',
+                number: pr.number,
+                found: true
+              };
             } catch (error) {
               console.log('Could not get PR info:', error.message);
               return {
@@ -97,119 +89,193 @@ jobs:
               };
             }
 
-      - name: Bump version
-        run: |
-          chmod +x ./versioning/bump_version.sh
-          ./versioning/bump_version.sh
-
-      - name: Create tag message
-        id: tag_message
-        env:
-          PR_TITLE: ${{ github.event_name == 'push' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).title || '' }}
-          PR_BODY: ${{ github.event_name == 'push' && steps.pr_info.outcome == 'success' && fromJson(steps.pr_info.outputs.result).body  || '' }}
-        run: |
-          NEW_VERSION=$(cat ./versioning/VERSION)
-
-          if [ "${{ github.event_name }}" == "push" ] && [ "${{ steps.pr_info.outcome }}" == "success" ]; then
-            {
-              printf '# v%s - %s\n\n' "$NEW_VERSION" "$PR_TITLE"
-              printf '%s\n' "$PR_BODY"
-            } > tag_message.txt
-          else
-            # Manual dispatch or PR info unavailable - simpler message
-            cat > tag_message.txt << EOF
-          # v${NEW_VERSION} - Manual tag update
-
-          Tag updated via manual workflow dispatch.
-          EOF
-          fi
-
-          # Store for use in subsequent steps
-          echo "TAG_MESSAGE_FILE=tag_message.txt" >> $GITHUB_ENV
-          echo "PR_TITLE=${PR_TITLE}" >> $GITHUB_ENV
-
-      - name: Push changes and version tag
-        id: push_tag
+      - name: Fetch latest main and rebase
+        if: steps.skip_check.outputs.skip == 'false'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          NEW_VERSION=$(cat ./versioning/VERSION)
-          echo "version=${NEW_VERSION}" >> $GITHUB_OUTPUT
-          git push origin main
-          git push origin "v${NEW_VERSION}"
+          # Rebase early so the version we read is up-to-date,
+          # avoiding duplicate versions when PRs merge in quick succession.
+          git fetch origin main
+          git rebase origin/main
 
-      - name: Build release name
-        id: release_name
-        if: github.event_name == 'push' && steps.push_tag.outcome == 'success'
+      - name: Calculate next version
+        id: next_version
+        if: steps.skip_check.outputs.skip == 'false'
         run: |
-          VERSION="v${{ steps.push_tag.outputs.version }}"
-          if [ -n "$PR_TITLE" ]; then
-            echo "name=${VERSION} - ${PR_TITLE}" >> $GITHUB_OUTPUT
-          else
-            echo "name=${VERSION}" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Create GitHub Release
-        if: github.event_name == 'push' && steps.push_tag.outcome == 'success'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.push_tag.outputs.version }}
-          name: ${{ steps.release_name.outputs.name }}
-          generate_release_notes: true
-
-      - name: Update stable tag
-        if: |
-          success() && (
-            github.event_name == 'workflow_dispatch' && inputs.update_stable ||
-            github.event_name == 'push'
-          )
-        run: |
-          # Verify version bump was successful
-          if [ ! -f "./versioning/VERSION" ]; then
-            echo "Error: VERSION file not found. Version bump may have failed."
+          # Read version AFTER rebase to avoid race conditions
+          CURRENT_VERSION=$(yq eval '.version' ./versioning/version.yaml)
+          if [[ -z "$CURRENT_VERSION" || "$CURRENT_VERSION" == "null" ]]; then
+            echo "Error: Could not read version from versioning/version.yaml"
             exit 1
           fi
 
-          # Capture existing tag SHA for logging
-          if git rev-parse --verify stable >/dev/null 2>&1; then
-            OLD_STABLE=$(git rev-parse stable)
-            echo "Backing up current stable tag ($OLD_STABLE)"
+          # Validate the current version format (CalVer: YYYY.M.seq)
+          if ! [[ "$CURRENT_VERSION" =~ ^[0-9]{4}\.[0-9]{1,2}\.[0-9]+$ ]]; then
+            echo "Error: Invalid version format: $CURRENT_VERSION"
+            exit 1
           fi
 
-          # Update tag with detailed message
-          NEW_VERSION=$(cat ./versioning/VERSION)
-          echo "Updating stable tag to $NEW_VERSION"
-          git tag -fa stable -F "$TAG_MESSAGE_FILE"
+          # Extract components
+          CURRENT_YEAR=$(date +%Y)
+          CURRENT_MONTH=$(date +%-m)  # No leading zero
+          CURRENT_SEQ=$(echo "$CURRENT_VERSION" | awk -F. '{print $3}')
+          VERSION_YEAR=$(echo "$CURRENT_VERSION" | awk -F. '{print $1}')
+          VERSION_MONTH=$(echo "$CURRENT_VERSION" | awk -F. '{print $2}')
+
+          # Increment sequence or reset for a new month
+          if [[ "$CURRENT_YEAR" == "$VERSION_YEAR" \
+             && "$CURRENT_MONTH" == "$VERSION_MONTH" ]]; then
+            NEXT_SEQ=$((CURRENT_SEQ + 1))
+          else
+            NEXT_SEQ=1
+          fi
+
+          NEXT_VERSION="${CURRENT_YEAR}.${CURRENT_MONTH}.${NEXT_SEQ}"
+          echo "version=${NEXT_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Bumping version: $CURRENT_VERSION -> $NEXT_VERSION"
+
+      - name: Update version.yaml file
+        if: steps.skip_check.outputs.skip == 'false'
+        env:
+          NEW_VERSION: ${{ steps.next_version.outputs.version }}
+        run: |
+          yq eval '.version = strenv(NEW_VERSION)' -i ./versioning/version.yaml
+
+      - name: Extract cross-component version information
+        id: versions
+        if: steps.skip_check.outputs.skip == 'false'
+        run: |
+          VERSION=$(yq eval '.version' ./versioning/version.yaml)
+          MIN_BLUEPRINT_VERSION=$(yq eval \
+            '.substitutions.min_blueprint_version' \
+            esphome/nspanel_esphome_version.yaml)
+          MIN_TFT_VERSION=$(yq eval \
+            '.substitutions.min_tft_version' \
+            esphome/nspanel_esphome_version.yaml)
+
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "min_blueprint_version=${MIN_BLUEPRINT_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "min_tft_version=${MIN_TFT_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Update bug report template with current versions
+        if: steps.skip_check.outputs.skip == 'false'
+        env:
+          VERSION: ${{ steps.versions.outputs.version }}
+          MIN_BLUEPRINT_VERSION: ${{ steps.versions.outputs.min_blueprint_version }}
+          MIN_TFT_VERSION: ${{ steps.versions.outputs.min_tft_version }}
+        run: |
+          TEMPLATE=".github/ISSUE_TEMPLATE/bug.yml"
+
+          # Update TFT Version placeholder (index 2)
+          yq eval \
+            '.body[2].attributes.placeholder = ("e.g., " + strenv(MIN_TFT_VERSION))' \
+            -i "$TEMPLATE"
+
+          # Update Firmware Version placeholder (index 3)
+          yq eval \
+            '.body[3].attributes.placeholder = ("e.g., " + strenv(VERSION))' \
+            -i "$TEMPLATE"
+
+          # Update Blueprint Version placeholder (index 4)
+          yq eval \
+            '.body[4].attributes.placeholder = ("e.g., " + strenv(MIN_BLUEPRINT_VERSION))' \
+            -i "$TEMPLATE"
+
+      # -------------------------------------------------------------------
+      # Commit, tag, and release
+      # -------------------------------------------------------------------
+
+      - name: Commit version and template changes
+        if: steps.skip_check.outputs.skip == 'false'
+        env:
+          NEW_VERSION: ${{ steps.next_version.outputs.version }}
+        run: |
+          git add ./versioning/version.yaml .github/ISSUE_TEMPLATE/bug.yml
+          git commit -m "Bump version to ${NEW_VERSION} [skip-versioning]"
+
+      - name: Build tag message from PR
+        if: steps.skip_check.outputs.skip == 'false'
+        env:
+          NEW_VERSION: ${{ steps.next_version.outputs.version }}
+          PR_TITLE: ${{ fromJson(steps.pr_info.outputs.result).title }}
+          PR_BODY: ${{ fromJson(steps.pr_info.outputs.result).body }}
+        run: |
+          {
+            printf '# v%s - %s\n\n' "$NEW_VERSION" "$PR_TITLE"
+            printf '%s\n' "$PR_BODY"
+          } > tag_message.txt
+
+      - name: Push changes to main
+        if: steps.skip_check.outputs.skip == 'false'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Rebase in case main advanced during workflow execution
+          git fetch origin main
+          git rebase origin/main || {
+            echo "Rebase failed - main has diverged"
+            exit 1
+          }
+          git push origin HEAD:main
+
+      - name: Create and push version tag
+        id: push_tag
+        if: steps.skip_check.outputs.skip == 'false'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_VERSION: ${{ steps.next_version.outputs.version }}
+        run: |
+          git tag -a "v${NEW_VERSION}" -F tag_message.txt
+          git push origin "v${NEW_VERSION}"
+          echo "version=${NEW_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        if: >-
+          steps.skip_check.outputs.skip == 'false'
+          && steps.push_tag.outcome == 'success'
+        uses: softprops/action-gh-release@v2
+        env:
+          PR_TITLE: ${{ fromJson(steps.pr_info.outputs.result).title }}
+        with:
+          tag_name: v${{ steps.push_tag.outputs.version }}
+          name: >-
+            v${{ steps.push_tag.outputs.version }} - ${{
+              fromJson(steps.pr_info.outputs.result).title
+            }}
+          generate_release_notes: true
+
+      # -------------------------------------------------------------------
+      # Update floating tags (stable & latest)
+      # -------------------------------------------------------------------
+
+      - name: Update stable tag
+        if: >-
+          steps.skip_check.outputs.skip == 'false'
+          && steps.push_tag.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Log previous stable SHA for auditability
+          if git rev-parse --verify stable >/dev/null 2>&1; then
+            echo "Previous stable: $(git rev-parse stable)"
+          fi
+
+          git tag -fa stable -F tag_message.txt
           git push origin stable --force
 
       - name: Update latest tag
-        if: |
-          success() && (
-            github.event_name == 'workflow_dispatch' && inputs.update_latest ||
-            github.event_name == 'push'
-          )
+        if: >-
+          steps.skip_check.outputs.skip == 'false'
+          && steps.push_tag.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Verify version bump was successful
-          if [ ! -f "./versioning/VERSION" ]; then
-            echo "Error: VERSION file not found. Version bump may have failed."
-            exit 1
-          fi
-
-          # Capture existing tag SHA for logging
+          # Log previous latest SHA for auditability
           if git rev-parse --verify latest >/dev/null 2>&1; then
-            OLD_LATEST=$(git rev-parse latest)
-            echo "Backing up current latest tag ($OLD_LATEST)"
+            echo "Previous latest: $(git rev-parse latest)"
           fi
 
-          # Update tag with detailed message
-          NEW_VERSION=$(cat ./versioning/VERSION)
-          echo "Updating latest tag to $NEW_VERSION"
-          git tag -fa latest -F "$TAG_MESSAGE_FILE"
+          git tag -fa latest -F tag_message.txt
           git push origin latest --force
-
-      - name: Cleanup
-        if: always()
-        run: |
-          # Clean up temporary files
-          [ -f tag_message.txt ] && rm tag_message.txt || true
 ...
