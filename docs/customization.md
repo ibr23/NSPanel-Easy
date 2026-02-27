@@ -372,13 +372,6 @@ You can find more ideas around this on [Blackymas/NSPanel_HA_Blueprint#955](http
 
 ### Enforce time zone
 
-Until v3.4 (including), the time was coming from Home Assistant with it's timezone,
-so the Blueprint was sending the info with no transformation, to the panel.
-From v4.0, the time reference still coming from HA (or optionally from a time server),
-but is calculated in ESPHome, which will try to detect the timezone from the server.
-From v4.3.3 or later, the time still calculated on ESPHome side, however, you can select the timezone on the Blueprint,
-making this customization obsolete.
-
 If your system is not showing the time in the correct timezone,
 it's probably ESPHome not succeeding on finding your time zone.
 You can easily force a timezone by adding this to your ESPHome settings:
@@ -388,6 +381,9 @@ time:
   - id: !extend time_provider
     timezone: "America/Cancun"
 ```
+
+For more information on how to set the timezone in ESPHome,
+please refer to the official documentation for the [ESPHome Time component configuration](https://esphome.io/components/time/#configuration-variables).
 
 ### Compiling ESPHome on lower powered machines
 
