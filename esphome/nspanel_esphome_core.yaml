@@ -178,7 +178,8 @@ script:  # Scripts
             - lambda: return (not system_flags.blueprint_ready) and (not is_blueprint_fully_ready());
           then:
             - lambda: |-
-                ESP_LOGD("${TAG_CORE}", "Blueprint progress: %0.1f%%", blueprint_status_flags.get_completion_percentage());
+                ESP_LOGD("${TAG_CORE}", "Receiving settings from Blueprint: %0.1f%%",
+                                        blueprint_status_flags.get_completion_percentage());
                 ESP_LOGV("${TAG_CORE}", "  Page home: %s", YESNO(blueprint_status_flags.page_home));
                 ESP_LOGV("${TAG_CORE}", "  Page qrcode: %s", YESNO(blueprint_status_flags.page_qrcode));
                 ESP_LOGV("${TAG_CORE}", "  Page utilities: %s", YESNO(blueprint_status_flags.page_utilities));
@@ -193,7 +194,8 @@ script:  # Scripts
                 }
             - delay: 1s
       - lambda: |-
-          ESP_LOGI("${TAG_CORE}", "Blueprint progress: %0.1f%%", blueprint_status_flags.get_completion_percentage());
+          ESP_LOGI("${TAG_CORE}", "Receiving settings from Blueprint: %0.1f%%",
+                                  blueprint_status_flags.get_completion_percentage());
           boot_log->execute("Boot", "Blueprint is ready");
           refresh_wifi_icon->execute();
 ...
