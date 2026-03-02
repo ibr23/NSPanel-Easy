@@ -14,7 +14,7 @@ substitutions:
   BAUD_RATE: '115200'
   BOOT_STEP_HW_DISPLAY: '5'
   bytes_per_char: "1"
-  button_back_font: 8
+  button_back_font: "8"
   COLOR_BLUE_INDIGO: '10597'
   COLOR_CYAN_BRIGHT: '7519'
   COLOR_GRAY_MOSS: '33808'
@@ -89,7 +89,7 @@ globals:
   - id: button_back_font
     type: uint8_t
     restore_value: true
-    initial_value: '${button_back_font}'
+    initial_value: ${button_back_font}
 
   - id: mui_bytes_per_char
     type: uint8_t
