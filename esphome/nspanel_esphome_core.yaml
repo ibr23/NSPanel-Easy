@@ -178,20 +178,37 @@ script:  # Scripts
             - lambda: return (not system_flags.blueprint_ready) and (not is_blueprint_fully_ready());
           then:
             - lambda: |-
-                ESP_LOGD("${TAG_CORE}", "Receiving settings from Blueprint: %0.1f%%",
-                                        blueprint_status_flags.get_completion_percentage());
-                ESP_LOGV("${TAG_CORE}", "  Page home: %s", YESNO(blueprint_status_flags.page_home));
-                ESP_LOGV("${TAG_CORE}", "  Page qrcode: %s", YESNO(blueprint_status_flags.page_qrcode));
-                ESP_LOGV("${TAG_CORE}", "  Page utilities: %s", YESNO(blueprint_status_flags.page_utilities));
-                ESP_LOGV("${TAG_CORE}", "  Relay settings: %s", YESNO(blueprint_status_flags.relay_settings));
-                ESP_LOGV("${TAG_CORE}", "  Version: %s", YESNO(blueprint_status_flags.version));
-                ESP_LOGV("${TAG_CORE}", "  HW Buttons settings: %s", YESNO(blueprint_status_flags.hw_buttons_settings));
-                static uint8_t counter = 0;
-                counter++;
-                if (counter >= 10) {
-                  counter = 0;
+                // Single counter for all periodic actions
+                static uint8_t counter = 1;  // Start at 1 to skip actions on first run
+
+                // Log at DEBUG on progress change or every 5s as heartbeat
+                #if ESPHOME_LOG_LEVEL >= ESPHOME_LOG_LEVEL_VERBOSE
+                const bool is_verbose_log = true;
+                #else
+                const bool is_verbose_log = false;
+                #endif
+
+                static uint8_t last_flags_count = 0;
+                const uint8_t current_flags_count = blueprint_status_flags.count_active_flags_set();
+                if (is_verbose_log || current_flags_count != last_flags_count || counter % 5 == 0) {
+                  last_flags_count = current_flags_count;
+                  ESP_LOGD("${TAG_CORE}", "Blueprint progress: %0.1f%%",
+                                            blueprint_status_flags.get_completion_percentage());
+                  ESP_LOGV("${TAG_CORE}", "  Page home: %s", YESNO(blueprint_status_flags.page_home));
+                  ESP_LOGV("${TAG_CORE}", "  Page qrcode: %s", YESNO(blueprint_status_flags.page_qrcode));
+                  ESP_LOGV("${TAG_CORE}", "  Page utilities: %s", YESNO(blueprint_status_flags.page_utilities));
+                  ESP_LOGV("${TAG_CORE}", "  Relay settings: %s", YESNO(blueprint_status_flags.relay_settings));
+                  ESP_LOGV("${TAG_CORE}", "  Version: %s", YESNO(blueprint_status_flags.version));
+                  ESP_LOGV("${TAG_CORE}", "  HW Buttons settings: %s",
+                                              YESNO(blueprint_status_flags.hw_buttons_settings));
+                }
+
+                // Re-request blueprint settings on timeout (every 30s)
+                if (counter % 30 == 0) {
                   boot_request_blueprint_settings->execute("timeout");
                 }
+
+                counter++;
             - delay: 1s
       - lambda: |-
           ESP_LOGI("${TAG_CORE}", "Receiving settings from Blueprint: %0.1f%%",

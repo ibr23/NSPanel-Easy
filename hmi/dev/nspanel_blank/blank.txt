@@ -71,7 +71,7 @@ Variable (string) version
     Attributes
         ID            : 14
         Scope         : local
-        Text          : 2026.2.0
+        Text          : 3
         Max. Text Size: 8
     
 Text nspanel_easy
