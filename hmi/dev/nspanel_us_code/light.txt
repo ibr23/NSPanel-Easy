@@ -684,15 +684,17 @@ Slider tempslider
         Back. Picture ID       : 21
         Slided Back. Picture ID: 21
         Position               : 0
-        Upper range limit      : 500
-        Lower range limit      : 153
+        Upper range limit      : 6535
+        Lower range limit      : 2000
     
     Events
         Touch Release Event
             covx tempslider.val,va1.txt,0,0
             temp_value.txt=va1.txt
+            temp_value.txt+="K"
             temp_value_2.txt=va1.txt
-            lightsetting.txt="light,color_temp,"+va1.txt
+            temp_value_2.txt+="K"
+            lightsetting.txt="light,color_temp_kelvin,"+va1.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -703,7 +705,9 @@ Slider tempslider
         Touch Move Event
             covx tempslider.val,va1.txt,0,0
             temp_value.txt=va1.txt
+            temp_value.txt+="K"
             temp_value_2.txt=va1.txt
+            temp_value_2.txt+="K"
         
 Button button_back
     Attributes
