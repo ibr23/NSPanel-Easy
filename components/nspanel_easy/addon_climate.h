@@ -51,6 +51,19 @@ namespace nspanel_easy {
         CLIMATE_MODE_AUTO = 6        ///< Climate device is set to automatic mode
     };
 
+    /**
+    * @enum ClimateChipVisibility
+    * @brief Controls when the climate chip is shown on the home screen.
+    *
+    * Sent by the blueprint on boot via `action_component_val` with `page: "mem"`
+    * and stored in the `climate_chip_visibility` global.
+    */
+    enum ClimateChipVisibility : uint8_t {
+        CLIMATE_CHIP_ACTIVE_ONLY = 0,  ///< Show chip only when actively heating/cooling/drying/fan
+        CLIMATE_CHIP_ALWAYS      = 1,  ///< Always show chip when a climate entity is configured
+        CLIMATE_CHIP_NEVER       = 2   ///< Never show the chip, regardless of climate state
+    };
+
     // =============================================================================
     // Climate Icon Lookup Tables
     // =============================================================================

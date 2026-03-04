@@ -735,12 +735,25 @@ blueprint:
               multiple: *selector_entity_single_multiple
               filter:
                 domain: climate
-        climate_chip_always_visible:
-          name: Main Climate - Always Show Chip
-          description: "Keep the climate chip visible on the interface, even when the climate entity is idle or turned off."
-          default: false
+        climate_chip_visibility:
+          name: Main Climate - Chip Visibility
+          description: >-
+            Controls when the climate chip is shown on the home screen.
+            "Active only" shows the chip only when the climate is actively
+            heating, cooling, drying, or running the fan.
+            "Always" keeps the chip visible whenever a climate entity is
+            configured, even when idle or off.
+            "Never" hides the chip entirely, regardless of the climate state.
+          default: active_only
           selector:
-            boolean:
+            select:
+              options:
+                - label: "Active only"
+                  value: active_only
+                - label: "Always"
+                  value: always
+                - label: "Never"
+                  value: never
     climate_page_settings:
       name: Climate page (optional)
       icon: mdi:thermostat-cog
@@ -8730,6 +8743,19 @@ action:
 
                       - alias: Home page
                         sequence:
+                          - alias: climate_chip_visibility
+                            sequence:
+                              - variables:
+                                  climate_chip_visibility: !input climate_chip_visibility
+                              - *delay_boot
+                              - action: 'esphome.{{ device_name }}_component_val'
+                                data:
+                                  page: mem
+                                  component: climate_chip_visibility
+                                  val: >-
+                                    {%- if climate_chip_visibility == 'always' %}1
+                                    {%- elif climate_chip_visibility == 'never' %}2
+                                    {%- else %}0{%- endif %}
                           - *delay_boot
                           - alias: chip_font
                             action: 'esphome.{{ nspanel_name }}_component_val'
@@ -9763,12 +9789,13 @@ action:
                               - condition: '{{ entity_id_valid }}'
                               - variables:
                                   hvac_action: '{{ state_attr(entity_id, "hvac_action") }}'
-                                  climate_chip_always_visible: !input climate_chip_always_visible
-                                  climate_chip_visible: >
+                                  climate_chip_visibility: !input climate_chip_visibility
+                                  climate_chip_visible: >-
                                     {{
                                       entity_has_value and
+                                      climate_chip_visibility != 'never' and
                                       (
-                                        climate_chip_always_visible or
+                                        climate_chip_visibility == 'always' or
                                         entity_state in ["heating", "cooling", "drying", "fan_only"] or
                                         (
                                           entity_state not in ["idle", "off"] and
