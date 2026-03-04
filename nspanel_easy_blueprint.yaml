@@ -10214,16 +10214,15 @@ action:
                                   id: tempslider
                                   val: '{{ curr_color_temp }}'
                                 continue_on_error: true
-                              # That is right, the Kelvin scale is inverted
                               - *delay_default
                               - action: 'esphome.{{ nspanel_name }}_command'
                                 data:
-                                  cmd: tempslider.maxval={{ min_color_temp_kelvin }}
+                                  cmd: tempslider.minval={{ min_color_temp_kelvin }}
                                 continue_on_error: true
                               - *delay_default
                               - action: 'esphome.{{ nspanel_name }}_command'
                                 data:
-                                  cmd: tempslider.minval={{ max_color_temp_kelvin }}
+                                  cmd: tempslider.maxval={{ max_color_temp_kelvin }}
                                 continue_on_error: true
                               - *delay_default
                               - action: 'esphome.{{ nspanel_name }}_component_color'

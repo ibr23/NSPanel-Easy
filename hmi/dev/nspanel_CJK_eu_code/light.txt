@@ -268,9 +268,9 @@ Text temp_value_2
         Dragging            : 0
         Send Component ID   : on press and release
         Opacity             : 127
-        x coordinate        : 331
+        x coordinate        : 326
         y coordinate        : 151
-        Width               : 50
+        Width               : 55
         Height              : 20
         Effect              : load
         Effect Priority     : 0
@@ -684,8 +684,8 @@ Slider tempslider
         Back. Picture ID       : 21
         Slided Back. Picture ID: 21
         Position               : 0
-        Upper range limit      : 2000
-        Lower range limit      : 6535
+        Upper range limit      : 6535
+        Lower range limit      : 2000
     
     Events
         Touch Release Event
