@@ -7,7 +7,7 @@
 #####################################################################################################
 ---
 substitutions:
-  PAGE_WATER_HEATER_ID: 7
+  PAGE_WATER_HEATER_ID: 30
   TAG_PAGE_WATER_HEATER: nspanel.page.water_heater
 
 esphome:
