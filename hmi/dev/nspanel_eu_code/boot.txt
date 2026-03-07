@@ -60,7 +60,7 @@ Variable (string) version
     Attributes
         ID            : 6
         Scope         : global
-        Text          : 7
+        Text          : 8
         Max. Text Size: 7
     
 Variable (int32) log_len
@@ -446,7 +446,7 @@ Progress Bar progress
         Opacity              : 127
         x coordinate         : 0
         y coordinate         : 304
-        Width                : 450
+        Width                : 480
         Height               : 15
         Effect               : load
         Effect Priority      : 0
