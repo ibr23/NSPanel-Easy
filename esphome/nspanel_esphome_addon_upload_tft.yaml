@@ -267,7 +267,7 @@ script:
       - lambda: |-
           // Release BT memory back to the heap — not done by disable().
           // Required to reclaim RAM for the TFT upload.
-          #ifdef USE_ESP32_BLE
+          #ifdef USE_BLUETOOTH_PROXY
           App.feed_wdt();
           ESP_LOGD("${TAG_UPLOAD_TFT}", "Releasing Bluetooth memory (BTDM)");
           esp_err_t err = esp_bt_controller_mem_release(ESP_BT_MODE_BTDM);
@@ -276,6 +276,8 @@ script:
           } else {
             ESP_LOGW("${TAG_UPLOAD_TFT}", "Bluetooth memory release failed: %s", esp_err_to_name(err));
           }
+          #endif  // USE_BLUETOOTH_PROXY
+          #ifdef USE_ESP32_BLE
           ESP_LOGI("${TAG_UPLOAD_TFT}", "Free heap after: %u bytes, largest block: %u bytes",
                                         esp_get_free_heap_size(), heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
           #endif  // USE_ESP32_BLE
