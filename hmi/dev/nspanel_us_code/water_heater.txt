@@ -25,7 +25,6 @@ Page water_heater
                 page home_page_id
             }
             vis target_icon,0
-            vis current_temp,0
             vis slider,0
             vis decrease_temp,0
             vis increase_temp,0
