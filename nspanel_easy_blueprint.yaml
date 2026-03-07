@@ -10278,7 +10278,7 @@ action:
                               entity_id: >
                                 {{
                                   nspanel_event.entity
-                                  if nspanel_event is defined and nspanel_event.entity is defined
+                                  if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
                                   else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
                                 }}
                           - &variables_light_modes
@@ -10430,7 +10430,7 @@ action:
                               cover_entity: >
                                 {{
                                   nspanel_event.entity
-                                  if nspanel_event is defined and nspanel_event.entity is defined
+                                  if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
                                   else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
                                 }}
                               entity_device_class: '{{ state_attr(cover_entity, "device_class") | default("") }}'
@@ -10562,7 +10562,7 @@ action:
                               fan_entity: >
                                 {{
                                   nspanel_event.entity
-                                  if nspanel_event is defined and nspanel_event.entity is defined
+                                  if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
                                   else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
                                 }}
                               fan:
@@ -10653,7 +10653,7 @@ action:
                               media_player_entity: >
                                 {{
                                   nspanel_event.entity
-                                  if nspanel_event is defined and nspanel_event.entity is defined
+                                  if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
                                   else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
                                 }}
                               wait_completed: false
@@ -10751,7 +10751,7 @@ action:
                               alarm_entity_temp: >
                                 {{
                                   nspanel_event.entity
-                                  if nspanel_event is defined and nspanel_event.entity is defined
+                                  if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
                                   else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
                                 }}
                               alarm_entity: >
@@ -10796,7 +10796,7 @@ action:
                               climate_entity_temp: >
                                 {{
                                   nspanel_event.entity
-                                  if nspanel_event is defined and nspanel_event.entity is defined
+                                  if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
                                   else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
                                 }}
                               climate_entity: >
@@ -11071,7 +11071,7 @@ action:
                               water_heater_entity_temp: >
                                 {{
                                   nspanel_event.entity
-                                  if nspanel_event is defined and nspanel_event.entity is defined
+                                  if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
                                   else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
                                 }}
                               water_heater_entity: >
@@ -11297,7 +11297,7 @@ action:
                               - action: 'esphome.{{ nspanel_name }}_components_visibility'
                                 data:
                                   page: water_heater
-                                  ids: '{{ ["slider", "target_icon", "decrease", "increase"] }}'
+                                  ids: '{{ ["slider", "target_icon", "decrease_temp", "increase_temp"] }}'
                                   visible: '{{ is_target_temperature }}'
                                 continue_on_error: true
                               - if: '{{ is_target_temperature }}'
