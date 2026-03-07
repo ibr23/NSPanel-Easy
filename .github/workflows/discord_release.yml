@@ -9,6 +9,7 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
+    permissions: {}
 
     steps:
       - name: Send release message to Discord
