@@ -10935,7 +10935,7 @@ action:
                                   max_temp: '{{ (max_temp_raw / temp_step) | round * temp_step }}'
                                   total_steps: >
                                     {{
-                                      (((max_temp_raw - temp_offset) / temp_step) | round(0) | int)
+                                      (((max_temp_raw - temp_offset) / temp_step) | int)
                                       if max_temp_raw >= temp_offset and temp_step > 0 else 0
                                     }}
                                   climate_state: '{{ states(climate_entity) | default("unavailable") if climate_entity is string else "unavailable" }}'
@@ -11215,7 +11215,7 @@ action:
                                   max_temp: '{{ (max_temp_raw / temp_step) | round * temp_step }}'
                                   total_steps: >
                                     {{
-                                      (((max_temp_raw - temp_offset) / temp_step) | round(0) | int)
+                                      (((max_temp_raw - temp_offset) / temp_step) | int)
                                       if max_temp_raw >= temp_offset and temp_step > 0 else 0
                                     }}
                                   water_heater_state: '{{ states(water_heater_entity) | default("unavailable") if water_heater_entity is string else "unavailable" }}'
