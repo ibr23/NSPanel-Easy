@@ -17,8 +17,6 @@ namespace nspanel_easy {
     std::string set_climate_climate_icon;
     bool set_climate_embedded_climate;
 
-    const char *temperature_unit = "°C";  // default
-
 }  // namespace nspanel_easy
 
 #endif  // NSPANEL_EASY_PAGE_CLIMATE

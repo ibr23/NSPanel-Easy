@@ -52,7 +52,8 @@ namespace nspanel_easy {
         "confirm",
         "utilities",
         "home_smpl",
-        "debug"
+        "debug",
+        "water_heater"
     };
 
     constexpr size_t PAGE_COUNT = sizeof(page_names) / sizeof(page_names[0]);

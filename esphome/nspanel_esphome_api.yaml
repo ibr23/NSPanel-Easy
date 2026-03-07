@@ -14,6 +14,7 @@ substitutions:
   BOOT_STEP_API: 30
   TAG_API: nspanel.api
   EVENT_NAME: esphome.nspanel_easy
+  mui_unavailable: Unavailable
 
 api:
   id: api_server
@@ -253,6 +254,13 @@ esphome:
     build_flags:
       - -D NSPANEL_EASY_API
 
+globals:
+  - id: mui_unavailable
+    type: std::string
+    restore_value: true
+    initial_value: '"${mui_unavailable}"'
+    max_restore_data_length: 25
+
 script:
   - id: action_component_color
     mode: single
@@ -301,6 +309,9 @@ script:
             }
             disp1->send_command_printf("%s.%s.txt=\"%s\"", page.c_str(), component.c_str(), escaped.c_str());
             return;
+          }
+          if (component == "mui_unavailable") {
+            id(mui_unavailable) = txt;
           }
 
   - id: action_component_val

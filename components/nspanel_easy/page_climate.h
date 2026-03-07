@@ -20,8 +20,6 @@ namespace nspanel_easy {
     extern std::string set_climate_climate_icon;
     extern bool set_climate_embedded_climate;
 
-    extern const char *temperature_unit;
-
 }  // namespace nspanel_easy
 
 #endif  // NSPANEL_EASY_PAGE_CLIMATE

@@ -478,7 +478,7 @@ Text button01
     
     Events
         Touch Release Event
-            lastclick.txt="water_heater,hvac_mode,auto"
+            lastclick.txt="water_heater,operation_mode,on"
             printh 92
             prints "localevent",0
             printh 00
@@ -515,7 +515,7 @@ Text button02
     
     Events
         Touch Release Event
-            lastclick.txt="water_heater,hvac_mode,heat_cool"
+            lastclick.txt="water_heater,operation_mode,eco"
             printh 92
             prints "localevent",0
             printh 00
@@ -552,7 +552,7 @@ Text button03
     
     Events
         Touch Release Event
-            lastclick.txt="water_heater,hvac_mode,heat"
+            lastclick.txt="water_heater,operation_mode,electric"
             printh 92
             prints "localevent",0
             printh 00
@@ -589,7 +589,7 @@ Text button04
     
     Events
         Touch Release Event
-            lastclick.txt="water_heater,hvac_mode,cool"
+            lastclick.txt="water_heater,operation_mode,gas"
             printh 92
             prints "localevent",0
             printh 00
@@ -626,7 +626,7 @@ Text button05
     
     Events
         Touch Release Event
-            lastclick.txt="water_heater,hvac_mode,dry"
+            lastclick.txt="water_heater,operation_mode,heat_pump"
             printh 92
             prints "localevent",0
             printh 00
@@ -663,7 +663,7 @@ Text button06
     
     Events
         Touch Release Event
-            lastclick.txt="water_heater,hvac_mode,fan_only"
+            lastclick.txt="water_heater,operation_mode,performance"
             printh 92
             prints "localevent",0
             printh 00
@@ -700,7 +700,7 @@ Text button07
     
     Events
         Touch Release Event
-            lastclick.txt="water_heater,hvac_mode,off"
+            lastclick.txt="water_heater,operation_mode,high_demand"
             printh 92
             prints "localevent",0
             printh 00
@@ -736,22 +736,14 @@ Text button08
         Vertical Spacing        : 0
     
     Events
-        Touch Press Event
-            click_comp.txt="button08"
-            click_timer.en=1
-        
         Touch Release Event
-            if(click_timer.en==1)
-            {
-                click_timer.en=0
-                lastclick.txt="climate,short_click,"+click_comp.txt
-                printh 92
-                prints "localevent",0
-                printh 00
-                prints lastclick.txt,0
-                printh 00
-                printh FF FF FF
-            }
+            lastclick.txt="water_heater,operation_mode,off"
+            printh 92
+            prints "localevent",0
+            printh 00
+            prints lastclick.txt,0
+            printh 00
+            printh FF FF FF
         
 Text target
     Attributes

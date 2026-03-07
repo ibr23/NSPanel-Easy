@@ -1,0 +1,196 @@
+#####################################################################################################
+#####                 NSPanel Easy - https://github.com/edwardtfn/NSPanel-Easy                  #####
+#####################################################################################################
+##### ESPHOME - Page water heater                                                               #####
+##### PLEASE only make changes if it is necessary and also the required knowledge is available. #####
+##### For normal use with the Blueprint, no changes are necessary.                              #####
+#####################################################################################################
+---
+substitutions:
+  PAGE_WATER_HEATER_ID: 7
+  TAG_PAGE_WATER_HEATER: nspanel.page.water_heater
+  mui_unavailable: Unavailable
+
+api:
+  actions:
+    # Dynamically updates the water_heater page with the latest water_heater control settings and status.
+    - action: page_water_heater
+      variables:
+        entity: string           # "water_heater.dhw1"
+        current_temp: float      # current tank temperature
+        target_temp: float       # target setpoint
+        temp_step: int           # target_temp_step × 10
+        total_steps: int         # (max_temp - min_temp) × 10
+        temp_offset: int         # calibration offset × 10
+        supported_features: int  # HA supported_features bitmask
+        wh_icon: string          # icon codepoint for current state
+        operation_mode: int      # current mode (single bit set)
+        operations: int          # bitmask of supported operations
+      then:
+        - lambda: |-
+            ESP_LOGV("${TAG_PAGE_WATER_HEATER}", "Action: page_water_heater");
+
+            if (!is_device_ready_for_tasks()) {
+              ESP_LOGW("${TAG_PAGE_WATER_HEATER}", "'page_water_heater' was called while the device is not ready for tasks");
+              return;
+            }
+
+            if (current_page_id != ${PAGE_WATER_HEATER_ID}) {
+              ESP_LOGW("${TAG_PAGE_WATER_HEATER}", "'water_heater' isn't the current page.");
+              return;
+            }
+
+            ESP_LOGV("${TAG_PAGE_WATER_HEATER}", "  entity: %s", entity.c_str());
+            ESP_LOGV("${TAG_PAGE_WATER_HEATER}", "  current_temp: %f", current_temp);
+            ESP_LOGV("${TAG_PAGE_WATER_HEATER}", "  target_temp: %f", target_temp);
+            ESP_LOGV("${TAG_PAGE_WATER_HEATER}", "  temp_step: %i", temp_step);
+            ESP_LOGV("${TAG_PAGE_WATER_HEATER}", "  total_steps: %i", total_steps);
+            ESP_LOGV("${TAG_PAGE_WATER_HEATER}", "  temp_offset: %i", temp_offset);
+            ESP_LOGV("${TAG_PAGE_WATER_HEATER}", "  supported_features: %i", supported_features);
+            ESP_LOGV("${TAG_PAGE_WATER_HEATER}", "  wh_icon: %s", wh_icon.c_str());
+            ESP_LOGV("${TAG_PAGE_WATER_HEATER}", "  operation_mode: %i", operation_mode);
+            ESP_LOGV("${TAG_PAGE_WATER_HEATER}", "  operations: %i", operations);
+
+            if (temp_step <= 0) {
+              ESP_LOGW("${TAG_PAGE_WATER_HEATER}", "Invalid temp_step (<= 0); skipping water_heater render");
+              return;
+            }
+
+            // Set detailed entity sensor
+            detailed_entity->publish_state(entity.c_str());
+
+            disp1->send_command_printf("slider.maxval=%i", total_steps);
+            disp1->set_component_value("temp_offset", temp_offset);
+            disp1->set_component_value("temp_step", temp_step);
+            disp1->set_component_text("temp_unit", id(temperature_unit).c_str());
+            const std::string& sep = id(mui_decimal_separator);
+            const char dec_sep = sep.empty() ? '.' : sep[0];
+            const char dec_separator_str[2] = {dec_sep, '\0'};
+            disp1->set_component_text("dec_separator", dec_separator_str);
+            disp1->show_component("current_temp");
+            char buffer[15];
+            const bool useDecimal = (temp_step % 10 != 0);
+            feed_wdt_delay(${DELAY_SHORT});
+            if (current_page_id != ${PAGE_WATER_HEATER_ID}) return;
+
+            const bool current_temp_enabled = current_temp > -999;
+            if (current_temp_enabled) {
+              ESP_LOGV("${TAG_PAGE_WATER_HEATER}", "Show current temperature");
+              snprintf(buffer, sizeof(buffer), (useDecimal) ? "%.1f${temp_units}" : "%.0f${temp_units}", current_temp);
+              disp1->set_component_text("current_temp", adjustDecimalSeparator(buffer, dec_sep).c_str());
+            } else {
+              ESP_LOGV("${TAG_PAGE_WATER_HEATER}", "Show current temperature 'unavailable'");
+              disp1->set_component_text("current_temp", id(mui_unavailable).c_str());
+            }
+            feed_wdt_delay(${DELAY_SHORT});
+            if (current_page_id != ${PAGE_WATER_HEATER_ID}) return;
+
+            const bool target_temp_enabled = target_temp > -999;
+            if (target_temp_enabled) {
+              snprintf(buffer, sizeof(buffer), (useDecimal) ? "%.1f${temp_units}" : "%.0f${temp_units}", target_temp);
+              disp1->set_component_text("target", adjustDecimalSeparator(buffer, dec_sep).c_str());
+
+              disp1->set_component_value("slider", round(((10*target_temp) - temp_offset) / temp_step));
+
+              disp1->set_component_text("target_icon", wh_icon.c_str());
+            }
+
+            // Conditionally hide target temperature components
+            disp1->set_component_visibility("slider", target_temp_enabled);
+            disp1->set_component_visibility("target_icon", target_temp_enabled);
+            disp1->set_component_visibility("decrease_temp", target_temp_enabled);
+            disp1->set_component_visibility("increase_temp", target_temp_enabled);
+            feed_wdt_delay(${DELAY_SHORT});
+            if (current_page_id != ${PAGE_WATER_HEATER_ID}) return;
+
+            // =================================================================
+            // Operation mode buttons
+            // =================================================================
+            // Active color per operation, indexed by bit position (0–7).
+            // Bit: 0=off, 1=on, 2=eco, 3=electric, 4=gas,
+            //      5=heat_pump, 6=performance, 7=high_demand
+            static constexpr uint16_t wh_active_colors[] = {
+                Colors::GRAY,           // bit 0: off
+                Colors::ORANGE,         // bit 1: on
+                Colors::GREEN,          // bit 2: eco
+                Colors::YELLOW_GOLDEN,  // bit 3: electric
+                Colors::DEEP_ORANGE,    // bit 4: gas
+                Colors::BLUE,           // bit 5: heat_pump
+                Colors::RED,            // bit 6: performance
+                Colors::RED,            // bit 7: high_demand
+            };
+
+            // Button slot → bit position mapping.
+            // button01–button07 map to bits 1–7, button08 maps to bit 0 (off).
+            static constexpr uint8_t wh_button_bits[] = {1, 2, 3, 4, 5, 6, 7, 0};
+
+            for (uint8_t i = 0; i < 8; i++) {
+              const uint8_t bit = wh_button_bits[i];
+              const bool supported = (operations >> bit) & 1;
+              const bool active = (operation_mode >> bit) & 1;
+
+              char btn_id[10];
+              snprintf(btn_id, sizeof(btn_id), "button%02u", i + 1);
+
+              disp1->set_component_visibility(btn_id, supported);
+              if (supported) {
+                disp1->set_component_font_color(btn_id,
+                    static_cast<uint16_t>(active ? wh_active_colors[bit] : Colors::GRAY_LIGHT));
+              }  // endif supported
+
+              feed_wdt_delay(${DELAY_SHORT});
+              if (current_page_id != ${PAGE_WATER_HEATER_ID}) return;
+            }  // endfor buttons
+
+esphome:
+  platformio_options:
+    build_flags:
+      - -D NSPANEL_EASY_PAGE_WATER_HEATER
+
+script:
+  - id: !extend event_from_display  # Defined by hw_display
+    then:
+      - lambda: |-
+          if (params[0] != "water_heater") return;
+
+          // CSV Format: water_heater,key,<value>,...
+          // params[0]=page, params[1]=key, params[2]=value,...
+
+          if (params_count != 3) {
+            ESP_LOGW("${TAG_PAGE_WATER_HEATER}", "Bad params");
+            return;
+          }
+
+          const std::string& key = params[1];
+          const std::string& value = params[2];
+          if (key == "operation_mode") {
+            fire_ha_event("action_call", {
+              {"action", "water_heater.set_operation_mode"},
+              {"key", "operation_mode"},
+              {"value", value.c_str()},
+              {"entity", detailed_entity->state.c_str()}
+            });
+            return;
+          }
+          if (key == "temperature") {
+            fire_ha_event("action_call", {
+              {"action", "water_heater.set_temperature"},
+              {"key", key.c_str()},
+              {"value", to_string(atof(value.c_str()) / 10)},
+              {"entity", detailed_entity->state.c_str()}
+            });
+            return;
+          }
+
+  - id: !extend page_change
+    then:
+      - lambda: if (new_page_id == ${PAGE_WATER_HEATER_ID}) page_water_heater->execute();
+
+  - id: page_water_heater
+    mode: single
+    then:  # There's nothing here so far
+
+  - id: !extend stop_page_constructors
+    then:
+      - lambda: page_water_heater->stop();
+...

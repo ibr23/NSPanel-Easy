@@ -31,6 +31,11 @@ globals:
     restore_value: true
     initial_value: 'true'
 
+  - id: temperature_unit
+    type: std::string
+    restore_value: true
+    initial_value: '"${temp_units}"'
+
 number:
   - id: temperature_correction  # Temperature correction
     name: Temperature Correction
@@ -53,13 +58,20 @@ number:
         - lambda: temp_nspanel->publish_state(temp_nspanel->raw_state);
 
 script:
+  - id: !extend action_component_text
+    then:
+      - lambda: |-
+          if (page != "mem") return;
+          if (component == "temp_unit") {
+            id(temperature_unit) = (txt == "°F") ? "°F" : "°C";
+          }
+
   - id: !extend action_component_val
     then:
       - lambda: |-
-          if (page == "mem") {
-            if (component == "embedded_indoor_temperature") {
-              id(embedded_indoor_temp) = (val>0);
-            }
+          if (page != "mem") return;
+          if (component == "embedded_indoor_temperature") {
+            id(embedded_indoor_temp) = (val>0);
           }
 
   - id: display_embedded_temp  # Show panel's temperature if selected, or API or Wi-Fi are out

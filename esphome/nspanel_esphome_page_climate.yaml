@@ -10,7 +10,6 @@ substitutions:
   BOOT_STEP_PAGE_CLIMATE: 12
   PAGE_CLIMATE_ID: 7
   TAG_PAGE_CLIMATE: nspanel.page.climate
-  mui_unavailable: Unavailable
 
 api:
   actions:
@@ -30,18 +29,18 @@ api:
         entity: string           # Entity ID of the climate device, allowing for direct control and status updates.
       then:
         - lambda: |-
-            ESP_LOGV("${TAG_API}", "Action: page_climate");
-            ESP_LOGV("${TAG_API}", "  current_temp: %f", current_temp);
-            ESP_LOGV("${TAG_API}", "  supported_features: %i", supported_features);
-            ESP_LOGV("${TAG_API}", "  target_temp: %f", target_temp);
-            ESP_LOGV("${TAG_API}", "  target_temp_high: %f", target_temp_high);
-            ESP_LOGV("${TAG_API}", "  target_temp_low: %f", target_temp_low);
-            ESP_LOGV("${TAG_API}", "  temp_step: %i", temp_step);
-            ESP_LOGV("${TAG_API}", "  total_steps: %i", total_steps);
-            ESP_LOGV("${TAG_API}", "  temp_offset: %i", temp_offset);
-            ESP_LOGV("${TAG_API}", "  climate_icon: %s", climate_icon.c_str());
-            ESP_LOGV("${TAG_API}", "  embedded_climate: %s", YESNO(embedded_climate));
-            ESP_LOGV("${TAG_API}", "  entity: %s", entity.c_str());
+            ESP_LOGV("${TAG_PAGE_CLIMATE}", "Action: page_climate");
+            ESP_LOGV("${TAG_PAGE_CLIMATE}", "  current_temp: %f", current_temp);
+            ESP_LOGV("${TAG_PAGE_CLIMATE}", "  supported_features: %i", supported_features);
+            ESP_LOGV("${TAG_PAGE_CLIMATE}", "  target_temp: %f", target_temp);
+            ESP_LOGV("${TAG_PAGE_CLIMATE}", "  target_temp_high: %f", target_temp_high);
+            ESP_LOGV("${TAG_PAGE_CLIMATE}", "  target_temp_low: %f", target_temp_low);
+            ESP_LOGV("${TAG_PAGE_CLIMATE}", "  temp_step: %i", temp_step);
+            ESP_LOGV("${TAG_PAGE_CLIMATE}", "  total_steps: %i", total_steps);
+            ESP_LOGV("${TAG_PAGE_CLIMATE}", "  temp_offset: %i", temp_offset);
+            ESP_LOGV("${TAG_PAGE_CLIMATE}", "  climate_icon: %s", climate_icon.c_str());
+            ESP_LOGV("${TAG_PAGE_CLIMATE}", "  embedded_climate: %s", YESNO(embedded_climate));
+            ESP_LOGV("${TAG_PAGE_CLIMATE}", "  entity: %s", entity.c_str());
 
             // Set detailed entity sensor
             if (current_page_id == ${PAGE_CLIMATE_ID})
@@ -87,36 +86,14 @@ globals:
     restore_value: true
     initial_value: 'false'
 
-  - id: mui_unavailable
-    type: std::string
-    restore_value: true
-    initial_value: '"${mui_unavailable}"'
-    max_restore_data_length: 25
-
 script:
-  - id: !extend action_component_text
-    then:
-      - lambda: |-
-          if (page == "mem") {
-            if (component == "mui_unavailable") {
-              id(mui_unavailable) = txt;
-            } else if (component == "temp_unit") {
-              temperature_unit = (txt == "°F") ? "°F" : "°C";
-            }
-          }
-
   - id: !extend action_component_val
     then:
       - lambda: |-
-          if (page == "mem") {
-            if (component == "embedded_climate") {
-              id(is_embedded_thermostat) = val;
-            }
+          if (page != "mem") return;
+          if (component == "embedded_climate") {
+            id(is_embedded_thermostat) = val;
           }
-
-  - id: !extend boot_preparation
-    then:
-      - lambda: temperature_unit = "${temp_units}";
 
   - id: change_climate_state
     mode: restart
@@ -126,22 +103,25 @@ script:
       value: string
     then:
       - lambda: |-
-          if (!embedded and is_device_ready_for_tasks()) {
-            if (key == "temperature" or key == "target_temp_high" or key == "target_temp_low") {
-              fire_ha_event("action_call", {
-                {"action", "climate.set_temperature"},
-                {"key", key.c_str()},
-                {"value", to_string(atof(value.c_str()) / 10)},
-                {"entity", detailed_entity->state.c_str()}
-              });
-            } else if (key == "hvac_mode") {
-              fire_ha_event("action_call", {
-                {"action", "climate.set_hvac_mode"},
-                {"key", "hvac_mode"},
-                {"value", value.c_str()},
-                {"entity", detailed_entity->state.c_str()}
-              });
-            }
+          if (!is_device_ready_for_tasks()) return;
+          if (embedded) return;
+          if (key == "hvac_mode") {
+            fire_ha_event("action_call", {
+              {"action", "climate.set_hvac_mode"},
+              {"key", "hvac_mode"},
+              {"value", value.c_str()},
+              {"entity", detailed_entity->state.c_str()}
+            });
+            return;
+          }
+          if (key == "temperature" or key == "target_temp_high" or key == "target_temp_low") {
+            fire_ha_event("action_call", {
+              {"action", "climate.set_temperature"},
+              {"key", key.c_str()},
+              {"value", to_string(atof(value.c_str()) / 10)},
+              {"entity", detailed_entity->state.c_str()}
+            });
+            return;
           }
 
   - id: !extend event_from_display  # Defined by hw_display
@@ -203,7 +183,7 @@ script:
           disp1->send_command_printf("slider_low.maxval=%i", set_climate_total_steps);
           disp1->set_component_value("temp_offset", set_climate_temp_offset);
           disp1->set_component_value("temp_step", set_climate_temp_step);
-          disp1->set_component_text("temp_unit", temperature_unit);
+          disp1->set_component_text("temp_unit", id(temperature_unit).c_str());
           const std::string& sep = id(mui_decimal_separator);
           const char dec_sep = sep.empty() ? '.' : sep[0];
           const char dec_separator_str[2] = {dec_sep, '\0'};
@@ -231,8 +211,7 @@ script:
             active_slider = 0;
 
             snprintf(buffer, sizeof(buffer), (useDecimal) ? "%.1f${temp_units}" : "%.0f${temp_units}", set_climate_target_temp);
-            disp1->set_component_text("target_high",
-                                      adjustDecimalSeparator(buffer, id(mui_decimal_separator)[0]).c_str());
+            disp1->set_component_text("target_high", adjustDecimalSeparator(buffer, dec_sep).c_str());
 
             disp1->set_component_value("climateslider",
                               round(((10*set_climate_target_temp) - set_climate_temp_offset) / set_climate_temp_step));
@@ -252,8 +231,7 @@ script:
               active_slider = 2;
 
               snprintf(buffer, sizeof(buffer), (useDecimal) ? "%.1f${temp_units}" : "%.0f${temp_units}", set_climate_target_temp_low);
-              disp1->set_component_text("target_low",
-                                        adjustDecimalSeparator(buffer, id(mui_decimal_separator)[0]).c_str());
+              disp1->set_component_text("target_low", adjustDecimalSeparator(buffer, dec_sep).c_str());
 
               disp1->set_component_value("slider_low",
                           round(((10*set_climate_target_temp_low) - set_climate_temp_offset) / set_climate_temp_step));
@@ -272,8 +250,7 @@ script:
               active_slider = 1;
 
               snprintf(buffer, sizeof(buffer), (useDecimal) ? "%.1f${temp_units}" : "%.0f${temp_units}", set_climate_target_temp_high);
-              disp1->set_component_text("target_high",
-                                        adjustDecimalSeparator(buffer, id(mui_decimal_separator)[0]).c_str());
+              disp1->set_component_text("target_high", adjustDecimalSeparator(buffer, dec_sep).c_str());
 
               disp1->set_component_value("slider_high",
                         round(((10*set_climate_target_temp_high) - set_climate_temp_offset) / set_climate_temp_step));
