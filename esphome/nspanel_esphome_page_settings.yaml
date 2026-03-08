@@ -10,6 +10,8 @@
 substitutions:
   BOOT_STEP_PAGE_SETTINGS: 28
   PAGE_SETTINGS_ID: 8
+  THEME_PAGE_SETTINGS_DARK_BG_PIC_ID: 33
+  THEME_PAGE_SETTINGS_LIGHT_BG_PIC_ID: 48
   TAG_PAGE_SETTINGS: nspanel.page.settings
 
 display:
@@ -116,4 +118,14 @@ script:
   - id: !extend stop_page_constructors
     then:
       - lambda: page_settings->stop();
+
+  - id: !extend theme_update_dark
+    then:
+      - lambda: |-
+          disp1->send_command("bg_pic_id_settings=${THEME_PAGE_SETTINGS_DARK_BG_PIC_ID}");
+
+  - id: !extend theme_update_light
+    then:
+      - lambda: |-
+          disp1->send_command("bg_pic_id_settings=${THEME_PAGE_SETTINGS_LIGHT_BG_PIC_ID}");
 ...

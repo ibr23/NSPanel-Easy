@@ -28,6 +28,13 @@ Page home
                 vis left_bt_text,0
                 vis right_bt_text,0
             }
+            // set backgroud image to all components
+            b[0].pic=bg_pic_id
+            for(index=0;index<=last_id.val;index++)
+            {
+                b[index].picc=bg_pic_id
+                b[index].picc2=bg_pic_id
+            }
             sendme
         
 Variable (string) lastclick
@@ -43,6 +50,12 @@ Variable (string) click_comp
         Scope         : local
         Text          : 
         Max. Text Size: 14
+    
+Variable (int32) last_id
+    Attributes
+        ID   : 48
+        Scope: local
+        Value: 48
     
 Text time
     Attributes

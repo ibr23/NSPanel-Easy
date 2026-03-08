@@ -1,2 +1,3 @@
 *.tft binary
 *.HMI binary
+*.sh text eol=lf

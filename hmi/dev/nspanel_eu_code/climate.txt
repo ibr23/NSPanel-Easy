@@ -50,6 +50,13 @@ Page climate
                 page home_page_id
             }
             button_back.font=button_back_font
+            // set backgroud image to all components
+            b[0].pic=bg_pic_id
+            for(index=0;index<=last_id.val;index++)
+            {
+                b[index].picc=bg_pic_id
+                b[index].picc2=bg_pic_id
+            }
             sendme
         
         Page Exit Event
@@ -217,6 +224,12 @@ Variable (int32) button_font
         ID   : 54
         Scope: global
         Value: 8
+    
+Variable (int32) last_id
+    Attributes
+        ID   : 55
+        Scope: local
+        Value: 55
     
 Text current_temp
     Attributes
