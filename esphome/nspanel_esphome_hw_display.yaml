@@ -377,8 +377,8 @@ script:
   - id: theme_update
     then:
       - lambda: |-
-          ESP_LOGI("${TAG_HW_DISPLAY}", "Apply theme: %s", wakeup_page_name->current_option());
-          if (wakeup_page_name->current_option() == "${THEME_LIGHT_LABEL}") {
+          ESP_LOGI("${TAG_HW_DISPLAY}", "Apply theme: %s", background_type->current_option());
+          if (background_type->current_option() == "${THEME_LIGHT_LABEL}") {
             theme_update_light->execute();
             return;
           }
