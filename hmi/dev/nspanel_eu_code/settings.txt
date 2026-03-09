@@ -1,7 +1,7 @@
 Page settings
     Attributes
         ID                 : 0
-        Scope              : local
+        Scope              : global
         Dragging           : 0
         Send Component ID  : on press and release
         Opacity            : 127
@@ -28,14 +28,15 @@ Page settings
             dim_text.txt+="%"
             vis lbl_sleep,0
             vis bt_sleep,0
-            button_back.font=button_back_font
-            // set backgroud image to all components
-            b[0].pic=bg_pic_id
             for(index=0;index<=last_id.val;index++)
             {
-                b[index].picc=bg_pic_id
-                b[index].picc2=bg_pic_id
+                b[index].picc=b[0].pic
+                b[index].pco=color_pco_main
             }
+            button_back.font=button_back_font
+            button_back.pco=color_pco_navigation
+            brightslider.picc1=slider_picc1.val
+            dimslider.picc1=slider_picc1.val
             sendme
         
         Touch Press Event
@@ -51,11 +52,17 @@ Variable (string) csv
         Text          : 
         Max. Text Size: 50
     
-Variable (int32) last_id
+Variable (int32) slider_picc1
     Attributes
         ID   : 22
+        Scope: global
+        Value: 34
+    
+Variable (int32) last_id
+    Attributes
+        ID   : 23
         Scope: local
-        Value: 22
+        Value: 23
     
 Text bright_text
     Attributes

@@ -14,78 +14,123 @@ Page light
         Swide down page ID : disabled
         Swide left page ID : disabled
         Swide right page ID: disabled
-        Fill               : solid color
-        Back. Color        : 0
+        Fill               : picture
+        Back. Picture ID   : 0
     
     Events
         Preinitialize Event
-            dim=brightness
             if(api==0)
             {
                 page home_page_id
-            }else
-            {
-                vis light_b_press,1
-                vis lightslider,1
-                vis light_value,1
-                // #### OFF Button #####
-                vis temp_b_press,0
-                vis color_b_pres,0
-                // #### OFF Value #####
-                vis temp_value,0
-                vis light_value_2,0
-                // #### OFF Slider #####
-                vis tempslider,0
-                vis colorwheel,0
-                // #### Hide color & temp buttons #####
-                vis temp_touch,0
-                vis temp_value_2,0
-                vis temp_button,0
-                vis color_touch,0
-                vis color_button,0
             }
+            dim=brightness
+            vis light_b_press,1
+            vis lightslider,1
+            vis light_value,1
+            // #### OFF Button #####
+            vis temp_b_press,0
+            vis color_b_pres,0
+            // #### OFF Value #####
+            vis temp_value,0
+            vis light_value_2,0
+            // #### OFF Slider #####
+            vis tempslider,0
+            vis colorwheel,0
+            // #### Hide color & temp buttons #####
+            vis temp_b_press,0
+            vis temp_value_2,0
+            vis temp_button,0
+            vis color_b_pres,0
+            vis color_button,0
+            // set background image and fg color to all components
+            for(index=0;index<=last_id.val;index++)
+            {
+                b[index].picc=b[0].pic
+            }
+            colorwheel.pic=colorwheel_pic.val
+            tempslider.pic=tempslider_pic.val
+            tempslider.pic1=tempslider_pic.val
+            lightslider.pic=lslider_pic.val
+            lightslider.pic1=lslider_pic1.val
             button_back.font=button_back_font
+            button_back.pco=color_pco_navigation
+            icon_state.pco=color_pco_main
+            page_label.pco=color_pco_main
+            light_value.pco=color_pco_main
+            temp_value.pco=color_pco_main
+            temp_value_2.pco=color_pco_main
+            power_button.pco=color_pco_secondary
             sendme
         
 Variable (int32) rgb565
     Attributes
-        ID   : 22
+        ID   : 19
         Scope: local
         Value: 0
     
 Variable (string) va1
     Attributes
-        ID            : 23
+        ID            : 20
         Scope         : local
         Text          : newtxt
         Max. Text Size: 20
     
 Variable (string) va2
     Attributes
-        ID            : 24
+        ID            : 21
         Scope         : local
         Text          : newtxt
         Max. Text Size: 10
     
 Variable (string) va3
     Attributes
-        ID            : 25
+        ID            : 22
         Scope         : local
         Text          : newtxt
         Max. Text Size: 10
     
 Variable (int32) currenttab
     Attributes
-        ID   : 26
+        ID   : 23
         Scope: local
         Value: 0
     
 Variable (string) lightsetting
     Attributes
-        ID            : 30
+        ID            : 27
         Scope         : local
         Text          : 
         Max. Text Size: 255
+    
+Variable (int32) last_id
+    Attributes
+        ID   : 30
+        Scope: local
+        Value: 33
+    
+Variable (int32) colorwheel_pic
+    Attributes
+        ID   : 31
+        Scope: global
+        Value: 17
+    
+Variable (int32) tempslider_pic
+    Attributes
+        ID   : 32
+        Scope: global
+        Value: 21
+    
+Variable (int32) lslider_pic
+    Attributes
+        ID   : 33
+        Scope: global
+        Value: 28
+    
+Variable (int32) lslider_pic1
+    Attributes
+        ID   : 34
+        Scope: global
+        Value: 29
     
 Number ring
     Attributes
@@ -101,12 +146,10 @@ Number ring
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
-        Fill                    : solid color
-        Style                   : flat
+        Fill                    : crop image
         Associated Keyboard     : none
         Font ID                 : 1
-        Back. Color             : 0
-        Font Color              : 0
+        Cropped Back. Picture ID: 0
         Horizontal Alignment    : right
         Vertical Alignment      : center
         Value                   : 0
@@ -130,12 +173,10 @@ Number field
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
-        Fill                    : solid color
-        Style                   : flat
+        Fill                    : crop image
         Associated Keyboard     : none
         Font ID                 : 1
-        Back. Color             : 0
-        Font Color              : 0
+        Cropped Back. Picture ID: 0
         Horizontal Alignment    : right
         Vertical Alignment      : center
         Value                   : 0
@@ -176,177 +217,165 @@ Text light_value
     
 Text page_label
     Attributes
-        ID                  : 2
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : on press and release
-        Opacity             : 127
-        x coordinate        : 46
-        y coordinate        : 8
-        Width               : 204
-        Height              : 30
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 2
-        Back. Color         : 0
-        Font Color          : 65535
-        Horizontal Alignment: left
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : 
-        Max. Text Size      : 100
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 2
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 46
+        y coordinate            : 8
+        Width                   : 204
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 2
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : left
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 100
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text temp_value
     Attributes
-        ID                  : 14
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : on press and release
-        Opacity             : 127
-        x coordinate        : 117
-        y coordinate        : 169
-        Width               : 83
-        Height              : 20
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 2
-        Back. Color         : 0
-        Font Color          : 65535
-        Horizontal Alignment: center
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : 
-        Max. Text Size      : 10
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 14
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 117
+        y coordinate            : 169
+        Width                   : 83
+        Height                  : 20
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 2
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 10
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text light_value_2
     Attributes
-        ID                  : 27
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 25
-        y coordinate        : 123
-        Width               : 50
-        Height              : 20
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 2
-        Back. Color         : 0
-        Font Color          : 65535
-        Horizontal Alignment: right
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : 
-        Max. Text Size      : 10
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 24
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 25
+        y coordinate            : 123
+        Width                   : 50
+        Height                  : 20
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 2
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : right
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 10
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text temp_value_2
     Attributes
-        ID                  : 28
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 129
-        y coordinate        : 123
-        Width               : 55
-        Height              : 20
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 2
-        Back. Color         : 0
-        Font Color          : 65535
-        Horizontal Alignment: right
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : 
-        Max. Text Size      : 10
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 25
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 129
+        y coordinate            : 123
+        Width                   : 55
+        Height                  : 20
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 2
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : right
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 10
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text icon_state
     Attributes
-        ID                  : 29
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : on press and release
-        Opacity             : 127
-        x coordinate        : 10
-        y coordinate        : 8
-        Width               : 35
-        Height              : 35
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 8
-        Back. Color         : 0
-        Font Color          : 65535
-        Horizontal Alignment: center
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : 
-        Max. Text Size      : 10
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 26
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 10
+        y coordinate            : 8
+        Width                   : 35
+        Height                  : 35
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 8
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 10
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text power_button
     Attributes
-        ID                  : 32
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : on press and release
-        Opacity             : 127
-        x coordinate        : 243
-        y coordinate        : 410
-        Width               : 50
-        Height              : 50
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 10
-        Back. Color         : 0
-        Font Color          : 59196
-        Horizontal Alignment: center
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : \xee\x90\xa4
-        Max. Text Size      : 3
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 29
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 228
+        y coordinate            : 405
+        Width                   : 60
+        Height                  : 60
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 10
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : \xee\x90\xa4
+        Max. Text Size          : 3
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
     Events
         Touch Release Event
@@ -355,9 +384,9 @@ Text power_button
 Picture light_button
     Attributes
         ID               : 8
-        Scope            : local
+        Scope            : global
         Dragging         : 0
-        Send Component ID: disabled
+        Send Component ID: on press and release
         Opacity          : 127
         x coordinate     : 25
         y coordinate     : 71
@@ -368,12 +397,29 @@ Picture light_button
         Effect Time      : 300
         Picture ID       : 22
     
+    Events
+        Touch Press Event
+            vis light_b_press,1
+            vis lightslider,1
+            vis light_value,1
+            vis temp_value_2,1
+            // #### OFF Button #####
+            vis light_button,0
+            vis temp_b_press,0
+            vis color_b_pres,0
+            // #### OFF Value #####
+            vis temp_value,0
+            vis light_value_2,0
+            // #### OFF Slider #####
+            vis tempslider,0
+            vis colorwheel,0
+        
 Picture color_button
     Attributes
         ID               : 9
-        Scope            : local
+        Scope            : global
         Dragging         : 0
-        Send Component ID: disabled
+        Send Component ID: on press and release
         Opacity          : 127
         x coordinate     : 243
         y coordinate     : 71
@@ -384,12 +430,32 @@ Picture color_button
         Effect Time      : 300
         Picture ID       : 26
     
+    Events
+        Touch Press Event
+            vis color_b_pres,1
+            vis colorwheel,1
+            vis light_value_2,1
+            // #### OFF Button #####
+            vis color_button,0
+            vis light_b_press,0
+            vis light_button,1
+            vis temp_b_press,0
+            vis temp_button,1
+            // #### OFF Value #####
+            vis light_value,0
+            vis temp_value,0
+            vis temp_value_2,0
+            // #### OFF Slider #####
+            vis lightslider,0
+            vis tempslider,0
+            // #### OFF Color #####
+        
 Picture temp_button
     Attributes
         ID               : 10
-        Scope            : local
+        Scope            : global
         Dragging         : 0
-        Send Component ID: disabled
+        Send Component ID: on press and release
         Opacity          : 127
         x coordinate     : 134
         y coordinate     : 71
@@ -400,12 +466,29 @@ Picture temp_button
         Effect Time      : 300
         Picture ID       : 24
     
+    Events
+        Touch Press Event
+            vis temp_b_press,1
+            vis tempslider,1
+            vis temp_value,1
+            vis light_value_2,1
+            // #### OFF Button #####
+            vis temp_button,0
+            vis light_b_press,0
+            vis color_b_pres,0
+            // #### OFF Value #####
+            vis light_value,0
+            vis temp_value_2,0
+            // #### OFF Slider #####
+            vis lightslider,0
+            vis colorwheel,0
+        
 Picture light_b_press
     Attributes
         ID               : 11
-        Scope            : local
+        Scope            : global
         Dragging         : 0
-        Send Component ID: disabled
+        Send Component ID: on press and release
         Opacity          : 127
         x coordinate     : 25
         y coordinate     : 71
@@ -419,9 +502,9 @@ Picture light_b_press
 Picture temp_b_press
     Attributes
         ID               : 12
-        Scope            : local
+        Scope            : global
         Dragging         : 0
-        Send Component ID: disabled
+        Send Component ID: on press and release
         Opacity          : 127
         x coordinate     : 134
         y coordinate     : 71
@@ -435,9 +518,9 @@ Picture temp_b_press
 Picture color_b_pres
     Attributes
         ID               : 13
-        Scope            : local
+        Scope            : global
         Dragging         : 0
-        Send Component ID: disabled
+        Send Component ID: on press and release
         Opacity          : 127
         x coordinate     : 243
         y coordinate     : 71
@@ -711,34 +794,31 @@ Slider tempslider
         
 Button button_back
     Attributes
-        ID                        : 31
-        Scope                     : local
-        Dragging                  : 0
-        Send Component ID         : on press and release
-        Opacity                   : 127
-        x coordinate              : 260
-        y coordinate              : 0
-        Width                     : 60
-        Height                    : 48
-        Effect                    : load
-        Effect Priority           : 0
-        Effect Time               : 300
-        Fill                      : solid color
-        Style                     : flat
-        Font ID                   : 8
-        Back. Color               : 0
-        Back. Picture ID (Pressed): 65535
-        Back. Color (Pressed)     : 0
-        Font Color (Unpressed)    : 33808
-        Font Color (Pressed)      : 65535
-        Horizontal Alignment      : center
-        Vertical Alignment        : top
-        State                     : unpressed
-        Text                      : \xee\x85\x98
-        Max. Text Size            : 3
-        Word wrap                 : disabled
-        Horizontal Spacing        : 0
-        Vertical Spacing          : 0
+        ID                                  : 28
+        Scope                               : local
+        Dragging                            : 0
+        Send Component ID                   : on press and release
+        Opacity                             : 127
+        x coordinate                        : 260
+        y coordinate                        : 0
+        Width                               : 60
+        Height                              : 48
+        Effect                              : load
+        Effect Priority                     : 0
+        Effect Time                         : 300
+        Fill                                : crop image
+        Font ID                             : 8
+        Cropped Back. Picture ID (Unpressed): 0
+        Back. Picture ID (Pressed)          : 65535
+        Cropped Back. Picture ID (Pressed)  : 0
+        Horizontal Alignment                : center
+        Vertical Alignment                  : top
+        State                               : unpressed
+        Text                                : \xee\x85\x98
+        Max. Text Size                      : 3
+        Word wrap                           : disabled
+        Horizontal Spacing                  : 0
+        Vertical Spacing                    : 0
     
     Events
         Touch Press Event
@@ -854,103 +934,9 @@ Hotspot rgb888to565
             sys2+=sys1
             rgb565.val=sys2
         
-Hotspot light_touch
-    Attributes
-        ID               : 17
-        Scope            : local
-        Dragging         : 0
-        Send Component ID: on press and release
-        Opacity          : 127
-        x coordinate     : 25
-        y coordinate     : 71
-        Width            : 50
-        Height           : 50
-        Effect           : load
-        Effect Priority  : 0
-        Effect Time      : 300
-    
-    Events
-        Touch Press Event
-            vis light_b_press,1
-            vis lightslider,1
-            vis light_value,1
-            vis temp_value_2,1
-            // #### OFF Button #####
-            vis temp_b_press,0
-            vis color_b_pres,0
-            // #### OFF Value #####
-            vis temp_value,0
-            vis light_value_2,0
-            // #### OFF Slider #####
-            vis tempslider,0
-            vis colorwheel,0
-        
-Hotspot temp_touch
-    Attributes
-        ID               : 18
-        Scope            : local
-        Dragging         : 0
-        Send Component ID: on press and release
-        Opacity          : 127
-        x coordinate     : 134
-        y coordinate     : 71
-        Width            : 50
-        Height           : 50
-        Effect           : load
-        Effect Priority  : 0
-        Effect Time      : 300
-    
-    Events
-        Touch Press Event
-            vis temp_b_press,1
-            vis tempslider,1
-            vis temp_value,1
-            vis light_value_2,1
-            // #### OFF Button #####
-            vis light_b_press,0
-            vis color_b_pres,0
-            // #### OFF Value #####
-            vis light_value,0
-            vis temp_value_2,0
-            // #### OFF Slider #####
-            vis lightslider,0
-            vis colorwheel,0
-        
-Hotspot color_touch
-    Attributes
-        ID               : 19
-        Scope            : local
-        Dragging         : 0
-        Send Component ID: on press and release
-        Opacity          : 127
-        x coordinate     : 243
-        y coordinate     : 71
-        Width            : 50
-        Height           : 50
-        Effect           : load
-        Effect Priority  : 0
-        Effect Time      : 300
-    
-    Events
-        Touch Press Event
-            vis color_b_pres,1
-            vis colorwheel,1
-            vis light_value_2,1
-            // #### OFF Button #####
-            vis light_b_press,0
-            vis temp_b_press,0
-            // #### OFF Value #####
-            vis light_value,0
-            vis temp_value,0
-            vis temp_value_2,0
-            // #### OFF Slider #####
-            vis lightslider,0
-            vis tempslider,0
-            // #### OFF Color #####
-        
 Timer swipestore
     Attributes
-        ID         : 21
+        ID         : 18
         Scope      : local
         Period (ms): 50
         Enabled    : no
@@ -962,7 +948,7 @@ Timer swipestore
         
 TouchCap swipe
     Attributes
-        ID   : 20
+        ID   : 17
         Scope: local
         Value: 0
     

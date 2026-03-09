@@ -11,6 +11,10 @@ substitutions:
   BOOT_STEP_PAGE_COVER: 14
   PAGE_COVER_ID: 11
   TAG_PAGE_COVER: nspanel.page.cover
+  THEME_DARK_PIC_PAGE_COVER_SLIDER: 20
+  THEME_DARK_PIC1_PAGE_COVER_SLIDER: 19
+  THEME_LIGHT_PIC_PAGE_COVER_SLIDER: 75
+  THEME_LIGHT_PIC1_PAGE_COVER_SLIDER: 74
 
 esphome:
   platformio_options:
@@ -75,4 +79,16 @@ script:
   - id: !extend stop_page_constructors
     then:
       - lambda: page_cover->stop();
+
+  - id: !extend theme_update_dark
+    then:
+      - lambda: |-
+          disp1->set_component_pic("cover.coverslider", ${THEME_DARK_PIC_PAGE_COVER_SLIDER});
+          disp1->send_command("cover.coverslider.pic1=${THEME_DARK_PIC1_PAGE_COVER_SLIDER}");
+
+  - id: !extend theme_update_light
+    then:
+      - lambda: |-
+          disp1->set_component_pic("cover.coverslider", ${THEME_LIGHT_PIC_PAGE_COVER_SLIDER});
+          disp1->send_command("cover.coverslider.pic1=${THEME_LIGHT_PIC1_PAGE_COVER_SLIDER}");
 ...

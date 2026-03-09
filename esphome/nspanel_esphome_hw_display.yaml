@@ -12,21 +12,31 @@ substitutions:
   ## local yaml substitutions ##
   ##############################
   THEME_DARK_LABEL: Dark
-  THEME_DARK_BG_PIC_ID: 0
-  THEME_LIGHT_LABEL: Light
-  THEME_LIGHT_BG_PIC_ID: 48
+  THEME_DARK_PIC_BACKGROUND_MAIN: 0                         # Background picture to be used on pages by default
+  THEME_DARK_COLOR_PCO_MAIN: ${COLOR_WHITE}                 # Foreground font color for main information
+  THEME_DARK_COLOR_PCO_SECONDARY: ${COLOR_GRAY_LIGHT}       # Foreground font color for secondary information
+  THEME_DARK_COLOR_PCO_NAVIGATION: ${COLOR_GRAY_MOSS}       # Foreground font color for navigation components, like back button or page index
+  THEME_DARK_COLOR_PCO_UNSUPPORTED: ${COLOR_GRAY_DARKEST}   #  Foreground font color for unsupported or unavailable components
+  THEME_LIGHT_LABEL: Light (Under construction)
+  THEME_LIGHT_PIC_BACKGROUND_MAIN: 48                       # Background picture to be used on pages by default
+  THEME_LIGHT_COLOR_PCO_MAIN: ${COLOR_WHITE}                # Foreground font color for main information
+  THEME_LIGHT_COLOR_PCO_SECONDARY: ${COLOR_GRAY_LIGHT}      # Foreground font color for secondary information
+  THEME_LIGHT_COLOR_PCO_NAVIGATION: ${COLOR_GRAY_MOSS}      # Foreground font color for navigation components, like back button or page index
+  THEME_LIGHT_COLOR_PCO_UNSUPPORTED: ${COLOR_GRAY_DARKEST}  #  Foreground font color for unsupported or unavailable components
   BAUD_RATE: '115200'
   BOOT_STEP_HW_DISPLAY: '5'
   bytes_per_char: "1"
   button_back_font: "8"
-  COLOR_BLUE_INDIGO: '10597'
-  COLOR_CYAN_BRIGHT: '7519'
-  COLOR_GRAY_MOSS: '33808'
-  COLOR_RED_PRIMARY: '63488'
-  COLOR_WHITE: '65535'
-  COLOR_YELLOW_GOLDEN: '64992'
-  DISPLAY_CHARSET_CJK: '2'
-  DISPLAY_CHARSET_INTERNATIONAL: '1'
+  COLOR_BLUE_INDIGO:   '10597'  # Colors::BLUE_INDIGO
+  COLOR_CYAN_BRIGHT:    '7519'  # Colors::CYAN_BRIGHT
+  COLOR_GRAY_DARKEST:   '6339'  # Colors::GRAY_DARKEST
+  COLOR_GRAY_LIGHT:    '52857'  # Colors::GRAY_LIGHT
+  COLOR_GRAY_MOSS:     '33808'  # Colors::GRAY_MOSS
+  COLOR_RED_PRIMARY:   '63488'  # Colors::RED
+  COLOR_WHITE:         '65535'  # Colors::WHITE
+  COLOR_YELLOW_GOLDEN: '64992'  # Colors::YELLOW_GOLDEN
+  DISPLAY_CHARSET_CJK: 2
+  DISPLAY_CHARSET_INTERNATIONAL: 1
   GPIO_DISPLAY_NEXTION_RX_PIN: 17
   GPIO_DISPLAY_NEXTION_TX_PIN: 16
   GPIO_DISPLAY_POWER_PIN:
@@ -376,17 +386,25 @@ script:
       - script.wait: theme_update_dark
       - script.wait: theme_update_light
       - lambda: |-
-          goto_page->execute(current_page_id);  // Reload the current page with the new theme
+          goto_page->execute(${PAGE_HOME_ID});  // Go back to home page to render pages again
 
   - id: theme_update_dark
     then:
       - lambda: |-
-          disp1->send_command("bg_pic_id=${THEME_DARK_BG_PIC_ID}");
+          disp1->send_command("pic_background_main=${THEME_DARK_PIC_BACKGROUND_MAIN}");
+          disp1->send_command("color_pco_main=${THEME_DARK_COLOR_PCO_MAIN}");
+          disp1->send_command("color_pco_secondary=${THEME_DARK_COLOR_PCO_SECONDARY}");
+          disp1->send_command("color_pco_navigation=${THEME_DARK_COLOR_PCO_NAVIGATION}");
+          disp1->send_command("color_pco_unsupported=${THEME_DARK_COLOR_PCO_UNSUPPORTED}");
 
   - id: theme_update_light
     then:
       - lambda: |-
-          disp1->send_command("bg_pic_id=${THEME_LIGHT_BG_PIC_ID}");
+          disp1->send_command("pic_background_main=${THEME_LIGHT_PIC_BACKGROUND_MAIN}");
+          disp1->send_command("color_pco_main=${THEME_LIGHT_COLOR_PCO_MAIN}");
+          disp1->send_command("color_pco_secondary=${THEME_LIGHT_COLOR_PCO_SECONDARY}");
+          disp1->send_command("color_pco_navigation=${THEME_LIGHT_COLOR_PCO_NAVIGATION}");
+          disp1->send_command("color_pco_unsupported=${THEME_LIGHT_COLOR_PCO_UNSUPPORTED}");
 
   ###### Timers ######
   - id: timer_dim        # Handles the brightness dimming after a timeout

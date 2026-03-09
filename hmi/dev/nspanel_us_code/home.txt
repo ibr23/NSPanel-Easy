@@ -23,17 +23,16 @@ Page home
             back_page_id=home_page_id
             is_entitypages=is_entitypage01|is_entitypage02|is_entitypage03|is_entitypage04
             vis bt_entities,is_entitypages
-            if(display_mode>=3)
+            if(display_mode==3)
             {
                 vis left_bt_text,0
                 vis right_bt_text,0
             }
-            // set backgroud image to all components
-            b[0].pic=bg_pic_id
+            // set background image to all components
+            b[0].pic=pic_background_main
             for(index=0;index<=last_id.val;index++)
             {
-                b[index].picc=bg_pic_id
-                b[index].picc2=bg_pic_id
+                b[index].picc=pic_background_main
             }
             sendme
         

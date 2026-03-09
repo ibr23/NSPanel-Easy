@@ -11,6 +11,26 @@ substitutions:
   BOOT_STEP_PAGE_LIGHT: 19
   PAGE_LIGHT_ID: 10
   TAG_PAGE_LIGHT: nspanel.page.light
+  THEME_DARK_PIC_PAGE_LIGHT_DIM_BUTTON: 22
+  THEME_DARK_PIC_PAGE_LIGHT_TEMP_BUTTON: 24
+  THEME_DARK_PIC_PAGE_LIGHT_COLOR_BUTTON: 26
+  THEME_DARK_PIC_PAGE_LIGHT_DIM_BUTTON_PRESSED: 23
+  THEME_DARK_PIC_PAGE_LIGHT_TEMP_BUTTON_PRESSED: 25
+  THEME_DARK_PIC_PAGE_LIGHT_COLOR_BUTTON_PRESSED: 27
+  THEME_DARK_PIC_PAGE_LIGHT_COLORWHEEL: 17
+  THEME_DARK_PIC_PAGE_LIGHT_TEMP_SLIDER: 21
+  THEME_DARK_PIC_PAGE_LIGHT_DIM_SLIDER: 28
+  THEME_DARK_PIC1_PAGE_LIGHT_DIM_SLIDER: 29
+  THEME_LIGHT_PIC_PAGE_LIGHT_DIM_BUTTON: 76
+  THEME_LIGHT_PIC_PAGE_LIGHT_TEMP_BUTTON: 77
+  THEME_LIGHT_PIC_PAGE_LIGHT_COLOR_BUTTON: 78
+  THEME_LIGHT_PIC_PAGE_LIGHT_DIM_BUTTON_PRESSED: 67
+  THEME_LIGHT_PIC_PAGE_LIGHT_TEMP_BUTTON_PRESSED: 68
+  THEME_LIGHT_PIC_PAGE_LIGHT_COLOR_BUTTON_PRESSED: 69
+  THEME_LIGHT_PIC_PAGE_LIGHT_COLORWHEEL: 70
+  THEME_LIGHT_PIC_PAGE_LIGHT_TEMP_SLIDER: 71
+  THEME_LIGHT_PIC_PAGE_LIGHT_DIM_SLIDER: 72
+  THEME_LIGHT_PIC1_PAGE_LIGHT_DIM_SLIDER: 73
 
 display:
   - id: !extend disp1
@@ -20,7 +40,7 @@ display:
             if (
                   page_id == ${PAGE_LIGHT_ID} and  // Page light
                   !touch_event and                 // Release
-                  component_id == 32               // power button
+                  component_id == 29               // power button
                 ) {
               fire_ha_event("action_call", {
                 {"action", "light.toggle"},
@@ -116,4 +136,32 @@ script:
   - id: !extend stop_page_constructors
     then:
       - lambda: page_light->stop();
+
+  - id: !extend theme_update_dark
+    then:
+      - lambda: |-
+          disp1->set_component_pic("light.light_b_press", ${THEME_DARK_PIC_PAGE_LIGHT_DIM_BUTTON_PRESSED});
+          disp1->set_component_pic("light.light_button", ${THEME_DARK_PIC_PAGE_LIGHT_DIM_BUTTON});
+          disp1->set_component_pic("light.temp_b_press", ${THEME_DARK_PIC_PAGE_LIGHT_TEMP_BUTTON_PRESSED});
+          disp1->set_component_pic("light.temp_button", ${THEME_DARK_PIC_PAGE_LIGHT_TEMP_BUTTON});
+          disp1->set_component_pic("light.color_b_pres", ${THEME_DARK_PIC_PAGE_LIGHT_COLOR_BUTTON_PRESSED});
+          disp1->set_component_pic("light.color_button", ${THEME_DARK_PIC_PAGE_LIGHT_COLOR_BUTTON});
+          disp1->set_component_value("light.colorwheel_pic", ${THEME_DARK_PIC_PAGE_LIGHT_COLORWHEEL});
+          disp1->set_component_value("light.tempslider_pic", ${THEME_DARK_PIC_PAGE_LIGHT_TEMP_SLIDER});
+          disp1->set_component_value("light.lslider_pic", ${THEME_DARK_PIC_PAGE_LIGHT_DIM_SLIDER});
+          disp1->set_component_value("light.lslider_pic1", ${THEME_DARK_PIC1_PAGE_LIGHT_DIM_SLIDER});
+
+  - id: !extend theme_update_light
+    then:
+      - lambda: |-
+          disp1->set_component_pic("light.light_b_press", ${THEME_LIGHT_PIC_PAGE_LIGHT_DIM_BUTTON_PRESSED});
+          disp1->set_component_pic("light.light_button", ${THEME_LIGHT_PIC_PAGE_LIGHT_DIM_BUTTON});
+          disp1->set_component_pic("light.temp_b_press", ${THEME_LIGHT_PIC_PAGE_LIGHT_TEMP_BUTTON_PRESSED});
+          disp1->set_component_pic("light.temp_button", ${THEME_LIGHT_PIC_PAGE_LIGHT_TEMP_BUTTON});
+          disp1->set_component_pic("light.color_b_pres", ${THEME_LIGHT_PIC_PAGE_LIGHT_COLOR_BUTTON_PRESSED});
+          disp1->set_component_pic("light.color_button", ${THEME_LIGHT_PIC_PAGE_LIGHT_COLOR_BUTTON});
+          disp1->set_component_value("light.colorwheel_pic", ${THEME_LIGHT_PIC_PAGE_LIGHT_COLORWHEEL});
+          disp1->set_component_value("light.tempslider_pic", ${THEME_LIGHT_PIC_PAGE_LIGHT_TEMP_SLIDER});
+          disp1->set_component_value("light.lslider_pic", ${THEME_LIGHT_PIC_PAGE_LIGHT_DIM_SLIDER});
+          disp1->set_component_value("light.lslider_pic1", ${THEME_LIGHT_PIC1_PAGE_LIGHT_DIM_SLIDER});
 ...

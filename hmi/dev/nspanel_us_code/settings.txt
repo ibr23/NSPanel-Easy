@@ -28,14 +28,17 @@ Page settings
             dim_text.txt+="%"
             vis lbl_sleep,0
             vis bt_sleep,0
-            button_back.font=button_back_font
-            // set backgroud image to all components
-            b[0].pic=bg_pic_id_settings
             for(index=0;index<=last_id.val;index++)
             {
-                b[index].picc=bg_pic_id_settings
-                b[index].picc2=bg_pic_id_settings
+                b[index].picc=b[0].pic
+                b[index].pco=color_pco_main
             }
+            button_back.font=button_back_font
+            button_back.pco=color_pco_navigation
+            brightslider.picc1=slider_picc1.val
+            dimslider.picc1=slider_picc1.val
+            t2.pco=color_pco_navigation
+            t3.pco=color_pco_navigation
             sendme
         
         Touch Press Event
@@ -51,11 +54,17 @@ Variable (string) csv
         Text          : 
         Max. Text Size: 50
     
-Variable (int32) last_id
+Variable (int32) slider_picc1
     Attributes
         ID   : 28
+        Scope: global
+        Value: 34
+    
+Variable (int32) last_id
+    Attributes
+        ID   : 29
         Scope: local
-        Value: 28
+        Value: 29
     
 Text bright_text
     Attributes
@@ -113,30 +122,32 @@ Text dim_text
     
 Text lbl_reboot
     Attributes
-        ID                      : 5
-        Scope                   : global
-        Dragging                : 0
-        Send Component ID       : on press and release
-        Opacity                 : 127
-        x coordinate            : 15
-        y coordinate            : 58
-        Width                   : 225
-        Height                  : 45
-        Effect                  : load
-        Effect Priority         : 0
-        Effect Time             : 300
-        Fill                    : crop image
-        Associated Keyboard     : none
-        Font ID                 : 3
-        Cropped Back. Picture ID: 33
-        Horizontal Alignment    : left
-        Vertical Alignment      : center
-        Input Type              : character
-        Text                    :  Reboot
-        Max. Text Size          : 25
-        Word wrap               : disabled
-        Horizontal Spacing      : 0
-        Vertical Spacing        : 0
+        ID                  : 5
+        Scope               : global
+        Dragging            : 0
+        Send Component ID   : on press and release
+        Opacity             : 127
+        x coordinate        : 15
+        y coordinate        : 58
+        Width               : 225
+        Height              : 45
+        Effect              : load
+        Effect Priority     : 0
+        Effect Time         : 300
+        Fill                : solid color
+        Style               : flat
+        Associated Keyboard : none
+        Font ID             : 3
+        Back. Color         : 6339
+        Font Color          : 65535
+        Horizontal Alignment: left
+        Vertical Alignment  : center
+        Input Type          : character
+        Text                :  Reboot
+        Max. Text Size      : 25
+        Word wrap           : disabled
+        Horizontal Spacing  : 0
+        Vertical Spacing    : 0
     
     Events
         Touch Press Event

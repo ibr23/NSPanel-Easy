@@ -19,14 +19,41 @@ Page weather01
     
     Events
         Preinitialize Event
-            dim=brightness
             if(api==0)
             {
                 page home_page_id
             }
+            dim=brightness
+            // set background image and fg color to all components
+            b[0].pic=pic_background_main
+            for(index=0;index<=last_id.val;index++)
+            {
+                b[index].picc=pic_background_main
+            }
             button_back.font=button_back_font
+            button_back.pco=color_pco_navigation
+            page_index.pco=color_pco_navigation
+            day.pco=color_pco_main
+            date.pco=color_pco_main
+            temperature.pco=color_pco_main
+            value01.pco=color_pco_secondary
+            value01_icon.pco=color_pco_secondary
+            value02.pco=color_pco_secondary
+            value02_icon.pco=color_pco_secondary
+            value03.pco=color_pco_secondary
+            value03_icon.pco=color_pco_secondary
+            value04.pco=color_pco_secondary
+            value04_icon.pco=color_pco_secondary
+            value05.pco=color_pco_secondary
+            value05_icon.pco=color_pco_secondary
             sendme
         
+Variable (int32) last_id
+    Attributes
+        ID   : 19
+        Scope: local
+        Value: 19
+    
 Text day
     Attributes
         ID                      : 4

@@ -10,8 +10,11 @@ Program.s
     int home_page_id=1
     int back_page_id=1
     int wakeup_page_id=1
-    int bg_pic_id=0 // Which picture to be used as background on all pages
-    int bg_pic_id_settings=33
+    int pic_background_main=0 // Background picture to be used on pages by default
+    int color_pco_main=65535  // Foreground font color for main information
+    int color_pco_secondary=52857  // Foreground font color for secondary information
+    int color_pco_navigation=33808  // Foreground font color for navigation components, like back button or page index
+    int color_pco_unsupported=6339  // Foreground font color for unsupported or unavailable components
     int button_back_font=8
     int api=0 // 0 = disconnected from HA, 1 = connected to HA
     int brightness=100,brightness_dim=40,brightness_sleep=0

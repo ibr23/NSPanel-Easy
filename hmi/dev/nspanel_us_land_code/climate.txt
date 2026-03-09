@@ -1,7 +1,7 @@
 Page climate
     Attributes
         ID                 : 0
-        Scope              : local
+        Scope              : global
         Dragging           : 0
         Send Component ID  : on press and release
         Opacity            : 127
@@ -19,37 +19,67 @@ Page climate
     
     Events
         Preinitialize Event
-            dim=brightness
-            if(api==1||embedded.val==1)
-            {
-                vis target_icon,0
-                vis target_high,0
-                vis target_low,0
-                vis current_temp,0
-                vis climateslider,0
-                vis slider_high,0
-                vis slider_low,0
-                vis button01,0
-                vis button02,0
-                vis button03,0
-                vis button04,0
-                vis button05,0
-                vis button06,0
-                vis button07,0
-                button01.font=button_font.val
-                button02.font=button_font.val
-                button03.font=button_font.val
-                button04.font=button_font.val
-                button05.font=button_font.val
-                button06.font=button_font.val
-                button07.font=button_font.val
-                button08.font=button_font.val
-                button09.font=button_font.val
-            }else
+            if(api==0&&embedded.val==0)
             {
                 page home_page_id
             }
+            dim=brightness
+            vis target_icon,0
+            vis target_high,0
+            vis target_low,0
+            vis current_temp,0
+            vis climateslider,0
+            vis slider_high,0
+            vis slider_low,0
+            vis button01,0
+            vis button02,0
+            vis button03,0
+            vis button04,0
+            vis button05,0
+            vis button06,0
+            vis button07,0
+            button01.font=button_font.val
+            button02.font=button_font.val
+            button03.font=button_font.val
+            button04.font=button_font.val
+            button05.font=button_font.val
+            button06.font=button_font.val
+            button07.font=button_font.val
+            button08.font=button_font.val
+            button09.font=button_font.val
+            // set background image and fg color to all components
+            b[0].pic=pic_background_main
+            for(index=0;index<=last_id.val;index++)
+            {
+                b[index].picc=b[0].pic
+            }
+            slider_high.picc1=b[0].pic
+            slider_low.picc1=b[0].pic
+            climateslider.picc1=b[0].pic
             button_back.font=button_back_font
+            button_back.pco=color_pco_navigation
+            page_label.pco=color_pco_main
+            current_temp.pco=color_pco_main
+            target_icon.pco=color_pco_main
+            target_high.pco=color_pco_main
+            target_low.pco=color_pco_main
+            value01.pco=color_pco_secondary
+            value01_icon.pco=color_pco_secondary
+            value02.pco=color_pco_secondary
+            value02_icon.pco=color_pco_secondary
+            value03.pco=color_pco_secondary
+            value03_icon.pco=color_pco_secondary
+            value04.pco=color_pco_secondary
+            value04_icon.pco=color_pco_secondary
+            button01.pco=color_pco_unsupported
+            button02.pco=color_pco_unsupported
+            button03.pco=color_pco_unsupported
+            button04.pco=color_pco_unsupported
+            button05.pco=color_pco_unsupported
+            button06.pco=color_pco_unsupported
+            button07.pco=color_pco_unsupported
+            button08.pco=color_pco_secondary
+            button09.pco=color_pco_secondary
             sendme
         
         Page Exit Event
@@ -217,6 +247,12 @@ Variable (int32) button_font
         ID   : 54
         Scope: global
         Value: 8
+    
+Variable (int32) last_id
+    Attributes
+        ID   : 55
+        Scope: local
+        Value: 55
     
 Text current_temp
     Attributes
