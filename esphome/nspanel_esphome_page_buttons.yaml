@@ -18,6 +18,10 @@ substitutions:
   PAGE_BUTTONPAGE03_ID: 14
   PAGE_BUTTONPAGE04_ID: 15
   TAG_PAGE_BUTTONS: nspanel.page.buttons
+  THEME_PAGE_BUTTONS_DARK_PIC_BUTTON: 46
+  THEME_PAGE_BUTTONS_DARK_PIC_PRESSED: 47
+  THEME_PAGE_BUTTONS_LIGHT_PIC_BUTTON: 79
+  THEME_PAGE_BUTTONS_LIGHT_PIC_PRESSED: 80
 
 api:
   actions:
@@ -50,10 +54,18 @@ api:
               return;
             }
 
-            disp1->set_component_picc((id + "pic").c_str(), state ? 47 : 46);
-            disp1->set_component_picc((id + "bri").c_str(), state ? 47 : 46);
-            disp1->set_component_picc((id + "text").c_str(), state ? 47 : 46);
-            disp1->set_component_picc((id + "icon").c_str(), state ? 47 : 46);
+            const uint8_t button_pic_id = (current_theme == ThemeMode::LIGHT) ?
+                                          ${THEME_PAGE_BUTTONS_LIGHT_PIC_BUTTON} :
+                                          ${THEME_PAGE_BUTTONS_DARK_PIC_BUTTON};
+            const uint8_t button_pressed_pic_id = (current_theme == ThemeMode::LIGHT) ?
+                                                  ${THEME_PAGE_BUTTONS_LIGHT_PIC_PRESSED} :
+                                                  ${THEME_PAGE_BUTTONS_DARK_PIC_PRESSED};
+
+
+            disp1->set_component_picc((id + "pic").c_str(), state ? button_pressed_pic_id : button_pic_id);
+            disp1->set_component_picc((id + "bri").c_str(), state ? button_pressed_pic_id : button_pic_id);
+            disp1->set_component_picc((id + "text").c_str(), state ? button_pressed_pic_id : button_pic_id);
+            disp1->set_component_picc((id + "icon").c_str(), state ? button_pressed_pic_id : button_pic_id);
             disp1->set_component_font((id + "icon").c_str(), icon_font);
             disp1->set_component_foreground_color((id + "bri").c_str(), state ? ${COLOR_BLUE_INDIGO} : ${COLOR_WHITE});
             disp1->set_component_foreground_color((id + "text").c_str(), state ? ${COLOR_BLUE_INDIGO} : 65535);
