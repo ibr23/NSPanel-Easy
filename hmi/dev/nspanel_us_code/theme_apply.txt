@@ -18,6 +18,13 @@ Page theme_apply
     
     Events
         Preinitialize Event
+            if(display_mode==2)
+            {
+                xstr 135,215,50,50,10,RED,BLACK,1,1,3,"\xee\x94\x8d"
+            }else
+            {
+                xstr 215,135,50,50,10,RED,BLACK,1,1,3,"\xee\x94\x8d"
+            }
             if(theme==1)
             {
                 // LIGHT theme
@@ -47,9 +54,6 @@ Page theme_apply
                 light.tempslider_pic.val=71
                 light.lslider_pic.val=72
                 light.lslider_pic1.val=73
-                // settings page
-                settings.b[0].pic=48
-                settings.slider_picc1.val=49
             }else
             {
                 // DARK theme
@@ -79,24 +83,61 @@ Page theme_apply
                 light.tempslider_pic.val=21
                 light.lslider_pic.val=28
                 light.lslider_pic1.val=29
-                // settings page
-                settings.b[0].pic=33
-                settings.slider_picc1.val=34
             }
             // set home page
             home.b[0].pic=pic_background_main
-            for(index=1;index<=45;index++)
+            // home time, date and temperatures
+            for(index=3;index<=6;index++)
+            {
+                home.b[index].picc=pic_background_main
+                home.b[index].pco=color_pco_main
+            }
+            home.indr_temp_icon.picc=pic_background_main
+            home.indr_temp_icon.pco=color_pco_main
+            home.meridiem.picc=pic_background_main
+            home.meridiem.pco=color_pco_main
+            // home hw button's labels
+            home.right_bt_text.picc=pic_background_main
+            home.right_bt_text.pco=color_pco_main
+            home.left_bt_text.picc=pic_background_main
+            home.left_bt_text.pco=color_pco_main
+            // home chips
+            for(index=11;index<=20;index++)
             {
                 home.b[index].picc=pic_background_main
                 home.b[index].pco=color_pco_secondary
             }
+            home.wifi_icon.picc=pic_background_main
+            home.wifi_icon.pco=color_pco_secondary
             home.bt_icon.picc=pic_background_main
-            home.time.pco=color_pco_main
-            home.date.pco=color_pco_main
-            home.meridiem.pco=color_pco_main
-            home.outdoor_temp.pco=color_pco_main
-            home.indr_temp.pco=color_pco_main
-            home.indr_temp_icon.pco=color_pco_main
+            // home values 01-04
+            for(index=21;index<=25;index++)
+            {
+                home.b[index].picc=pic_background_main
+                home.b[index].pco=color_pco_secondary
+            }
+            home.value01.picc=pic_background_main
+            home.value01.pco=color_pco_secondary
+            home.value04.picc=pic_background_main
+            home.value04.pco=color_pco_secondary
+            home.value04_icon.picc=pic_background_main
+            home.value04_icon.pco=color_pco_secondary
+            // home buttons
+            for(index=28;index<=31;index++)
+            {
+                home.b[index].picc=pic_background_main
+                home.b[index].pco=color_pco_secondary
+            }
+            for(index=35;index<=37;index++)
+            {
+                home.b[index].picc=pic_background_main
+                home.b[index].pco=color_pco_secondary
+            }
+            for(index=40;index<=43;index++)
+            {
+                home.b[index].picc=pic_background_main
+                home.b[index].pco=color_pco_secondary
+            }
             // return to previously visible page
             page previous_page.val
         

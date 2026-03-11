@@ -124,9 +124,7 @@ script:
           }
           if (component == "weather_pic") {  // Weather picture (theme-based)
             id(weather_pic) = static_cast<uint8_t>(val);
-            const uint8_t weather_pic_corrected = id(weather_pic) +
-                                ((current_theme == ThemeMode::LIGHT) ? ${THEME_DARK_PIC_PAGE_HOME_WEATHER_OFFSET} : 0);
-            ESP_LOGD("${TAG_PAGE_HOME}", "Update weather pic: %" PRIu8, weather_pic_corrected);
+            page_home_weather_pic->execute();
             return;
           }
 
@@ -160,6 +158,10 @@ script:
           disp1->set_component_font(hmi::home::BT_ENTITIES.name, id(home_custom_buttons_font_id));
           disp1->set_component_font(hmi::home::WIFI_ICON.name, id(home_chip_font_id));
           feed_wdt_delay(${DELAY_DEFAULT});
+
+  - id: !extend boot_wrap_up
+    then:
+      - script.execute: page_home_weather_pic
 
   - id: !extend page_change
     then:
@@ -205,9 +207,18 @@ script:
           // Set color (works for both current and non-current page)
           disp1->set_component_font_color(target_id, show ? color : Colors::BLACK);
 
+  - id: page_home_weather_pic
+    mode: restart
+    then:
+      - lambda: |-
+          const uint8_t weather_pic_corrected = id(weather_pic) +
+                                ((current_theme == ThemeMode::LIGHT) ? ${THEME_DARK_PIC_PAGE_HOME_WEATHER_OFFSET} : 0);
+          ESP_LOGD("${TAG_PAGE_HOME}", "Update weather pic: %" PRIu8, weather_pic_corrected);
+
   - id: !extend stop_all
     then:
       - lambda: |-
           page_home->stop();  // Page home is an exception to the stop_page_constructor, as it can be constructed in the background
           page_home_icon_visibility->stop();
+          page_home_weather_pic->stop();
 ...
