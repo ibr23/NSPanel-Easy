@@ -4206,13 +4206,13 @@ triggers:
         entity_id: !input wake_up_sensors
         to: "on"
 
-  - triggers: # Button page 01
+  - triggers:  # Button page 01
       - alias: Button 01
         id: trigger_buttonpage_state
         trigger: state
         entity_id: !input entity01
 
-      - alias:  Button 02
+      - alias: Button 02
         id: trigger_buttonpage_state
         trigger: state
         entity_id: !input entity02
@@ -4247,13 +4247,13 @@ triggers:
         trigger: state
         entity_id: !input entity08
 
-  - triggers: # Button page 02
+  - triggers:  # Button page 02
       - alias: Button 01
         id: trigger_buttonpage_state
         trigger: state
         entity_id: !input entity09
 
-      - alias:  Button 02
+      - alias: Button 02
         id: trigger_buttonpage_state
         trigger: state
         entity_id: !input entity10
@@ -4288,13 +4288,13 @@ triggers:
         trigger: state
         entity_id: !input entity16
 
-  - triggers: # Button page 03
+  - triggers:  # Button page 03
       - alias: Button 01
         id: trigger_buttonpage_state
         trigger: state
         entity_id: !input entity17
 
-      - alias:  Button 02
+      - alias: Button 02
         id: trigger_buttonpage_state
         trigger: state
         entity_id: !input entity18
@@ -4329,13 +4329,13 @@ triggers:
         trigger: state
         entity_id: !input entity24
 
-  - triggers: # Button page 04
+  - triggers:  # Button page 04
       - alias: Button 01
         id: trigger_buttonpage_state
         trigger: state
         entity_id: !input entity25
 
-      - alias:  Button 02
+      - alias: Button 02
         id: trigger_buttonpage_state
         trigger: state
         entity_id: !input entity26
@@ -4370,7 +4370,7 @@ triggers:
         trigger: state
         entity_id: !input entity32
 
-  - triggers: # Entities page 01
+  - triggers:  # Entities page 01
       - alias: Entity 01
         id: trigger_entitypage_state
         trigger: state
@@ -4411,7 +4411,7 @@ triggers:
         trigger: state
         entity_id: !input entities_entity08
 
-  - triggers: # Entities page 02
+  - triggers:  # Entities page 02
       - alias: Entity 01
         id: trigger_entitypage_state
         trigger: state
@@ -4452,7 +4452,7 @@ triggers:
         trigger: state
         entity_id: !input entities_entity16
 
-  - triggers: # Entities page 03
+  - triggers:  # Entities page 03
       - alias: Entity 01
         id: trigger_entitypage_state
         trigger: state
@@ -4493,7 +4493,7 @@ triggers:
         trigger: state
         entity_id: !input entities_entity24
 
-  - triggers: # Entities page 04
+  - triggers:  # Entities page 04
       - alias: Entity 01
         id: trigger_entitypage_state
         trigger: state
@@ -4534,7 +4534,7 @@ triggers:
         trigger: state
         entity_id: !input entities_entity32
 
-  - triggers: # Home page - Chips
+  - triggers:  # Home page - Chips
       - alias: Chip 01
         id: trigger_chip_state
         trigger: event
@@ -4584,7 +4584,7 @@ triggers:
         event_data:
           entity_id: !input chip07
 
-  - triggers: # Home page - Values
+  - triggers:  # Home page - Values
       - alias: Value 01
         id: home_values_state
         trigger: state
@@ -4625,7 +4625,7 @@ triggers:
         for:
           seconds: 1
 
-  - triggers: # Home page - Custom buttons
+  - triggers:  # Home page - Custom buttons
       - alias: Custom button 01
         id: home_custom_buttons
         trigger: event
@@ -4675,7 +4675,7 @@ triggers:
         event_data:
           entity_id: !input alarm  # Name kept to keep compatibility with older versions
 
-  - triggers: # Climate page
+  - triggers:  # Climate page
       - alias: Climate entity
         id: climate_state
         trigger: event
@@ -4743,7 +4743,7 @@ triggers:
         for:
           seconds: 1
 
-  - triggers: # Water heater page
+  - triggers:  # Water heater page
       - alias: Value 01
         id: trigger_water_heater_page_value_state
         trigger: state
@@ -4784,7 +4784,7 @@ triggers:
         for:
           seconds: 1
 
-  - triggers: # HW Buttons
+  - triggers:  # HW Buttons
       - alias: Left button - entity
         id: left_button_state
         trigger: state
@@ -4803,13 +4803,13 @@ triggers:
         trigger: state
         entity_id: !input right_button_state_entity
 
-  - triggers: # QRcode page
+  - triggers:  # QRcode page
       - alias: QRcode entity
         id: qrcode_changed
         trigger: state
         entity_id: !input "qrcode_entity"
 
-  - triggers: # Utilities page - Main line
+  - triggers:  # Utilities page - Main line
       - alias: Utilities page - Main line
         id: utilities_page
         trigger: template
@@ -4820,7 +4820,7 @@ triggers:
         for:
           seconds: 1
 
-  - triggers: # Utilities page - Home group
+  - triggers:  # Utilities page - Home group
       - alias: Utilities - Home - Value 1
         id: utilities_page
         trigger: state
@@ -4834,7 +4834,7 @@ triggers:
         for:
           seconds: 1
 
-  - triggers: # Utilities page - Grid group
+  - triggers:  # Utilities page - Grid group
       - alias: Utilities - Grid - Value 1
         id: utilities_page
         trigger: state
@@ -4848,7 +4848,7 @@ triggers:
         for:
           seconds: 1
 
-  - triggers: # Utilities page - Group 01
+  - triggers:  # Utilities page - Group 01
       - alias: Utilities - Group 1 - Value 1
         id: utilities_page
         trigger: state
@@ -4871,7 +4871,7 @@ triggers:
         for:
           seconds: 1
 
-  - triggers: # Utilities page - Group 02
+  - triggers:  # Utilities page - Group 02
       - alias: Utilities - Group 2 - Value 1
         id: utilities_page
         trigger: state
@@ -4894,7 +4894,7 @@ triggers:
         for:
           seconds: 1
 
-  - triggers: # Utilities page - Group 03
+  - triggers:  # Utilities page - Group 03
       - alias: Utilities - Group 3 - Value 1
         id: utilities_page
         trigger: state
@@ -4917,7 +4917,7 @@ triggers:
         for:
           seconds: 1
 
-  - triggers: # Utilities page - Group 04
+  - triggers:  # Utilities page - Group 04
       - alias: Utilities - Group 4 - Value 1
         id: utilities_page
         trigger: state
@@ -4940,7 +4940,7 @@ triggers:
         for:
           seconds: 1
 
-  - triggers: # Utilities page - Group 05
+  - triggers:  # Utilities page - Group 05
       - alias: Utilities - Group 5 - Value 1
         id: utilities_page
         trigger: state
@@ -4963,7 +4963,7 @@ triggers:
         for:
           seconds: 1
 
-  - triggers: # Utilities page - Group 06
+  - triggers:  # Utilities page - Group 06
       - alias: Utilities - Group 6 - Value 1
         id: utilities_page
         trigger: state
@@ -4986,7 +4986,7 @@ triggers:
         for:
           seconds: 1
 
-  - triggers: # Home page - Weather and temperatures
+  - triggers:  # Home page - Weather and temperatures
       - alias: Outdoor temperature
         id: outdoortemp_state
         trigger: event
@@ -5014,7 +5014,6 @@ triggers:
 
 # yamllint disable rule:line-length
 conditions:
-  condition:
   - >  # Trigger is coming from panel's event or Nextion display must be connected
     {{
       trigger.id in ["automation_reloaded", "ha_started", "nspanel_event"] or
