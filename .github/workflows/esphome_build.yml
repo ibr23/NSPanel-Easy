@@ -57,7 +57,7 @@ jobs:
         run: find . \( -name "*.yaml" -o -name "*.yml" \) -exec yamllint -c ./.rules/yamllint.yml {} +
 
   build:
-    name: ${{ matrix.name }} (${{ matrix.esphome-version }})
+    name: ${{ matrix.firmware.name }} (${{ matrix.esphome-version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -65,7 +65,7 @@ jobs:
         esphome-version:
           - latest
           - dev
-        include:
+        firmware:
           - name: Core
             yaml-file: .test/esphome_idf_basic.yaml
           - name: Core Arduino
@@ -92,7 +92,7 @@ jobs:
       - name: Build firmware
         uses: edwardtfn/build-action@add-substitutions-support
         with:
-          yaml-file: ${{ matrix.yaml-file }}
+          yaml-file: ${{ matrix.firmware.yaml-file }}
           version: ${{ matrix.esphome-version }}
           substitutions: |
             ref_name=${{ env.REF_NAME }}
