@@ -190,32 +190,30 @@ Number field
     
 Text light_value
     Attributes
-        ID                  : 1
-        Scope               : local
-        Dragging            : 0
-        Send Component ID   : disabled
-        Opacity             : 127
-        x coordinate        : 164
-        y coordinate        : 43
-        Width               : 83
-        Height              : 20
-        Effect              : load
-        Effect Priority     : 0
-        Effect Time         : 300
-        Fill                : solid color
-        Style               : flat
-        Associated Keyboard : none
-        Font ID             : 2
-        Back. Color         : 0
-        Font Color          : 65535
-        Horizontal Alignment: center
-        Vertical Alignment  : center
-        Input Type          : character
-        Text                : 
-        Max. Text Size      : 10
-        Word wrap           : disabled
-        Horizontal Spacing  : 0
-        Vertical Spacing    : 0
+        ID                      : 1
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 164
+        y coordinate            : 43
+        Width                   : 83
+        Height                  : 20
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 2
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 10
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
     
 Text page_label
     Attributes
