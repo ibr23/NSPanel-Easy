@@ -54,6 +54,7 @@ Page light
             lightslider.pic1=lslider_pic1.val
             button_back.font=button_back_font
             button_back.pco=color_pco_navigation
+            button_back.picc=pic_background_main
             button_back.picc2=pic_background_main
             icon_state.pco=color_pco_main
             page_label.pco=color_pco_main

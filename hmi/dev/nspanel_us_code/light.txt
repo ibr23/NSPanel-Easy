@@ -43,29 +43,25 @@ Page light
             vis color_button,0
             // set background image and fg color to all components
             light.pic=pic_background_main
+            for(index=0;index<=last_component.id;index++)
+            {
+                b[index].picc=b[0].pic
+            }
             colorwheel.pic=colorwheel_pic.val
             tempslider.pic=tempslider_pic.val
             tempslider.pic1=tempslider_pic.val
             lightslider.pic=lslider_pic.val
             lightslider.pic1=lslider_pic1.val
-            // Set text components
-            icon_state.pco=color_pco_main
-            icon_state.picc=pic_background_main
-            page_label.pco=color_pco_main
-            page_label.picc=pic_background_main
             button_back.font=button_back_font
             button_back.pco=color_pco_navigation
+            button_back.picc=pic_background_main
             button_back.picc2=pic_background_main
+            icon_state.pco=color_pco_main
+            page_label.pco=color_pco_main
             light_value.pco=color_pco_main
-            light_value.picc=pic_background_main
-            light_value_2.pco=color_pco_main
-            light_value_2.picc=pic_background_main
             temp_value.pco=color_pco_main
-            temp_value.picc=pic_background_main
             temp_value_2.pco=color_pco_main
-            temp_value_2.picc=pic_background_main
             power_button.pco=color_pco_secondary
-            power_button.picc=pic_background_main
             dim=brightness
             sendme
         
