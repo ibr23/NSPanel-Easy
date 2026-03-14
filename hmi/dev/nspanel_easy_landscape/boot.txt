@@ -19,5 +19,5 @@ Page boot
     
     Events
         Preinitialize Event
-            sendme
+            page home
         
