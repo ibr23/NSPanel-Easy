@@ -114,7 +114,7 @@ namespace nspanel_easy {
    *       not update for those combinations until IDs are filled in.
    */
   constexpr WeatherConditionEntry WEATHER_CONDITIONS[] = {
-    //                      legacy_light    legacy_dark      new_light     new_dark
+    //                      legacy_light    legacy_dark      new_light      new_dark
     { nullptr,            { WPV(49),        WPV(1),         WPV(0),        WPV(0)        } },  ///< Index  0 - fallback
     { "clear_night",      { WPV2(50, 63),   WPV2(2, 15),    WPV2(14, 1),   WPV2(27, 15)  } },  ///< Index  1
     { "cloudy",           { WPV(51),        WPV(3),         WPV(2),        WPV(16)       } },  ///< Index  2
@@ -184,6 +184,7 @@ namespace nspanel_easy {
 
     char buf[32] = {};
     strncpy(buf, condition, sizeof(buf) - 1);
+    buf[sizeof(buf) - 1] = '\0';  // Ensure null-termination if input fills the buffer
     normalise_weather_condition(buf, sizeof(buf));
 
     constexpr uint8_t count =
