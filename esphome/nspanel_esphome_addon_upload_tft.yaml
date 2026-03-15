@@ -348,7 +348,7 @@ select:
       - "NSPanel Legacy EU (CJK languages)"
       - "NSPanel Legacy US (CJK languages)"
       - "NSPanel Legacy US Landscape (CJK languages)"
-      - "NSPanel Easy EU"
+      - "NSPanel Easy EU (under construction)"
     initial_option: "NSPanel Blank"
     optimistic: true
     restore_value: true
