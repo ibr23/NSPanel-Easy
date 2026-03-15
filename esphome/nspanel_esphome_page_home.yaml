@@ -82,12 +82,13 @@ script:
             return;
           }
 
-  - id: !extend action_component_string
+  - id: !extend action_component_text
     then:
       - lambda: |-
           if (page != "mem") return;
           if (component == "weather_state") {
-            id(weather_state) = txt.c_str();
+            nspanel_easy::weather_condition_index = nspanel_easy::get_weather_index(txt.c_str());
+            page_home_weather_update->execute();
             return;
           }
 
@@ -225,10 +226,16 @@ script:
           ESP_LOGD("${TAG_PAGE_HOME}", "Update weather pic: %" PRIu8, weather_pic_corrected);
           disp1->set_component_pic(hmi::home::WEATHER.name, weather_pic_corrected);
 
+  - id: page_home_weather_update
+    mode: restart
+    then:
+
+
   - id: !extend stop_all
     then:
       - lambda: |-
           page_home->stop();  // Page home is an exception to the stop_page_constructor, as it can be constructed in the background
           page_home_icon_visibility->stop();
           page_home_weather_pic->stop();
+          page_home_weather_update->stop();
 ...

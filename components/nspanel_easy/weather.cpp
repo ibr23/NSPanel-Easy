@@ -11,6 +11,8 @@ namespace nspanel_easy {
     .coord_received = false,  // Coordinates not yet received - time proxy active
   };
 
+  uint8_t weather_condition_index = 0;  // Defaults to fallback until first blueprint update
+
 }  // namespace nspanel_easy
 
 #endif  // NSPANEL_EASY_USE_WEATHER

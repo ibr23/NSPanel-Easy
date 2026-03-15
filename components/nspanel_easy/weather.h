@@ -18,7 +18,7 @@
  *
  * Condition strings are normalised before lookup: hyphens are replaced with
  * underscores, so "clear-night" and "clear_night" resolve to the same entry.
- * Unrecognised conditions fall back to the sentinel entry's picture set.
+ * Unrecognised conditions fall back to index 0 (the sentinel / fallback entry).
  *
  * Sun elevation is tracked via @ref SunInfo. When valid coordinates have not
  * yet been received from the blueprint, @ref SunInfo::is_up is derived from
@@ -83,12 +83,11 @@ namespace nspanel_easy {
   /**
    * @brief Associates a normalised condition string with its picture set.
    *
-   * Keys use underscores only - hyphens are normalised before lookup.
-   * The table is terminated by a sentinel entry with a null @p key whose
-   * @p pics field serves as the fallback for unrecognised conditions.
+   * Index 0 is always the sentinel / fallback entry (null key).
+   * Named entries occupy indices 1 and above.
    */
   struct WeatherConditionEntry {
-    const char* key;   ///< Condition name (underscore-separated, lower-case), or null for sentinel
+    const char* key;   ///< Condition name (underscore-separated, lower-case), or null for the fallback entry
     WeatherPics pics;  ///< Picture IDs for this condition, or fallback IDs for the sentinel
   };
 
@@ -104,39 +103,50 @@ namespace nspanel_easy {
   /**
    * @brief Lookup table mapping weather condition strings to picture IDs.
    *
-   * Entries are sorted alphabetically by key for readability.
-   * The linear search is O(n) over at most ~15 entries - performance is
-   * not a concern at this scale.
+   * Index 0 is the fallback entry (null key), used for unknown, unavailable,
+   * and any unrecognised condition strings Home Assistant may send.
+   * Named entries are sorted alphabetically from index 1 for readability.
    *
-   * The sentinel entry (null key) doubles as the fallback picture set for
-   * unrecognised conditions - unknown, unavailable, and anything else
-   * Home Assistant may send that is not explicitly listed.
+   * The linear search in @ref get_weather_index is O(n) over at most ~15
+   * named entries - performance is not a concern at this scale.
    *
    * @note Picture IDs of 0 indicate unassigned slots - the display will
    *       not update for those combinations until IDs are filled in.
    */
   constexpr WeatherConditionEntry WEATHER_CONDITIONS[] = {
-    //                      legacy_light    legacy_dark      new_light       new_dark
-    { "clear_night",      { WPV2(50, 63),   WPV2(2, 15),    WPV2(14, 1),   WPV2(27, 15)  } },
-    { "cloudy",           { WPV(51),        WPV(3),         WPV(2),        WPV(16)       } },
-    { "exceptional",      { WPV2(61, 62),   WPV2(13, 14),   WPV(0),        WPV(0)        } },
-    { "fog",              { WPV(56),        WPV(8),         WPV(3),        WPV(17)       } },
-    { "hail",             { WPV(55),        WPV(7),         WPV(4),        WPV(18)       } },
-    { "lightning",        { WPV(58),        WPV(10),        WPV(5),        WPV(19)       } },
-    { "lightning_rainy",  { WPV2(61, 62),   WPV2(13, 14),   WPV(6),        WPV(20)       } },
-    { "partlycloudy",     { WPV2(59, 60),   WPV2(11, 12),   WPV2(7, 8),    WPV2(21, 22)  } },
-    { "pouring",          { WPV(53),        WPV(5),         WPV(9),        WPV(23)       } },
-    { "rainy",            { WPV(52),        WPV(4),         WPV(10),       WPV(24)       } },
-    { "snowy",            { WPV(54),        WPV(6),         WPV(11),       WPV(25)       } },
-    { "snowy_rainy",      { WPV(55),        WPV(7),         WPV(12),       WPV(26)       } },
-    { "sunny",            { WPV2(50, 63),   WPV2(2, 15),    WPV2(13, 1),   WPV2(27, 15)  } },
-    { "windy",            { WPV(57),        WPV(9),         WPV(14),       WPV(28)       } },
-    { "windy_variant",    { WPV(57),        WPV(9),         WPV(14),       WPV(28)       } },
-    { nullptr,            { WPV(49),        WPV(1),         WPV(0),        WPV(0)        } },  ///< Sentinel / fallback
+    //                      legacy_light    legacy_dark      new_light     new_dark
+    { nullptr,            { WPV(49),        WPV(1),         WPV(0),        WPV(0)        } },  ///< Index  0 - fallback
+    { "clear_night",      { WPV2(50, 63),   WPV2(2, 15),    WPV2(14, 1),   WPV2(27, 15)  } },  ///< Index  1
+    { "cloudy",           { WPV(51),        WPV(3),         WPV(2),        WPV(16)       } },  ///< Index  2
+    { "exceptional",      { WPV2(61, 62),   WPV2(13, 14),   WPV(0),        WPV(0)        } },  ///< Index  3
+    { "fog",              { WPV(56),        WPV(8),         WPV(3),        WPV(17)       } },  ///< Index  4
+    { "hail",             { WPV(55),        WPV(7),         WPV(4),        WPV(18)       } },  ///< Index  5
+    { "lightning",        { WPV(58),        WPV(10),        WPV(5),        WPV(19)       } },  ///< Index  6
+    { "lightning_rainy",  { WPV2(61, 62),   WPV2(13, 14),   WPV(6),        WPV(20)       } },  ///< Index  7
+    { "partlycloudy",     { WPV2(59, 60),   WPV2(11, 12),   WPV2(7, 8),    WPV2(21, 22)  } },  ///< Index  8
+    { "pouring",          { WPV(53),        WPV(5),         WPV(9),        WPV(23)       } },  ///< Index  9
+    { "rainy",            { WPV(52),        WPV(4),         WPV(10),       WPV(24)       } },  ///< Index 10
+    { "snowy",            { WPV(54),        WPV(6),         WPV(11),       WPV(25)       } },  ///< Index 11
+    { "snowy_rainy",      { WPV(55),        WPV(7),         WPV(12),       WPV(26)       } },  ///< Index 12
+    { "sunny",            { WPV2(50, 63),   WPV2(2, 15),    WPV2(13, 1),   WPV2(27, 15)  } },  ///< Index 13
+    { "windy",            { WPV(57),        WPV(9),         WPV(14),       WPV(28)       } },  ///< Index 14
+    { "windy_variant",    { WPV(57),        WPV(9),         WPV(14),       WPV(28)       } },  ///< Index 15
   };
 
 #undef WPV
 #undef WPV2
+
+  // =============================================================================
+  // Current condition state
+  // =============================================================================
+
+  /**
+   * @brief Index into @ref WEATHER_CONDITIONS for the current weather condition.
+   *
+   * Set by @ref get_weather_index when a new condition string is received from
+   * the blueprint. Defaults to 0 (fallback) until the first update arrives.
+   */
+  extern uint8_t weather_condition_index;
 
   // =============================================================================
   // Helper functions
@@ -159,31 +169,46 @@ namespace nspanel_easy {
   }
 
   /**
-   * @brief Looks up the picture set for a weather condition string.
+   * @brief Looks up the index of a weather condition string in @ref WEATHER_CONDITIONS.
    *
    * Normalises the input (hyphens to underscores) once before searching the
-   * table. The search is case-sensitive; the blueprint is expected to send
-   * lower-case condition names. Falls back to the sentinel entry's picture
-   * set for any unrecognised condition.
+   * table. The search starts at index 1, skipping the fallback entry at index 0.
+   * Returns 0 for any null, empty, or unrecognised condition string.
    *
    * @param condition  Null-terminated condition string (hyphens or underscores).
-   * @return           Pointer to the matching @ref WeatherPics, or the sentinel's
-   *                   @ref WeatherPics if no entry is found.
+   * @return           Index into @ref WEATHER_CONDITIONS, or 0 if not found.
    */
-  inline const WeatherPics* get_weather_pics(const char* condition) {
-    char buf[32] = {};
-    if (condition != nullptr && *condition != '\0') {
-      strncpy(buf, condition, sizeof(buf) - 1);
-      normalise_weather_condition(buf, sizeof(buf));
-    }
+  inline uint8_t get_weather_index(const char* condition) {
+    if (condition == nullptr || *condition == '\0')
+      return 0;
 
-    const WeatherConditionEntry* entry = WEATHER_CONDITIONS;
-    while (entry->key != nullptr) {
-      if (buf[0] != '\0' && strcmp(entry->key, buf) == 0)
-        return &entry->pics;
-      ++entry;
+    char buf[32] = {};
+    strncpy(buf, condition, sizeof(buf) - 1);
+    normalise_weather_condition(buf, sizeof(buf));
+
+    constexpr uint8_t count =
+        sizeof(WEATHER_CONDITIONS) / sizeof(WEATHER_CONDITIONS[0]);
+    for (uint8_t i = 1; i < count; ++i) {
+      if (strcmp(WEATHER_CONDITIONS[i].key, buf) == 0)
+        return i;
     }
-    return &entry->pics;  // Sentinel entry - fallback
+    return 0;  // Fallback
+  }
+
+  /**
+   * @brief Returns the picture set for a given @ref WEATHER_CONDITIONS index.
+   *
+   * Clamps out-of-range indices to 0 (fallback) to guard against stale state.
+   *
+   * @param index  Index into @ref WEATHER_CONDITIONS.
+   * @return       Reference to the matching @ref WeatherPics.
+   */
+  inline const WeatherPics& get_weather_pics(uint8_t index) {
+    constexpr uint8_t count =
+        sizeof(WEATHER_CONDITIONS) / sizeof(WEATHER_CONDITIONS[0]);
+    if (index >= count)
+      index = 0;  // Clamp to fallback
+    return WEATHER_CONDITIONS[index].pics;
   }
 
   /**
