@@ -38,21 +38,8 @@ but if you are planing to customize your displays, be aware that the US version 
 
 #### Using the US model in landscape mode
 
-If you can use the US model in landscape mode, you can simple upload the EU version of the TFT file and everything will be operational,
-however on the home page you will see the labels for the physical buttons in the bottom, while the buttons will be in the right side:
-![NSPanel US and EU side-by-side](nspanel_eu_and_us_side_by_side.png)
+The US Landscape model is fully supported.
+Simply select **NSPanel US Landscape** from the **Update TFT display - Model** selector on your device's page in Home Assistant and upload the TFT file as usual.
+This variant is purpose-built for the US panel mounted horizontally, with the physical buttons on the right side of the screen.
 
-You can always try to use the nspanel_eu.hmi with the [Nextion editor](https://nextion.tech/nextion-editor/)
-to move those blue bars to the position where the buttons are in the reality and then generate a custom nspanel_eu.tft which you could upload to your panel,
-but take these points in accout:
-
-1. I couldn't find any easy way to rotate text in the Nextion editor, so you probably will have to remove those labels or it will look quite weird.
-1. Any customization to this project files won't be supported by the project's team. ;)
-
-Hopefully this helped you.
-Please share in the comments if you have any other findings or thoughts about this topic.
-
----
-
-Edit - 2023-09-20:
-US Landscape mode is now included on v4.0: Blackymas/NSPanel_HA_Blueprint#1057
+No manual TFT customisation is required.
