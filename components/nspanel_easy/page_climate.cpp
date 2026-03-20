@@ -4,6 +4,7 @@
 
 #include "page_climate.h"
 
+namespace esphome {
 namespace nspanel_easy {
 
     float set_climate_current_temp;
@@ -18,5 +19,6 @@ namespace nspanel_easy {
     bool set_climate_embedded_climate;
 
 }  // namespace nspanel_easy
+}  // namespace esphome
 
 #endif  // NSPANEL_EASY_PAGE_CLIMATE

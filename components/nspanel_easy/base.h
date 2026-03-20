@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 
+namespace esphome {
 namespace nspanel_easy {
 
     /**
@@ -201,3 +202,4 @@ namespace nspanel_easy {
     void fire_ha_event(const std::string &type, std::map<std::string, std::string> data = {});
 
 }  // namespace nspanel_easy
+}  // namespace esphome

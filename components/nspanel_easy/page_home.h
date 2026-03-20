@@ -14,6 +14,7 @@
  * of the NSPanel interface.
  */
 
+namespace esphome {
 namespace nspanel_easy {
   namespace hmi {
     namespace home {
@@ -101,5 +102,6 @@ namespace nspanel_easy {
     }  // namespace home
   }    // namespace hmi
 }  // namespace nspanel_easy
+}  // namespace esphome
 
 #endif  // NSPANEL_EASY_PAGE_HOME

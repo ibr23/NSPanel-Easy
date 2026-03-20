@@ -1,0 +1,4146 @@
+#####################################################################################################
+#####                 NSPanel Easy - https://github.com/edwardtfn/NSPanel-Easy                  #####
+#####################################################################################################
+##### ESPHOME CORE - Localization                                                               #####
+##### PLEASE only make changes if it is necessary and also the required knowledge is available. #####
+##### For normal use with the Blueprint, no changes are necessary.                              #####
+#####################################################################################################
+---
+substitutions:
+  ##############################
+  ## Change only in your      ##
+  ## local yaml substitutions ##
+  ##############################
+  TAG_LOCALIZATION: nspanel.localization
+
+  language: ''
+  SUPPORTED_LANGUAGES: ["af", "ar", "bg", "bn", "bs", "ca", "cs", "cy", "da", "de", "el", "en",
+                        "es", "et", "eu", "fa", "fi", "fr", "gl", "he", "hi", "hr", "hu", "id",
+                        "is", "it", "ja", "jv", "ko", "lt", "lv", "mk", "ms", "nb", "nl", "pa",
+                        "pl", "pt", "ro", "ru", "sk", "sl", "sq", "sr", "sw", "sv", "ta", "th",
+                        "tr", "uk", "ur", "vi", "zh-cn", "zh-tw"]
+  LANGUAGE_LOWER: ${ language | lower }
+  LANG: ${ LANGUAGE_LOWER if LANGUAGE_LOWER in SUPPORTED_LANGUAGES else "en" }
+  LOCALIZATION:
+    af:     # Afrikaans
+      bytes_per_char: 1
+      weekdays:
+        mon: Maandag
+        tue: Dinsdag
+        wed: Woensdag
+        thu: Donderdag
+        fri: Vrydag
+        sat: Saterdag
+        sun: Sondag
+      weekdays_short:
+        mon: Maa
+        tue: Din
+        wed: Woe
+        thu: Don
+        fri: Vry
+        sat: Sat
+        sun: Son
+      months:
+        jan: Januarie
+        feb: Februarie
+        mar: Maart
+        apr: April
+        may: Mei
+        jun: Junie
+        jul: Julie
+        aug: Augustus
+        sep: September
+        oct: Oktober
+        nov: November
+        dec: Desember
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mrt
+        apr: Apr
+        may: Mei
+        jun: Jun
+        jul: Jul
+        aug: Aug
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Des
+      relative_day:
+        today: Vandag
+        tomorrow: Môre
+        in_2_days: Oormôre
+        in_3_days: Oor 3 dae
+        in_4_days: Oor 4 dae
+      climate:
+        states:
+          "on": Aan
+          "off": Af
+        heat: Verhitting
+      please_confirm: Bevestig asseblief
+      unavailable: Nie beskikbaar nie
+      unknown: Onbekend
+      no_name: Geen naam
+      alarm:
+        home: Tuis
+        away: Weg
+        night: Nag
+        vacation: Vakansie
+        bypass: Omseil
+        disarm: Deaktiveer
+      settings:
+        reboot: Herlaai
+        sleep: Slaapstand
+        brightness: Helderheid
+        bright: Helder
+        dimming: Verduistering
+        dim: Gedimd
+      meridiem:
+        am: vm.
+        pm: nm.
+    ar:     # Arabic
+      bytes_per_char: 2
+      weekdays:
+        mon: الاثنين
+        tue: الثلاثاء
+        wed: الأربعاء
+        thu: الخميس
+        fri: الجمعة
+        sat: السبت
+        sun: الأحد
+      weekdays_short:
+        mon: اثن
+        tue: ثلا
+        wed: أرب
+        thu: خمي
+        fri: جمع
+        sat: سبت
+        sun: أحد
+      months:
+        jan: يناير
+        feb: فبراير
+        mar: مارس
+        apr: أبريل
+        may: مايو
+        jun: يونيو
+        jul: يوليو
+        aug: أغسطس
+        sep: سبتمبر
+        oct: أكتوبر
+        nov: نوفمبر
+        dec: ديسمبر
+      months_short:
+        jan: ينا
+        feb: فبر
+        mar: مار
+        apr: أبر
+        may: ماي
+        jun: يون
+        jul: يول
+        aug: أغس
+        sep: سبت
+        oct: أكت
+        nov: نوف
+        dec: ديس
+      relative_day:
+        today: اليوم
+        tomorrow: غدًا
+        in_2_days: بعد يومين
+        in_3_days: بعد ثلاثة أيام
+        in_4_days: بعد أربعة أيام
+      climate:
+        states:
+          "on": مشغل
+          "off": مطفأ
+        heat: تدفئة
+      please_confirm: يرجى التأكيد
+      unavailable: غير متاح
+      unknown: مجهول
+      no_name: بدون اسم
+      alarm:
+        home: في المنزل
+        away: بعيد
+        night: ليل
+        vacation: إجازة
+        bypass: تجاوز
+        disarm: نزع السلاح
+      settings:
+        reboot: إعادة تشغيل
+        sleep: وضع النوم
+        brightness: سطوع
+        bright: مشرق
+        dimming: تعتيم
+        dim: خافت
+      meridiem:
+        am: صباحاً
+        pm: مساءً
+    bg:     # Bulgarian
+      bytes_per_char: 1
+      weekdays:
+        mon: Понеделник
+        tue: Вторник
+        wed: Сряда
+        thu: Четвъртък
+        fri: Петък
+        sat: Събота
+        sun: Неделя
+      weekdays_short:
+        mon: Пон
+        tue: Вто
+        wed: Сря
+        thu: Чет
+        fri: Пет
+        sat: Съб
+        sun: Нед
+      months:
+        jan: Януари
+        feb: Февруари
+        mar: Март
+        apr: Април
+        may: Май
+        jun: Юни
+        jul: Юли
+        aug: Август
+        sep: Септември
+        oct: Октомври
+        nov: Ноември
+        dec: Декември
+      months_short:
+        jan: Яну
+        feb: Фев
+        mar: Мар
+        apr: Апр
+        may: Май
+        jun: Юни
+        jul: Юли
+        aug: Авг
+        sep: Сеп
+        oct: Окт
+        nov: Ное
+        dec: Дек
+      relative_day:
+        today: Днес
+        tomorrow: Утре
+        in_2_days: След 2 дни
+        in_3_days: След 3 дни
+        in_4_days: След 4 дни
+      climate:
+        states:
+          "on": Включен
+          "off": Изключен
+        heat: Отопление
+      please_confirm: Моля, потвърдете
+      unavailable: Недостъпен
+      unknown: Неизвестен
+      no_name: Няма име
+      alarm:
+        home: Вкъщи
+        away: Навън
+        night: Нощ
+        vacation: Ваканция
+        bypass: Заобикаляне
+        disarm: Разоръжаване
+      settings:
+        reboot: Рестартиране
+        sleep: Сън
+        brightness: Яркост
+        bright: Ярък
+        dimming: Затъмняване
+        dim: Тъмен
+      meridiem:
+        am: AM
+        pm: PM
+    bn:     # Bengali
+      bytes_per_char: 3
+      weekdays:
+        mon: সোমবার
+        tue: মঙ্গলবার
+        wed: বুধবার
+        thu: বৃহস্পতিবার
+        fri: শুক্রবার
+        sat: শনিবার
+        sun: রবিবার
+      weekdays_short:
+        mon: সোম
+        tue: মঙ্গল
+        wed: বুধ
+        thu: বৃহঃ
+        fri: শুক্র
+        sat: শনি
+        sun: রবি
+      months:
+        jan: জানুয়ারি
+        feb: ফেব্রুয়ারি
+        mar: মার্চ
+        apr: এপ্রিল
+        may: মে
+        jun: জুন
+        jul: জুলাই
+        aug: আগস্ট
+        sep: সেপ্টেম্বর
+        oct: অক্টোবর
+        nov: নভেম্বর
+        dec: ডিসেম্বর
+      months_short:
+        jan: জান
+        feb: ফেব
+        mar: মার
+        apr: এপ্র
+        may: মে
+        jun: জুন
+        jul: জুল
+        aug: আগ
+        sep: সেপ
+        oct: অক্ট
+        nov: নভে
+        dec: ডিসে
+      relative_day:
+        today: আজ
+        tomorrow: আগামীকাল
+        in_2_days: পরশু
+        in_3_days: ৩ দিন পরে
+        in_4_days: ৪ দিন পরে
+      climate:
+        states:
+          "on": চালু
+          "off": বন্ধ
+        heat: গরম
+      please_confirm: নিশ্চিত করুন
+      unavailable: অনুপলব্ধ
+      unknown: অজানা
+      no_name: নাম নেই
+      alarm:
+        home: বাড়িতে
+        away: বাইরে
+        night: রাত
+        vacation: ছুটি
+        bypass: বাইপাস
+        disarm: নিষ্ক্রিয়
+      settings:
+        reboot: রিবুট
+        sleep: ঘুম মোড
+        brightness: উজ্জ্বলতা
+        bright: উজ্জ্বল
+        dimming: ম্লান
+        dim: অন্ধকার
+      meridiem:
+        am: পূর্বাহ্ন
+        pm: অপরাহ্ন
+    bs:     # Bosnian
+      bytes_per_char: 1
+      weekdays:
+        mon: Ponedjeljak
+        tue: Utorak
+        wed: Srijeda
+        thu: Četvrtak
+        fri: Petak
+        sat: Subota
+        sun: Nedjelja
+      weekdays_short:
+        mon: Pon
+        tue: Uto
+        wed: Sri
+        thu: Čet
+        fri: Pet
+        sat: Sub
+        sun: Ned
+      months:
+        jan: Januar
+        feb: Februar
+        mar: Mart
+        apr: April
+        may: Maj
+        jun: Juni
+        jul: Juli
+        aug: August
+        sep: Septembar
+        oct: Oktobar
+        nov: Novembar
+        dec: Decembar
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: Maj
+        jun: Jun
+        jul: Jul
+        aug: Aug
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Dec
+      relative_day:
+        today: Danas
+        tomorrow: Sutra
+        in_2_days: Za 2 dana
+        in_3_days: Za 3 dana
+        in_4_days: Za 4 dana
+      climate:
+        states:
+          "on": Uključeno
+          "off": Isključeno
+        heat: Grijanje
+      please_confirm: Molimo potvrdite
+      unavailable: Nedostupno
+      unknown: Nepoznato
+      no_name: Bez imena
+      alarm:
+        home: Kod kuće
+        away: Odsutan
+        night: Noć
+        vacation: Odmor
+        bypass: Zaobići
+        disarm: Razoružati
+      settings:
+        reboot: Ponovno pokretanje
+        sleep: Spavanje
+        brightness: Svjetlina
+        bright: Svijetlo
+        dimming: Zatamnjenje
+        dim: Tamno
+      meridiem:
+        am: AM
+        pm: PM
+    ca:     # Catalan
+      bytes_per_char: 1
+      weekdays:
+        mon: Dilluns
+        tue: Dimarts
+        wed: Dimecres
+        thu: Dijous
+        fri: Divendres
+        sat: Dissabte
+        sun: Diumenge
+      weekdays_short:
+        mon: Dl
+        tue: Dt
+        wed: Dc
+        thu: Dj
+        fri: Dv
+        sat: Ds
+        sun: Dg
+      months:
+        jan: Gener
+        feb: Febrer
+        mar: Març
+        apr: Abril
+        may: Maig
+        jun: Juny
+        jul: Juliol
+        aug: Agost
+        sep: Setembre
+        oct: Octubre
+        nov: Novembre
+        dec: Desembre
+      months_short:
+        jan: Gen
+        feb: Feb
+        mar: Mar
+        apr: Abr
+        may: Mai
+        jun: Jun
+        jul: Jul
+        aug: Ago
+        sep: Set
+        oct: Oct
+        nov: Nov
+        dec: Des
+      relative_day:
+        today: Avui
+        tomorrow: Demà
+        in_2_days: En 2 dies
+        in_3_days: En 3 dies
+        in_4_days: En 4 dies
+      climate:
+        states:
+          'on': Encès
+          'off': Apagat
+        heat: Escalfar
+      please_confirm: Si us plau, confirmi
+      unavailable: No disponible
+      unknown: Desconegut
+      no_name: Sense nom
+      alarm:
+        home: Casa
+        away: Fora
+        night: Nit
+        vacation: Vacances
+        bypass: Bypass
+        disarm: Desactivar
+      settings:
+        reboot: Reiniciar
+        sleep: Dormir
+        brightness: Brillantor
+        bright: Brillant
+        dimming: Atenuació
+        dim: Fosc
+      meridiem:
+        am: a.m.
+        pm: p.m.
+    cs:     # Czech
+      bytes_per_char: 1
+      weekdays:
+        mon: Pondělí
+        tue: Úterý
+        wed: Středa
+        thu: Čtvrtek
+        fri: Pátek
+        sat: Sobota
+        sun: Neděle
+      weekdays_short:
+        mon: Po
+        tue: Út
+        wed: St
+        thu: Čt
+        fri: Pá
+        sat: So
+        sun: Ne
+      months:
+        jan: Leden
+        feb: Únor
+        mar: Březen
+        apr: Duben
+        may: Květen
+        jun: Červen
+        jul: Červenec
+        aug: Srpen
+        sep: Září
+        oct: Říjen
+        nov: Listopad
+        dec: Prosinec
+      months_short:
+        jan: Led
+        feb: Úno
+        mar: Bře
+        apr: Dub
+        may: Kvě
+        jun: Čvn
+        jul: Čvc
+        aug: Srp
+        sep: Zář
+        oct: Říj
+        nov: Lis
+        dec: Pro
+      relative_day:
+        today: Dnes
+        tomorrow: Zítra
+        in_2_days: Za 2 dny
+        in_3_days: Za 3 dny
+        in_4_days: Za 4 dny
+      climate:
+        states:
+          "on": Zapnuto
+          "off": Vypnuto
+        heat: Topení
+      please_confirm: Prosím, potvrďte
+      unavailable: Nedostupné
+      unknown: Neznámý
+      no_name: Bez názvu
+      alarm:
+        home: Doma
+        away: Pryč
+        night: Noc
+        vacation: Dovolená
+        bypass: Obcházet
+        disarm: Odjistit
+      settings:
+        reboot: Restart
+        sleep: Spánek
+        brightness: Jas
+        bright: Světlý
+        dimming: Ztmavení
+        dim: Tmavý
+      meridiem:
+        am: dop.
+        pm: odp.
+    cy:     # Welsh
+      bytes_per_char: 1
+      weekdays:
+        mon: Dydd Llun
+        tue: Dydd Mawrth
+        wed: Dydd Mercher
+        thu: Dydd Iau
+        fri: Dydd Gwener
+        sat: Dydd Sadwrn
+        sun: Dydd Sul
+      weekdays_short:
+        mon: Llun
+        tue: Maw
+        wed: Mer
+        thu: Iau
+        fri: Gwe
+        sat: Sad
+        sun: Sul
+      months:
+        jan: Ionawr
+        feb: Chwefror
+        mar: Mawrth
+        apr: Ebrill
+        may: Mai
+        jun: Mehefin
+        jul: Gorffennaf
+        aug: Awst
+        sep: Medi
+        oct: Hydref
+        nov: Tachwedd
+        dec: Rhagfyr
+      months_short:
+        jan: Ion
+        feb: Chwe
+        mar: Maw
+        apr: Ebr
+        may: Mai
+        jun: Meh
+        jul: Gor
+        aug: Aws
+        sep: Med
+        oct: Hyd
+        nov: Tach
+        dec: Rhag
+      relative_day:
+        today: Heddiw
+        tomorrow: Yfory
+        in_2_days: Ymhen 2 ddiwrnod
+        in_3_days: Ymhen 3 diwrnod
+        in_4_days: Ymhen 4 diwrnod
+      climate:
+        states:
+          "on": Ymlaen
+          "off": I ffwrdd
+        heat: Gwres
+      please_confirm: Cadarnhewch os gwelwch yn dda
+      unavailable: Ddim ar gael
+      unknown: Anhysbys
+      no_name: Dim enw
+      alarm:
+        home: Gartref
+        away: I ffwrdd
+        night: Nos
+        vacation: Gwyliau
+        bypass: Osgoi
+        disarm: Datgysylltu
+      settings:
+        reboot: Ailgychwyn
+        sleep: Modd cysgu
+        brightness: Disgleirdeb
+        bright: Llachar
+        dimming: Pylu
+        dim: Pŵl
+      meridiem:
+        am: am
+        pm: pm
+    da:     # Danish
+      bytes_per_char: 1
+      weekdays:
+        mon: Mandag
+        tue: Tirsdag
+        wed: Onsdag
+        thu: Torsdag
+        fri: Fredag
+        sat: Lørdag
+        sun: Søndag
+      weekdays_short:
+        mon: Man
+        tue: Tir
+        wed: Ons
+        thu: Tor
+        fri: Fre
+        sat: Lør
+        sun: Søn
+      months:
+        jan: Januar
+        feb: Februar
+        mar: Marts
+        apr: April
+        may: Maj
+        jun: Juni
+        jul: Juli
+        aug: August
+        sep: September
+        oct: Oktober
+        nov: November
+        dec: December
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: Maj
+        jun: Jun
+        jul: Jul
+        aug: Aug
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Dec
+      relative_day:
+        today: I dag
+        tomorrow: I morgen
+        in_2_days: Om 2 dage
+        in_3_days: Om 3 dage
+        in_4_days: Om 4 dage
+      climate:
+        states:
+          "on": Tændt
+          "off": Slukket
+        heat: Varme
+      please_confirm: Bekræft venligst
+      unavailable: Utilgængelig
+      unknown: Ukendt
+      no_name: Intet navn
+      alarm:
+        home: Hjemme
+        away: Væk
+        night: Nat
+        vacation: Ferie
+        bypass: Omkørsel
+        disarm: Afvæbne
+      settings:
+        reboot: Genstart
+        sleep: Sove
+        brightness: Lysstyrke
+        bright: Lys
+        dimming: Dæmpning
+        dim: Dæmpet
+      meridiem:
+        am: FM
+        pm: EM
+    de:     # German
+      bytes_per_char: 1
+      weekdays:
+        mon: Montag
+        tue: Dienstag
+        wed: Mittwoch
+        thu: Donnerstag
+        fri: Freitag
+        sat: Samstag
+        sun: Sonntag
+      weekdays_short:
+        mon: Mo
+        tue: Di
+        wed: Mi
+        thu: Do
+        fri: Fr
+        sat: Sa
+        sun: So
+      months:
+        jan: Januar
+        feb: Februar
+        mar: März
+        apr: April
+        may: Mai
+        jun: Juni
+        jul: Juli
+        aug: August
+        sep: September
+        oct: Oktober
+        nov: November
+        dec: Dezember
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mär
+        apr: Apr
+        may: Mai
+        jun: Jun
+        jul: Jul
+        aug: Aug
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Dez
+      relative_day:
+        today: Heute
+        tomorrow: Morgen
+        in_2_days: In 2 Tagen
+        in_3_days: In 3 Tagen
+        in_4_days: In 4 Tagen
+      climate:
+        states:
+          "on": Ein
+          "off": Aus
+        heat: Heizen
+      please_confirm: Bitte bestätigen
+      unavailable: Nicht verfügbar
+      unknown: Unbekannt
+      no_name: Kein Name
+      alarm:
+        home: Zuhause
+        away: Abwesend
+        night: Nacht
+        vacation: Urlaub
+        bypass: Umgehen
+        disarm: Aus
+      settings:
+        reboot: Neustart
+        sleep: Schlafmodus
+        brightness: Helligkeit
+        bright: Hell
+        dimming: Dimmen
+        dim: Gedimmt
+      meridiem:
+        am: vorm.
+        pm: nachm.
+    el:     # Greek
+      bytes_per_char: 2
+      weekdays:
+        mon: Δευτέρα
+        tue: Τρίτη
+        wed: Τετάρτη
+        thu: Πέμπτη
+        fri: Παρασκευή
+        sat: Σάββατο
+        sun: Κυριακή
+      weekdays_short:
+        mon: Δευ
+        tue: Τρι
+        wed: Τετ
+        thu: Πεμ
+        fri: Παρ
+        sat: Σαβ
+        sun: Κυρ
+      months:
+        jan: Ιανουάριος
+        feb: Φεβρουάριος
+        mar: Μάρτιος
+        apr: Απρίλιος
+        may: Μάιος
+        jun: Ιούνιος
+        jul: Ιούλιος
+        aug: Αύγουστος
+        sep: Σεπτέμβριος
+        oct: Οκτώβριος
+        nov: Νοέμβριος
+        dec: Δεκέμβριος
+      months_short:
+        jan: Ιαν
+        feb: Φεβ
+        mar: Μαρ
+        apr: Απρ
+        may: Μαι
+        jun: Ιουν
+        jul: Ιουλ
+        aug: Αυγ
+        sep: Σεπ
+        oct: Οκτ
+        nov: Νοε
+        dec: Δεκ
+      relative_day:
+        today: Σήμερα
+        tomorrow: Αύριο
+        in_2_days: σε 2 ημέρες
+        in_3_days: σε 3 ημέρες
+        in_4_days: σε 4 ημέρες
+      climate:
+        states:
+          "on": Ενεργό
+          "off": Ανενεργό
+        heat: Θέρμανση
+      please_confirm: Παρακαλώ επιβεβαιώστε
+      unavailable: Μη διαθέσιμο
+      unknown: Άγνωστο
+      no_name: Χωρίς όνομα
+      alarm:
+        home: Σπίτι
+        away: Μακριά
+        night: Νύχτα
+        vacation: Διακοπές
+        bypass: Παράκαμψη
+        disarm: Αφοπλισμός
+      settings:
+        reboot: Επανεκκίνηση
+        sleep: Ύπνος
+        brightness: Φωτεινότητα
+        bright: Φωτεινό
+        dimming: Σκίαση
+        dim: Σκοτεινό
+      meridiem:
+        am: πμ
+        pm: μμ
+    en:     # English
+      bytes_per_char: 1
+      weekdays:
+        mon: Monday
+        tue: Tuesday
+        wed: Wednesday
+        thu: Thursday
+        fri: Friday
+        sat: Saturday
+        sun: Sunday
+      weekdays_short:
+        mon: Mon
+        tue: Tue
+        wed: Wed
+        thu: Thu
+        fri: Fri
+        sat: Sat
+        sun: Sun
+      months:
+        jan: January
+        feb: February
+        mar: March
+        apr: April
+        may: May
+        jun: June
+        jul: July
+        aug: August
+        sep: September
+        oct: October
+        nov: November
+        dec: December
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: May
+        jun: Jun
+        jul: Jul
+        aug: Aug
+        sep: Sep
+        oct: Oct
+        nov: Nov
+        dec: Dec
+      relative_day:
+        today: Today
+        tomorrow: Tomorrow
+        in_2_days: In 2 days
+        in_3_days: In 3 days
+        in_4_days: In 4 days
+      climate:
+        states:
+          "on": "on"
+          "off": "off"
+        heat: heat
+      please_confirm: Please confirm
+      unavailable: Unavailable
+      unknown: Unknown
+      no_name: No name
+      alarm:
+        home: Home
+        away: Away
+        night: Night
+        vacation: Holiday
+        bypass: Custom bypass
+        disarm: Disarm
+      settings:
+        reboot: Reboot
+        sleep: Sleep mode
+        brightness: Brightness
+        bright: Bright
+        dimming: Dimming
+        dim: Dim
+      meridiem:
+        am: AM
+        pm: PM
+    es:     # Spanish
+      bytes_per_char: 1
+      weekdays:
+        mon: Lunes
+        tue: Martes
+        wed: Miércoles
+        thu: Jueves
+        fri: Viernes
+        sat: Sábado
+        sun: Domingo
+      weekdays_short:
+        mon: Lun
+        tue: Mar
+        wed: Mié
+        thu: Jue
+        fri: Vie
+        sat: Sáb
+        sun: Dom
+      months:
+        jan: Enero
+        feb: Febrero
+        mar: Marzo
+        apr: Abril
+        may: Mayo
+        jun: Junio
+        jul: Julio
+        aug: Agosto
+        sep: Septiembre
+        oct: Octubre
+        nov: Noviembre
+        dec: Diciembre
+      months_short:
+        jan: Ene
+        feb: Feb
+        mar: Mar
+        apr: Abr
+        may: May
+        jun: Jun
+        jul: Jul
+        aug: Ago
+        sep: Sep
+        oct: Oct
+        nov: Nov
+        dec: Dic
+      relative_day:
+        today: Hoy
+        tomorrow: Mañana
+        in_2_days: En 2 días
+        in_3_days: En 3 días
+        in_4_days: En 4 días
+      climate:
+        states:
+          "on": Encendido
+          "off": Apagado
+        heat: Calentar
+      please_confirm: Por favor, confirme
+      unavailable: No disponible
+      unknown: Desconocido
+      no_name: Sin nombre
+      alarm:
+        home: Casa
+        away: Fuera
+        night: Noche
+        vacation: Vacaciones
+        bypass: Bypass
+        disarm: Desarmar
+      settings:
+        reboot: Reiniciar
+        sleep: Dormir
+        brightness: Brillo
+        bright: Brillante
+        dimming: Atenuación
+        dim: Oscuro
+      meridiem:
+        am: a.m.
+        pm: p.m.
+    et:     # Estonian
+      bytes_per_char: 1
+      weekdays:
+        mon: Esmaspäev
+        tue: Teisipäev
+        wed: Kolmapäev
+        thu: Neljapäev
+        fri: Reede
+        sat: Laupäev
+        sun: Pühapäev
+      weekdays_short:
+        mon: E
+        tue: T
+        wed: K
+        thu: N
+        fri: R
+        sat: L
+        sun: P
+      months:
+        jan: Jaanuar
+        feb: Veebruar
+        mar: Märts
+        apr: Aprill
+        may: Mai
+        jun: Juuni
+        jul: Juuli
+        aug: August
+        sep: September
+        oct: Oktoober
+        nov: November
+        dec: Detsember
+      months_short:
+        jan: Jan
+        feb: Veb
+        mar: Mär
+        apr: Apr
+        may: Mai
+        jun: Jun
+        jul: Jul
+        aug: Aug
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Dets
+      relative_day:
+        today: Täna
+        tomorrow: Homme
+        in_2_days: 2 päeva pärast
+        in_3_days: 3 päeva pärast
+        in_4_days: 4 päeva pärast
+      climate:
+        states:
+          "on": sees
+          "off": väljas
+        heat: kütte
+      please_confirm: Palun kinnitage
+      unavailable: Pole saadaval
+      unknown: Tundmatu
+      no_name: Nime pole
+      alarm:
+        home: Kodus
+        away: Ära
+        night: Öö
+        vacation: Puhkus
+        bypass: Möödaviik
+        disarm: Desarmeerima
+      settings:
+        reboot: Taaskäivita
+        sleep: Uni
+        brightness: Heledus
+        bright: Ere
+        dimming: Hämardamine
+        dim: Hämar
+      meridiem:
+        am: e.l.
+        pm: p.l.
+    eu:     # Basque
+      bytes_per_char: 1
+      weekdays:
+        mon: Astelehena
+        tue: Asteartea
+        wed: Asteazkena
+        thu: Osteguna
+        fri: Ostirala
+        sat: Larunbata
+        sun: Igandea
+      weekdays_short:
+        mon: Al
+        tue: Ar
+        wed: Az
+        thu: Og
+        fri: Or
+        sat: Lr
+        sun: Ig
+      months:
+        jan: Urtarrila
+        feb: Otsaila
+        mar: Martxoa
+        apr: Apirila
+        may: Maiatza
+        jun: Ekaina
+        jul: Uztaila
+        aug: Abuztua
+        sep: Iraila
+        oct: Urria
+        nov: Azaroa
+        dec: Abendua
+      months_short:
+        jan: Urt
+        feb: Ots
+        mar: Mar
+        apr: Api
+        may: Mai
+        jun: Eka
+        jul: Uzt
+        aug: Abu
+        sep: Ira
+        oct: Urr
+        nov: Aza
+        dec: Abe
+      relative_day:
+        today: Gaur
+        tomorrow: Bihar
+        in_2_days: Etzi
+        in_3_days: 3 egun barru
+        in_4_days: 4 egun barru
+      climate:
+        states:
+          "on": Piztuta
+          "off": Itzalita
+        heat: Berokuntza
+      please_confirm: Mesedez berretsi
+      unavailable: Ez dago erabilgarri
+      unknown: Ezezaguna
+      no_name: Izenik gabe
+      alarm:
+        home: Etxean
+        away: Kanpoan
+        night: Gaua
+        vacation: Oporrak
+        bypass: Saihestu
+        disarm: Desaktibatu
+      settings:
+        reboot: Berrabiarazi
+        sleep: Lo modua
+        brightness: Distira
+        bright: Argia
+        dimming: Iluntzea
+        dim: Iluna
+      meridiem:
+        am: AM
+        pm: PM
+    fa:     # Farsi (Persian)
+      bytes_per_char: 2
+      weekdays:
+        mon: دوشنبه
+        tue: سه‌شنبه
+        wed: چهارشنبه
+        thu: پنج‌شنبه
+        fri: جمعه
+        sat: شنبه
+        sun: یکشنبه
+      weekdays_short:
+        mon: دوش
+        tue: سه‌ش
+        wed: چهار
+        thu: پنج
+        fri: جمع
+        sat: شنب
+        sun: یکش
+      months:
+        jan: ژانویه
+        feb: فوریه
+        mar: مارس
+        apr: آوریل
+        may: مه
+        jun: ژوئن
+        jul: ژوئیه
+        aug: اوت
+        sep: سپتامبر
+        oct: اکتبر
+        nov: نوامبر
+        dec: دسامبر
+      months_short:
+        jan: ژان
+        feb: فور
+        mar: مار
+        apr: آور
+        may: مه
+        jun: ژون
+        jul: ژوئ
+        aug: اوت
+        sep: سپت
+        oct: اکت
+        nov: نوا
+        dec: دسا
+      relative_day:
+        today: امروز
+        tomorrow: فردا
+        in_2_days: پس‌فردا
+        in_3_days: سه روز دیگر
+        in_4_days: چهار روز دیگر
+      climate:
+        states:
+          "on": روشن
+          "off": خاموش
+        heat: گرمایش
+      please_confirm: لطفاً تأیید کنید
+      unavailable: در دسترس نیست
+      unknown: نامشخص
+      no_name: بدون نام
+      alarm:
+        home: در خانه
+        away: خارج
+        night: شب
+        vacation: تعطیلات
+        bypass: دور زدن
+        disarm: غیرفعال
+      settings:
+        reboot: راه‌اندازی مجدد
+        sleep: حالت خواب
+        brightness: روشنایی
+        bright: روشن
+        dimming: کم‌نور
+        dim: تاریک
+      meridiem:
+        am: ق.ظ
+        pm: ب.ظ
+    fi:     # Finnish
+      bytes_per_char: 1
+      weekdays:
+        mon: maanantai
+        tue: tiistai
+        wed: keskiviikko
+        thu: torstai
+        fri: perjantai
+        sat: lauantai
+        sun: sunnuntai
+      weekdays_short:
+        mon: ma
+        tue: ti
+        wed: ke
+        thu: to
+        fri: pe
+        sat: la
+        sun: su
+      months:
+        jan: tammikuu
+        feb: helmikuu
+        mar: maaliskuu
+        apr: huhtikuu
+        may: toukokuu
+        jun: kesäkuu
+        jul: heinäkuu
+        aug: elokuu
+        sep: syyskuu
+        oct: lokakuu
+        nov: marraskuu
+        dec: joulukuu
+      months_short:
+        jan: tammi
+        feb: helmi
+        mar: maalis
+        apr: huhti
+        may: touko
+        jun: kesä
+        jul: heinä
+        aug: elo
+        sep: syys
+        oct: loka
+        nov: marras
+        dec: joulu
+      relative_day:
+        today: Tänään
+        tomorrow: Huomenna
+        in_2_days: 2 päivän päästä
+        in_3_days: 3 päivän päästä
+        in_4_days: 4 päivän päästä
+      climate:
+        states:
+          "on": päällä
+          "off": pois päältä
+        heat: lämpö
+      please_confirm: Vahvista
+      unavailable: Ei saatavilla
+      unknown: Tuntematon
+      no_name: Nimeämätön
+      alarm:
+        home: Kotona
+        away: Poissa
+        night: Yö
+        vacation: Loma
+        bypass: Ohitus
+        disarm: Pois päältä
+      settings:
+        reboot: Käynnistä uudelleen
+        sleep: Lepotila
+        brightness: Kirkkaus
+        bright: Kirkas
+        dimming: Himmennys
+        dim: Himmeä
+      meridiem:
+        am: aamupäivä
+        pm: iltapäivä
+    fr:     # French
+      bytes_per_char: 1
+      weekdays:
+        mon: Lundi
+        tue: Mardi
+        wed: Mercredi
+        thu: Jeudi
+        fri: Vendredi
+        sat: Samedi
+        sun: Dimanche
+      weekdays_short:
+        mon: Lun
+        tue: Mar
+        wed: Mer
+        thu: Jeu
+        fri: Ven
+        sat: Sam
+        sun: Dim
+      months:
+        jan: Janvier
+        feb: Février
+        mar: Mars
+        apr: Avril
+        may: Mai
+        jun: Juin
+        jul: Juillet
+        aug: Août
+        sep: Septembre
+        oct: Octobre
+        nov: Novembre
+        dec: Décembre
+      months_short:
+        jan: Jan
+        feb: Fév
+        mar: Mar
+        apr: Avr
+        may: Mai
+        jun: Jun
+        jul: Jul
+        aug: Aoû
+        sep: Sep
+        oct: Oct
+        nov: Nov
+        dec: Déc
+      relative_day:
+        today: Aujourd'hui
+        tomorrow: Demain
+        in_2_days: Dans 2 jours
+        in_3_days: Dans 3 jours
+        in_4_days: Dans 4 jours
+      climate:
+        states:
+          "on": Activé
+          "off": Désactivé
+        heat: Chauffage
+      please_confirm: Veuillez confirmer
+      unavailable: Indisponible
+      unknown: Inconnu
+      no_name: Sans nom
+      alarm:
+        home: À la maison
+        away: Absent
+        night: Nuit
+        vacation: Vacances
+        bypass: Contournement
+        disarm: Désarmer
+      settings:
+        reboot: Redémarrer
+        sleep: Veille
+        brightness: Luminosité
+        bright: Lumineux
+        dimming: Atténuation
+        dim: Sombre
+      meridiem:
+        am: AM
+        pm: PM
+    gl:     # Galician
+      bytes_per_char: 1
+      weekdays:
+        mon: Luns
+        tue: Martes
+        wed: Mércores
+        thu: Xoves
+        fri: Venres
+        sat: Sábado
+        sun: Domingo
+      weekdays_short:
+        mon: Lun
+        tue: Mar
+        wed: Mér
+        thu: Xov
+        fri: Ven
+        sat: Sáb
+        sun: Dom
+      months:
+        jan: Xaneiro
+        feb: Febreiro
+        mar: Marzo
+        apr: Abril
+        may: Maio
+        jun: Xuño
+        jul: Xullo
+        aug: Agosto
+        sep: Setembro
+        oct: Outubro
+        nov: Novembro
+        dec: Decembro
+      months_short:
+        jan: Xan
+        feb: Feb
+        mar: Mar
+        apr: Abr
+        may: Mai
+        jun: Xuñ
+        jul: Xul
+        aug: Ago
+        sep: Set
+        oct: Out
+        nov: Nov
+        dec: Dec
+      relative_day:
+        today: Hoxe
+        tomorrow: Mañá
+        in_2_days: En 2 días
+        in_3_days: En 3 días
+        in_4_days: En 4 días
+      climate:
+        states:
+          "on": Acendido
+          "off": Apagado
+        heat: Calefacción
+      please_confirm: Por favor, confirme
+      unavailable: Non dispoñible
+      unknown: Descoñecido
+      no_name: Sen nome
+      alarm:
+        home: Na casa
+        away: Fóra
+        night: Noite
+        vacation: Vacacións
+        bypass: Bypass
+        disarm: Desarmar
+      settings:
+        reboot: Reiniciar
+        sleep: Modo de suspensión
+        brightness: Brillo
+        bright: Brillante
+        dimming: Atenuación
+        dim: Escuro
+      meridiem:
+        am: a.m.
+        pm: p.m.
+    he:     # Hebrew
+      bytes_per_char: 2
+      weekdays:
+        mon: ינש
+        tue: ישילש
+        wed: יעיבר
+        thu: ישימח
+        fri: ישיש
+        sat: תבש
+        sun: ןושאר
+      weekdays_short:
+        mon: ב'
+        tue: ג'
+        wed: ד'
+        thu: ה'
+        fri: ו'
+        sat: ש'
+        sun: א'
+      months:
+        jan: נאוני
+        feb: ראורבפ
+        mar: ץרמ
+        apr: לירפא
+        may: יאמ
+        jun: ינוי
+        jul: ילוי
+        aug: טסוגוא
+        sep: רבמטפס
+        oct: רבוטקוא
+        nov: רבמבונ
+        dec: רבמצד
+      months_short:
+        jan: וני'
+        feb: רבפ'
+        mar: ץרמ
+        apr: רפא'
+        may: יאמ
+        jun: נוי'
+        jul: לוי'
+        aug: גוא'
+        sep: טפס'
+        oct: קוא'
+        nov: בונ'
+        dec: מצד'
+      relative_day:
+        today: םויה
+        tomorrow: רחמ
+        in_2_days: םיימוי דוע
+        in_3_days: םימי 3 דוע
+        in_4_days: םימי 4 דוע
+      climate:
+        states:
+          "on": ליעפ
+          "off": יובכ
+        heat: םומיח
+      please_confirm: רשא אנא
+      unavailable: ןימז אל
+      unknown: עודי אל
+      no_name: םש אלל
+      alarm:
+        home: תיבב
+        away: הצוחה
+        night: הליל
+        vacation: השפוח
+        bypass: הפיקע
+        disarm: לורטנ
+      settings:
+        reboot: שדחמ הלעפה
+        sleep: הניש
+        brightness: תוריהב
+        bright: ריהב
+        dimming: הכשחה
+        dim: ההכ
+      meridiem:
+        am: צ"הנפל
+        pm: צ"החא
+    hi:     # Hindi
+      bytes_per_char: 3
+      weekdays:
+        mon: सोमवार
+        tue: मंगलवार
+        wed: बुधवार
+        thu: गुरुवार
+        fri: शुक्रवार
+        sat: शनिवार
+        sun: रविवार
+      weekdays_short:
+        mon: सोम
+        tue: मंगल
+        wed: बुध
+        thu: गुरु
+        fri: शुक्र
+        sat: शनि
+        sun: रवि
+      months:
+        jan: जनवरी
+        feb: फ़रवरी
+        mar: मार्च
+        apr: अप्रैल
+        may: मई
+        jun: जून
+        jul: जुलाई
+        aug: अगस्त
+        sep: सितंबर
+        oct: अक्टूबर
+        nov: नवंबर
+        dec: दिसंबर
+      months_short:
+        jan: जन
+        feb: फ़र
+        mar: मार
+        apr: अप्र
+        may: मई
+        jun: जून
+        jul: जुल
+        aug: अग
+        sep: सित
+        oct: अक्ट
+        nov: नव
+        dec: दिस
+      relative_day:
+        today: आज
+        tomorrow: कल
+        in_2_days: परसों
+        in_3_days: 3 दिन बाद
+        in_4_days: 4 दिन बाद
+      climate:
+        states:
+          "on": चालू
+          "off": बंद
+        heat: गरमाई
+      please_confirm: कृपया पुष्टि करें
+      unavailable: उपलब्ध नहीं
+      unknown: अज्ञात
+      no_name: कोई नाम नहीं
+      alarm:
+        home: घर पर
+        away: बाहर
+        night: रात
+        vacation: छुट्टी
+        bypass: बाईपास
+        disarm: निष्क्रिय
+      settings:
+        reboot: रीबूट
+        sleep: स्लीप मोड
+        brightness: चमक
+        bright: उज्ज्वल
+        dimming: मंद
+        dim: अंधेरा
+      meridiem:
+        am: पूर्वाह्न
+        pm: अपराह्न
+    hr:     # Croatian
+      bytes_per_char: 1
+      weekdays:
+        mon: Ponedjeljak
+        tue: Utorak
+        wed: Srijeda
+        thu: Četvrtak
+        fri: Petak
+        sat: Subota
+        sun: Nedjelja
+      weekdays_short:
+        mon: Pon
+        tue: Uto
+        wed: Sri
+        thu: Čet
+        fri: Pet
+        sat: Sub
+        sun: Ned
+      months:
+        jan: Siječanj
+        feb: Veljača
+        mar: Ožujak
+        apr: Travanj
+        may: Svibanj
+        jun: Lipanj
+        jul: Srpanj
+        aug: Kolovoz
+        sep: Rujan
+        oct: Listopad
+        nov: Studeni
+        dec: Prosinac
+      months_short:
+        jan: Sij
+        feb: Velj
+        mar: Ožu
+        apr: Tra
+        may: Svi
+        jun: Lip
+        jul: Srp
+        aug: Kol
+        sep: Ruj
+        oct: Lis
+        nov: Stu
+        dec: Pro
+      relative_day:
+        today: Danas
+        tomorrow: Sutra
+        in_2_days: Za 2 dana
+        in_3_days: Za 3 dana
+        in_4_days: Za 4 dana
+      climate:
+        states:
+          "on": Uključeno
+          "off": Isključeno
+        heat: Grijanje
+      please_confirm: Molimo potvrdite
+      unavailable: Nedostupno
+      unknown: Nepoznato
+      no_name: Bez imena
+      alarm:
+        home: Kod kuće
+        away: Odsutan
+        night: Noć
+        vacation: Odmor
+        bypass: Zaobići
+        disarm: Razoružati
+      settings:
+        reboot: Ponovno pokretanje
+        sleep: Spavanje
+        brightness: Svjetlina
+        bright: Svijetlo
+        dimming: Zatamnjenje
+        dim: Tamno
+      meridiem:
+        am: AM
+        pm: PM
+    hu:     # Hungarian
+      bytes_per_char: 1
+      weekdays:
+        mon: Hétfő
+        tue: Kedd
+        wed: Szerda
+        thu: Csütörtök
+        fri: Péntek
+        sat: Szombat
+        sun: Vasárnap
+      weekdays_short:
+        mon: H
+        tue: K
+        wed: Sze
+        thu: Cs
+        fri: P
+        sat: Szo
+        sun: V
+      months:
+        jan: Január
+        feb: Február
+        mar: Március
+        apr: Április
+        may: Május
+        jun: Június
+        jul: Július
+        aug: Augusztus
+        sep: Szeptember
+        oct: Október
+        nov: November
+        dec: December
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Márc
+        apr: Ápr
+        may: Máj
+        jun: Jún
+        jul: Júl
+        aug: Aug
+        sep: Szep
+        oct: Okt
+        nov: Nov
+        dec: Dec
+      relative_day:
+        today: Ma
+        tomorrow: Holnap
+        in_2_days: 2 nap múlva
+        in_3_days: 3 nap múlva
+        in_4_days: 4 nap múlva
+      climate:
+        states:
+          "on": Bekapcsolva
+          "off": Kikapcsolva
+        heat: Fűtés
+      please_confirm: Kérjük, erősítse meg
+      unavailable: Nem elérhető
+      unknown: Ismeretlen
+      no_name: Névtelen
+      alarm:
+        home: Otthon
+        away: Távol
+        night: Éjszaka
+        vacation: Szabadság
+        bypass: Kerülő
+        disarm: Hatástalanítás
+      settings:
+        reboot: Újraindítás
+        sleep: Alvás
+        brightness: Fényerő
+        bright: Világos
+        dimming: Sötétítés
+        dim: Sötét
+      meridiem:
+        am: DE
+        pm: DU
+    id:     # Indonesian
+      bytes_per_char: 1
+      weekdays:
+        mon: Senin
+        tue: Selasa
+        wed: Rabu
+        thu: Kamis
+        fri: Jumat
+        sat: Sabtu
+        sun: Minggu
+      weekdays_short:
+        mon: Sen
+        tue: Sel
+        wed: Rab
+        thu: Kam
+        fri: Jum
+        sat: Sab
+        sun: Min
+      months:
+        jan: Januari
+        feb: Februari
+        mar: Maret
+        apr: April
+        may: Mei
+        jun: Juni
+        jul: Juli
+        aug: Agustus
+        sep: September
+        oct: Oktober
+        nov: November
+        dec: Desember
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: Mei
+        jun: Jun
+        jul: Jul
+        aug: Agu
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Des
+      relative_day:
+        today: Hari ini
+        tomorrow: Besok
+        in_2_days: Dalam 2 hari
+        in_3_days: Dalam 3 hari
+        in_4_days: Dalam 4 hari
+      climate:
+        states:
+          "on": Menyala
+          "off": Mati
+        heat: Pemanas
+      please_confirm: Mohon konfirmasi
+      unavailable: Tidak tersedia
+      unknown: Tidak diketahui
+      no_name: Tanpa nama
+      alarm:
+        home: Di rumah
+        away: Jauh
+        night: Malam
+        vacation: Liburan
+        bypass: Bypass
+        disarm: Menonaktifkan
+      settings:
+        reboot: Mulai ulang
+        sleep: Tidur
+        brightness: Kecerahan
+        bright: Terang
+        dimming: Redup
+        dim: Redup
+      meridiem:
+        am: AM
+        pm: PM
+    is:     # Icelandic
+      bytes_per_char: 1
+      weekdays:
+        mon: Mánudagur
+        tue: Þriðjudagur
+        wed: Miðvikudagur
+        thu: Fimmtudagur
+        fri: Föstudagur
+        sat: Laugardagur
+        sun: Sunnudagur
+      weekdays_short:
+        mon: Mán
+        tue: Þri
+        wed: Mið
+        thu: Fim
+        fri: Fös
+        sat: Lau
+        sun: Sun
+      months:
+        jan: Janúar
+        feb: Febrúar
+        mar: Mars
+        apr: Apríl
+        may: Maí
+        jun: Júní
+        jul: Júlí
+        aug: Ágúst
+        sep: September
+        oct: Október
+        nov: Nóvember
+        dec: Desember
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: Maí
+        jun: Jún
+        jul: Júl
+        aug: Ágú
+        sep: Sep
+        oct: Okt
+        nov: Nóv
+        dec: Des
+      relative_day:
+        today: Í dag
+        tomorrow: Á morgun
+        in_2_days: Eftir 2 daga
+        in_3_days: Eftir 3 daga
+        in_4_days: Eftir 4 daga
+      climate:
+        states:
+          "on": Kveikt
+          "off": Slökkt
+        heat: Hiti
+      please_confirm: Vinsamlegast staðfestu
+      unavailable: Ekki tiltækt
+      unknown: Óþekkt
+      no_name: Ekkert nafn
+      alarm:
+        home: Heima
+        away: Fjarverandi
+        night: Nótt
+        vacation: Frí
+        bypass: Sniðganga
+        disarm: Gera óvirkt
+      settings:
+        reboot: Endurræsa
+        sleep: Svefnhamur
+        brightness: Birtustig
+        bright: Bjart
+        dimming: Dimmun
+        dim: Dimmað
+      meridiem:
+        am: f.h.
+        pm: e.h.
+    it:     # Italian
+      bytes_per_char: 1
+      weekdays:
+        mon: Lunedì
+        tue: Martedì
+        wed: Mercoledì
+        thu: Giovedì
+        fri: Venerdì
+        sat: Sabato
+        sun: Domenica
+      weekdays_short:
+        mon: Lun
+        tue: Mar
+        wed: Mer
+        thu: Gio
+        fri: Ven
+        sat: Sab
+        sun: Dom
+      months:
+        jan: Gennaio
+        feb: Febbraio
+        mar: Marzo
+        apr: Aprile
+        may: Maggio
+        jun: Giugno
+        jul: Luglio
+        aug: Agosto
+        sep: Settembre
+        oct: Ottobre
+        nov: Novembre
+        dec: Dicembre
+      months_short:
+        jan: Gen
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: Mag
+        jun: Giu
+        jul: Lug
+        aug: Ago
+        sep: Set
+        oct: Ott
+        nov: Nov
+        dec: Dic
+      relative_day:
+        today: Oggi
+        tomorrow: Domani
+        in_2_days: Dopodomani
+        in_3_days: In 3 giorni
+        in_4_days: In 4 giorni
+      climate:
+        states:
+          "on": Acceso
+          "off": Spento
+        heat: Riscaldamento
+      please_confirm: Confermare
+      unavailable: Non disponibile
+      unknown: Sconosciuto
+      no_name: Senza nome
+      alarm:
+        home: Casa
+        away: Fuori casa
+        night: Notte
+        vacation: Vacanza
+        bypass: Bypass
+        disarm: Disarmato
+      settings:
+        reboot: Riavvio
+        sleep: Modalità ECO
+        brightness: Luminosità
+        bright: Luminoso
+        dimming: Diminuzione
+        dim: Diminuito
+      meridiem:
+        am: AM
+        pm: PM
+    ja:     # Japanese
+      bytes_per_char: 3
+      weekdays:
+        mon: 月曜日
+        tue: 火曜日
+        wed: 水曜日
+        thu: 木曜日
+        fri: 金曜日
+        sat: 土曜日
+        sun: 日曜日
+      weekdays_short:
+        mon: 月
+        tue: 火
+        wed: 水
+        thu: 木
+        fri: 金
+        sat: 土
+        sun: 日
+      months:
+        jan: 1月
+        feb: 2月
+        mar: 3月
+        apr: 4月
+        may: 5月
+        jun: 6月
+        jul: 7月
+        aug: 8月
+        sep: 9月
+        oct: 10月
+        nov: 11月
+        dec: 12月
+      months_short:
+        jan: 1月
+        feb: 2月
+        mar: 3月
+        apr: 4月
+        may: 5月
+        jun: 6月
+        jul: 7月
+        aug: 8月
+        sep: 9月
+        oct: 10月
+        nov: 11月
+        dec: 12月
+      relative_day:
+        today: 今日
+        tomorrow: 明日
+        in_2_days: 明後日
+        in_3_days: 3日後
+        in_4_days: 4日後
+      climate:
+        states:
+          "on": オン
+          "off": オフ
+        heat: 暖房
+      please_confirm: 確認してください
+      unavailable: 利用不可
+      unknown: 不明
+      no_name: 名前なし
+      alarm:
+        home: 自宅
+        away: 外出
+        night: 夜間
+        vacation: 休暇
+        bypass: バイパス
+        disarm: 解除
+      settings:
+        reboot: 再起動
+        sleep: スリープモード
+        brightness: 明るさ
+        bright: 明るい
+        dimming: 調光
+        dim: 低輝度
+      meridiem:
+        am: 午前
+        pm: 午後
+    jv:     # Javanese
+      bytes_per_char: 1
+      weekdays:
+        mon: Senen
+        tue: Selasa
+        wed: Rebo
+        thu: Kemis
+        fri: Jemuwah
+        sat: Setu
+        sun: Minggu
+      weekdays_short:
+        mon: Sen
+        tue: Sel
+        wed: Reb
+        thu: Kem
+        fri: Jem
+        sat: Set
+        sun: Min
+      months:
+        jan: Januari
+        feb: Februari
+        mar: Maret
+        apr: April
+        may: Mei
+        jun: Juni
+        jul: Juli
+        aug: Agustus
+        sep: September
+        oct: Oktober
+        nov: November
+        dec: Desember
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: Mei
+        jun: Jun
+        jul: Jul
+        aug: Agu
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Des
+      relative_day:
+        today: Dina iki
+        tomorrow: Sesuk
+        in_2_days: Lusa
+        in_3_days: 3 dina maneh
+        in_4_days: 4 dina maneh
+      climate:
+        states:
+          "on": Nyala
+          "off": Mati
+        heat: Pemanas
+      please_confirm: Mohon konfirmasi
+      unavailable: Ora kasedhiya
+      unknown: Ora dikenal
+      no_name: Tanpa jeneng
+      alarm:
+        home: Ing omah
+        away: Lunga
+        night: Wengi
+        vacation: Liburan
+        bypass: Bypass
+        disarm: Pateni
+      settings:
+        reboot: Urip maneh
+        sleep: Mode turu
+        brightness: Padhang
+        bright: Padhang
+        dimming: Remeng
+        dim: Peteng
+      meridiem:
+        am: AM
+        pm: PM
+    ko:     # Korean
+      bytes_per_char: 3
+      weekdays:
+        mon: 월요일
+        tue: 화요일
+        wed: 수요일
+        thu: 목요일
+        fri: 금요일
+        sat: 토요일
+        sun: 일요일
+      weekdays_short:
+        mon: 월
+        tue: 화
+        wed: 수
+        thu: 목
+        fri: 금
+        sat: 토
+        sun: 일
+      months:
+        jan: 1월
+        feb: 2월
+        mar: 3월
+        apr: 4월
+        may: 5월
+        jun: 6월
+        jul: 7월
+        aug: 8월
+        sep: 9월
+        oct: 10월
+        nov: 11월
+        dec: 12월
+      months_short:
+        jan: 1월
+        feb: 2월
+        mar: 3월
+        apr: 4월
+        may: 5월
+        jun: 6월
+        jul: 7월
+        aug: 8월
+        sep: 9월
+        oct: 10월
+        nov: 11월
+        dec: 12월
+      relative_day:
+        today: 오늘
+        tomorrow: 내일
+        in_2_days: 이틀 후
+        in_3_days: 사흘 후
+        in_4_days: 나흘 후
+      climate:
+        states:
+          "on": 켜짐
+          "off": 꺼짐
+        heat: 난방
+      please_confirm: 확인해 주세요
+      unavailable: 사용 불가
+      unknown: 알 수 없음
+      no_name: 이름 없음
+      alarm:
+        home: 집
+        away: 외출
+        night: 밤
+        vacation: 휴가
+        bypass: 우회
+        disarm: 해제
+      settings:
+        reboot: 재부팅
+        sleep: 슬립 모드
+        brightness: 밝기
+        bright: 밝은
+        dimming: 조광
+        dim: 어두운
+      meridiem:
+        am: 오전
+        pm: 오후
+    lt:     # Lithuanian
+      bytes_per_char: 1
+      weekdays:
+        mon: Pirmadienis
+        tue: Antradienis
+        wed: Trečiadienis
+        thu: Ketvirtadienis
+        fri: Penktadienis
+        sat: Šeštadienis
+        sun: Sekmadienis
+      weekdays_short:
+        mon: Pir
+        tue: Ant
+        wed: Tre
+        thu: Ket
+        fri: Pen
+        sat: Šeš
+        sun: Sek
+      months:
+        jan: Sausis
+        feb: Vasaris
+        mar: Kovas
+        apr: Balandis
+        may: Gegužė
+        jun: Birželis
+        jul: Liepa
+        aug: Rugpjūtis
+        sep: Rugsėjis
+        oct: Spalis
+        nov: Lapkritis
+        dec: Gruodis
+      months_short:
+        jan: Sau
+        feb: Vas
+        mar: Kov
+        apr: Bal
+        may: Geg
+        jun: Bir
+        jul: Lie
+        aug: Rgp
+        sep: Rgs
+        oct: Spa
+        nov: Lap
+        dec: Gru
+      relative_day:
+        today: Šiandien
+        tomorrow: Rytoj
+        in_2_days: Po 2 dienų
+        in_3_days: Po 3 dienų
+        in_4_days: Po 4 dienų
+      climate:
+        states:
+          "on": Įjungta
+          "off": Išjungta
+        heat: Šildymas
+      please_confirm: Prašome patvirtinti
+      unavailable: Nepasiekiamas
+      unknown: Nežinomas
+      no_name: Be pavadinimo
+      alarm:
+        home: Namuose
+        away: Išvykęs
+        night: Naktis
+        vacation: Atostogos
+        bypass: Apeiti
+        disarm: Išjungti
+      settings:
+        reboot: Perkrauti
+        sleep: Miego režimas
+        brightness: Ryškumas
+        bright: Ryškus
+        dimming: Tamsinimas
+        dim: Tamsus
+      meridiem:
+        am: AM
+        pm: PM
+    lv:     # Latvian
+      bytes_per_char: 1
+      weekdays:
+        mon: Pirmdiena
+        tue: Otrdiena
+        wed: Trešdiena
+        thu: Ceturtdiena
+        fri: Piektdiena
+        sat: Sestdiena
+        sun: Svētdiena
+      weekdays_short:
+        mon: Pir
+        tue: Otr
+        wed: Tre
+        thu: Cet
+        fri: Pie
+        sat: Ses
+        sun: Sve
+      months:
+        jan: Janvāris
+        feb: Februāris
+        mar: Marts
+        apr: Aprīlis
+        may: Maijs
+        jun: Jūnijs
+        jul: Jūlijs
+        aug: Augusts
+        sep: Septembris
+        oct: Oktobris
+        nov: Novembris
+        dec: Decembris
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: Mai
+        jun: Jūn
+        jul: Jūl
+        aug: Aug
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Dec
+      relative_day:
+        today: Šodien
+        tomorrow: Rīt
+        in_2_days: Pēc 2 dienām
+        in_3_days: Pēc 3 dienām
+        in_4_days: Pēc 4 dienām
+      climate:
+        states:
+          "on": Ieslēgts
+          "off": Izslēgts
+        heat: Apkure
+      please_confirm: Lūdzu, apstipriniet
+      unavailable: Nav pieejams
+      unknown: Nezināms
+      no_name: Bez nosaukuma
+      alarm:
+        home: Mājās
+        away: Projām
+        night: Nakts
+        vacation: Atvaļinājums
+        bypass: Aplūkošana
+        disarm: Atbruņošana
+      settings:
+        reboot: Restartēt
+        sleep: Miega režīms
+        brightness: Spilgtums
+        bright: Spilgts
+        dimming: Tumšošana
+        dim: Tumšs
+      meridiem:
+        am: AM
+        pm: PM
+    mk:     # Macedonian
+      bytes_per_char: 2
+      weekdays:
+        mon: Понеделник
+        tue: Вторник
+        wed: Среда
+        thu: Четврток
+        fri: Петок
+        sat: Сабота
+        sun: Недела
+      weekdays_short:
+        mon: Пон
+        tue: Вто
+        wed: Сре
+        thu: Чет
+        fri: Пет
+        sat: Саб
+        sun: Нед
+      months:
+        jan: Јануари
+        feb: Февруари
+        mar: Март
+        apr: Април
+        may: Мај
+        jun: Јуни
+        jul: Јули
+        aug: Август
+        sep: Септември
+        oct: Октомври
+        nov: Ноември
+        dec: Декември
+      months_short:
+        jan: Јан
+        feb: Фев
+        mar: Мар
+        apr: Апр
+        may: Мај
+        jun: Јун
+        jul: Јул
+        aug: Авг
+        sep: Сеп
+        oct: Окт
+        nov: Ное
+        dec: Дек
+      relative_day:
+        today: Денес
+        tomorrow: Утре
+        in_2_days: За 2 дена
+        in_3_days: За 3 дена
+        in_4_days: За 4 дена
+      climate:
+        states:
+          "on": Вклучено
+          "off": Исклучено
+        heat: Греење
+      please_confirm: Ве молиме потврдете
+      unavailable: Недостапно
+      unknown: Непознато
+      no_name: Без име
+      alarm:
+        home: Дома
+        away: Отсутен
+        night: Ноќ
+        vacation: Одмор
+        bypass: Заобиколи
+        disarm: Деактивирај
+      settings:
+        reboot: Рестартирај
+        sleep: Режим на спиење
+        brightness: Осветленост
+        bright: Светло
+        dimming: Затемнување
+        dim: Темно
+      meridiem:
+        am: AM
+        pm: PM
+    ms:     # Malay
+      bytes_per_char: 1
+      weekdays:
+        mon: Isnin
+        tue: Selasa
+        wed: Rabu
+        thu: Khamis
+        fri: Jumaat
+        sat: Sabtu
+        sun: Ahad
+      weekdays_short:
+        mon: Isn
+        tue: Sel
+        wed: Rab
+        thu: Kha
+        fri: Jum
+        sat: Sab
+        sun: Aha
+      months:
+        jan: Januari
+        feb: Februari
+        mar: Mac
+        apr: April
+        may: Mei
+        jun: Jun
+        jul: Julai
+        aug: Ogos
+        sep: September
+        oct: Oktober
+        nov: November
+        dec: Disember
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mac
+        apr: Apr
+        may: Mei
+        jun: Jun
+        jul: Jul
+        aug: Ogo
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Dis
+      relative_day:
+        today: Hari ini
+        tomorrow: Esok
+        in_2_days: Lusa
+        in_3_days: 3 hari lagi
+        in_4_days: 4 hari lagi
+      climate:
+        states:
+          "on": Hidup
+          "off": Mati
+        heat: Pemanas
+      please_confirm: Sila sahkan
+      unavailable: Tidak tersedia
+      unknown: Tidak diketahui
+      no_name: Tiada nama
+      alarm:
+        home: Di rumah
+        away: Keluar
+        night: Malam
+        vacation: Cuti
+        bypass: Bypass
+        disarm: Nyahaktif
+      settings:
+        reboot: But semula
+        sleep: Mod tidur
+        brightness: Kecerahan
+        bright: Terang
+        dimming: Redupkan
+        dim: Redup
+      meridiem:
+        am: PG
+        pm: PTG
+    nb:     # Norwegian Bokmål
+      bytes_per_char: 1
+      weekdays:
+        mon: Mandag
+        tue: Tirsdag
+        wed: Onsdag
+        thu: Torsdag
+        fri: Fredag
+        sat: Lørdag
+        sun: Søndag
+      weekdays_short:
+        mon: Man
+        tue: Tir
+        wed: Ons
+        thu: Tor
+        fri: Fre
+        sat: Lør
+        sun: Søn
+      months:
+        jan: Januar
+        feb: Februar
+        mar: Mars
+        apr: April
+        may: Mai
+        jun: Juni
+        jul: Juli
+        aug: August
+        sep: September
+        oct: Oktober
+        nov: November
+        dec: Desember
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: Mai
+        jun: Jun
+        jul: Jul
+        aug: Aug
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Des
+      relative_day:
+        today: I dag
+        tomorrow: I morgen
+        in_2_days: Om 2 dager
+        in_3_days: Om 3 dager
+        in_4_days: Om 4 dager
+      climate:
+        states:
+          "on": På
+          "off": Av
+        heat: Varme
+      please_confirm: Vennligst bekreft
+      unavailable: Utilgjengelig
+      unknown: Ukjent
+      no_name: Ingen navn
+      alarm:
+        home: Hjemme
+        away: Borte
+        night: Natt
+        vacation: Ferie
+        bypass: Omkjøring
+        disarm: Avvæpne
+      settings:
+        reboot: Start på nytt
+        sleep: Søvnmodus
+        brightness: Lysstyrke
+        bright: Lys
+        dimming: Demping
+        dim: Dimmet
+      meridiem:
+        am: AM
+        pm: PM
+    nl:     # Dutch
+      bytes_per_char: 1
+      weekdays:
+        mon: Maandag
+        tue: Dinsdag
+        wed: Woensdag
+        thu: Donderdag
+        fri: Vrijdag
+        sat: Zaterdag
+        sun: Zondag
+      weekdays_short:
+        mon: Ma
+        tue: Di
+        wed: Wo
+        thu: Do
+        fri: Vr
+        sat: Za
+        sun: Zo
+      months:
+        jan: Januari
+        feb: Februari
+        mar: Maart
+        apr: April
+        may: Mei
+        jun: Juni
+        jul: Juli
+        aug: Augustus
+        sep: September
+        oct: Oktober
+        nov: November
+        dec: December
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mrt
+        apr: Apr
+        may: Mei
+        jun: Jun
+        jul: Jul
+        aug: Aug
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Dec
+      relative_day:
+        today: Vandaag
+        tomorrow: Morgen
+        in_2_days: Overmorgen
+        in_3_days: Over 3 dagen
+        in_4_days: Over 4 dagen
+      climate:
+        states:
+          "on": Aan
+          "off": Uit
+        heat: Verwarming
+      please_confirm: Bevestig alstublieft
+      unavailable: Niet beschikbaar
+      unknown: Onbekend
+      no_name: Geen naam
+      alarm:
+        home: Thuis
+        away: Weg
+        night: Nacht
+        vacation: Vakantie
+        bypass: Omzeilen
+        disarm: Uit
+      settings:
+        reboot: Herstarten
+        sleep: Slaapstand
+        brightness: Helderheid
+        bright: Helder
+        dimming: Dimmen
+        dim: Gedimd
+      meridiem:
+        am: AM
+        pm: PM
+    pa:     # Punjabi (Gurmukhi)
+      bytes_per_char: 3
+      weekdays:
+        mon: ਸੋਮਵਾਰ
+        tue: ਮੰਗਲਵਾਰ
+        wed: ਬੁੱਧਵਾਰ
+        thu: ਵੀਰਵਾਰ
+        fri: ਸ਼ੁੱਕਰਵਾਰ
+        sat: ਸ਼ਨੀਵਾਰ
+        sun: ਐਤਵਾਰ
+      weekdays_short:
+        mon: ਸੋਮ
+        tue: ਮੰਗਲ
+        wed: ਬੁੱਧ
+        thu: ਵੀਰ
+        fri: ਸ਼ੁੱਕ
+        sat: ਸ਼ਨੀ
+        sun: ਐਤ
+      months:
+        jan: ਜਨਵਰੀ
+        feb: ਫ਼ਰਵਰੀ
+        mar: ਮਾਰਚ
+        apr: ਅਪ੍ਰੈਲ
+        may: ਮਈ
+        jun: ਜੂਨ
+        jul: ਜੁਲਾਈ
+        aug: ਅਗਸਤ
+        sep: ਸਤੰਬਰ
+        oct: ਅਕਤੂਬਰ
+        nov: ਨਵੰਬਰ
+        dec: ਦਸੰਬਰ
+      months_short:
+        jan: ਜਨ
+        feb: ਫ਼ਰ
+        mar: ਮਾਰ
+        apr: ਅਪ੍ਰ
+        may: ਮਈ
+        jun: ਜੂਨ
+        jul: ਜੁਲ
+        aug: ਅਗ
+        sep: ਸਤ
+        oct: ਅਕਤ
+        nov: ਨਵ
+        dec: ਦਸ
+      relative_day:
+        today: ਅੱਜ
+        tomorrow: ਕੱਲ੍ਹ
+        in_2_days: ਪਰਸੋਂ
+        in_3_days: 3 ਦਿਨ ਬਾਅਦ
+        in_4_days: 4 ਦਿਨ ਬਾਅਦ
+      climate:
+        states:
+          "on": ਚਾਲੂ
+          "off": ਬੰਦ
+        heat: ਗਰਮਾਈ
+      please_confirm: ਕਿਰਪਾ ਕਰਕੇ ਪੁਸ਼ਟੀ ਕਰੋ
+      unavailable: ਉਪਲਬਧ ਨਹੀਂ
+      unknown: ਅਣਜਾਣ
+      no_name: ਕੋਈ ਨਾਮ ਨਹੀਂ
+      alarm:
+        home: ਘਰ ਵਿੱਚ
+        away: ਬਾਹਰ
+        night: ਰਾਤ
+        vacation: ਛੁੱਟੀ
+        bypass: ਬਾਈਪਾਸ
+        disarm: ਅਕਿਰਿਆਸ਼ੀਲ
+      settings:
+        reboot: ਰੀਬੂਟ
+        sleep: ਸਲੀਪ ਮੋਡ
+        brightness: ਚਮਕ
+        bright: ਚਮਕਦਾਰ
+        dimming: ਮੱਧਮ
+        dim: ਹਨੇਰਾ
+      meridiem:
+        am: ਸਵੇਰੇ
+        pm: ਸ਼ਾਮ
+    pl:     # Polish
+      bytes_per_char: 1
+      weekdays:
+        mon: Poniedziałek
+        tue: Wtorek
+        wed: Środa
+        thu: Czwartek
+        fri: Piątek
+        sat: Sobota
+        sun: Niedziela
+      weekdays_short:
+        mon: Pon
+        tue: Wt
+        wed: Śr
+        thu: Czw
+        fri: Pt
+        sat: Sob
+        sun: Ndz
+      months:
+        jan: Styczeń
+        feb: Luty
+        mar: Marzec
+        apr: Kwiecień
+        may: Maj
+        jun: Czerwiec
+        jul: Lipiec
+        aug: Sierpień
+        sep: Wrzesień
+        oct: Październik
+        nov: Listopad
+        dec: Grudzień
+      months_short:
+        jan: Sty
+        feb: Lut
+        mar: Mar
+        apr: Kwi
+        may: Maj
+        jun: Cze
+        jul: Lip
+        aug: Sie
+        sep: Wrz
+        oct: Paź
+        nov: Lis
+        dec: Gru
+      relative_day:
+        today: Dzisiaj
+        tomorrow: Jutro
+        in_2_days: Za 2 dni
+        in_3_days: Za 3 dni
+        in_4_days: Za 4 dni
+      climate:
+        states:
+          "on": Włączony
+          "off": Wyłączony
+        heat: Ogrzewanie
+      please_confirm: Proszę potwierdzić
+      unavailable: Niedostępny
+      unknown: Nieznany
+      no_name: Bez nazwy
+      alarm:
+        home: W domu
+        away: Poza domem
+        night: Noc
+        vacation: Wakacje
+        bypass: Obejście
+        disarm: Rozbroić
+      settings:
+        reboot: Restart
+        sleep: Tryb uśpienia
+        brightness: Jasność
+        bright: Jasny
+        dimming: Ściemnianie
+        dim: Ciemny
+      meridiem:
+        am: AM
+        pm: PM
+    pt:     # Portuguese
+      bytes_per_char: 1
+      weekdays:
+        mon: Segunda-feira
+        tue: Terça-feira
+        wed: Quarta-feira
+        thu: Quinta-feira
+        fri: Sexta-feira
+        sat: Sábado
+        sun: Domingo
+      weekdays_short:
+        mon: Seg
+        tue: Ter
+        wed: Qua
+        thu: Qui
+        fri: Sex
+        sat: Sáb
+        sun: Dom
+      months:
+        jan: Janeiro
+        feb: Fevereiro
+        mar: Março
+        apr: Abril
+        may: Maio
+        jun: Junho
+        jul: Julho
+        aug: Agosto
+        sep: Setembro
+        oct: Outubro
+        nov: Novembro
+        dec: Dezembro
+      months_short:
+        jan: Jan
+        feb: Fev
+        mar: Mar
+        apr: Abr
+        may: Mai
+        jun: Jun
+        jul: Jul
+        aug: Ago
+        sep: Set
+        oct: Out
+        nov: Nov
+        dec: Dez
+      relative_day:
+        today: Hoje
+        tomorrow: Amanhã
+        in_2_days: Em 2 dias
+        in_3_days: Em 3 dias
+        in_4_days: Em 4 dias
+      climate:
+        states:
+          "on": Ligado
+          "off": Desligado
+        heat: Aquecimento
+      please_confirm: Por favor, confirme
+      unavailable: Indisponível
+      unknown: Desconhecido
+      no_name: Sem nome
+      alarm:
+        home: Em casa
+        away: Ausente
+        night: Noturno
+        vacation: Férias
+        bypass: Desvio
+        disarm: Desarmar
+      settings:
+        reboot: Reiniciar
+        sleep: Dormir
+        brightness: Brilho
+        bright: Claro
+        dimming: Escurecimento
+        dim: Escuro
+      meridiem:
+        am: AM
+        pm: PM
+    ro:     # Romanian
+      bytes_per_char: 1
+      weekdays:
+        mon: Luni
+        tue: Marți
+        wed: Miercuri
+        thu: Joi
+        fri: Vineri
+        sat: Sâmbătă
+        sun: Duminică
+      weekdays_short:
+        mon: Lun
+        tue: Mar
+        wed: Mie
+        thu: Joi
+        fri: Vin
+        sat: Sâm
+        sun: Dum
+      months:
+        jan: Ianuarie
+        feb: Februarie
+        mar: Martie
+        apr: Aprilie
+        may: Mai
+        jun: Iunie
+        jul: Iulie
+        aug: August
+        sep: Septembrie
+        oct: Octombrie
+        nov: Noiembrie
+        dec: Decembrie
+      months_short:
+        jan: Ian
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: Mai
+        jun: Iun
+        jul: Iul
+        aug: Aug
+        sep: Sep
+        oct: Oct
+        nov: Nov
+        dec: Dec
+      relative_day:
+        today: Astăzi
+        tomorrow: Mâine
+        in_2_days: În 2 zile
+        in_3_days: În 3 zile
+        in_4_days: În 4 zile
+      climate:
+        states:
+          "on": Pornit
+          "off": Oprit
+        heat: Încălzire
+      please_confirm: Vă rugăm să confirmați
+      unavailable: Indisponibil
+      unknown: Necunoscut
+      no_name: Fără nume
+      alarm:
+        home: Acasă
+        away: Plecat
+        night: Noapte
+        vacation: Vacanță
+        bypass: Ocolire
+        disarm: Dezarmare
+      settings:
+        reboot: Repornire
+        sleep: Somn
+        brightness: Luminozitate
+        bright: Luminos
+        dimming: Diminuare
+        dim: Întunecat
+      meridiem:
+        am: AM
+        pm: PM
+    ru:     # Russian
+      bytes_per_char: 2
+      weekdays:
+        mon: Понедельник
+        tue: Вторник
+        wed: Среда
+        thu: Четверг
+        fri: Пятница
+        sat: Суббота
+        sun: Воскресенье
+      weekdays_short:
+        mon: Пн
+        tue: Вт
+        wed: Ср
+        thu: Чт
+        fri: Пт
+        sat: Сб
+        sun: Вс
+      months:
+        jan: Январь
+        feb: Февраль
+        mar: Март
+        apr: Апрель
+        may: Май
+        jun: Июнь
+        jul: Июль
+        aug: Август
+        sep: Сентябрь
+        oct: Октябрь
+        nov: Ноябрь
+        dec: Декабрь
+      months_short:
+        jan: Янв
+        feb: Фев
+        mar: Мар
+        apr: Апр
+        may: Май
+        jun: Июн
+        jul: Июл
+        aug: Авг
+        sep: Сен
+        oct: Окт
+        nov: Ноя
+        dec: Дек
+      relative_day:
+        today: Сегодня
+        tomorrow: Завтра
+        in_2_days: Через 2 дня
+        in_3_days: Через 3 дня
+        in_4_days: Через 4 дня
+      climate:
+        states:
+          "on": Включено
+          "off": Выключено
+        heat: Отопление
+      please_confirm: Пожалуйста подтвердите
+      unavailable: Недоступно
+      unknown: Неизвестно
+      no_name: Без названия
+      alarm:
+        home: Охрана (Дома)
+        away: Охрана (Не дома)
+        night: Охрана (Ночь)
+        vacation: Охрана (Отпуск)
+        bypass: Охрана (С исключениями)
+        disarm: Без охраны
+      settings:
+        reboot: Перезагрузка
+        sleep: Сон
+        brightness: Яркость
+        bright: Яркий
+        dimming: Затемнение
+        dim: Тусклый
+      meridiem:
+        am: ДП
+        pm: ПП
+    sk:     # Slovak
+      bytes_per_char: 1
+      weekdays:
+        mon: Pondelok
+        tue: Utorok
+        wed: Streda
+        thu: Štvrtok
+        fri: Piatok
+        sat: Sobota
+        sun: Nedeľa
+      weekdays_short:
+        mon: Po
+        tue: Ut
+        wed: St
+        thu: Št
+        fri: Pi
+        sat: So
+        sun: Ne
+      months:
+        jan: Január
+        feb: Február
+        mar: Marec
+        apr: Apríl
+        may: Máj
+        jun: Jún
+        jul: Júl
+        aug: August
+        sep: September
+        oct: Október
+        nov: November
+        dec: December
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: Máj
+        jun: Jún
+        jul: Júl
+        aug: Aug
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Dec
+      relative_day:
+        today: Dnes
+        tomorrow: Zajtra
+        in_2_days: O 2 dni
+        in_3_days: O 3 dni
+        in_4_days: O 4 dni
+      climate:
+        states:
+          "on": Zapnuté
+          "off": Vypnuté
+        heat: Kúrenie
+      please_confirm: Potvrďte, prosím
+      unavailable: Nedostupné
+      unknown: Neznámy
+      no_name: Bez mena
+      alarm:
+        home: Doma
+        away: Preč
+        night: Noc
+        vacation: Dovolenka
+        bypass: Obísť
+        disarm: Zneškodniť
+      settings:
+        reboot: Reštartovať
+        sleep: Spánok
+        brightness: Jas
+        bright: Svetlý
+        dimming: Stmavovanie
+        dim: Tmavý
+      meridiem:
+        am: AM
+        pm: PM
+    sl:     # Slovenian
+      bytes_per_char: 1
+      weekdays:
+        mon: Ponedeljek
+        tue: Torek
+        wed: Sreda
+        thu: Četrtek
+        fri: Petek
+        sat: Sobota
+        sun: Nedelja
+      weekdays_short:
+        mon: Pon
+        tue: Tor
+        wed: Sre
+        thu: Čet
+        fri: Pet
+        sat: Sob
+        sun: Ned
+      months:
+        jan: Januar
+        feb: Februar
+        mar: Marec
+        apr: April
+        may: Maj
+        jun: Junij
+        jul: Julij
+        aug: Avgust
+        sep: September
+        oct: Oktober
+        nov: November
+        dec: December
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: Maj
+        jun: Jun
+        jul: Jul
+        aug: Avg
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Dec
+      relative_day:
+        today: Danes
+        tomorrow: Jutri
+        in_2_days: Čez 2 dni
+        in_3_days: Čez 3 dni
+        in_4_days: Čez 4 dni
+      climate:
+        states:
+          "on": Vklopljeno
+          "off": Izklopljeno
+        heat: Ogrevanje
+      please_confirm: Prosimo, potrdite
+      unavailable: Nedosegljivo
+      unknown: Neznano
+      no_name: Brez imena
+      alarm:
+        home: Doma
+        away: Odsoten
+        night: Noč
+        vacation: Dopust
+        bypass: Obvoz
+        disarm: Razorožitev
+      settings:
+        reboot: Ponovni zagon
+        sleep: Spanje
+        brightness: Svetlost
+        bright: Svetlo
+        dimming: Zatemnitev
+        dim: Temno
+      meridiem:
+        am: dop.
+        pm: pop.
+    sq:     # Albanian
+      bytes_per_char: 1
+      weekdays:
+        mon: E hënë
+        tue: E martë
+        wed: E mërkurë
+        thu: E enjte
+        fri: E premte
+        sat: E shtunë
+        sun: E diel
+      weekdays_short:
+        mon: Hën
+        tue: Mar
+        wed: Mër
+        thu: Enj
+        fri: Pre
+        sat: Sht
+        sun: Die
+      months:
+        jan: Janar
+        feb: Shkurt
+        mar: Mars
+        apr: Prill
+        may: Maj
+        jun: Qershor
+        jul: Korrik
+        aug: Gusht
+        sep: Shtator
+        oct: Tetor
+        nov: Nëntor
+        dec: Dhjetor
+      months_short:
+        jan: Jan
+        feb: Shk
+        mar: Mar
+        apr: Pri
+        may: Maj
+        jun: Qer
+        jul: Kor
+        aug: Gus
+        sep: Sht
+        oct: Tet
+        nov: Nën
+        dec: Dhj
+      relative_day:
+        today: Sot
+        tomorrow: Nesër
+        in_2_days: Pas 2 ditësh
+        in_3_days: Pas 3 ditësh
+        in_4_days: Pas 4 ditësh
+      climate:
+        states:
+          "on": Ndezur
+          "off": Fikur
+        heat: Ngrohje
+      please_confirm: Ju lutemi konfirmoni
+      unavailable: E padisponueshme
+      unknown: E panjohur
+      no_name: Pa emër
+      alarm:
+        home: Në shtëpi
+        away: Jashtë
+        night: Natë
+        vacation: Pushime
+        bypass: Anashkalo
+        disarm: Çaktivizo
+      settings:
+        reboot: Rinisni
+        sleep: Modaliteti i gjumit
+        brightness: Ndriçimi
+        bright: I ndritshëm
+        dimming: Errësim
+        dim: I errët
+      meridiem:
+        am: PD
+        pm: MD
+    sr:     # Serbian
+      bytes_per_char: 2
+      weekdays:
+        mon: Понедељак
+        tue: Уторак
+        wed: Среда
+        thu: Четвртак
+        fri: Петак
+        sat: Субота
+        sun: Недеља
+      weekdays_short:
+        mon: Пон
+        tue: Уто
+        wed: Сре
+        thu: Чет
+        fri: Пет
+        sat: Суб
+        sun: Нед
+      months:
+        jan: Јануар
+        feb: Фебруар
+        mar: Март
+        apr: Април
+        may: Мај
+        jun: Јун
+        jul: Јул
+        aug: Август
+        sep: Септембар
+        oct: Октобар
+        nov: Новембар
+        dec: Децембар
+      months_short:
+        jan: Јан
+        feb: Феб
+        mar: Мар
+        apr: Апр
+        may: Мај
+        jun: Јун
+        jul: Јул
+        aug: Авг
+        sep: Сеп
+        oct: Окт
+        nov: Нов
+        dec: Дец
+      relative_day:
+        today: Данас
+        tomorrow: Сутра
+        in_2_days: За 2 дана
+        in_3_days: За 3 дана
+        in_4_days: За 4 дана
+      climate:
+        states:
+          "on": Укључено
+          "off": Искључено
+        heat: Грејање
+      please_confirm: Молимо потврдите
+      unavailable: Недоступно
+      unknown: Непознато
+      no_name: Без имена
+      alarm:
+        home: Код куће
+        away: Одсутан
+        night: Ноћ
+        vacation: Одмор
+        bypass: Заобићи
+        disarm: Раzoружати
+      settings:
+        reboot: Поново покрени
+        sleep: Режим спавања
+        brightness: Осветљеност
+        bright: Светло
+        dimming: Затамњење
+        dim: Тамно
+      meridiem:
+        am: AM
+        pm: PM
+    sv:     # Swedish
+      bytes_per_char: 1
+      weekdays:
+        mon: Måndag
+        tue: Tisdag
+        wed: Onsdag
+        thu: Torsdag
+        fri: Fredag
+        sat: Lördag
+        sun: Söndag
+      weekdays_short:
+        mon: Mån
+        tue: Tis
+        wed: Ons
+        thu: Tors
+        fri: Fre
+        sat: Lör
+        sun: Sön
+      months:
+        jan: Januari
+        feb: Februari
+        mar: Mars
+        apr: April
+        may: Maj
+        jun: Juni
+        jul: Juli
+        aug: Augusti
+        sep: September
+        oct: Oktober
+        nov: November
+        dec: December
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mar
+        apr: Apr
+        may: Maj
+        jun: Jun
+        jul: Jul
+        aug: Aug
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Dec
+      relative_day:
+        today: Idag
+        tomorrow: Imorgon
+        in_2_days: Om 2 dagar
+        in_3_days: Om 3 dagar
+        in_4_days: Om 4 dagar
+      climate:
+        states:
+          "on": På
+          "off": Av
+        heat: Värme
+      please_confirm: Vänligen bekräfta
+      unavailable: Otillgänglig
+      unknown: Okänd
+      no_name: Inget namn
+      alarm:
+        home: Hemma
+        away: Borta
+        night: Natt
+        vacation: Semester
+        bypass: Förbigå
+        disarm: Avaktivera
+      settings:
+        reboot: Starta om
+        sleep: Vila
+        brightness: Ljusstyrka
+        bright: Ljust
+        dimming: Dimmning
+        dim: Dimma
+      meridiem:
+        am: FM
+        pm: EM
+    sw:     # Swahili
+      bytes_per_char: 1
+      weekdays:
+        mon: Jumatatu
+        tue: Jumanne
+        wed: Jumatano
+        thu: Alhamisi
+        fri: Ijumaa
+        sat: Jumamosi
+        sun: Jumapili
+      weekdays_short:
+        mon: Jtt
+        tue: Jnn
+        wed: Jtn
+        thu: Alh
+        fri: Iju
+        sat: Jms
+        sun: Jpl
+      months:
+        jan: Januari
+        feb: Februari
+        mar: Machi
+        apr: Aprili
+        may: Mei
+        jun: Juni
+        jul: Julai
+        aug: Agosti
+        sep: Septemba
+        oct: Oktoba
+        nov: Novemba
+        dec: Desemba
+      months_short:
+        jan: Jan
+        feb: Feb
+        mar: Mac
+        apr: Apr
+        may: Mei
+        jun: Jun
+        jul: Jul
+        aug: Ago
+        sep: Sep
+        oct: Okt
+        nov: Nov
+        dec: Des
+      relative_day:
+        today: Leo
+        tomorrow: Kesho
+        in_2_days: Kesho kutwa
+        in_3_days: Baada ya siku 3
+        in_4_days: Baada ya siku 4
+      climate:
+        states:
+          "on": Imewashwa
+          "off": Imezimwa
+        heat: Joto
+      please_confirm: Tafadhali thibitisha
+      unavailable: Haipatikani
+      unknown: Haijulikani
+      no_name: Hakuna jina
+      alarm:
+        home: Nyumbani
+        away: Nje
+        night: Usiku
+        vacation: Likizo
+        bypass: Ruka
+        disarm: Zima
+      settings:
+        reboot: Anzisha upya
+        sleep: Hali ya usingizi
+        brightness: Mwangaza
+        bright: Kung'aa
+        dimming: Punguza mwangaza
+        dim: Giza
+      meridiem:
+        am: AM
+        pm: PM
+    ta:     # Tamil
+      bytes_per_char: 3
+      weekdays:
+        mon: திங்கள்
+        tue: செவ்வாய்
+        wed: புதன்
+        thu: வியாழன்
+        fri: வெள்ளி
+        sat: சனி
+        sun: ஞாயிறு
+      weekdays_short:
+        mon: திங்
+        tue: செவ்
+        wed: புத
+        thu: வியா
+        fri: வெள்
+        sat: சனி
+        sun: ஞாயி
+      months:
+        jan: ஜனவரி
+        feb: பிப்ரவரி
+        mar: மார்ச்
+        apr: ஏப்ரல்
+        may: மே
+        jun: ஜூன்
+        jul: ஜூலை
+        aug: ஆகஸ்ட்
+        sep: செப்டம்பர்
+        oct: அக்டோபர்
+        nov: நவம்பர்
+        dec: டிசம்பர்
+      months_short:
+        jan: ஜன
+        feb: பிப்
+        mar: மார்
+        apr: ஏப்
+        may: மே
+        jun: ஜூன்
+        jul: ஜூலை
+        aug: ஆக
+        sep: செப்
+        oct: அக்
+        nov: நவ
+        dec: டிச
+      relative_day:
+        today: இன்று
+        tomorrow: நாளை
+        in_2_days: நாளை மறுநாள்
+        in_3_days: 3 நாட்களில்
+        in_4_days: 4 நாட்களில்
+      climate:
+        states:
+          "on": இயக்கு
+          "off": நிறுத்து
+        heat: வெப்பம்
+      please_confirm: தயவுசெய்து உறுதிப்படுத்தவும்
+      unavailable: கிடைக்கவில்லை
+      unknown: தெரியவில்லை
+      no_name: பெயரில்லை
+      alarm:
+        home: வீட்டில்
+        away: வெளியே
+        night: இரவு
+        vacation: விடுமுறை
+        bypass: தவிர்
+        disarm: முடக்கு
+      settings:
+        reboot: மறுதொடக்கம்
+        sleep: தூக்க பயன்முறை
+        brightness: பொலிவு
+        bright: பிரகாசமான
+        dimming: மங்கல்
+        dim: இருட்டான
+      meridiem:
+        am: முற்பகல்
+        pm: பிற்பகல்
+    th:     # Thai
+      bytes_per_char: 3
+      weekdays:
+        mon: จันทร์
+        tue: อังคาร
+        wed: พุธ
+        thu: พฤหัสบดี
+        fri: ศุกร์
+        sat: เสาร์
+        sun: อาทิตย์
+      weekdays_short:
+        mon: จ
+        tue: อ
+        wed: พ
+        thu: พฤ
+        fri: ศ
+        sat: ส
+        sun: อา
+      months:
+        jan: มกราคม
+        feb: กุมภาพันธ์
+        mar: มีนาคม
+        apr: เมษายน
+        may: พฤษภาคม
+        jun: มิถุนายน
+        jul: กรกฎาคม
+        aug: สิงหาคม
+        sep: กันยายน
+        oct: ตุลาคม
+        nov: พฤศจิกายน
+        dec: ธันวาคม
+      months_short:
+        jan: ม.ค.
+        feb: ก.พ.
+        mar: มี.ค.
+        apr: เม.ย.
+        may: พ.ค.
+        jun: มิ.ย.
+        jul: ก.ค.
+        aug: ส.ค.
+        sep: ก.ย.
+        oct: ต.ค.
+        nov: พ.ย.
+        dec: ธ.ค.
+      relative_day:
+        today: วันนี้
+        tomorrow: พรุ่งนี้
+        in_2_days: มะรืนนี้
+        in_3_days: ในอีก 3 วัน
+        in_4_days: ในอีก 4 วัน
+      climate:
+        states:
+          "on": "เปิด"
+          "off": "ปิด"
+        heat: ความร้อน
+      please_confirm: กรุณายืนยัน
+      unavailable: ไม่ปรากฏ
+      unknown: ไม่ทราบสถานะ
+      no_name: ไม่มีชื่อ
+      alarm:
+        home: อยู่บ้าน
+        away: ไม่อยู่บ้าน
+        night: เข้านอน
+        vacation: วันหยุด
+        bypass: ข้อยกเว้น
+        disarm: ปิดระบบ
+      settings:
+        reboot: รีบูธ
+        sleep: โหมดพักหน้าจอ
+        brightness: ความสว่าง
+        bright: แสง
+        dimming: ลดแสง
+        dim: หรี่
+      meridiem:
+        am: AM
+        pm: PM
+    tr:     # Turkish
+      bytes_per_char: 1
+      weekdays:
+        mon: Pazartesi
+        tue: Salı
+        wed: Çarşamba
+        thu: Perşembe
+        fri: Cuma
+        sat: Cumartesi
+        sun: Pazar
+      weekdays_short:
+        mon: Pzt
+        tue: Sal
+        wed: Çar
+        thu: Per
+        fri: Cum
+        sat: Cmt
+        sun: Paz
+      months:
+        jan: Ocak
+        feb: Şubat
+        mar: Mart
+        apr: Nisan
+        may: Mayıs
+        jun: Haziran
+        jul: Temmuz
+        aug: Ağustos
+        sep: Eylül
+        oct: Ekim
+        nov: Kasım
+        dec: Aralık
+      months_short:
+        jan: Oca
+        feb: Şub
+        mar: Mar
+        apr: Nis
+        may: May
+        jun: Haz
+        jul: Tem
+        aug: Ağu
+        sep: Eyl
+        oct: Eki
+        nov: Kas
+        dec: Ara
+      relative_day:
+        today: Bugün
+        tomorrow: Yarın
+        in_2_days: 2 gün içinde
+        in_3_days: 3 gün içinde
+        in_4_days: 4 gün içinde
+      climate:
+        states:
+          "on": Açık
+          "off": Kapalı
+        heat: Isıtma
+      please_confirm: Lütfen onaylayın
+      unavailable: Kullanılamaz
+      unknown: Bilinmeyen
+      no_name: İsimsiz
+      alarm:
+        home: Evde
+        away: Dışarıda
+        night: Gece
+        vacation: Tatil
+        bypass: Bypass
+        disarm: Devre dışı bırak
+      settings:
+        reboot: Yeniden başlat
+        sleep: Uyku modu
+        brightness: Parlaklık
+        bright: Parlak
+        dimming: Karartma
+        dim: Karanlık
+      meridiem:
+        am: ÖÖ
+        pm: ÖS
+    uk:     # Ukrainian
+      bytes_per_char: 2
+      weekdays:
+        mon: Понеділок
+        tue: Вівторок
+        wed: Середа
+        thu: Четвер
+        fri: П'ятниця
+        sat: Субота
+        sun: Неділя
+      weekdays_short:
+        mon: Пн
+        tue: Вт
+        wed: Ср
+        thu: Чт
+        fri: Пт
+        sat: Сб
+        sun: Нд
+      months:
+        jan: Січень
+        feb: Лютий
+        mar: Березень
+        apr: Квітень
+        may: Травень
+        jun: Червень
+        jul: Липень
+        aug: Серпень
+        sep: Вересень
+        oct: Жовтень
+        nov: Листопад
+        dec: Грудень
+      months_short:
+        jan: Січ
+        feb: Лют
+        mar: Бер
+        apr: Кві
+        may: Тра
+        jun: Чер
+        jul: Лип
+        aug: Сер
+        sep: Вер
+        oct: Жов
+        nov: Лис
+        dec: Гру
+      relative_day:
+        today: Сьогодні
+        tomorrow: Завтра
+        in_2_days: Через 2 дні
+        in_3_days: Через 3 дні
+        in_4_days: Через 4 дні
+      climate:
+        states:
+          "on": Увімкнено
+          "off": Вимкнено
+        heat: Опалення
+      please_confirm: Будь ласка, підтвердіть
+      unavailable: Недоступно
+      unknown: Невідомо
+      no_name: Без імені
+      alarm:
+        home: Вдома
+        away: Відсутній
+        night: Ніч
+        vacation: Відпустка
+        bypass: Обхід
+        disarm: Роззброєння
+      settings:
+        reboot: Перезавантаження
+        sleep: Сон
+        brightness: Яскравість
+        bright: Яскравий
+        dimming: Затемнення
+        dim: Темний
+      meridiem:
+        am: ДП
+        pm: ПП
+    ur:     # Urdu
+      bytes_per_char: 2
+      weekdays:
+        mon: پیر
+        tue: منگل
+        wed: بدھ
+        thu: جمعرات
+        fri: جمعہ
+        sat: ہفتہ
+        sun: اتوار
+      weekdays_short:
+        mon: پیر
+        tue: منگ
+        wed: بدھ
+        thu: جمع
+        fri: جمہ
+        sat: ہفت
+        sun: اتو
+      months:
+        jan: جنوری
+        feb: فروری
+        mar: مارچ
+        apr: اپریل
+        may: مئی
+        jun: جون
+        jul: جولائی
+        aug: اگست
+        sep: ستمبر
+        oct: اکتوبر
+        nov: نومبر
+        dec: دسمبر
+      months_short:
+        jan: جنو
+        feb: فرو
+        mar: مار
+        apr: اپر
+        may: مئی
+        jun: جون
+        jul: جول
+        aug: اگس
+        sep: ستم
+        oct: اکت
+        nov: نوم
+        dec: دسم
+      relative_day:
+        today: آج
+        tomorrow: کل
+        in_2_days: پرسوں
+        in_3_days: 3 دن بعد
+        in_4_days: 4 دن بعد
+      climate:
+        states:
+          "on": چالو
+          "off": بند
+        heat: حرارت
+      please_confirm: براہ کرم تصدیق کریں
+      unavailable: دستیاب نہیں
+      unknown: نامعلوم
+      no_name: کوئی نام نہیں
+      alarm:
+        home: گھر میں
+        away: باہر
+        night: رات
+        vacation: چھٹی
+        bypass: بائی پاس
+        disarm: غیر فعال
+      settings:
+        reboot: ری بوٹ
+        sleep: سلیپ موڈ
+        brightness: روشنی
+        bright: روشن
+        dimming: مدھم
+        dim: اندھیرا
+      meridiem:
+        am: صبح
+        pm: شام
+    vi:     # Vietnamese
+      bytes_per_char: 2
+      weekdays:
+        mon: Thứ Hai
+        tue: Thứ Ba
+        wed: Thứ Tư
+        thu: Thứ Năm
+        fri: Thứ Sáu
+        sat: Thứ Bảy
+        sun: Chủ Nhật
+      weekdays_short:
+        mon: T2
+        tue: T3
+        wed: T4
+        thu: T5
+        fri: T6
+        sat: T7
+        sun: CN
+      months:
+        jan: Tháng 1
+        feb: Tháng 2
+        mar: Tháng 3
+        apr: Tháng 4
+        may: Tháng 5
+        jun: Tháng 6
+        jul: Tháng 7
+        aug: Tháng 8
+        sep: Tháng 9
+        oct: Tháng 10
+        nov: Tháng 11
+        dec: Tháng 12
+      months_short:
+        jan: Th1
+        feb: Th2
+        mar: Th3
+        apr: Th4
+        may: Th5
+        jun: Th6
+        jul: Th7
+        aug: Th8
+        sep: Th9
+        oct: Th10
+        nov: Th11
+        dec: Th12
+      relative_day:
+        today: Hôm nay
+        tomorrow: Ngày mai
+        in_2_days: Ngày kia
+        in_3_days: 3 ngày nữa
+        in_4_days: 4 ngày nữa
+      climate:
+        states:
+          "on": Bật
+          "off": Tắt
+        heat: Sưởi ấm
+      please_confirm: Vui lòng xác nhận
+      unavailable: Không khả dụng
+      unknown: Không xác định
+      no_name: Không có tên
+      alarm:
+        home: Ở nhà
+        away: Vắng nhà
+        night: Ban đêm
+        vacation: Kỳ nghỉ
+        bypass: Bỏ qua
+        disarm: Tắt báo động
+      settings:
+        reboot: Khởi động lại
+        sleep: Chế độ ngủ
+        brightness: Độ sáng
+        bright: Sáng
+        dimming: Làm mờ
+        dim: Tối
+      meridiem:
+        am: SA
+        pm: CH
+    zh-cn:  # Simplified Chinese
+      bytes_per_char: 3
+      weekdays:
+        mon: 星期一
+        tue: 星期二
+        wed: 星期三
+        thu: 星期四
+        fri: 星期五
+        sat: 星期六
+        sun: 星期日
+      weekdays_short:
+        mon: 一
+        tue: 二
+        wed: 三
+        thu: 四
+        fri: 五
+        sat: 六
+        sun: 日
+      months:
+        jan: 1月
+        feb: 2月
+        mar: 3月
+        apr: 4月
+        may: 5月
+        jun: 6月
+        jul: 7月
+        aug: 8月
+        sep: 9月
+        oct: 10月
+        nov: 11月
+        dec: 12月
+      months_short:
+        jan: 1月
+        feb: 2月
+        mar: 3月
+        apr: 4月
+        may: 5月
+        jun: 6月
+        jul: 7月
+        aug: 8月
+        sep: 9月
+        oct: 10月
+        nov: 11月
+        dec: 12月
+      relative_day:
+        today: 今天
+        tomorrow: 明天
+        in_2_days: 后天
+        in_3_days: 大后天
+        in_4_days: 四天后
+      climate:
+        states:
+          "on": 开启
+          "off": 关闭
+        heat: 暖气
+      please_confirm: 请确认
+      unavailable: 无法使用
+      unknown: 未知
+      no_name: 未命名
+      alarm:
+        home: 在家
+        away: 离家
+        night: 夜间
+        vacation: 假期
+        bypass: 忽略
+        disarm: 解除
+      settings:
+        reboot: 重启
+        sleep: 睡眠
+        brightness: 亮度
+        bright: 正常
+        dimming: 调光
+        dim: 待机
+      meridiem:
+        am: 上午
+        pm: 下午
+    zh-tw:  # Traditional Chinese
+      bytes_per_char: 3
+      weekdays:
+        mon: 星期一
+        tue: 星期二
+        wed: 星期三
+        thu: 星期四
+        fri: 星期五
+        sat: 星期六
+        sun: 星期日
+      weekdays_short:
+        mon: 一
+        tue: 二
+        wed: 三
+        thu: 四
+        fri: 五
+        sat: 六
+        sun: 日
+      months:
+        jan: 1月
+        feb: 2月
+        mar: 3月
+        apr: 4月
+        may: 5月
+        jun: 6月
+        jul: 7月
+        aug: 8月
+        sep: 9月
+        oct: 10月
+        nov: 11月
+        dec: 12月
+      months_short:
+        jan: 1月
+        feb: 2月
+        mar: 3月
+        apr: 4月
+        may: 5月
+        jun: 6月
+        jul: 7月
+        aug: 8月
+        sep: 9月
+        oct: 10月
+        nov: 11月
+        dec: 12月
+      relative_day:
+        today: 今天
+        tomorrow: 明天
+        in_2_days: 後天
+        in_3_days: 大後天
+        in_4_days: 四天後
+      climate:
+        states:
+          'on': 開啟
+          'off': 關閉
+        heat: 暖氣
+      please_confirm: 請確認
+      unavailable: 無法使用
+      unknown: 未知
+      no_name: 未命名
+      alarm:
+        home: 在家
+        away: 離家
+        night: 夜間
+        vacation: 假期
+        bypass: 忽略
+        disarm: 解除
+      settings:
+        reboot: 重啟
+        sleep: 睡眠
+        brightness: 亮度
+        bright: 正常
+        dimming: 調光
+        dim: 待機
+      meridiem:
+        am: 上午
+        pm: 下午
+
+esphome:
+  platformio_options:
+    build_flags:
+      - -D NSPANEL_EASY_LOCALIZATION
+
+script:
+  - id: !extend dump_config
+    then:
+      - lambda: >-
+          ESP_LOGCONFIG("${TAG_LOCALIZATION}", "Localization:");
+          ESP_LOGCONFIG("${TAG_LOCALIZATION}", "  Language: '${ language }'");
+          if (${ 1 if LANGUAGE_LOWER in SUPPORTED_LANGUAGES else 0 }) {
+            ESP_LOGCONFIG("${TAG_LOCALIZATION}", "  Valid: Yes");
+          } else {
+            ESP_LOGE("${TAG_LOCALIZATION}", "  Fallback to English");
+          }
+...

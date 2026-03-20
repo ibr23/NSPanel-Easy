@@ -25,10 +25,10 @@ Page media_player
             }
             // set background image and fg color to all component
             media_player.pic=pic_background_main
-            for(index=1;index<=last_component.id;index++)
+            for(sys0=1;sys0<=last_component.id;sys0++)
             {
-                b[index].picc=pic_background_main
-                b[index].pco=color_pco_main
+                b[sys0].picc=pic_background_main
+                b[sys0].pco=color_pco_main
             }
             button_back.font=button_back_font
             button_back.pco=color_pco_navigation

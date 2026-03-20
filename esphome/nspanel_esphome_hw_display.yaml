@@ -393,6 +393,10 @@ script:
     then:
       - lambda: |-
           ESP_LOGI("${TAG_HW_DISPLAY}", "Apply theme: %s", background_type->current_option());
+          if (display_mode == 4) {  // To do: Implement logic for new format
+            ESP_LOGI("${TAG_HW_DISPLAY}", "New format - No themes yet");
+            return;
+          }
           current_theme = (background_type->current_option() == "${THEME_LIGHT_LABEL}") ?
                                                                 ThemeMode::LIGHT : ThemeMode::DARK;
           theme_update_all->execute();
@@ -546,6 +550,11 @@ script:
           ESP_LOGV("${TAG_HW_DISPLAY}", "  reset timer: %s", YESNO(reset_timer));
           if (version_tft == 0) {
             ESP_LOGE("${TAG_HW_DISPLAY}", "TFT version invalid");
+            return;
+          }
+          if (display_mode == 4) {  // To do: Implement logic for new format
+            ESP_LOGI("${TAG_HW_DISPLAY}", "New format - Just go to home page");
+            goto_page->execute(${PAGE_HOME_ID});
             return;
           }
           if (current_page_id == ${PAGE_SCREENSAVER_ID} or current_page_id == ${PAGE_BOOT_ID}) {

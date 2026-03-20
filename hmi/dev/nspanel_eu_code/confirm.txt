@@ -107,7 +107,7 @@ Text title
         Vertical Alignment  : top
         Input Type          : character
         Text                : Please confirm
-        Max. Text Size      : 100
+        Max. Text Size      : 50
         Word wrap           : disabled
         Horizontal Spacing  : 0
         Vertical Spacing    : 0
@@ -136,7 +136,7 @@ Text body
         Vertical Alignment  : top
         Input Type          : character
         Text                : Please confirm
-        Max. Text Size      : 255
+        Max. Text Size      : 25
         Word wrap           : disabled
         Horizontal Spacing  : 0
         Vertical Spacing    : 0

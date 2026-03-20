@@ -18,6 +18,7 @@
  * - IconData: Structure pairing icons with colors
  */
 
+namespace esphome {
 namespace nspanel_easy {
 
     // =============================================================================
@@ -117,3 +118,4 @@ namespace nspanel_easy {
     };
 
 }  // namespace nspanel_easy
+}  // namespace esphome

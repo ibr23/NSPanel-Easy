@@ -6,6 +6,7 @@
 #include <initializer_list>
 #include <string>
 
+namespace esphome {
 namespace nspanel_easy {
 
     /**
@@ -84,3 +85,4 @@ namespace nspanel_easy {
     }
 
 }  // namespace nspanel_easy
+}  // namespace esphome

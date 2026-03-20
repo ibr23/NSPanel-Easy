@@ -26,10 +26,10 @@ Page utilities
             vis 255,0
             // set background image and fg color to all component
             utilities.pic=pic_background_main
-            for(index=1;index<=last_component.id;index++)
+            for(sys0=1;sys0<=last_component.id;sys0++)
             {
-                b[index].picc=pic_background_main
-                b[index].pco=color_pco_secondary
+                b[sys0].picc=pic_background_main
+                b[sys0].pco=color_pco_secondary
             }
             title_icon.pco=color_pco_main
             vis title_icon,1

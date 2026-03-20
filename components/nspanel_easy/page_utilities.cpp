@@ -11,6 +11,7 @@
 #include "esp32-hal-psram.h"
 #endif
 
+namespace esphome {
 namespace nspanel_easy {
 
     bool page_utilities_enabled = false;
@@ -58,5 +59,6 @@ namespace nspanel_easy {
     }
 
 }  // namespace nspanel_easy
+}  // namespace esphome
 
 #endif  // NSPANEL_EASY_PAGE_UTILITIES

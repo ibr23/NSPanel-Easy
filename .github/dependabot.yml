@@ -1,0 +1,90 @@
+# .github/dependabot.yml
+#
+# Dependabot version updates configuration.
+# Monitors all `uses:` references across .github/workflows/*.yml and proposes
+# automated PRs when new versions are available.
+#
+# Ecosystems covered:
+#   - github-actions : all GitHub Actions used across workflows
+#   - pip            : Python tooling (requires .github/requirements.txt)
+#
+# Documentation:
+#   https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+---
+
+version: 2
+
+updates:
+  # ---------------------------------------------------------------------------
+  # GitHub Actions
+  # Covers ALL `uses:` references in .github/workflows/*.yml, including:
+  #   - actions/*          (checkout, setup-python, cache, artifacts, stale)
+  #   - tj-actions/*       (changed-files in validate_markdown)
+  #   - step-security/*    (changed-files in validate_yamllint)
+  #   - DavidAnson/*       (markdownlint-cli2-action)
+  #   - stefanzweifel/*    (git-auto-commit-action)
+  #   - gaurav-nelson/*    (github-action-markdown-link-check)
+  #   - ludeeus/*          (action-shellcheck)
+  #   - py-actions/*       (flake8)
+  #   - RafikFarhad/*      (clang-format-github-action)
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Stockholm"
+    labels:
+      - "dependencies"
+      - "ci"
+    commit-message:
+      prefix: "ci"
+    groups:
+      # Official GitHub-maintained actions — typically safe to batch
+      actions-official:
+        patterns:
+          - "actions/*"
+      # Third-party actions — grouped by workflow area to keep PRs focused
+      actions-markdown:
+        patterns:
+          - "DavidAnson/*"
+          - "gaurav-nelson/*"
+          - "stefanzweifel/*"
+      actions-linting:
+        patterns:
+          - "ludeeus/*"
+          - "py-actions/*"
+          - "RafikFarhad/*"
+      actions-file-detection:
+        patterns:
+          - "tj-actions/*"
+          - "step-security/*"
+
+  # ---------------------------------------------------------------------------
+  # Python (pip)
+  # Tracks pinned Python tooling versions.
+  # Requires a .github/requirements.txt file to be effective — create it with:
+  #
+  #   yamllint==<current-version>
+  #
+  # ESPHome is intentionally excluded: latest/dev tracks are resolved
+  # dynamically in the workflow and should not be pinned here.
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "pip"
+    directory: "/.github"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Stockholm"
+    labels:
+      - "dependencies"
+      - "python"
+    commit-message:
+      prefix: "build"
+    ignore:
+      # Managed dynamically by esphome_build.yml — not pinned
+      - dependency-name: "esphome"
+...

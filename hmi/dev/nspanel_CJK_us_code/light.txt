@@ -43,9 +43,9 @@ Page light
             vis color_button,0
             // set background image and fg color to all components
             light.pic=pic_background_main
-            for(index=0;index<=last_component.id;index++)
+            for(sys0=0;sys0<=last_component.id;sys0++)
             {
-                b[index].picc=b[0].pic
+                b[sys0].picc=b[0].pic
             }
             colorwheel.pic=colorwheel_pic.val
             tempslider.pic=tempslider_pic.val
@@ -67,71 +67,131 @@ Page light
         
 Variable (int32) rgb565
     Attributes
-        ID   : 19
+        ID   : 17
         Scope: local
         Value: 0
     
 Variable (string) va1
     Attributes
-        ID            : 20
+        ID            : 18
         Scope         : local
         Text          : newtxt
         Max. Text Size: 20
     
 Variable (string) va2
     Attributes
-        ID            : 21
+        ID            : 19
         Scope         : local
         Text          : newtxt
         Max. Text Size: 10
     
 Variable (string) va3
     Attributes
-        ID            : 22
+        ID            : 20
         Scope         : local
         Text          : newtxt
         Max. Text Size: 10
     
 Variable (int32) currenttab
     Attributes
-        ID   : 23
+        ID   : 21
         Scope: local
         Value: 0
     
 Variable (string) lightsetting
     Attributes
-        ID            : 27
+        ID            : 25
         Scope         : local
         Text          : 
         Max. Text Size: 255
     
 Variable (int32) colorwheel_pic
     Attributes
-        ID   : 30
+        ID   : 28
         Scope: global
         Value: 17
     
 Variable (int32) tempslider_pic
     Attributes
-        ID   : 31
+        ID   : 29
         Scope: global
         Value: 21
     
 Variable (int32) lslider_pic
     Attributes
-        ID   : 32
+        ID   : 30
         Scope: global
         Value: 28
     
 Variable (int32) lslider_pic1
     Attributes
-        ID   : 33
+        ID   : 31
         Scope: global
         Value: 29
     
 Variable (int32) last_component
     Attributes
+        ID   : 32
+        Scope: local
+        Value: 0
+    
+Variable (int32) r
+    Attributes
+        ID   : 33
+        Scope: local
+        Value: 0
+    
+Variable (int32) g
+    Attributes
         ID   : 34
+        Scope: local
+        Value: 0
+    
+Variable (int32) b
+    Attributes
+        ID   : 35
+        Scope: local
+        Value: 0
+    
+Variable (int32) h
+    Attributes
+        ID   : 36
+        Scope: local
+        Value: 0
+    
+Variable (int32) s
+    Attributes
+        ID   : 37
+        Scope: local
+        Value: 0
+    
+Variable (int32) v
+    Attributes
+        ID   : 38
+        Scope: local
+        Value: 0
+    
+Variable (int32) p
+    Attributes
+        ID   : 39
+        Scope: local
+        Value: 0
+    
+Variable (int32) q
+    Attributes
+        ID   : 40
+        Scope: local
+        Value: 0
+    
+Variable (int32) t
+    Attributes
+        ID   : 41
+        Scope: local
+        Value: 0
+    
+Variable (int32) f
+    Attributes
+        ID   : 42
         Scope: local
         Value: 0
     
@@ -272,7 +332,7 @@ Text temp_value
     
 Text light_value_2
     Attributes
-        ID                      : 24
+        ID                      : 22
         Scope                   : local
         Dragging                : 0
         Send Component ID       : disabled
@@ -299,7 +359,7 @@ Text light_value_2
     
 Text temp_value_2
     Attributes
-        ID                      : 25
+        ID                      : 23
         Scope                   : local
         Dragging                : 0
         Send Component ID       : disabled
@@ -326,7 +386,7 @@ Text temp_value_2
     
 Text icon_state
     Attributes
-        ID                      : 26
+        ID                      : 24
         Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
@@ -353,7 +413,7 @@ Text icon_state
     
 Text power_button
     Attributes
-        ID                      : 29
+        ID                      : 27
         Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
@@ -669,31 +729,31 @@ Picture colorwheel
             {
                 field.val++
             }
-            covx r,va1.txt,0,0
-            covx g,va2.txt,0,0
-            covx b,va3.txt,0,0
+            covx r.val,va1.txt,0,0
+            covx g.val,va2.txt,0,0
+            covx b.val,va3.txt,0,0
             va1.txt=""
             va2.txt=""
             va3.txt=""
         
         Touch Release Event
             // Adjust field.val "orientation" and offset to match the h value of the colors in the wheel
-            h=23-field.val// 0 <= field.val <= 23
+            h.val=23-field.val// 0 <= field.val <= 23
             // h is expected to be 0-6*256 (see hsv2rgb)
-            h*=6*256
-            h/=24// Number of fields
+            h.val*=6*256
+            h.val/=24// Number of fields
             //
             // s is expected to be 0-256 (see hsv2rgb)
-            s=ring.val*256
-            s/=8// Number of rings
+            s.val=ring.val*256
+            s.val/=8// Number of rings
             // no "value" selectable; fix it to the maximum (matching the colors in the wheels shown.
-            v=255
+            v.val=255
             click hsv2rgb,0
             click rgb888to565,0
             //colPreview.bco=rgb565.val
-            covx r,va1.txt,0,0
-            covx g,va2.txt,0,0
-            covx b,va3.txt,0,0
+            covx r.val,va1.txt,0,0
+            covx g.val,va2.txt,0,0
+            covx b.val,va3.txt,0,0
             lightsetting.txt="light,rgb_color,"+va1.txt+","+va2.txt+","+va3.txt
             printh 92
             prints "localevent",0
@@ -795,7 +855,7 @@ Slider tempslider
         
 Button button_back
     Attributes
-        ID                                  : 28
+        ID                                  : 26
         Scope                               : local
         Dragging                            : 0
         Send Component ID                   : on press and release
@@ -845,65 +905,65 @@ Hotspot hsv2rgb
             // https://de.wikipedia.org/wiki/HSV-Farbraum#Umrechnung_HSV_in_RGB
             // The values range from 0..255 instead of 0..1
             // h ranges from 0..(6*256)
-            if(s>=256)
+            if(s.val>=256)
             {
-                s=255
-            }else if(s<0)
+                s.val=255
+            }else if(s.val<0)
             {
-                s=0
+                s.val=0
             }
-            if(v>=256)
+            if(v.val>=256)
             {
-                v=255
-            }else if(v<0)
+                v.val=255
+            }else if(v.val<0)
             {
-                v=0
+                v.val=0
             }
-            f=h&0xff
-            p=256-s
-            p*=v
-            p=p>>8// / 256
-            q=s*f// 0-256*256 = 0-65536
-            q=65536-q
-            q*=v
-            q=q>>16
-            t=256-f
-            t*=s
-            t=65536-t
-            t*=v
-            t=t>>16
+            f.val=h.val&0xff
+            p.val=256-s.val
+            p.val*=v.val
+            p.val=p.val>>8// / 256
+            q.val=s.val*f.val// 0-256*256 = 0-65536
+            q.val=65536-q.val
+            q.val*=v.val
+            q.val=q.val>>16
+            t.val=256-f.val
+            t.val*=s.val
+            t.val=65536-t.val
+            t.val*=v.val
+            t.val=t.val>>16
             //
-            f=h>>8
-            if(f==1)
+            f.val=h.val>>8
+            if(f.val==1)
             {
-                r=q
-                g=v
-                b=p
-            }else if(f==2)
+                r.val=q.val
+                g.val=v.val
+                b.val=p.val
+            }else if(f.val==2)
             {
-                r=p
-                g=v
-                b=t
-            }else if(f==3)
+                r.val=p.val
+                g.val=v.val
+                b.val=t.val
+            }else if(f.val==3)
             {
-                r=p
-                g=q
-                b=v
-            }else if(f==4)
+                r.val=p.val
+                g.val=q.val
+                b.val=v.val
+            }else if(f.val==4)
             {
-                r=t
-                g=p
-                b=v
-            }else if(f==5)
+                r.val=t.val
+                g.val=p.val
+                b.val=v.val
+            }else if(f.val==5)
             {
-                r=v
-                g=p
-                b=q
+                r.val=v.val
+                g.val=p.val
+                b.val=q.val
             }else
             {
-                r=v
-                g=t
-                b=p
+                r.val=v.val
+                g.val=t.val
+                b.val=p.val
             }
         
 Hotspot rgb888to565
@@ -923,72 +983,15 @@ Hotspot rgb888to565
     
     Events
         Touch Release Event
-            r=r&0xff
-            g=g&0xff
-            b=b&0xff
-            sys1=r>>3
+            r.val=r.val&0xff
+            g.val=g.val&0xff
+            b.val=b.val&0xff
+            sys1=r.val>>3
             sys2=sys1<<6
-            sys1=g>>2
+            sys1=g.val>>2
             sys2+=sys1
             sys2=sys2<<5
-            sys1=b>>3
+            sys1=b.val>>3
             sys2+=sys1
             rgb565.val=sys2
-        
-Timer swipestore
-    Attributes
-        ID         : 18
-        Scope      : local
-        Period (ms): 50
-        Enabled    : no
-    
-    Events
-        Timer Event
-            swipex=tch0
-            swipey=tch1
-        
-TouchCap swipe
-    Attributes
-        ID   : 17
-        Scope: local
-        Value: 0
-    
-    Events
-        Touch Press Event
-            swipestore.en=1 // Start swipestore timer
-        
-        Touch Release Event
-            swipestore.en=0
-            // Touch has ended, x
-            if(tch0==0)
-            {
-                swipec=swipex-tch2
-                // From Left to Right
-                if(swipec>swipedx)
-                {
-                    //page
-                }
-                // Right to Left
-                swipec2=0-swipedx
-                if(swipec<swipec2)
-                {
-                    //page
-                }
-            }
-            // Touch has ended, y
-            if(tch1==0)
-            {
-                swipec=swipey-tch3
-                // From Up to Down
-                if(swipec>100)
-                {
-                    //page
-                }
-                // Down to Up
-                swipec2=0-swipedy
-                if(swipec<-100)
-                {
-                    //page
-                }
-            }
         

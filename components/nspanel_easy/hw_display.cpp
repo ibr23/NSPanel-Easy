@@ -4,6 +4,7 @@
 
 #include "hw_display.h"
 
+namespace esphome {
 namespace nspanel_easy {
 
     static const char *TAG_COMPONENT_HW_DISPLAY = "nspanel.component.hw_display";
@@ -15,5 +16,6 @@ namespace nspanel_easy {
     uint8_t display_charset = UINT8_MAX;
 
 }  // namespace nspanel_easy
+}  // namespace esphome
 
 #endif  // NSPANEL_EASY_HW_DISPLAY

@@ -438,7 +438,8 @@ script:
           }  // #endif visible — icon/color remain NONE/BLACK when hidden
 
           // Extract component information using helper function
-          const NextionComponent comp = extractNextionComponent(component, page_names[current_page_id]);
+          const esphome::nspanel_easy::NSPanelEasyNextionComponent comp =
+                                                        extractNextionComponent(component, page_names[current_page_id]);
 
           // Determine target ID format based on page context
           const char* target_id;

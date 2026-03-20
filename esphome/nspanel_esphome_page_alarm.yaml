@@ -149,6 +149,7 @@ esphome:
 
 nspanel_easy:
   require_disarm_before_rearm: ${require_disarm_before_rearm}
+
 script:
   - id: !extend event_from_display  # Defined by hw_display
     then:

@@ -12,7 +12,6 @@ substitutions:
   qrcode_title_initial_value: ''
   qrcode_icon_color_initial_value: 'Colors::GRAY_LIGHT'
   qrcode_restore_value: false
-  qrcode_size: 222
   qrcode_background_color: 65535
   qrcode_foreground_color: 0
   qrcode_border_size: 8
@@ -145,43 +144,31 @@ script:
 
   - id: page_qrcode
     mode: single
-    then:  # There's nothing here so far
+    then:
       - lambda: |-
           if (current_page_id != hmi::qrcode::PAGE.id) {
             return;  // Page QRcode not visible
           }
+
           if (not id(qrcode_title).empty()) {
             disp1->set_component_text(hmi::qrcode::QRCODE_LABEL.name, id(qrcode_title).c_str());
           }
-          if (!id(qrcode_string).empty()) {
-            // 1) Resolve canvas size by mode
-            const uint16_t canvas_w = (display_mode == 2) ? 320 : 470;
-            const uint16_t canvas_h = (display_mode == 2) ? 480 : 320;
 
-            // 2) Decide the rendered QR size in pixels.
-            //    In ESPHome's qrcode(), `size` is the final *pixel width/height* of the drawn QR,
-            //    including any quiet-zone computed from `border`. So we can center using it directly.
-            const uint16_t qr_px = ${qrcode_size};
-
-            // 3) Top-left position to center
-            //    Clamp to 0 just in case someone sets qr_px > canvas dimension.
-            int16_t x = (int16_t)((canvas_w - qr_px) / 2);
-            int16_t y = (int16_t)((canvas_h - qr_px) / 2);
-            if (x < 0) x = 0;
-            if (y < 0) y = 0;
-
-            // 4) Draw
-            disp1->qrcode(
-                (uint16_t)x,
-                (uint16_t)y,
-                id(qrcode_string).c_str(),
-                qr_px,
-                ${qrcode_background_color},
-                ${qrcode_foreground_color},
-                -1,                      // auto version (or your desired level)
-                ${qrcode_border_size}    // quiet-zone in modules; size() already accounts for it
-            );
+          const bool qrcode_show = !id(qrcode_string).empty();
+          if (qrcode_show) {
+            // Draw QRcode
+            disp1->set_component_text(hmi::qrcode::QR.name, id(qrcode_string).c_str());
+            #if ${qrcode_background_color} != 65535
+            disp1->send_command("qr.bco=${qrcode_background_color}");
+            #endif  // qrcode_background_color
+            #if ${qrcode_foreground_color} > 0
+            disp1->send_command("qr.pco=${qrcode_foreground_color}");
+            #endif  // qrcode_foreground_color
+            #if ${qrcode_border_size} != 8
+            disp1->send_command("qr.dis=${qrcode_border_size}");
+            #endif  // qrcode_border_size
           }
+          disp1->set_component_visibility(hmi::qrcode::QR.name, qrcode_show);
 
   - id: !extend stop_page_constructors
     then:

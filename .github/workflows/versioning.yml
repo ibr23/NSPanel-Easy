@@ -6,6 +6,7 @@
 # 3. Commits the changes and pushes to main
 # 4. Creates a version tag and GitHub Release
 # 5. Updates the stable and latest floating tags
+# 6. Announces the release on Discord
 #
 # The workflow skips execution if the merge commit message contains
 # [skip-versioning] to prevent loops from its own version bump commits.
@@ -33,6 +34,14 @@ jobs:
     permissions:
       contents: write
       pull-requests: read
+
+    # Expose release metadata for downstream jobs (e.g. notify-discord).
+    # Values are only populated when skip=false and push_tag succeeded;
+    # the notify-discord job guards on those conditions before consuming them.
+    outputs:
+      released: ${{ steps.push_tag.outcome == 'success' && steps.skip_check.outputs.skip == 'false' }}
+      version: ${{ steps.push_tag.outputs.version }}
+      release_url: ${{ steps.create_release.outputs.url }}
 
     steps:
       - name: Checkout code
@@ -242,6 +251,7 @@ jobs:
           echo "version=${NEW_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Create GitHub Release
+        id: create_release
         if: >-
           steps.skip_check.outputs.skip == 'false'
           && steps.push_tag.outcome == 'success'
@@ -289,4 +299,34 @@ jobs:
 
           git tag -fa latest -F tag_message.txt
           git push origin latest --force
+
+  # ---------------------------------------------------------------------------
+  # Announce the new release on Discord.
+  # Runs only when version-and-release actually created a release (i.e. the
+  # skip marker was absent and the version tag was pushed successfully).
+  # ---------------------------------------------------------------------------
+  notify-discord:
+    name: Notify Discord
+    needs: [version-and-release]
+    # needs.*.outputs expressions are always strings; compare explicitly.
+    if: needs.version-and-release.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    permissions: {}
+
+    steps:
+      - name: Send release message to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_CH_GENERAL_WEBHOOK }}
+          RELEASE_TAG: v${{ needs.version-and-release.outputs.version }}
+          RELEASE_URL: ${{ needs.version-and-release.outputs.release_url }}
+        run: |
+          MESSAGE="🚀 New NSPanel Easy release published
+          ${RELEASE_TAG}
+          ${RELEASE_URL}"
+
+          jq -n --arg content "$MESSAGE" '{content: $content}' \
+          | curl --fail-with-body \
+            -H "Content-Type: application/json" \
+            -d @- \
+            "$DISCORD_WEBHOOK"
 ...

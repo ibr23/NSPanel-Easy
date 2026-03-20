@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <string>
 
+namespace esphome {
 namespace nspanel_easy {
 
   extern std::string notification_label;
@@ -15,5 +16,6 @@ namespace nspanel_easy {
   extern uint16_t notification_icon_color_unread;
 
 }  // namespace nspanel_easy
+}  // namespace esphome
 
 #endif  // NSPANEL_EASY_PAGE_NOTIFICATION

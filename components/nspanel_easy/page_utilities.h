@@ -22,6 +22,7 @@
  * of the NSPanel interface.
  */
 
+namespace esphome {
 namespace nspanel_easy {
 
   extern bool page_utilities_enabled;
@@ -137,5 +138,6 @@ namespace nspanel_easy {
     }  // namespace utilities
   }    // namespace hmi
 }  // namespace nspanel_easy
+}  // namespace esphome
 
 #endif // NSPANEL_EASY_PAGE_UTILITIES

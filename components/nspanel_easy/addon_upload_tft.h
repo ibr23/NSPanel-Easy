@@ -6,6 +6,7 @@
 
 #include <cstdint>
 
+namespace esphome {
 namespace nspanel_easy {
 
     // TFT upload state variables (previously YAML globals)
@@ -15,5 +16,6 @@ namespace nspanel_easy {
     extern bool tft_upload_result;
 
 }  // namespace nspanel_easy
+}  // namespace esphome
 
 #endif  // NSPANEL_EASY_ADDON_UPLOAD_TFT

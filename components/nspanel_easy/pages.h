@@ -14,6 +14,7 @@
 * Defines constants and functions related to page names for the NSPanel HA Blueprint project.
 */
 
+namespace esphome {
 namespace nspanel_easy {
 
     // Constants
@@ -89,3 +90,4 @@ namespace nspanel_easy {
     }
 
 }  // namespace nspanel_easy
+}  // namespace esphome

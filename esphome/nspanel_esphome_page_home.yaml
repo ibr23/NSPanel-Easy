@@ -71,6 +71,7 @@ script:
   - id: !extend action_component_color
     then:
       - lambda: |-
+          if (display_mode == 4) return;  // To do: Implement logic for new format
           if (page != "mem") return;
           if (component == "date_color") {
             id(home_date_color) = color;
@@ -139,6 +140,60 @@ script:
             return;
           }
 
+  - id: !extend action_icon
+    then:
+      - lambda: |-
+          // Only applies to home page buttons (button01..button08) on new design
+          if (display_mode != 4) return;
+          if (!is_home_page) return;
+          if (!is_current_page) return;  // cirs only affects the visible page
+
+          // Extract the numeric suffix from component_id, e.g. "button01" -> 1
+          // Expected format: "button%02u" — prefix is exactly 6 chars ("button")
+          constexpr uint8_t BUTTON_PREFIX_LEN = 6u;  // strlen("button")
+          constexpr uint8_t BUTTON_COUNT      = 8u;
+
+          const std::string comp_id(component.component_id);
+          if (comp_id.length() != BUTTON_PREFIX_LEN + 2u ||
+              comp_id.substr(0u, BUTTON_PREFIX_LEN) != "button") {
+            return;  // Not a home button component
+          }
+
+          // Parse the two-digit index; reject non-numeric suffixes
+          const std::string suffix = comp_id.substr(BUTTON_PREFIX_LEN);
+          if (!std::isdigit(static_cast<unsigned char>(suffix[0])) ||
+              !std::isdigit(static_cast<unsigned char>(suffix[1]))) {
+            return;  // Not a valid button component
+          }
+          const uint8_t button_id = static_cast<uint8_t>(std::stoi(suffix));
+
+          // Validate extracted index range [1..8]
+          if (button_id < 1u || button_id > BUTTON_COUNT) {
+            ESP_LOGW("${TAG_PAGE_HOME}", "Button id %" PRIu8 " out of range [1..%" PRIu8 "]",
+                      button_id, BUTTON_COUNT);
+            return;
+          }
+
+          // Only draw the circle when the blueprint has populated the icon
+          if (icon.empty()) {
+            ESP_LOGD("${TAG_PAGE_HOME}", "%s has no icon, skipping circle", component.component_id);
+            return;
+          }
+
+          // Compute circle X-center: button01 -> 32, button02 -> 86, ... (+54 per step)
+          const uint16_t circle_x      = 32u + static_cast<uint16_t>(button_id - 1u) * 54u;
+          const uint16_t circle_y      = 257u;
+          const uint16_t circle_radius = 22u;
+
+          // Draw the filled circle behind the button, then trigger a repaint
+          disp1->send_command_printf("cirs %" PRIu16 ",%" PRIu16 ",%" PRIu16 ",color_containers",
+                                      circle_x, circle_y, circle_radius);
+          feed_wdt_delay(${DELAY_SHORT});
+          disp1->send_command_printf("ref %s", component.component_id);
+
+          ESP_LOGD("${TAG_PAGE_HOME}", "Drew circle for %s at (%" PRIu16 ",%" PRIu16 ")",
+                    component.component_id, circle_x, circle_y);
+
   - id: !extend boot_nextion
     then:
       - lambda: |-
@@ -196,7 +251,8 @@ script:
           const bool is_current_page = (current_page_id == hmi::home::PAGE.id);
 
           // Extract component parts (handles both "id" and "page.id" formats)
-          const NextionComponent component = extractNextionComponent(component_id, hmi::home::PAGE.name);
+          const esphome::nspanel_easy::NSPanelEasyNextionComponent component =
+                                                            extractNextionComponent(component_id, hmi::home::PAGE.name);
 
           // Determine target format: use page.id if not current, otherwise just id
           char target_id[30];  // 14 + 1 (dot) + 14 + 1 (null) = 30
@@ -216,6 +272,7 @@ script:
           }
 
           // Set color (works for both current and non-current page)
+          if (display_mode == 4) return;  // To do: Implement logic for new format
           disp1->set_component_font_color(target_id, show ? color : Colors::BLACK);
 
   - id: page_home_weather_pic
@@ -226,6 +283,9 @@ script:
                                 ((current_theme == ThemeMode::LIGHT) ? ${THEME_DARK_PIC_PAGE_HOME_WEATHER_OFFSET} : 0);
           ESP_LOGD("${TAG_PAGE_HOME}", "Update weather pic: %" PRIu8, weather_pic_corrected);
           disp1->set_component_pic(hmi::home::WEATHER.name, weather_pic_corrected);
+          if (display_mode==4) {  // To do: Implement logic for new format
+            disp1->send_command_printf("home_weather_pic=%" PRIu8, id(weather_pic));
+          }
 
   - id: page_home_weather_update
     mode: restart

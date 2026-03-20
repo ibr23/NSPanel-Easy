@@ -45,10 +45,10 @@ Page entitypage04
             }
             // set background image and fg color to all components
             b[0].pic=pic_background_main
-            for(index=3;index<=29;index++)
+            for(sys0=3;sys0<=29;sys0++)
             {
-                b[index].picc=pic_background_main
-                b[index].pco=color_pco_main
+                b[sys0].picc=pic_background_main
+                b[sys0].pco=color_pco_main
             }
             button_back.font=button_back_font
             button_back.picc2=pic_background_main

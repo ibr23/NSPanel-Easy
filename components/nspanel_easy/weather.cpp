@@ -4,6 +4,7 @@
 
 #include "weather.h"
 
+namespace esphome {
 namespace nspanel_easy {
 
   SunInfo sun_info = {
@@ -14,5 +15,6 @@ namespace nspanel_easy {
   uint8_t weather_condition_index = 0;  // Defaults to fallback until first blueprint update
 
 }  // namespace nspanel_easy
+}  // namespace esphome
 
 #endif  // NSPANEL_EASY_USE_WEATHER

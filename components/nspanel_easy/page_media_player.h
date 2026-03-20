@@ -6,6 +6,7 @@
 
 #include <cstdint>
 
+namespace esphome {
 namespace nspanel_easy {
 
     extern uint8_t last_volume_level;     // Last volume level from Home Assistant
@@ -13,5 +14,6 @@ namespace nspanel_easy {
     extern uint32_t last_media_position;  // Last position from Home Assistant
 
 }  // namespace nspanel_easy
+}  // namespace esphome
 
 #endif  // NSPANEL_EASY_PAGE_MEDIA_PLAYER

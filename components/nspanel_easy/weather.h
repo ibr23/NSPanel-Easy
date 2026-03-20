@@ -27,6 +27,7 @@
  * @c on_sunrise and @c on_sunset triggers.
  */
 
+namespace esphome {
 namespace nspanel_easy {
 
   // =============================================================================
@@ -229,5 +230,6 @@ namespace nspanel_easy {
   }
 
 }  // namespace nspanel_easy
+}  // namespace esphome
 
 #endif  // NSPANEL_EASY_USE_WEATHER

@@ -5,7 +5,7 @@ name: Validate Python (flake8)
 on:
   pull_request:
     paths:
-      - '**/*.py'
+      - "**/*.py"
   workflow_dispatch:
 
 permissions:
@@ -17,14 +17,16 @@ jobs:
     name: Lint
     steps:
       - name: Check out source repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v6.0.2
+
       - name: Set up Python environment
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v6.2.0
         with:
           python-version: "3.11"
+
+      - name: Install flake8
+        run: pip install flake8
+
       - name: flake8 Lint
-        uses: py-actions/flake8@v2
-        with:
-          max-line-length: "200"
-          path: "components/nspanel_easy"
+        run: flake8 --max-line-length=200 components/nspanel_easy
 ...

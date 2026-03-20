@@ -5,6 +5,7 @@
 #include <string>
 
 // Defines structures and functions related to Home Assistant entities within the nspanel_easy namespace.
+namespace esphome {
 namespace nspanel_easy {
 
     // Represents a Home Assistant entity with a domain and an identifier.
@@ -34,3 +35,4 @@ namespace nspanel_easy {
     HomeAssistantEntity extractHomeAssistantEntity(const std::string& entity_id);
 
 }  // namespace nspanel_easy
+}  // namespace esphome

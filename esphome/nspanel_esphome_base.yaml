@@ -69,7 +69,11 @@ interval:
 logger:
 
 nspanel_easy:  # Adds custom library for NSPanel HA Blueprint project
+  id: nspanel_easy_component
   disable_bootloader_logs: false
+  on_dump_config:
+    then:
+      - script.execute: dump_config
 
 ota:
   - id: ota_std
@@ -93,7 +97,6 @@ script:
   - id: dump_config
     mode: restart
     then:
-      - delay: 10s
 
   - id: stop_all
     mode: restart

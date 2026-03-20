@@ -2,6 +2,7 @@
 #include "base.h"
 #include "esphome/core/application.h"
 
+namespace esphome {
 namespace nspanel_easy {
 
     static const char *TAG_COMPONENT_BASE = "nspanel.component.base";
@@ -39,3 +40,4 @@ namespace nspanel_easy {
     }
 
 }  // namespace nspanel_easy
+}  // namespace esphome

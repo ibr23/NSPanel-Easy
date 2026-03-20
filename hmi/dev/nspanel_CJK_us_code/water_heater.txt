@@ -42,17 +42,17 @@ Page water_heater
             target.picc=water_heater.pic
             target.pco=color_pco_main
             // values 01-04
-            for(index=8;index<=15;index++)
+            for(sys0=8;sys0<=15;sys0++)
             {
-                b[index].picc=water_heater.pic
-                b[index].pco=color_pco_secondary
+                b[sys0].picc=water_heater.pic
+                b[sys0].pco=color_pco_secondary
             }
             // buttons 01-08
-            for(index=16;index<=23;index++)
+            for(sys0=16;sys0<=23;sys0++)
             {
-                vis b[index],0
-                b[index].picc=water_heater.pic
-                b[index].font=button_font.val
+                vis b[sys0],0
+                b[sys0].picc=water_heater.pic
+                b[sys0].font=button_font.val
             }
             // other
             vis slider,0

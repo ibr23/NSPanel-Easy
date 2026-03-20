@@ -4,6 +4,7 @@
 
 #include "addon_upload_tft.h"
 
+namespace esphome {
 namespace nspanel_easy {
 
     // TFT upload state variables (previously YAML globals)
@@ -13,5 +14,6 @@ namespace nspanel_easy {
     bool tft_upload_result = false;
 
 }  // namespace nspanel_easy
+}  // namespace esphome
 
 #endif  // NSPANEL_EASY_ADDON_UPLOAD_TFT

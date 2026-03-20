@@ -28,10 +28,10 @@ Page settings
             dim_text.txt+="%"
             vis lbl_sleep,0
             vis bt_sleep,0
-            for(index=1;index<=last_component.id;index++)
+            for(sys0=1;sys0<=last_component.id;sys0++)
             {
-                b[index].picc=settings.pic
-                b[index].pco=color_pco_main
+                b[sys0].picc=settings.pic
+                b[sys0].pco=color_pco_main
             }
             button_back.font=button_back_font
             button_back.pco=color_pco_navigation

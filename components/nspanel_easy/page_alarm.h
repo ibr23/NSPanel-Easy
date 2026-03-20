@@ -2,6 +2,7 @@
 
 #ifdef NSPANEL_EASY_PAGE_ALARM
 
+namespace esphome {
 namespace nspanel_easy {
 
   // Home Assistant alarm control panel supported features
@@ -16,5 +17,6 @@ namespace nspanel_easy {
   };
 
 }  // namespace nspanel_easy
+}  // namespace esphome
 
 #endif  // NSPANEL_EASY_PAGE_ALARM

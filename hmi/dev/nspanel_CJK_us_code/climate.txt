@@ -47,9 +47,9 @@ Page climate
             button08.font=button_font.val
             button09.font=button_font.val
             // set background image and fg color to all components
-            for(index=1;index<=last_component.id;index++)
+            for(sys0=1;sys0<=last_component.id;sys0++)
             {
-                b[index].picc=climate.pic
+                b[sys0].picc=climate.pic
             }
             slider_high.picc1=climate.pic
             slider_low.picc1=climate.pic

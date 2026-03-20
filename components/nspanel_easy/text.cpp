@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <cstring>
 
+namespace esphome {
 namespace nspanel_easy {
 
     std::string adjustDecimalSeparator(const std::string& input, char decimalSeparator) {
@@ -178,3 +179,4 @@ namespace nspanel_easy {
     }
 
 }  // namespace nspanel_easy
+}  // namespace esphome

@@ -39,16 +39,16 @@ Page weather01
             button_back.picc=pic_background_main
             button_back.picc2=pic_background_main
             // day, date & temperature
-            for(index=4;index<=6;index++)
+            for(sys0=4;sys0<=6;sys0++)
             {
-                b[index].picc=pic_background_main
-                b[index].pco=color_pco_main
+                b[sys0].picc=pic_background_main
+                b[sys0].pco=color_pco_main
             }
             // values 01-05
-            for(index=7;index<=16;index++)
+            for(sys0=7;sys0<=16;sys0++)
             {
-                b[index].picc=pic_background_main
-                b[index].pco=color_pco_secondary
+                b[sys0].picc=pic_background_main
+                b[sys0].pco=color_pco_secondary
             }
             // page_index
             page_index.picc=pic_background_main

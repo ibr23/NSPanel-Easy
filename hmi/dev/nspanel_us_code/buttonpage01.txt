@@ -46,9 +46,9 @@ Page buttonpage01
             }
             // set background image and fg color to all components
             b[0].pic=pic_background_main
-            for(index=0;index<=last_component.id;index++)
+            for(sys0=0;sys0<=last_component.id;sys0++)
             {
-                b[index].picc=pic_background_main
+                b[sys0].picc=pic_background_main
             }
             button_back.font=button_back_font
             button_back.pco=color_pco_navigation

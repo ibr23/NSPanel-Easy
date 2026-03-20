@@ -4,10 +4,11 @@
 #include <algorithm>
 #include <cstring>
 
+namespace esphome {
 namespace nspanel_easy {
 
-    NextionComponent extractNextionComponent(const std::string& input, const std::string& defaultPage) {
-        NextionComponent result{};
+    NSPanelEasyNextionComponent extractNextionComponent(const std::string& input, const std::string& defaultPage) {
+        NSPanelEasyNextionComponent result{};
         size_t dotPos = input.find(".");
 
         if (dotPos != std::string::npos) {
@@ -28,3 +29,4 @@ namespace nspanel_easy {
     }
 
 }  // namespace nspanel_easy
+}  // namespace esphome

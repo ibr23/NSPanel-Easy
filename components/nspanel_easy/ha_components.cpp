@@ -2,6 +2,7 @@
 
 #include "ha_components.h"
 
+namespace esphome {
 namespace nspanel_easy {
 
     // Function Definition
@@ -25,3 +26,4 @@ namespace nspanel_easy {
     }
 
 }  // namespace nspanel_easy
+}  // namespace esphome
