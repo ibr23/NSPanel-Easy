@@ -26,10 +26,18 @@ This is technically the only required field, as basic functionality will be avai
 
 ### Language for NSPanel
 
-The language can be selected via the drop-down menu.
+Language is no longer configured in the Blueprint. It is now set directly in your ESPHome YAML
+as a substitution, which means only your chosen language's strings are compiled into the firmware —
+saving memory and allowing the panel to display correct date and UI strings even when offline.
 
-Currently around 30 languages are supported, but if you cannot find your language there,
-please create a [new feature request](https://github.com/edwardtfn/NSPanel-Easy/issues/new) and we will be happy to help.
+To set your language, add the `language` substitution to your ESPHome YAML:
+
+```yaml
+substitutions:
+  language: pt  # Portuguese - see docs/localization.md for all supported codes
+```
+
+For the full list of supported language codes, see [Localization](localization.md).
 
 ### Date format
 

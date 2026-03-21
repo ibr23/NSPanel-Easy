@@ -14,27 +14,39 @@ substitutions:
   ##############################
   BOOT_STEP_DATETIME: '2'
   TAG_DATETIME: nspanel.datetime
+  DATE_FORMAT_DEFAULT: "%A, %d.%m"
+  TIME_FORMAT_DEFAULT: "%H:%M"
+
 
 esphome:
   platformio_options:
     build_flags:
       - -D NSPANEL_EASY_DATETIME
 
+globals:
+  - id: mui_date_format
+    type: std::string
+    restore_value: true
+    max_restore_data_length: 30
+    initial_value: '"${DATE_FORMAT_DEFAULT}"'
+  - id: mui_time_format
+    type: std::string
+    restore_value: true
+    max_restore_data_length: 15
+    initial_value: '"${TIME_FORMAT_DEFAULT}"'
+
 script:
   - id: !extend action_component_text
     then:
       - lambda: |-
-          if (page == "mem") {
-            if (component == "time_format") {
-              id(mui_time_format) = txt;
-              return;
-            } else if (component == "meridiem_am") {
-              id(mui_meridiem_am) = txt;
-              return;
-            } else if (component == "meridiem_pm") {
-              id(mui_meridiem_pm) = txt;
-              return;
-            }
+          if (page != "mem") return;
+          if (component == "date_format") {
+            id(mui_date_format) = txt;
+            return;
+          }
+          if (component == "time_format") {
+            id(mui_time_format) = txt;
+            return;
           }
 
   - id: new_minute
@@ -56,6 +68,7 @@ script:
           if (system_flags.tft_upload_active)  // Do not refresh if uploading TFT
             return;
 
+          // Time
           std::string time_format_str = id(mui_time_format);
 
           if (time_format_str.find("%-H") != std::string::npos) {
@@ -75,15 +88,15 @@ script:
             }
           }
 
-          const std::string& meridiem_text = (id(time_provider).now().hour<12) ?
-                                              id(mui_meridiem_am) :
-                                              id(mui_meridiem_pm);
+          const char* const meridiem_text = (id(time_provider).now().hour < 12) ?
+                                              "${LOCALIZATION[LANG].meridiem.am}" :
+                                              "${LOCALIZATION[LANG].meridiem.pm}";
 
           if (current_page->state == "screensaver" and id(screensaver_display_time)) {
             std::string time_format_str_sleep = time_format_str;
             const size_t p_pos = time_format_str_sleep.find("%p");
             if (p_pos != std::string::npos)
-              time_format_str_sleep.replace(p_pos, sizeof("%p")-1, meridiem_text.c_str());
+              time_format_str_sleep.replace(p_pos, sizeof("%p")-1, meridiem_text);
             disp1->set_component_text("text", id(time_provider).now().strftime(time_format_str_sleep).c_str());
           }
 
@@ -96,13 +109,81 @@ script:
           }
 
           disp1->set_component_text("home.meridiem", (time_format_str.find("%p") != std::string::npos) ?
-                                                      meridiem_text.c_str() : " ");
+                                                      meridiem_text : " ");
           disp1->set_component_text("home.time", id(time_provider).now().strftime(time_format_str_home).c_str());
+
+          // Date
+          render_date->execute("home.date", 0);
+
+  - id: render_date
+    mode: restart
+    parameters:
+      component: string
+      timestamp: uint32_t
+    then:
+      - lambda: |-
+          static const char* const weekdays[7] = {
+            "${LOCALIZATION[LANG].weekdays.mon}",
+            "${LOCALIZATION[LANG].weekdays.tue}",
+            "${LOCALIZATION[LANG].weekdays.wed}",
+            "${LOCALIZATION[LANG].weekdays.thu}",
+            "${LOCALIZATION[LANG].weekdays.fri}",
+            "${LOCALIZATION[LANG].weekdays.sat}",
+            "${LOCALIZATION[LANG].weekdays.sun}"
+          };
+          static const char* const weekdays_short[7] = {
+            "${LOCALIZATION[LANG].weekdays_short.mon}",
+            "${LOCALIZATION[LANG].weekdays_short.tue}",
+            "${LOCALIZATION[LANG].weekdays_short.wed}",
+            "${LOCALIZATION[LANG].weekdays_short.thu}",
+            "${LOCALIZATION[LANG].weekdays_short.fri}",
+            "${LOCALIZATION[LANG].weekdays_short.sat}",
+            "${LOCALIZATION[LANG].weekdays_short.sun}"
+          };
+          static const char* const months[12] = {
+            "${LOCALIZATION[LANG].months.jan}", "${LOCALIZATION[LANG].months.feb}",
+            "${LOCALIZATION[LANG].months.mar}", "${LOCALIZATION[LANG].months.apr}",
+            "${LOCALIZATION[LANG].months.may}", "${LOCALIZATION[LANG].months.jun}",
+            "${LOCALIZATION[LANG].months.jul}", "${LOCALIZATION[LANG].months.aug}",
+            "${LOCALIZATION[LANG].months.sep}", "${LOCALIZATION[LANG].months.oct}",
+            "${LOCALIZATION[LANG].months.nov}", "${LOCALIZATION[LANG].months.dec}"
+          };
+          static const char* const months_short[12] = {
+            "${LOCALIZATION[LANG].months_short.jan}", "${LOCALIZATION[LANG].months_short.feb}",
+            "${LOCALIZATION[LANG].months_short.mar}", "${LOCALIZATION[LANG].months_short.apr}",
+            "${LOCALIZATION[LANG].months_short.may}", "${LOCALIZATION[LANG].months_short.jun}",
+            "${LOCALIZATION[LANG].months_short.jul}", "${LOCALIZATION[LANG].months_short.aug}",
+            "${LOCALIZATION[LANG].months_short.sep}", "${LOCALIZATION[LANG].months_short.oct}",
+            "${LOCALIZATION[LANG].months_short.nov}", "${LOCALIZATION[LANG].months_short.dec}"
+          };
+
+          if (component.empty()) return;
+
+          ESPTime dt = id(time_provider).now();
+          if (timestamp > 0)
+            dt = ESPTime::from_epoch_local(timestamp);
+
+          const int dow = (dt.day_of_week + 5) % 7;
+          const int mon = dt.month - 1;
+
+          std::string date_str = id(mui_date_format);
+          auto replace_token = [](std::string& str, const char* token, const char* value) {
+            size_t pos = str.find(token);
+            if (pos != std::string::npos)
+              str.replace(pos, strlen(token), value);
+          };
+          replace_token(date_str, "%A", weekdays[dow]);
+          replace_token(date_str, "%a", weekdays_short[dow]);
+          replace_token(date_str, "%B", months[mon]);
+          replace_token(date_str, "%b", months_short[mon]);
+
+          disp1->set_component_text(component.c_str(), dt.strftime(date_str).c_str());
 
   - id: !extend stop_all
     then:
       - lambda: |-
           refresh_datetime->stop();
+          render_date->stop();
 
 time:  # Keeps time display updated
   - id: time_provider

@@ -61,10 +61,26 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ${wifi_password}  # IMPORTANT! For backward compatibility
+  language: en                    # Language code - see docs/localization.md for all supported codes
 ```
 
 > [!NOTE] Setting OTA to use WiFi is only necessary if you are migrating wirelessly.
 > When migrating via USB/TTL you can freely select your OTA password or leave without one.
+
+#### Language
+
+Language is no longer selected in the Blueprint. You must now set it as a substitution
+in your ESPHome YAML. Find your `substitutions` block and add:
+```yaml
+substitutions:
+  language: en  # Replace with your language code
+```
+
+For the full list of supported language codes, see [Localization](localization.md).
+
+> [!IMPORTANT]
+> If you skip this step your panel will fall back to English after migration,
+> regardless of what language you had selected in the old Blueprint.
 
 #### Remote package reference
 
@@ -106,9 +122,10 @@ packages:
 
 | Setting | Before (Blackymas) | After (NSPanel Easy) |
 | :------ | :------------------ | :------------------- |
-| `ota_password`   | It was set on the remote package to use your WiFi password | You have to add the substitution `ota_password: ${wifi_password}` for backward compatibility |
-| `url`   | `https://github.com/Blackymas/NSPanel_HA_Blueprint` | `https://github.com/edwardtfn/NSPanel-Easy` |
-| `ref`   | A version tag (e.g. `v4.3.30`) | `main` |
+| `ota_password` | It was set on the remote package to use your WiFi password | You have to add the substitution `ota_password: ${wifi_password}` for backward compatibility |
+| 'language' | Selected via Blueprint dropdown | Set as `language: xx` substitution in ESPHome YAML - see [Localization](localization.md) |
+| `url` | `https://github.com/Blackymas/NSPanel_HA_Blueprint` | `https://github.com/edwardtfn/NSPanel-Easy` |
+| `ref` | A version tag (e.g. `v4.3.30`) | `main` |
 | Add-on file paths | Root level (e.g. `nspanel_esphome_addon_climate_heat.yaml`) | Inside `esphome/` folder (e.g. `esphome/nspanel_esphome_addon_climate_heat.yaml`) |
 | Base package | `nspanel_esphome.yaml` | `nspanel_esphome.yaml` *(no change)* |
 
@@ -127,6 +144,7 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ${wifi_password}  # IMPORTANT! For backward compatibility
+  language: en                    # Language code - see docs/localization.md for all supported codes
 
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -353,3 +371,7 @@ and switch your automation's Blueprint path back to the old one.
 
 **Q: Do I need to update all my panels at once?**
 A: No. You can migrate one panel at a time. Each panel is independent.
+
+**Q: My panel is now showing English instead of my language after migration.**
+A: Language is no longer configured in the Blueprint. Add `language: xx` to your
+ESPHome `substitutions` block and reflash. See [Localization](localization.md) for supported codes.

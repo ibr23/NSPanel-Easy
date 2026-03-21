@@ -13,6 +13,7 @@ substitutions:
   PAGE_WEATHER04_ID: 5
   PAGE_WEATHER05_ID: 6
   TAG_PAGE_WEATHER: nspanel.page.weather
+  SECONDS_PER_DAY: 86400
 
 display:
   - id: !extend disp1
@@ -48,6 +49,38 @@ script:
             id(weather_icon) = static_cast<uint8_t>(val);
             theme_update_all_weather_icon->execute();
           }
+
+  - id: !extend page_change
+    then:
+      - lambda: |-
+          if (new_page_id >= ${PAGE_WEATHER01_ID} and new_page_id <= ${PAGE_WEATHER05_ID})
+            page_weather->execute();
+
+  - id: page_weather
+    mode: restart
+    then:
+      - lambda: |-
+          const uint8_t page_index = current_page_id - ${PAGE_WEATHER01_ID};
+          if (page_index >= 5) {
+            ESP_LOGW("${TAG_PAGE_WEATHER}", "Unexpected page_index: %" PRIu8, page_index);
+            return;
+          }
+          const uint32_t timestamp = id(time_provider).now().timestamp + (page_index * ${SECONDS_PER_DAY});
+
+          static const char* const relative_days[5] = {
+            "${LOCALIZATION[LANG].relative_day.today}",
+            "${LOCALIZATION[LANG].relative_day.tomorrow}",
+            "${LOCALIZATION[LANG].relative_day.in_2_days}",
+            "${LOCALIZATION[LANG].relative_day.in_3_days}",
+            "${LOCALIZATION[LANG].relative_day.in_4_days}"
+          };
+
+          disp1->set_component_text("day", relative_days[page_index]);
+          render_date->execute("date", timestamp);
+
+  - id: !extend stop_page_constructors
+    then:
+      - lambda: page_weather->stop();
 
   - id: !extend stop_all
     then:

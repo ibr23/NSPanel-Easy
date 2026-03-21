@@ -113,7 +113,7 @@ script:
             disp1->set_component_text("notifi_label", notification_label.c_str());
             disp1->set_component_text("notifi_text01", wrapText(notification_text.c_str(),
                                                                 display_mode == 2 ? 23 : 32,
-                                                                id(mui_bytes_per_char)).c_str());
+                                                                ${LANG_BYTES_PER_CHAR}).c_str());
           }
 
   - id: !extend page_home

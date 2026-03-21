@@ -503,7 +503,6 @@ The bitmask values are aligned with the
 - `code_format` (string): Specifies the code format required for arming/disarming the alarm system, such as numeric or alphanumeric.
 - `code_arm_required` (bool): Indicates whether a code is required to arm the system.
 - `entity` (string): The entity ID of the alarm system, used for state updates and control actions.
-- `mui_alarm` (string[]): An array of localized text strings for the alarm control buttons, supporting various alarm states and actions.
 
 **Home Assistant Example:**
 
@@ -516,13 +515,6 @@ data:
   code_format: "number"
   code_arm_required: true
   entity: "alarm_control_panel.home_alarm"
-  mui_alarm:
-    - "Zuhause"
-    - "Abwesend"
-    - "Nacht"
-    - "Urlaub"
-    - "Umgehen"
-    - "Entwaffnen"
 ```
 
 > [!NOTE]

@@ -46,6 +46,7 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+  language: en      # Language code - see docs/localization.md for all supported codes
 
   # Add-on configuration (if needed)
   ## Upload TFT
@@ -108,6 +109,7 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+  language: en      # Language code - see docs/localization.md for all supported codes
 
   # Upload TFT configuration
   upload_tft_automatically: true
@@ -131,6 +133,7 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+  language: en      # Language code - see docs/localization.md for all supported codes
 
   # Disable automatic TFT upload
   upload_tft_automatically: false
@@ -153,6 +156,7 @@ substitutions:
   wifi_ssid: !secret wifi_ssid
   wifi_password: !secret wifi_password
   ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+  language: en      # Language code - see docs/localization.md for all supported codes
 
   # Use a locally hosted TFT file
   nextion_update_url: "http://homeassistant.local:8123/local/nspanel_eu.tft"

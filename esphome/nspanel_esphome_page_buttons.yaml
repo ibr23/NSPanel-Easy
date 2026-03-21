@@ -74,7 +74,7 @@ api:
             feed_wdt_delay(${DELAY_SHORT});
 
             disp1->set_component_text((id + "text").c_str(),
-                                      wrapText(label.c_str(), 10, id(mui_bytes_per_char)).c_str());
+                                      wrapText(label.c_str(), 10, ${LANG_BYTES_PER_CHAR}).c_str());
             disp1->set_component_text((id + "bri").c_str(), (strcmp(bri.c_str(), "0") == 0) ? " " : bri.c_str());
 
             disp1->send_command_printf("vis %s,1", (id + "pic").c_str());

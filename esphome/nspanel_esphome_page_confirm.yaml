@@ -8,7 +8,6 @@
 
 ---
 substitutions:
-  mui_please_confirm: "Please confirm"
   BOOT_STEP_PAGE_CONFIRM: 13
   PAGE_CONFIRM_ID: 26
   TAG_PAGE_CONFIRM: nspanel.page.confirm
@@ -18,22 +17,7 @@ esphome:
     build_flags:
       - -D NSPANEL_EASY_PAGE_CONFIRM
 
-globals:
-  #### Localization (MUI) ####
-  - id: mui_please_confirm
-    type: std::string
-    restore_value: true
-    initial_value: '"${mui_please_confirm}"'
-    max_restore_data_length: 25
-
 script:
-  - id: !extend action_component_text
-    then:
-      - lambda: |-
-          if (page == "mem" and component == "mui_please_confirm") {
-            id(mui_please_confirm) = txt.substr(0, 25);
-          }
-
   - id: !extend page_change
     then:
       - lambda: |-
@@ -44,11 +28,14 @@ script:
     mode: single
     then:
       - lambda: |-
-          if (current_page_id == ${PAGE_CONFIRM_ID} and is_device_ready_for_tasks())
-            disp1->set_component_text("confirm.title",
-                                      wrapText(id(mui_please_confirm).c_str(),
-                                                15,
-                                                id(mui_bytes_per_char)).c_str());
+          if (current_page_id != ${PAGE_CONFIRM_ID}) return;
+          if (!is_device_ready_for_tasks()) return;
+          disp1->set_component_text("confirm.title", wrapText(
+                                                                "${LOCALIZATION[LANG].please_confirm}",
+                                                                15,
+                                                                ${LANG_BYTES_PER_CHAR}
+                                                              ).c_str()
+                                    );
 
   - id: !extend stop_page_constructors
     then:

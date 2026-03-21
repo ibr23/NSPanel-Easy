@@ -124,7 +124,7 @@ Text dim_text
 Text lbl_reboot
     Attributes
         ID                      : 5
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
@@ -158,7 +158,7 @@ Text lbl_reboot
 Text lbl_sleep
     Attributes
         ID                  : 6
-        Scope               : global
+        Scope               : local
         Dragging            : 0
         Send Component ID   : on press and release
         Opacity             : 127
@@ -187,7 +187,7 @@ Text lbl_sleep
 Text lbl_bright
     Attributes
         ID                      : 7
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
@@ -214,7 +214,7 @@ Text lbl_bright
 Text lbl_dim
     Attributes
         ID                      : 8
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
@@ -241,7 +241,7 @@ Text lbl_dim
 Text lbl_brightness
     Attributes
         ID                      : 16
-        Scope                   : global
+        Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127

@@ -28,7 +28,6 @@ api:
         code_format: string      # Format required for the alarm code (numeric, alphanumeric).
         code_arm_required: bool  # Indicates if a code is needed to arm the system.
         entity: string           # Entity ID for the alarm system, enabling state updates and control.
-        mui_alarm: string[]      # Localized text for alarm control buttons (e.g., Arm, Disarm), allowing for a multilingual interface.
       then:
         # To do: This page constructor should be moved to Blueprint
         - lambda: |-
@@ -118,12 +117,18 @@ api:
 
             // Buttons - Text
             ESP_LOGV("${TAG_PAGE_ALARM}", "Buttons - Text");
-            disp1->set_component_text("bt_home_text", wrapText(mui_alarm[0].c_str(), 10, id(mui_bytes_per_char)).c_str());
-            disp1->set_component_text("bt_away_text", wrapText(mui_alarm[1].c_str(), 10, id(mui_bytes_per_char)).c_str());
-            disp1->set_component_text("bt_night_text", wrapText(mui_alarm[2].c_str(), 10, id(mui_bytes_per_char)).c_str());
-            disp1->set_component_text("bt_vacat_text", wrapText(mui_alarm[3].c_str(), 10, id(mui_bytes_per_char)).c_str());
-            disp1->set_component_text("bt_bypass_text", wrapText(mui_alarm[4].c_str(), 10, id(mui_bytes_per_char)).c_str());
-            disp1->set_component_text("bt_disarm_text", wrapText(mui_alarm[5].c_str(), 10, id(mui_bytes_per_char)).c_str());
+            disp1->set_component_text("bt_home_text", wrapText("${LANG_ALARM_HOME}",
+                                      10, ${LANG_BYTES_PER_CHAR}).c_str());
+            disp1->set_component_text("bt_away_text", wrapText("${LANG_ALARM_AWAY}",
+                                      10, ${LANG_BYTES_PER_CHAR}).c_str());
+            disp1->set_component_text("bt_night_text", wrapText("${LANG_ALARM_NIGHT}",
+                                      10, ${LANG_BYTES_PER_CHAR}).c_str());
+            disp1->set_component_text("bt_vacat_text", wrapText("${LANG_ALARM_VACATION}",
+                                      10, ${LANG_BYTES_PER_CHAR}).c_str());
+            disp1->set_component_text("bt_bypass_text", wrapText("${LANG_ALARM_BYPASS}",
+                                      10, ${LANG_BYTES_PER_CHAR}).c_str());
+            disp1->set_component_text("bt_disarm_text", wrapText("${LANG_ALARM_DISARM}",
+                                      10, ${LANG_BYTES_PER_CHAR}).c_str());
             feed_wdt_delay(${PAGE_ALARM_DELAY_SHORT});
 
             // Page header

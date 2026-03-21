@@ -35,25 +35,10 @@ globals:
     type: uint16_t
     restore_value: true
     initial_value: '65535'
-  - id: mui_time_format
-    type: std::string
-    restore_value: true
-    max_restore_data_length: 15
-    initial_value: '"%H:%M"'
   - id: home_time_color
     type: uint16_t
     restore_value: true
     initial_value: '65535'
-  - id: mui_meridiem_am
-    type: std::string
-    restore_value: true
-    max_restore_data_length: 5
-    initial_value: '"AM"'
-  - id: mui_meridiem_pm
-    type: std::string
-    restore_value: true
-    max_restore_data_length: 5
-    initial_value: '"PM"'
 
   ##### Chips #####
   - id: home_chip_font_id

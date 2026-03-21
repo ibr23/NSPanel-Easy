@@ -200,7 +200,7 @@ script:
             disp1->set_component_text("current_temp", adjustDecimalSeparator(buffer, dec_sep).c_str());
           } else {
             ESP_LOGV("${TAG_PAGE_CLIMATE}", "Show current temperature 'unavailable'");
-            disp1->set_component_text("current_temp", id(mui_unavailable).c_str());
+            disp1->set_component_text("current_temp", "${LOCALIZATION[LANG].unavailable}");
           }
           feed_wdt_delay(${DELAY_SHORT});
           if (current_page_id != ${PAGE_CLIMATE_ID}) return;

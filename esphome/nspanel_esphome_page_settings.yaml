@@ -108,10 +108,11 @@ script:
     mode: single
     then:
       - lambda: |-
-          if (current_page_id == ${PAGE_SETTINGS_ID}) {
-            disp1->hide_component("lbl_sleep");
-            disp1->hide_component("bt_sleep");
-          }
+          if (current_page_id != ${PAGE_SETTINGS_ID}) return;
+          disp1->set_component_text("lbl_reboot", "${LOCALIZATION[LANG].settings.reboot}");
+          disp1->set_component_text("lbl_brightness", "${LOCALIZATION[LANG].settings.brightness}");
+          disp1->set_component_text("lbl_bright", "${LOCALIZATION[LANG].settings.bright}");
+          disp1->set_component_text("lbl_dim", "${LOCALIZATION[LANG].settings.dim}");
 
   - id: !extend stop_page_constructors
     then:

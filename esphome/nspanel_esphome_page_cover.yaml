@@ -63,16 +63,4 @@ script:
               });
             } // endif key == "position"
           } // endif page == "cover"
-
-  - id: !extend page_change
-    then:
-      - lambda: if (new_page_id == ${PAGE_COVER_ID}) page_cover->execute();
-
-  - id: page_cover
-    mode: single
-    then:  # There's nothing here so far
-
-  - id: !extend stop_page_constructors
-    then:
-      - lambda: page_cover->stop();
 ...
