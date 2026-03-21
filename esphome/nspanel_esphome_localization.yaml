@@ -13,7 +13,7 @@ substitutions:
   ##############################
   TAG_LOCALIZATION: nspanel.localization
 
-  language: ''
+  language: en
   SUPPORTED_LANGUAGES: ["af", "ar", "bg", "bn", "bs", "ca", "cs", "cy", "da", "de", "el", "en",
                         "es", "et", "eu", "fa", "fi", "fr", "gl", "he", "hi", "hr", "hu", "id",
                         "is", "it", "ja", "jv", "ko", "lt", "lv", "mk", "ms", "nb", "nl", "pa",
