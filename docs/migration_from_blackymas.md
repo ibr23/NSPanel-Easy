@@ -71,6 +71,7 @@ substitutions:
 
 Language is no longer selected in the Blueprint. You must now set it as a substitution
 in your ESPHome YAML. Find your `substitutions` block and add:
+
 ```yaml
 substitutions:
   language: en  # Replace with your language code
