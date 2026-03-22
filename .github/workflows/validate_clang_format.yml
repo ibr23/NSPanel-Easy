@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          ref: ${{ github.head_ref }}  # Required for auto-commit on PR branches
+          ref: ${{ github.head_ref || github.ref_name }}  # PR head branch, otherwise selected dispatch ref
 
       - name: Install clang-format
         run: sudo apt-get install -y clang-format
@@ -29,9 +29,10 @@ jobs:
         run: |
           find ./components/nspanel_easy ./.test/unit \
             \( -name "*.h" -o -name "*.c" -o -name "*.cpp" \) \
-            | xargs clang-format --style=file -i
+            -print0 | xargs -0 -r clang-format --style=file -i
 
       - name: Commit clang-format fixes
+        if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository }}
         uses: stefanzweifel/git-auto-commit-action@v6
         with:
           commit_message: "style: apply clang-format"
