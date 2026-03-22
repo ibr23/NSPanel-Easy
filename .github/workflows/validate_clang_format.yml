@@ -8,17 +8,33 @@ on:
       - '**/*.h'
       - '**/*.c'
       - '**/*.cpp'
+      - '.clang-format'
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write  # Required for auto-commit
 
 jobs:
   clang-format-checking:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: RafikFarhad/clang-format-github-action@v6
         with:
-          sources: "**/*.h,**/*.c,**/*.cpp"
+          ref: ${{ github.head_ref || github.ref_name }}  # PR head branch, otherwise selected dispatch ref
+
+      - name: Install clang-format
+        run: sudo apt-get install -y clang-format
+
+      - name: Apply clang-format
+        run: |
+          find ./components/nspanel_easy ./.test/unit \
+            \( -name "*.h" -o -name "*.c" -o -name "*.cpp" \) \
+            -print0 | xargs -0 -r clang-format --style=file -i
+
+      - name: Commit clang-format fixes
+        if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository }}
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: "style: apply clang-format"
+          commit_options: "--no-verify"
 ...

@@ -7,8 +7,8 @@
 namespace esphome {
 namespace nspanel_easy {
 
-  uint8_t version_blueprint = 0;
-  uint8_t version_tft = 0;
+uint8_t version_blueprint = 0;
+uint8_t version_tft = 0;
 
 }  // namespace nspanel_easy
 }  // namespace esphome

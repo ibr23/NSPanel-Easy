@@ -10,18 +10,14 @@ namespace nspanel_easy {
 /// @brief Main NSPanel Easy component — provides on_setup and on_dump_config triggers.
 class NSPanelEasyComponent : public Component {
  public:
-  void setup() override {
-    this->on_setup_callbacks_.call();
-  }
+  void setup() override { this->on_setup_callbacks_.call(); }
 
   void dump_config() override {
     ESP_LOGCONFIG(TAG, "NSPanel Easy:");
     this->on_dump_config_callbacks_.call();
   }
 
-  void add_on_setup_callback(std::function<void()> &&callback) {
-    this->on_setup_callbacks_.add(std::move(callback));
-  }
+  void add_on_setup_callback(std::function<void()> &&callback) { this->on_setup_callbacks_.add(std::move(callback)); }
 
   void add_on_dump_config_callback(std::function<void()> &&callback) {
     this->on_dump_config_callbacks_.add(std::move(callback));
