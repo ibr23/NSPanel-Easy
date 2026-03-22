@@ -69,7 +69,7 @@ script:
             return;
 
           // Time
-          const ESPTime now = id(time_provider).now();
+          ESPTime now = id(time_provider).now();
           std::string time_format_str = id(mui_time_format);
 
           // Looped token replacer — handles repeated tokens in the same format string
