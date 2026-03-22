@@ -178,5 +178,15 @@ namespace nspanel_easy {
         return code_point;
     }
 
+    void replace_all(std::string& str, const char* token, const char* value) {
+        const size_t token_len = strlen(token);
+        const size_t value_len = strlen(value);
+        size_t pos = 0;
+        while ((pos = str.find(token, pos)) != std::string::npos) {
+            str.replace(pos, token_len, value);
+            pos += value_len;  // Advance past the replacement to avoid infinite loop
+        }
+    }
+
 }  // namespace nspanel_easy
 }  // namespace esphome

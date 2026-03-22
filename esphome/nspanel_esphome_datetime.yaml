@@ -72,38 +72,27 @@ script:
           ESPTime now = id(time_provider).now();
           std::string time_format_str = id(mui_time_format);
 
-          // Looped token replacer — handles repeated tokens in the same format string
-          auto replace_token = [](std::string& str, const char* token, const char* value) {
-            size_t pos = 0;
-            const size_t token_len = strlen(token);
-            const size_t value_len = strlen(value);
-            while ((pos = str.find(token, pos)) != std::string::npos) {
-              str.replace(pos, token_len, value);
-              pos += value_len;
-            }
-          };
-
           // Resolve %-H (no-padding 24h hour)
-          replace_token(time_format_str, "%-H", to_string(static_cast<int>(now.hour)).c_str());
+          nspanel_easy::replace_all(time_format_str, "%-H", to_string(static_cast<int>(now.hour)).c_str());
 
           // Resolve %-I (no-padding 12h hour)
           const int hour12 = (now.hour == 0) ? 12 : (now.hour > 12) ? (now.hour - 12) : now.hour;
-          replace_token(time_format_str, "%-I", to_string(hour12).c_str());
+          nspanel_easy::replace_all(time_format_str, "%-I", to_string(hour12).c_str());
 
           const char* const meridiem_text = (now.hour < 12) ?
-                                             "${LOCALIZATION[LANG].meridiem.am}" :
-                                             "${LOCALIZATION[LANG].meridiem.pm}";
+                                              "${LOCALIZATION[LANG].meridiem.am}" :
+                                              "${LOCALIZATION[LANG].meridiem.pm}";
           const bool has_meridiem = (time_format_str.find("%p") != std::string::npos);
 
           if (current_page->state == "screensaver" and id(screensaver_display_time)) {
             std::string time_format_str_sleep = time_format_str;
-            replace_token(time_format_str_sleep, "%p", meridiem_text);
+            nspanel_easy::replace_all(time_format_str_sleep, "%p", meridiem_text);
             disp1->set_component_text("text", now.strftime(time_format_str_sleep).c_str());
           }
 
           // Resolve %p for home page — strip from time string, set meridiem component separately
           // Trim both ends after replacement to avoid leading/trailing whitespace
-          replace_token(time_format_str, "%p", "");
+          nspanel_easy::replace_all(time_format_str, "%p", "");
           while (!time_format_str.empty() && time_format_str.front() == ' ')
             time_format_str.erase(time_format_str.begin());
           while (!time_format_str.empty() && time_format_str.back() == ' ')
@@ -167,19 +156,10 @@ script:
           const int mon = dt.month - 1;
 
           std::string date_str = id(mui_date_format);
-          auto replace_token = [](std::string& str, const char* token, const char* value) {
-            size_t pos = 0;
-            const size_t token_len = strlen(token);
-            const size_t value_len = strlen(value);
-            while ((pos = str.find(token, pos)) != std::string::npos) {
-              str.replace(pos, token_len, value);
-              pos += value_len;
-            }
-          };
-          replace_token(date_str, "%A", weekdays[dow]);
-          replace_token(date_str, "%a", weekdays_short[dow]);
-          replace_token(date_str, "%B", months[mon]);
-          replace_token(date_str, "%b", months_short[mon]);
+          nspanel_easy::replace_all(date_str, "%A", weekdays[dow]);
+          nspanel_easy::replace_all(date_str, "%a", weekdays_short[dow]);
+          nspanel_easy::replace_all(date_str, "%B", months[mon]);
+          nspanel_easy::replace_all(date_str, "%b", months_short[mon]);
 
           disp1->set_component_text(component.c_str(), dt.strftime(date_str).c_str());
 

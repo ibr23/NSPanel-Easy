@@ -84,5 +84,18 @@ namespace nspanel_easy {
         return *a == *b;
     }
 
+    /**
+    * @brief Replaces all occurrences of a token in a string with a given value.
+    *
+    * Iterates through the string replacing every occurrence of `token` with
+    * `value`. Safe for cases where `value` contains `token` as a substring,
+    * since the search position advances past each replacement.
+    *
+    * @param str    The string to modify in place.
+    * @param token  The substring to search for.
+    * @param value  The replacement string.
+    */
+    void replace_all(std::string& str, const char* token, const char* value);
+
 }  // namespace nspanel_easy
 }  // namespace esphome
