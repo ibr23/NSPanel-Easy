@@ -74,8 +74,8 @@ api:
         - lambda: |-
             std::string txt_str = std::string(txt);
             if (txt_str == "${SENTINEL_UNAVAILABLE}") txt_str = "${LOCALIZATION[LANG].unavailable}";
-            if (txt_str == "${SENTINEL_UNKNOWN}") txt_str = "${LOCALIZATION[LANG].unknown}";
-            if (txt_str == "${SENTINEL_NO_NAME}") txt_str = "${LOCALIZATION[LANG].no_name}";
+            else if (txt_str == "${SENTINEL_UNKNOWN}") txt_str = "${LOCALIZATION[LANG].unknown}";
+            else if (txt_str == "${SENTINEL_NO_NAME}") txt_str = "${LOCALIZATION[LANG].no_name}";
             action_component_text->execute(
               page.c_str(),
               id.c_str(),

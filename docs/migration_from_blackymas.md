@@ -123,7 +123,7 @@ packages:
 | Setting | Before (Blackymas) | After (NSPanel Easy) |
 | :------ | :------------------ | :------------------- |
 | `ota_password` | It was set on the remote package to use your WiFi password | You have to add the substitution `ota_password: ${wifi_password}` for backward compatibility |
-| 'language' | Selected via Blueprint dropdown | Set as `language: xx` substitution in ESPHome YAML - see [Localization](localization.md) |
+| `language` | Selected via Blueprint dropdown | Set as `language: xx` substitution in ESPHome YAML - see [Localization](localization.md) |
 | `url` | `https://github.com/Blackymas/NSPanel_HA_Blueprint` | `https://github.com/edwardtfn/NSPanel-Easy` |
 | `ref` | A version tag (e.g. `v4.3.30`) | `main` |
 | Add-on file paths | Root level (e.g. `nspanel_esphome_addon_climate_heat.yaml`) | Inside `esphome/` folder (e.g. `esphome/nspanel_esphome_addon_climate_heat.yaml`) |
