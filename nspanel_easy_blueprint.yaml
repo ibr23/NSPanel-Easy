@@ -8280,7 +8280,7 @@ actions:
                                   if
                                     climate_entity is defined and
                                     climate_entity is string and
-                                    climate_entity.split(".") | count > 0
+                                    climate_entity.split(".") | count == 2
                                   else "unknown"
                                 }}
                               hvac_modes: '{{ state_attr(climate_entity, "hvac_modes") if settings_entity_domain == "climate" }}'
@@ -8547,7 +8547,7 @@ actions:
                                   if
                                     switch_entity is defined and
                                     switch_entity is string and
-                                    switch_entity.split(".") | count > 0
+                                    switch_entity.split(".") | count == 2
                                   else "unknown"
                                 }}
                           - condition:
@@ -8607,7 +8607,7 @@ actions:
                                   if
                                     water_heater_entity is defined and
                                     water_heater_entity is string and
-                                    water_heater_entity.split(".") | count > 0
+                                    water_heater_entity.split(".") | count == 2
                                   else "unknown"
                                 }}
                               operation_list: >
@@ -9903,7 +9903,7 @@ actions:
                                     last_click_button.entity is defined and
                                     last_click_button.entity is string and
                                     last_click_button.entity | length > 0 and
-                                    last_click_button.entity.split(".") | count > 0
+                                    last_click_button.entity.split(".") | count == 2
                                   else "unknown"
                                 }}
                           - choose:
