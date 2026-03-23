@@ -1,7 +1,7 @@
 #####################################################################################################
 #####                 NSPanel Easy - https://github.com/edwardtfn/NSPanel-Easy                  #####
 #####################################################################################################
-##### ESPHOME Page cover                                                                        #####
+##### ESPHOME Page switch                                                                       #####
 ##### PLEASE only make changes if it is necessary and also the required knowledge is available. #####
 ##### For normal use with the Blueprint, no changes are necessary.                              #####
 #####################################################################################################
@@ -13,7 +13,7 @@ substitutions:
   page_switch_color_on: 33808
   page_switch_color_pending: 33840
   page_switch_color_thumb: 61163
-  TAG_PAGE_SWITCH: nspanel.page.cover
+  TAG_PAGE_SWITCH: nspanel.page.switch
 
 esphome:
   platformio_options:
