@@ -8557,7 +8557,7 @@ actions:
                               - '{{ switch_entity is defined }}'
                               - '{{ switch_entity is string }}'
                               - '{{ switch_entity is match "switch." or switch_entity is match "input_boolean." }}'
-                                '{{ switch_entity_domain == "switch" or switch_entity_domain == "input_boolean" }}'
+                              - '{{ switch_entity_domain == "switch" or switch_entity_domain == "input_boolean" }}'
                           - *delay_default
                           - action: 'esphome.{{ nspanel_name }}_component_val'
                             data:
