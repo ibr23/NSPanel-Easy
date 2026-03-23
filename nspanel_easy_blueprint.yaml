@@ -4238,6 +4238,7 @@ variables:
     qrcode: "qrcode"
     screensaver: "screensaver"
     settings: "settings"
+    switch: "switch"
     utilities: "utilities"
     water_heater: "water_heater"
     weatherpages:
@@ -5135,7 +5136,8 @@ conditions:
       trigger.id != "trigger_buttonpage_state" or
       pages.current in pages.buttonpages or
       (
-        pages.current in [pages.alarm, pages.climate, pages.cover, pages.fan, pages.light, pages.water_heater] and
+        pages.current in [pages.alarm, pages.climate, pages.cover, pages.fan,
+                          pages.light, pages.switch, pages.water_heater] and
         trigger.entity_id is defined and
         detailed_entity | length > 0 and
         trigger.entity_id == states(detailed_entity)
@@ -8524,6 +8526,60 @@ actions:
                                         visible: true
                                       continue_on_error: true
 
+                      ## PAGE SWITCH ##
+                      - alias: Switch page
+                        conditions:
+                          - '{{ nspanel_event is defined }}'
+                          - '{{ nspanel_event.page is defined }}'
+                          - '{{ nspanel_event.page == pages.switch }}'
+                        sequence: &refresh_page_switch
+                          - &variables_switch_entity
+                            variables:
+                              switch_entity: >
+                                {{
+                                  nspanel_event.entity
+                                  if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
+                                  else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
+                                }}
+                              switch_entity_domain: >
+                                {{
+                                  switch_entity.split(".")[0]
+                                  if
+                                    switch_entity is defined and
+                                    switch_entity is string and
+                                    switch_entity.split(".") | count > 0
+                                  else "unknown"
+                                }}
+                          - condition:
+                              - '{{ nspanel_event is defined }}'
+                              - '{{ nspanel_event.page is defined }}'
+                              - '{{ nspanel_event.page == pages.switch }}'
+                              - '{{ switch_entity is defined }}'
+                              - '{{ switch_entity is string }}'
+                              - '{{ switch_entity is match "switch." or switch_entity is match "input_boolean." }}'
+                                '{{ switch_entity_domain == "switch" or switch_entity_domain == "input_boolean" }}'
+                          - *delay_default
+                          - action: 'esphome.{{ nspanel_name }}_component_val'
+                            data:
+                              page: ""
+                              id: state
+                              val: >
+                                {{
+                                  1
+                                  if is_state(switch_entity, "on")
+                                  else (
+                                    0
+                                    if is_state(switch_entity, "off")
+                                    else -1
+                                  )
+                                }}
+                            continue_on_error: true
+                          - *delay_default
+                          - action: 'esphome.{{ nspanel_name }}_command'
+                            data:
+                              cmd: 'render.en=1'
+                            continue_on_error: true
+
                       ## PAGE WATER HEATER ##
                       - alias: Water Heater page
                         conditions:
@@ -9676,7 +9732,9 @@ actions:
                                       - alias: Default
                                         conditions:
                                           - '{{ last_click_button.hold_select == "Default" }}'
-                                          - '{{ entity_domain in ["alarm_control_panel", "climate", "cover", "fan", "light", "media_player", "water_heater"] }}'
+                                          - '{{ entity_domain in ["alarm_control_panel", "climate", "cover", "fan",
+                                                                  "input_boolean", "light", "media_player", "switch",
+                                                                  "water_heater"] }}'
                                         sequence:
                                           - variables:
                                               back_page: '{{ pages.home }}'
@@ -10292,6 +10350,12 @@ actions:
                   - '{{ trigger.entity_id is match "media_player." }}'
                   - '{{ trigger.entity_id == detailed_entity_state }}'
                 sequence: *refresh_page_media_player
+              - alias: Switch page
+                conditions:
+                  - '{{ pages.current == pages.switch }}'
+                  - '{{ trigger.entity_id is match "switch." or trigger.entity_id is match "input_boolean."}}'
+                  - '{{ trigger.entity_id == detailed_entity_state }}'
+                sequence: *refresh_page_switch
               - alias: Water Heater page
                 conditions:
                   - '{{ pages.current == pages.water_heater }}'
@@ -10451,6 +10515,12 @@ actions:
                   - '{{ trigger_entity_id is match "media_player." }}'
                   - '{{ trigger_entity_id == detailed_entity_state }}'
                 sequence: *refresh_page_media_player
+              - alias: Switch page
+                conditions:
+                  - '{{ pages.current == pages.switch }}'
+                  - '{{ trigger_entity_id is match "switch." or trigger_entity_id is match "input_boolean." }}'
+                  - '{{ trigger_entity_id == detailed_entity_state }}'
+                sequence: *refresh_page_switch
               - alias: 'Alarm page'
                 conditions:
                   - '{{ pages.current == pages.alarm }}'

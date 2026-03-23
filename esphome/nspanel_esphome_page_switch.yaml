@@ -1,0 +1,60 @@
+#####################################################################################################
+#####                 NSPanel Easy - https://github.com/edwardtfn/NSPanel-Easy                  #####
+#####################################################################################################
+##### ESPHOME Page cover                                                                        #####
+##### PLEASE only make changes if it is necessary and also the required knowledge is available. #####
+##### For normal use with the Blueprint, no changes are necessary.                              #####
+#####################################################################################################
+
+---
+substitutions:
+  PAGE_SWITCH_ID: 32
+  page_switch_color_off: 16904
+  page_switch_color_on: 33808
+  page_switch_color_pending: 33840
+  page_switch_color_thumb: 61163
+  TAG_PAGE_SWITCH: nspanel.page.cover
+
+esphome:
+  platformio_options:
+    build_flags:
+      - -D NSPANEL_EASY_PAGE_SWITCH
+
+script:
+  - id: !extend event_from_display  # Defined by hw_display
+    then:
+      - lambda: |-
+          if (params[0] != "switch") return;
+
+          // CSV Format: switch,<action>
+          // params[0]=page, params[1]=action (action to perform)
+
+          if (params_count != 2) {
+            ESP_LOGW("${TAG_PAGE_SWITCH}", "Bad params");
+            return;
+          }
+          const std::string& action = params[1];
+          ESP_LOGV("${TAG_PAGE_SWITCH}", "Switch action: %s", action.c_str());
+
+          fire_ha_event("action_call", {
+            {"action", "homeassistant." + action},
+            {"entity", detailed_entity->state.c_str()}
+          });
+
+  - id: !extend page_change
+    then:
+      - lambda: if (new_page_id == ${PAGE_SWITCH_ID}) page_switch->execute();
+
+  - id: page_switch
+    mode: single
+    then:
+      - lambda: |-
+          disp1->set_component_value("color_off", ${page_switch_color_off});
+          disp1->set_component_value("color_on", ${page_switch_color_on});
+          disp1->set_component_value("color_pending", ${page_switch_color_pending});
+          disp1->set_component_value("color_thumb", ${page_switch_color_thumb});
+
+  - id: !extend stop_page_constructors
+    then:
+      - lambda: page_switch->stop();
+...

@@ -28,7 +28,7 @@ constexpr const char *const page_names[] = {
     "climate",      "settings",     "screensaver",  "light",     "cover",        "buttonpage01", "buttonpage02",
     "buttonpage03", "buttonpage04", "notification", "qrcode",    "entitypage01", "entitypage02", "entitypage03",
     "entitypage04", "fan",          "alarm",        "keyb_num",  "media_player", "confirm",      "utilities",
-    "home_smpl",    "debug",        "water_heater"};
+    "home_smpl",    "debug",        "water_heater", "switch"};
 
 constexpr size_t PAGE_COUNT = sizeof(page_names) / sizeof(page_names[0]);
 static_assert(PAGE_COUNT <= UINT8_MAX, "PAGE_COUNT exceeds uint8_t range");
