@@ -9870,8 +9870,10 @@ actions:
                           - choose:
                               - alias: Long click
                                 conditions:
-                                  - '{{ nspanel_event.command == "long_click" or entity_domain in ["alarm_control_panel", "climate", "media_player", "water_heater"] }}'
-                                  - '{{ entity_domain in ["alarm_control_panel", "climate", "cover", "light", "fan", "media_player", "water_heater"] }}'
+                                  - '{{ nspanel_event.command == "long_click" or
+                                        entity_domain in ["alarm_control_panel", "climate", "media_player", "water_heater"] }}'
+                                  - '{{ entity_domain in ["alarm_control_panel", "climate", "cover", "fan", "input_boolean",
+                                                          "light", "media_player", "switch", "water_heater"] }}'
                                 sequence:
                                   - variables:
                                       back_page: '{{ nspanel_event.page }}'

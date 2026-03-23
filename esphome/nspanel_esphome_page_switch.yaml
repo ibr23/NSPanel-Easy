@@ -26,11 +26,13 @@ script:
       - lambda: |-
           if (params[0] != "switch") return;
 
-          if (detailed_entity == nullptr or detailed_entity.empty()) {
+          if (detailed_entity == nullptr or detailed_entity->state.empty()) {
             ESP_LOGW("${TAG_PAGE_SWITCH}", "No detailed entity");
             return;
           }
 
+          // CSV Format: switch,<action>
+          // params[0]=page, params[1]=action (action to perform)
           if (params_count != 2) {
             ESP_LOGW("${TAG_PAGE_SWITCH}", "Bad params");
             return;
