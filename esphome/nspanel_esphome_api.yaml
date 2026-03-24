@@ -127,6 +127,7 @@ api:
             HomeAssistantEntity entity_id = extractHomeAssistantEntity(entity);
             if (entity == "embedded_climate") entity_id.domain = "climate";
             else if (entity_id.domain == "alarm_control_panel") entity_id.domain = "alarm";
+            else if (entity_id.domain == "input_boolean") entity_id.domain = "switch";
             if (entity_id.domain != "invalid" or entity == "embedded_climate") {
               detailed_entity->publish_state(entity);
               delay(${DELAY_DEFAULT});

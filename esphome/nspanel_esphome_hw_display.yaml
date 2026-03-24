@@ -77,7 +77,7 @@ display:
     on_setup:
       then:
         - lambda: |-
-            current_page_id = ${PAGE_BOOT_ID};
+            current_page_id = get_page_id("boot");
             wakeup_page_id = get_page_id(wakeup_page_name->current_option());
             wait_for_display->stop();
             ESP_LOGI("${TAG_HW_DISPLAY}", "Nextion setup triggered");
@@ -131,7 +131,7 @@ number:
             disp1->send_command_printf("brightness=%i", int(x));
         - if:
             condition:
-              - lambda: return current_page_id != ${PAGE_SCREENSAVER_ID};
+              - lambda: return current_page_id != get_page_id("screensaver");
             then:
               - script.execute:
                   id: set_brightness
@@ -154,7 +154,7 @@ number:
             disp1->send_command_printf("brightness_dim=%i", int(x));
         - if:
             condition:
-              - lambda: return current_page_id != ${PAGE_SCREENSAVER_ID};
+              - lambda: return current_page_id != get_page_id("screensaver");
             then:
               - script.execute:
                   id: set_brightness
@@ -224,8 +224,14 @@ script:
       # - page_home
       - lambda: |-
           ESP_LOGV("${TAG_HW_DISPLAY}", "New event from display:");
-          ESP_LOGV("${TAG_HW_DISPLAY}", "  page: %s", params[0].c_str());
           ESP_LOGV("${TAG_HW_DISPLAY}", "  params: %d", params_count);
+
+          if (params_count < 1) {
+            ESP_LOGW("${TAG_HW_DISPLAY}", "Bad params");
+            return;
+          }
+          const std::string page = params[0].c_str();
+          ESP_LOGV("${TAG_HW_DISPLAY}", "  page: %s", page.c_str());
 
           if (params_count >= 2) {
 
@@ -240,16 +246,16 @@ script:
               // Button click event
               ESP_LOGD("${TAG_HW_DISPLAY}", "%s->HA", event.c_str());
               fire_ha_event("button_click", {
-                {"page", params[0].c_str()},  // params[0] = page
+                {"page", page.c_str()},
                 {"command", event.c_str()},
                 {"component", params[2].c_str()}
               });
               ESP_LOGV("${TAG_HW_DISPLAY}", "Event sent");
-            } else if (params[0] != "home" and params[0] != "light") {  // params[0] = page
+            } else if (page != "home" and page != "light" and page != "switch") {
               // Generic event
               ESP_LOGD("${TAG_HW_DISPLAY}", "Send generic event to Home Assistant");
               fire_ha_event("button_click", {
-                {"page", params[0].c_str()},  // params[0] = page
+                {"page", page.c_str()},
                 {"event", params[1].c_str()},
                 {"component", params_count > 2 ? params[2].c_str() : ""},
                 {"value", params_count > 3 ? params[3].c_str() : ""},
@@ -293,27 +299,29 @@ script:
 
           // Reset globals
           ESP_LOGV("${TAG_HW_DISPLAY}", "Reset globals");
-          if (new_page_id != ${PAGE_ALARM_ID} &&
-              new_page_id != ${PAGE_CLIMATE_ID} &&
-              new_page_id != ${PAGE_COVER_ID} &&
-              new_page_id != ${PAGE_FAN_ID} &&
-              new_page_id != ${PAGE_LIGHT_ID} &&
-              new_page_id != ${PAGE_MEDIA_PLAYER_ID} &&
-              new_page_id != ${PAGE_CONFIRM_ID} &&
-              new_page_id != ${PAGE_KEYB_NUM_ID}) {
+          if (new_page_id != get_page_id("alarm") &&
+              new_page_id != get_page_id("climate") &&
+              new_page_id != get_page_id("cover") &&
+              new_page_id != get_page_id("fan") &&
+              new_page_id != get_page_id("light") &&
+              new_page_id != get_page_id("media_player") &&
+              new_page_id != get_page_id("switch") &&
+              new_page_id != get_page_id("water_heater") &&
+              new_page_id != get_page_id("confirm") &&
+              new_page_id != get_page_id("keyb_num")) {
               detailed_entity->publish_state("");
               disp1->send_command("back_page_id=1");
           } else {  // Report detailed entity
             ESP_LOGD("${TAG_HW_DISPLAY}", "Entity shown: %s", detailed_entity->state.c_str());
           }
-          if (new_page_id != ${PAGE_MEDIA_PLAYER_ID}) {
+          if (new_page_id != get_page_id("media_player")) {
             last_volume_level = 0;
             last_media_duration = 0;
             last_media_position = 0;
           }
 
           // Reset timers
-          if (current_page_id != ${PAGE_SCREENSAVER_ID}) {
+          if (current_page_id != get_page_id("screen_saver")) {
                 ESP_LOGV("${TAG_HW_DISPLAY}", "Reset timers");
                 timer_reset_all->execute();
           }
@@ -402,7 +410,7 @@ script:
       - script.wait: theme_update_light
 
       - lambda: |-
-          if (current_page_id == ${PAGE_BOOT_ID}) {
+          if (current_page_id == get_page_id("boot")) {
             id(theme_pending_apply) = true;
             return;
           }
@@ -446,8 +454,8 @@ script:
       - lambda: |-
           if (
                 timeout_dim->state >= 1 and
-                current_page_id != ${PAGE_SCREENSAVER_ID} and
-                current_page_id != ${PAGE_BOOT_ID}
+                current_page_id != get_page_id("screensaver") and
+                current_page_id != get_page_id("boot")
               ) {
             set_brightness->execute(display_dim_brightness->state);
           }
@@ -459,13 +467,13 @@ script:
       - lambda: |-
           if (timeout_page->state >= 1) {
             ESP_LOGV("${TAG_HW_DISPLAY}", "Timed out on page: %s", page_names[current_page_id]);
-            if (current_page->state != "boot" and
-                current_page->state != "confirm" and
-                current_page->state != "home" and
-                current_page->state != "notification" and
-                current_page->state != "screensaver") {
+            if (current_page_id != get_page_id("boot") and
+                current_page_id != get_page_id("confirm") and
+                current_page_id != get_page_id("home") and
+                current_page_id != get_page_id("notification") and
+                current_page_id != get_page_id("screensaver")) {
               ESP_LOGD("${TAG_HW_DISPLAY}", "Fallback to page Home");
-              goto_page->execute(${PAGE_HOME_ID});
+              goto_page->execute(get_page_id("home"));
             }
           }
 
@@ -544,12 +552,12 @@ script:
           }
           if (display_mode == 4) {  // To do: Implement logic for new format
             ESP_LOGI("${TAG_HW_DISPLAY}", "New format - Just go to home page");
-            goto_page->execute(${PAGE_HOME_ID});
+            goto_page->execute(get_page_id("home"));
             return;
           }
-          if (current_page_id == ${PAGE_SCREENSAVER_ID} or current_page_id == ${PAGE_BOOT_ID}) {
+          if (current_page_id == get_page_id("screensaver") or current_page_id == get_page_id("boot")) {
             ESP_LOGD("${TAG_HW_DISPLAY}", "Wake-up on page %s", page_names[wakeup_page_id]);
-            if (wakeup_page_id == ${PAGE_CLIMATE_ID}) {
+            if (wakeup_page_id == get_page_id("climate")) {
               detailed_entity->publish_state((id(is_embedded_thermostat)) ? "embedded_climate" : "");
               disp1->set_component_value("climate.embedded", id(is_embedded_thermostat) ? 1 : 0);
             }

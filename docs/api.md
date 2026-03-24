@@ -353,7 +353,17 @@ ensuring they can easily access detailed information and return to their initial
 
 - `entity` (string): The unique identifier of the entity (`entity_id` in Home Assistant) for which details are displayed.
   The domain is used to select the corresponding detail page.
-  Supported domains are: `alarm_control_panel`, `climate`, `cover`, `fan`, `light`, `media_player`, and `water_heater`.
+  Supported domains are:
+  - `alarm_control_panel`
+  - `climate`
+  - `cover`
+  - `fan`
+  - `input_boolean`
+  - `light`
+  - `media_player`
+  - `switch`
+  - `water_heater`
+
   Use the special value `embedded_climate` to open the built-in climate control page for the panel's relay-based thermostat.
 - `back_page` (string): The page identifier to return to after viewing entity details.
   Valid options are `home` for the home page or `buttonpage01` to `buttonpage04` for button pages.

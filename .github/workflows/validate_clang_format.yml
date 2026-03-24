@@ -33,7 +33,7 @@ jobs:
 
       - name: Commit clang-format fixes
         if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository }}
-        uses: stefanzweifel/git-auto-commit-action@v6
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "style: apply clang-format"
           commit_options: "--no-verify"

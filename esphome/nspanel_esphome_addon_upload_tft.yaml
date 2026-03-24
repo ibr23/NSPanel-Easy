@@ -342,12 +342,12 @@ select:
     options:
       - "Use nextion_update_url"
       - "NSPanel Blank"
-      - "NSPanel Legacy EU"
-      - "NSPanel Legacy US"
-      - "NSPanel Legacy US Landscape"
-      - "NSPanel Legacy EU (CJK languages)"
-      - "NSPanel Legacy US (CJK languages)"
-      - "NSPanel Legacy US Landscape (CJK languages)"
+      - "NSPanel EU"
+      - "NSPanel US"
+      - "NSPanel US Landscape"
+      - "NSPanel EU (CJK languages)"
+      - "NSPanel US (CJK languages)"
+      - "NSPanel US Landscape (CJK languages)"
       - "NSPanel Easy EU (under construction)"
     initial_option: "NSPanel Blank"
     optimistic: true

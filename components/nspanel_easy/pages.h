@@ -4,7 +4,6 @@
 
 #include <array>
 #include <cstdint>
-#include <cstring>
 #include <initializer_list>
 #include <string>
 #include "esphome/core/string_ref.h"  // For StringRef
@@ -24,11 +23,11 @@ namespace nspanel_easy {
  * such as settings, home, weather information, and more.
  */
 constexpr const char *const page_names[] = {
-    "boot",         "home",         "weather01",    "weather02", "weather03",    "weather04",    "weather05",
-    "climate",      "settings",     "screensaver",  "light",     "cover",        "buttonpage01", "buttonpage02",
-    "buttonpage03", "buttonpage04", "notification", "qrcode",    "entitypage01", "entitypage02", "entitypage03",
-    "entitypage04", "fan",          "alarm",        "keyb_num",  "media_player", "confirm",      "utilities",
-    "home_smpl",    "debug",        "water_heater"};
+    "boot",         "home",         "weather01",    "weather02",   "weather03",    "weather04",    "weather05",
+    "climate",      "settings",     "screensaver",  "light",       "cover",        "buttonpage01", "buttonpage02",
+    "buttonpage03", "buttonpage04", "notification", "qrcode",      "entitypage01", "entitypage02", "entitypage03",
+    "entitypage04", "fan",          "alarm",        "keyb_num",    "media_player", "confirm",      "utilities",
+    "home_smpl",    "debug",        "water_heater", "theme_apply", "switch"};
 
 constexpr size_t PAGE_COUNT = sizeof(page_names) / sizeof(page_names[0]);
 static_assert(PAGE_COUNT <= UINT8_MAX, "PAGE_COUNT exceeds uint8_t range");
@@ -39,21 +38,48 @@ extern uint8_t last_page_id;
 extern uint8_t wakeup_page_id;
 
 /**
+ * Compares two null-terminated C-strings at compile time.
+ * Equivalent to strcmp(a, b) == 0, but constexpr-compatible.
+ * std::strcmp becomes constexpr only in C++23; this works with C++17/20.
+ *
+ * @param a First null-terminated string.
+ * @param b Second null-terminated string.
+ * @return true if strings are identical, false otherwise.
+ */
+constexpr bool page_names_equal(const char *a, const char *b) {
+  while (*a && *b) {
+    if (*a != *b)
+      return false;
+    ++a;
+    ++b;
+  }
+  return *a == *b;
+}
+
+/**
  * Retrieves the index of a given page name within the page_names array.
+ * When called with a string literal, this is resolved entirely at compile time.
  *
  * @param page_name The name of the page to find.
- * @return The index of the page_name in the page_names array. If the page_name
- *         is not found, returns UINT8_MAX as an indicator that no matching page was found.
+ * @return The index of the page_name in the page_names array, or UINT8_MAX if not found.
  */
-inline uint8_t get_page_id(const char *page_name) {
+constexpr uint8_t get_page_id(const char *page_name) {
   if (page_name == nullptr || *page_name == '\0')
     return UINT8_MAX;
   for (uint8_t i = 0; i < PAGE_COUNT; ++i) {
-    if (strcmp(page_names[i], page_name) == 0)
+    if (page_names_equal(page_names[i], page_name))
       return i;
   }
   return UINT8_MAX;
 }
+
+/**
+ * Retrieves the index of a given page name within the page_names array.
+ * Runtime overload for StringRef; cannot be constexpr as StringRef is not a literal type.
+ *
+ * @param page_name The name of the page to find.
+ * @return The index of the page_name in the page_names array, or UINT8_MAX if not found.
+ */
 inline uint8_t get_page_id(const esphome::StringRef &page_name) {
   if (page_name.empty())
     return UINT8_MAX;
@@ -63,6 +89,42 @@ inline uint8_t get_page_id(const esphome::StringRef &page_name) {
   }
   return UINT8_MAX;
 }
+
+// Compile-time guards for all pages.
+// Ensures no entry is accidentally removed or misspelled in page_names[].
+static_assert(get_page_id("alarm") != UINT8_MAX, "Missing required page: alarm");
+static_assert(get_page_id("boot") != UINT8_MAX, "Missing required page: boot");
+static_assert(get_page_id("buttonpage01") != UINT8_MAX, "Missing required page: buttonpage01");
+static_assert(get_page_id("buttonpage02") != UINT8_MAX, "Missing required page: buttonpage02");
+static_assert(get_page_id("buttonpage03") != UINT8_MAX, "Missing required page: buttonpage03");
+static_assert(get_page_id("buttonpage04") != UINT8_MAX, "Missing required page: buttonpage04");
+static_assert(get_page_id("climate") != UINT8_MAX, "Missing required page: climate");
+static_assert(get_page_id("confirm") != UINT8_MAX, "Missing required page: confirm");
+static_assert(get_page_id("cover") != UINT8_MAX, "Missing required page: cover");
+static_assert(get_page_id("debug") != UINT8_MAX, "Missing required page: debug");
+static_assert(get_page_id("entitypage01") != UINT8_MAX, "Missing required page: entitypage01");
+static_assert(get_page_id("entitypage02") != UINT8_MAX, "Missing required page: entitypage02");
+static_assert(get_page_id("entitypage03") != UINT8_MAX, "Missing required page: entitypage03");
+static_assert(get_page_id("entitypage04") != UINT8_MAX, "Missing required page: entitypage04");
+static_assert(get_page_id("fan") != UINT8_MAX, "Missing required page: fan");
+static_assert(get_page_id("home") != UINT8_MAX, "Missing required page: home");
+static_assert(get_page_id("home_smpl") != UINT8_MAX, "Missing required page: home_smpl");
+static_assert(get_page_id("keyb_num") != UINT8_MAX, "Missing required page: keyb_num");
+static_assert(get_page_id("light") != UINT8_MAX, "Missing required page: light");
+static_assert(get_page_id("media_player") != UINT8_MAX, "Missing required page: media_player");
+static_assert(get_page_id("notification") != UINT8_MAX, "Missing required page: notification");
+static_assert(get_page_id("qrcode") != UINT8_MAX, "Missing required page: qrcode");
+static_assert(get_page_id("screensaver") != UINT8_MAX, "Missing required page: screensaver");
+static_assert(get_page_id("settings") != UINT8_MAX, "Missing required page: settings");
+static_assert(get_page_id("switch") != UINT8_MAX, "Missing required page: switch");
+static_assert(get_page_id("theme_apply") != UINT8_MAX, "Missing required page: theme_apply");
+static_assert(get_page_id("utilities") != UINT8_MAX, "Missing required page: utilities");
+static_assert(get_page_id("water_heater") != UINT8_MAX, "Missing required page: water_heater");
+static_assert(get_page_id("weather01") != UINT8_MAX, "Missing required page: weather01");
+static_assert(get_page_id("weather02") != UINT8_MAX, "Missing required page: weather02");
+static_assert(get_page_id("weather03") != UINT8_MAX, "Missing required page: weather03");
+static_assert(get_page_id("weather04") != UINT8_MAX, "Missing required page: weather04");
+static_assert(get_page_id("weather05") != UINT8_MAX, "Missing required page: weather05");
 
 }  // namespace nspanel_easy
 }  // namespace esphome

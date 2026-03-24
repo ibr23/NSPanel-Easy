@@ -18,6 +18,7 @@
 - [Customization](customization.md)
 - [Add-on Climate](addon_climate.md)
 - [Add-on Cover](addon_cover.md)
+- [Add-on Display Light](addon_display_light.md)
 - [Alarm Control Panel](alarm.md)
 - [API](api.md)
 - [Using Different Versions of This Project](different_version.md)

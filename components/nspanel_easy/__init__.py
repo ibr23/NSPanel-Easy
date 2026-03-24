@@ -1,4 +1,23 @@
 # __init__.py
+"""ESPHome component entry point for NSPanel Easy.
+
+Registers the ``NSPanelEasyComponent`` C++ class with the ESPHome build
+system, validates the user-supplied YAML configuration, and emits the
+corresponding C++ code and ESP-IDF sdkconfig options during code generation.
+
+Supported configuration keys
+-----------------------------
+- ``disable_bootloader_logs``  - Suppress bootloader UART output.
+- ``lwip_tcp_mss``             - Override the LwIP TCP maximum segment size
+                                 (536-1460 bytes).
+- ``main_task_stack_size``     - ESP-IDF main task stack size (8192-32768 B).
+- ``psram_clk_pin``            - GPIO number for the PSRAM clock signal.
+- ``psram_cs_pin``             - GPIO number for the PSRAM chip-select signal.
+- ``require_disarm_before_rearm`` - Gate re-arm on an explicit disarm first.
+- ``task_wdt_timeout_s``       - Task watchdog timeout in seconds (5-300).
+- ``on_setup``                 - Automation trigger fired once on device setup.
+- ``on_dump_config``           - Automation trigger fired on config dump.
+"""
 
 from esphome import automation
 from esphome import pins
@@ -54,6 +73,25 @@ CONFIG_SCHEMA = cv.Schema({
 
 @coroutine_with_priority(1.0)
 async def to_code(config):
+    """Generate C++ code and sdkconfig options for the NSPanel Easy component.
+
+    This coroutine is called by the ESPHome code-generation pipeline.  It:
+
+    - Instantiates the ``NSPanelEasyComponent`` C++ object and registers it
+      as an ESPHome component.
+    - Wires up any ``on_setup`` / ``on_dump_config`` automation triggers
+      declared in the configuration.
+    - Emits a deprecation warning when the Arduino framework is in use.
+    - Forwards optional PSRAM pin, bootloader-log suppression, stack size,
+      watchdog timeout, and TCP-MSS settings to the ESP-IDF sdkconfig.
+    - Defines ``USE_REQUIRE_DISARM_BEFORE_REARM`` when requested, and
+      unconditionally defines ``USE_NSPANEL_EASY`` plus the global
+      ``esphome::nspanel_easy`` namespace alias.
+
+    Args:
+        config: Validated configuration dictionary produced by
+                :data:`CONFIG_SCHEMA`.
+    """
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
 

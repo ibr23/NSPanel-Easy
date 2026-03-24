@@ -60,7 +60,7 @@ Variable (string) version
     Attributes
         ID            : 6
         Scope         : global
-        Text          : 11
+        Text          : 12
         Max. Text Size: 3
     
 Variable (int32) log_len

@@ -1,7 +1,6 @@
 // pages.cpp
 
 #include "pages.h"
-#include <cstring>
 
 namespace esphome {
 namespace nspanel_easy {

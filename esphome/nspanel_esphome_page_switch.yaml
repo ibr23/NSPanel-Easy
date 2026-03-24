@@ -1,0 +1,81 @@
+#####################################################################################################
+#####                 NSPanel Easy - https://github.com/edwardtfn/NSPanel-Easy                  #####
+#####################################################################################################
+##### ESPHOME Page switch                                                                       #####
+##### PLEASE only make changes if it is necessary and also the required knowledge is available. #####
+##### For normal use with the Blueprint, no changes are necessary.                              #####
+#####################################################################################################
+
+---
+substitutions:
+  page_switch_color_off: 16904
+  page_switch_color_on: 15483
+  page_switch_color_pending: 33840
+  page_switch_color_thumb: 63390
+  TAG_PAGE_SWITCH: nspanel.page.switch
+
+esphome:
+  platformio_options:
+    build_flags:
+      - -D NSPANEL_EASY_PAGE_SWITCH
+
+script:
+  - id: !extend event_from_display  # Defined by hw_display
+    then:
+      - lambda: |-
+          if (params_count == 0 || params[0] != "switch") return;
+
+          // CSV Format: switch,<action>
+          // params[0]=page, params[1]=action (action to perform)
+          if (params_count != 2) {
+            ESP_LOGW("${TAG_PAGE_SWITCH}", "Bad params");
+            return;
+          }
+
+          if (detailed_entity == nullptr or detailed_entity->state.empty()) {
+            ESP_LOGW("${TAG_PAGE_SWITCH}", "No detailed entity");
+            return;
+          }
+
+          const std::string& action = params[1];
+          ESP_LOGV("${TAG_PAGE_SWITCH}", "Switch action: %s", action.c_str());
+          if (action != "turn_on" && action != "turn_off" && action != "toggle") {
+            ESP_LOGW("${TAG_PAGE_SWITCH}", "Unsupported action: %s", action.c_str());
+            return;
+          }
+
+          const HomeAssistantEntity entity = extractHomeAssistantEntity(detailed_entity->state);
+          if (entity.domain == "invalid") {
+            ESP_LOGW("${TAG_PAGE_SWITCH}", "Invalid entity: %s", detailed_entity->state.c_str());
+            return;
+          }
+          if (entity.domain != "switch" && entity.domain != "input_boolean") {
+            ESP_LOGW("${TAG_PAGE_SWITCH}", "Unsupported entity domain for switch page: %s", entity.domain.c_str());
+            return;
+          }
+
+          const std::string service = entity.domain + "." + action;
+          fire_ha_event("action_call", {
+            {"action", service.c_str()},
+            {"entity", detailed_entity->state.c_str()}
+          });
+
+  - id: !extend page_change
+    then:
+      - lambda: |-
+          if (new_page_id == get_page_id("switch"))
+            page_switch->execute();
+
+  - id: page_switch
+    mode: single
+    then:
+      - lambda: |-
+          disp1->set_component_value("color_off", ${page_switch_color_off});
+          disp1->set_component_value("color_on", ${page_switch_color_on});
+          disp1->set_component_value("color_pending", ${page_switch_color_pending});
+          disp1->set_component_value("color_thumb", ${page_switch_color_thumb});
+
+  - id: !extend stop_page_constructors
+    then:
+      - lambda: page_switch->stop();
+...
