@@ -92,39 +92,39 @@ inline uint8_t get_page_id(const esphome::StringRef &page_name) {
 
 // Compile-time guards for all pages.
 // Ensures no entry is accidentally removed or misspelled in page_names[].
-static_assert(get_page_id("alarm")        != UINT8_MAX, "Missing required page: alarm");
-static_assert(get_page_id("boot")         != UINT8_MAX, "Missing required page: boot");
+static_assert(get_page_id("alarm") != UINT8_MAX, "Missing required page: alarm");
+static_assert(get_page_id("boot") != UINT8_MAX, "Missing required page: boot");
 static_assert(get_page_id("buttonpage01") != UINT8_MAX, "Missing required page: buttonpage01");
 static_assert(get_page_id("buttonpage02") != UINT8_MAX, "Missing required page: buttonpage02");
 static_assert(get_page_id("buttonpage03") != UINT8_MAX, "Missing required page: buttonpage03");
 static_assert(get_page_id("buttonpage04") != UINT8_MAX, "Missing required page: buttonpage04");
-static_assert(get_page_id("climate")      != UINT8_MAX, "Missing required page: climate");
-static_assert(get_page_id("confirm")      != UINT8_MAX, "Missing required page: confirm");
-static_assert(get_page_id("cover")        != UINT8_MAX, "Missing required page: cover");
-static_assert(get_page_id("debug")        != UINT8_MAX, "Missing required page: debug");
+static_assert(get_page_id("climate") != UINT8_MAX, "Missing required page: climate");
+static_assert(get_page_id("confirm") != UINT8_MAX, "Missing required page: confirm");
+static_assert(get_page_id("cover") != UINT8_MAX, "Missing required page: cover");
+static_assert(get_page_id("debug") != UINT8_MAX, "Missing required page: debug");
 static_assert(get_page_id("entitypage01") != UINT8_MAX, "Missing required page: entitypage01");
 static_assert(get_page_id("entitypage02") != UINT8_MAX, "Missing required page: entitypage02");
 static_assert(get_page_id("entitypage03") != UINT8_MAX, "Missing required page: entitypage03");
 static_assert(get_page_id("entitypage04") != UINT8_MAX, "Missing required page: entitypage04");
-static_assert(get_page_id("fan")          != UINT8_MAX, "Missing required page: fan");
-static_assert(get_page_id("home")         != UINT8_MAX, "Missing required page: home");
-static_assert(get_page_id("home_smpl")    != UINT8_MAX, "Missing required page: home_smpl");
-static_assert(get_page_id("keyb_num")     != UINT8_MAX, "Missing required page: keyb_num");
-static_assert(get_page_id("light")        != UINT8_MAX, "Missing required page: light");
+static_assert(get_page_id("fan") != UINT8_MAX, "Missing required page: fan");
+static_assert(get_page_id("home") != UINT8_MAX, "Missing required page: home");
+static_assert(get_page_id("home_smpl") != UINT8_MAX, "Missing required page: home_smpl");
+static_assert(get_page_id("keyb_num") != UINT8_MAX, "Missing required page: keyb_num");
+static_assert(get_page_id("light") != UINT8_MAX, "Missing required page: light");
 static_assert(get_page_id("media_player") != UINT8_MAX, "Missing required page: media_player");
 static_assert(get_page_id("notification") != UINT8_MAX, "Missing required page: notification");
-static_assert(get_page_id("qrcode")       != UINT8_MAX, "Missing required page: qrcode");
-static_assert(get_page_id("screensaver")  != UINT8_MAX, "Missing required page: screensaver");
-static_assert(get_page_id("settings")     != UINT8_MAX, "Missing required page: settings");
-static_assert(get_page_id("switch")       != UINT8_MAX, "Missing required page: switch");
-static_assert(get_page_id("theme_apply")  != UINT8_MAX, "Missing required page: theme_apply");
-static_assert(get_page_id("utilities")    != UINT8_MAX, "Missing required page: utilities");
+static_assert(get_page_id("qrcode") != UINT8_MAX, "Missing required page: qrcode");
+static_assert(get_page_id("screensaver") != UINT8_MAX, "Missing required page: screensaver");
+static_assert(get_page_id("settings") != UINT8_MAX, "Missing required page: settings");
+static_assert(get_page_id("switch") != UINT8_MAX, "Missing required page: switch");
+static_assert(get_page_id("theme_apply") != UINT8_MAX, "Missing required page: theme_apply");
+static_assert(get_page_id("utilities") != UINT8_MAX, "Missing required page: utilities");
 static_assert(get_page_id("water_heater") != UINT8_MAX, "Missing required page: water_heater");
-static_assert(get_page_id("weather01")    != UINT8_MAX, "Missing required page: weather01");
-static_assert(get_page_id("weather02")    != UINT8_MAX, "Missing required page: weather02");
-static_assert(get_page_id("weather03")    != UINT8_MAX, "Missing required page: weather03");
-static_assert(get_page_id("weather04")    != UINT8_MAX, "Missing required page: weather04");
-static_assert(get_page_id("weather05")    != UINT8_MAX, "Missing required page: weather05");
+static_assert(get_page_id("weather01") != UINT8_MAX, "Missing required page: weather01");
+static_assert(get_page_id("weather02") != UINT8_MAX, "Missing required page: weather02");
+static_assert(get_page_id("weather03") != UINT8_MAX, "Missing required page: weather03");
+static_assert(get_page_id("weather04") != UINT8_MAX, "Missing required page: weather04");
+static_assert(get_page_id("weather05") != UINT8_MAX, "Missing required page: weather05");
 
 }  // namespace nspanel_easy
 }  // namespace esphome
