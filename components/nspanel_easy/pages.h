@@ -27,7 +27,7 @@ constexpr const char *const page_names[] = {
     "climate",      "settings",     "screensaver",  "light",       "cover",        "buttonpage01", "buttonpage02",
     "buttonpage03", "buttonpage04", "notification", "qrcode",      "entitypage01", "entitypage02", "entitypage03",
     "entitypage04", "fan",          "alarm",        "keyb_num",    "media_player", "confirm",      "utilities",
-    "home_smpl",    "debug",        "water_heater", "theme_apply", "switch"};
+    "home_smpl",    "debug",        "water_heater", "theme_apply", "switch",       "button"};
 
 constexpr size_t PAGE_COUNT = sizeof(page_names) / sizeof(page_names[0]);
 static_assert(PAGE_COUNT <= UINT8_MAX, "PAGE_COUNT exceeds uint8_t range");
@@ -94,6 +94,7 @@ inline uint8_t get_page_id(const esphome::StringRef &page_name) {
 // Ensures no entry is accidentally removed or misspelled in page_names[].
 static_assert(get_page_id("alarm") != UINT8_MAX, "Missing required page: alarm");
 static_assert(get_page_id("boot") != UINT8_MAX, "Missing required page: boot");
+static_assert(get_page_id("button") != UINT8_MAX, "Missing required page: button");
 static_assert(get_page_id("buttonpage01") != UINT8_MAX, "Missing required page: buttonpage01");
 static_assert(get_page_id("buttonpage02") != UINT8_MAX, "Missing required page: buttonpage02");
 static_assert(get_page_id("buttonpage03") != UINT8_MAX, "Missing required page: buttonpage03");

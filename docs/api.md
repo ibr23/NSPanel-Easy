@@ -355,10 +355,12 @@ ensuring they can easily access detailed information and return to their initial
   The domain is used to select the corresponding detail page.
   Supported domains are:
   - `alarm_control_panel`
+  - `button`
   - `climate`
   - `cover`
   - `fan`
   - `input_boolean`
+  - `input_button`
   - `light`
   - `media_player`
   - `switch`

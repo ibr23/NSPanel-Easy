@@ -1,0 +1,82 @@
+#####################################################################################################
+#####                 NSPanel Easy - https://github.com/edwardtfn/NSPanel-Easy                  #####
+#####################################################################################################
+##### ESPHOME Page button                                                                       #####
+##### PLEASE only make changes if it is necessary and also the required knowledge is available. #####
+##### For normal use with the Blueprint, no changes are necessary.                              #####
+#####################################################################################################
+
+---
+substitutions:
+  PAGE_BUTTON_ID: 33
+  page_button_color_idle: 16904
+  page_button_color_pressed: 15483
+  page_button_color_unavail: 10565
+  page_button_color_ring: 21162
+  TAG_PAGE_BUTTON: nspanel.page.button
+
+esphome:
+  platformio_options:
+    build_flags:
+      - -D NSPANEL_EASY_PAGE_BUTTON
+
+script:
+  - id: !extend event_from_display  # Defined by hw_display
+    then:
+      - lambda: |-
+          if (params_count == 0 || params[0] != "button") return;
+
+          // CSV Format: button,<action>
+          // params[0]=page, params[1]=action (action to perform)
+          if (params_count != 2) {
+            ESP_LOGW("${TAG_PAGE_BUTTON}", "Bad params");
+            return;
+          }
+
+          if (detailed_entity == nullptr or detailed_entity->state.empty()) {
+            ESP_LOGW("${TAG_PAGE_BUTTON}", "No detailed entity");
+            return;
+          }
+
+          const std::string& action = params[1];
+          ESP_LOGV("${TAG_PAGE_BUTTON}", "Button action: %s", action.c_str());
+          if (action != "press") {
+            ESP_LOGW("${TAG_PAGE_BUTTON}", "Unsupported action: %s", action.c_str());
+            return;
+          }
+
+          const HomeAssistantEntity entity = extractHomeAssistantEntity(detailed_entity->state);
+          if (entity.domain == "invalid") {
+            ESP_LOGW("${TAG_PAGE_BUTTON}", "Invalid entity: %s", detailed_entity->state.c_str());
+            return;
+          }
+          if (entity.domain != "button" && entity.domain != "input_button") {
+            ESP_LOGW("${TAG_PAGE_BUTTON}", "Unsupported entity domain for button page: %s", entity.domain.c_str());
+            return;
+          }
+
+          const std::string service = entity.domain + "." + action;
+          fire_ha_event("action_call", {
+            {"action", service.c_str()},
+            {"entity", detailed_entity->state.c_str()}
+          });
+
+  - id: !extend page_change
+    then:
+      - lambda: |-
+          if (new_page_id == get_page_id("button"))
+            page_button->execute();
+
+- id: page_button
+    mode: single
+    then:
+      - lambda: |-
+          disp1->set_component_value("color_idle", ${page_button_color_idle});
+          disp1->set_component_value("color_pressed", ${page_button_color_pressed});
+          disp1->set_component_value("color_unavail", ${page_button_color_unavail});
+          disp1->set_component_value("color_ring", ${page_button_color_ring});
+
+  - id: !extend stop_page_constructors
+    then:
+      - lambda: page_button->stop();
+...
