@@ -11,7 +11,7 @@ blueprint:
   description: >
     # NSPanel Easy Configuration via Blueprint
 
-    **Blueprint release**: 11
+    **Blueprint release**: 12
 
 
     This project enables comprehensive configuration of your NSPanel through a Blueprint featuring a user interface.
@@ -4211,11 +4211,12 @@ trigger_variables:
     }}
 
 variables:
-  blueprint_version: 11
+  blueprint_version: 12
   pages:
     current: '{{ states(currentpage) }}'
     alarm: "alarm"
     boot: "boot"
+    button: "button"
     buttonpages:
       - "buttonpage01"
       - "buttonpage02"
@@ -5136,7 +5137,7 @@ conditions:
       trigger.id != "trigger_buttonpage_state" or
       pages.current in pages.buttonpages or
       (
-        pages.current in [pages.alarm, pages.climate, pages.cover, pages.fan,
+        pages.current in [pages.alarm, pages.button, pages.climate, pages.cover, pages.fan,
                           pages.light, pages.switch, pages.water_heater] and
         trigger.entity_id is defined and
         detailed_entity | length > 0 and
@@ -8526,6 +8527,67 @@ actions:
                                         visible: true
                                       continue_on_error: true
 
+                      ## PAGE BUTTON ##
+                      - alias: Button page
+                        conditions:
+                          - '{{ nspanel_event is defined }}'
+                          - '{{ nspanel_event.page is defined }}'
+                          - '{{ nspanel_event.page == pages.button }}'
+                        sequence: &refresh_page_button
+                          - &variables_button_entity
+                            variables:
+                              entity_id: >
+                                {{
+                                  nspanel_event.entity
+                                  if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
+                                  else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
+                                }}
+                          - condition:
+                              - '{{ entity_id is defined }}'
+                              - '{{ entity_id is string }}'
+                              - '{{ entity_id.split(".") | count == 2 }}'
+                              - '{{ entity_id.split(".")[0] in ["button", "input_button"] }}'
+                          - *variable_entity
+                          - condition: '{{ entity is defined }}'
+
+                          - if: '{{ entity.name is defined and entity.name is string and entity.name | length > 0 }}'
+                            then:
+                              - *delay_default
+                              - action: 'esphome.{{ nspanel_name }}_component_text'
+                                data:
+                                  page: ""
+                                  id: page_label
+                                  txt: '{{ entity.name }}'
+                                continue_on_error: true
+                          - if: '{{ entity.icon is defined and entity.icon is string and entity.icon | length > 0 }}'
+                            then:
+                              - *delay_default
+                              - action: 'esphome.{{ nspanel_name }}_component_text'
+                                data:
+                                  page: ""
+                                  id: icon_state
+                                  txt: '{{ entity.icon }}'
+                                continue_on_error: true
+                              - *delay_default
+                              - action: 'esphome.{{ nspanel_name }}_component_text'
+                                data:
+                                  page: ""
+                                  id: icon
+                                  txt: '{{ entity.icon }}'
+                                continue_on_error: true
+                          - *delay_default
+                          - action: 'esphome.{{ nspanel_name }}_component_val'
+                            data:
+                              page: ""
+                              id: state
+                              val: '{{ -1 if is_state(entity_id, "unavailable") else 0 }}'
+                            continue_on_error: true
+                          - *delay_default
+                          - action: 'esphome.{{ nspanel_name }}_command'
+                            data:
+                              cmd: 'render.en=1'
+                            continue_on_error: true
+
                       ## PAGE SWITCH ##
                       - alias: Switch page
                         conditions:
@@ -9741,9 +9803,9 @@ actions:
                                       - alias: Default
                                         conditions:
                                           - '{{ last_click_button.hold_select == "Default" }}'
-                                          - '{{ entity_domain in ["alarm_control_panel", "climate", "cover", "fan",
-                                                                  "input_boolean", "light", "media_player", "switch",
-                                                                  "water_heater"] }}'
+                                          - '{{ entity_domain in ["alarm_control_panel", "button", "climate", "cover",
+                                                                  "fan", "input_boolean", "input_button", "light",
+                                                                  "media_player", "switch", "water_heater"] }}'
                                         sequence:
                                           - variables:
                                               back_page: '{{ pages.home }}'
@@ -9884,8 +9946,9 @@ actions:
                                 conditions:
                                   - '{{ nspanel_event.command == "long_click" or
                                         entity_domain in ["alarm_control_panel", "climate", "media_player", "water_heater"] }}'
-                                  - '{{ entity_domain in ["alarm_control_panel", "climate", "cover", "fan", "input_boolean",
-                                                          "light", "media_player", "switch", "water_heater"] }}'
+                                  - '{{ entity_domain in ["alarm_control_panel", "button", "climate", "cover", "fan",
+                                                          "input_boolean", "input_button", "light", "media_player", "switch",
+                                                          "water_heater"] }}'
                                 sequence:
                                   - variables:
                                       back_page: '{{ nspanel_event.page }}'
@@ -10318,6 +10381,13 @@ actions:
                   - '{{ trigger.entity_id is match "alarm_control_panel." }}'
                   - '{{ trigger.entity_id == detailed_entity_state }}'
                 sequence: *refresh_page_alarm
+              - alias: Button page
+                conditions:
+                  - '{{ pages.current == pages.button }}'
+                  - '{{ trigger.entity_id.split(".") | count == 2 }}'
+                  - '{{ trigger.entity_id.split(".")[0] in ["button", "input_button"] }}'
+                  - '{{ trigger.entity_id == detailed_entity_state }}'
+                sequence: *refresh_page_button
               - alias: Button pages
                 conditions:
                   - '{{ pages.current in pages.buttonpages }}'
@@ -10537,6 +10607,13 @@ actions:
                   - '{{ trigger_entity_id.split(".")[0] in ["switch", "input_boolean"] }}'
                   - '{{ trigger_entity_id == detailed_entity_state }}'
                 sequence: *refresh_page_switch
+              - alias: Button page
+                conditions:
+                  - '{{ pages.current == pages.button }}'
+                  - '{{ trigger_entity_id.split(".") | count == 2 }}'
+                  - '{{ trigger_entity_id.split(".")[0] in ["button", "input_button"] }}'
+                  - '{{ trigger_entity_id == detailed_entity_state }}'
+                sequence: *refresh_page_button
               - alias: 'Alarm page'
                 conditions:
                   - '{{ pages.current == pages.alarm }}'

@@ -251,7 +251,10 @@ script:
                 {"component", params[2].c_str()}
               });
               ESP_LOGV("${TAG_HW_DISPLAY}", "Event sent");
-            } else if (page != "home" and page != "light" and page != "switch") {
+            } else if (page != "button" and
+                        page != "home" and
+                        page != "light" and
+                        page != "switch") {
               // Generic event
               ESP_LOGD("${TAG_HW_DISPLAY}", "Send generic event to Home Assistant");
               fire_ha_event("button_click", {
@@ -300,6 +303,7 @@ script:
           // Reset globals
           ESP_LOGV("${TAG_HW_DISPLAY}", "Reset globals");
           if (new_page_id != get_page_id("alarm") &&
+              new_page_id != get_page_id("button") &&
               new_page_id != get_page_id("climate") &&
               new_page_id != get_page_id("cover") &&
               new_page_id != get_page_id("fan") &&
