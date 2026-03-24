@@ -53,7 +53,7 @@ number:
     update_interval: never
     on_value:
       then:
-        - logger.log: Temperature correction changed.
+        - logger.log: Temperature correction changed
         - delay: 1s
         - lambda: |-
             // To do: Remove version-based code after v2026.6.0

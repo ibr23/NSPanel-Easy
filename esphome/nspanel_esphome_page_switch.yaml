@@ -39,6 +39,10 @@ script:
 
           const std::string& action = params[1];
           ESP_LOGV("${TAG_PAGE_SWITCH}", "Switch action: %s", action.c_str());
+          if (action != "turn_on" && action != "turn_off" && action != "toggle") {
+            ESP_LOGW("${TAG_PAGE_SWITCH}", "Unsupported action: %s", action.c_str());
+            return;
+          }
 
           const HomeAssistantEntity entity = extractHomeAssistantEntity(detailed_entity->state);
           if (entity.domain == "invalid") {
@@ -46,8 +50,9 @@ script:
             return;
           }
 
+          const std::string service = entity.domain + "." + action;
           fire_ha_event("action_call", {
-            {"action", (entity.domain + "." + action).c_str()},
+            {"action", service.c_str()},
             {"entity", detailed_entity->state.c_str()}
           });
 
