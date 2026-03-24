@@ -5,7 +5,6 @@
 ##### PLEASE only make changes if it is necessary and also the required knowledge is available. #####
 ##### For normal use with the Blueprint, no changes are necessary.                              #####
 #####################################################################################################
-
 ---
 substitutions:
   PAGE_BUTTON_ID: 33
@@ -67,7 +66,7 @@ script:
           if (new_page_id == get_page_id("button"))
             page_button->execute();
 
-- id: page_button
+  - id: page_button
     mode: single
     then:
       - lambda: |-
