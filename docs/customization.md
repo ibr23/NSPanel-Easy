@@ -323,7 +323,7 @@ binary_sensor:
     id: display_state
     platform: template
     lambda: |-
-      return (current_page_id != ${PAGE_SCREENSAVER_ID});
+      return (current_page_id != get_page_id("screensaver"));
 ```
 
 You can easily invert the meaning to have a sensor for display sleeping:
@@ -335,7 +335,7 @@ binary_sensor:
     id: display_sleeping
     platform: template
     lambda: |-
-      return (current_page_id == ${PAGE_SCREENSAVER_ID});
+      return (current_page_id == get_page_id("screensaver"));
 ```
 
 ### Deep sleep
@@ -414,7 +414,7 @@ button:
       then:
         - logger.log: Button Sleep pressed
         - lambda: |-
-            goto_page->execute(${PAGE_SCREENSAVER_ID});
+            goto_page->execute(get_page_id("screensaver"));
   
   # Adds a button to wake-up the panel (similar to the existing action)
   - name: Wake-up
@@ -425,7 +425,7 @@ button:
       then:
         - logger.log: Button Wake-up pressed
         - lambda: |-
-            if (current_page_id == ${PAGE_SCREENSAVER_ID}) disp1->goto_page(wakeup_page_id);
+            if (current_page_id == get_page_id("screensaver")) disp1->goto_page(wakeup_page_id);
             // timer_page->execute(); // enable this if you want page timeout to be reset
             timer_sleep->execute();
             timer_dim->execute();

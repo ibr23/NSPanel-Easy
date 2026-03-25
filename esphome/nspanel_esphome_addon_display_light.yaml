@@ -25,12 +25,12 @@ light:
     on_turn_on:
       then:
         - lambda: |-
-            if (current_page_id == ${PAGE_SCREENSAVER_ID}) disp1->goto_page(wakeup_page_id);
+            if (current_page_id == get_page_id("screensaver")) disp1->goto_page(wakeup_page_id);
             timer_reset_all->execute();
     on_turn_off:
       then:
         - lambda: |-
-            goto_page->execute(${PAGE_SCREENSAVER_ID});
+            goto_page->execute(get_page_id("screensaver"));
 
 output:
   # Output required by `display_light` to send the commands to Nextion
@@ -55,10 +55,10 @@ script:
     then:
       - lambda: |-
           ESP_LOGV("${TAG_ADDON_DISPLAY_LIGHT}", "is_on(): %s", display_light->current_values.is_on() ? "True" : "False");
-          if (current_page_id == ${PAGE_SCREENSAVER_ID} and display_light->current_values.is_on()) {
+          if (current_page_id == get_page_id("screensaver") and display_light->current_values.is_on()) {
             auto call = display_light->turn_off();
             call.perform();
-          } else if (current_page_id != ${PAGE_SCREENSAVER_ID} and (not display_light->current_values.is_on())) {
+          } else if (current_page_id != get_page_id("screensaver") and (not display_light->current_values.is_on())) {
             auto call = display_light->turn_on();
             call.perform();
           }
@@ -69,7 +69,7 @@ script:
       - lambda: |-
           uint8_t current_light_brightness = int(round(display_light->current_values.is_on() ? (display_light->current_values.get_brightness() * 100.0f) : 0.0));
           if (brightness != current_light_brightness) {
-            if (current_page_id != ${PAGE_SCREENSAVER_ID} and brightness > 0) {
+            if (current_page_id != get_page_id("screensaver") and brightness > 0) {
               auto call = display_light->turn_on();
               call.set_brightness(brightness / 100.0f);
               call.perform();

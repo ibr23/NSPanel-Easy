@@ -16,7 +16,7 @@ binary_sensor:
     id: display_state
     platform: template
     lambda: |-
-      return (current_page_id != ${PAGE_SCREENSAVER_ID});
+      return (current_page_id != get_page_id("screensaver"));
 
 button:
   # Adds a button to put the panel to sleep
@@ -28,7 +28,7 @@ button:
       then:
         - logger.log: Button Sleep pressed
         - lambda: |-
-            goto_page->execute(${PAGE_SCREENSAVER_ID});
+            goto_page->execute(get_page_id("screensaver"));
 
   # Adds a button to wake-up the panel (similar to the existing service)
   - name: ${device_name} Wake-up
@@ -39,7 +39,7 @@ button:
       then:
         - logger.log: Button Wake-up pressed
         - lambda: |-
-            if (current_page_id == ${PAGE_SCREENSAVER_ID}) id(disp1).goto_page(wakeup_page_id);
+            if (current_page_id == get_page_id("screensaver")) id(disp1).goto_page(wakeup_page_id);
             // timer_page->execute(); // enable this if you want page timeout to be reset
             timer_sleep->execute();
             timer_dim->execute();

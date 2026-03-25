@@ -9,6 +9,7 @@
 ---
 substitutions:
   wakeup_with_button_press: false
+  PAGE_SCREENSAVER_ID: 9  # Kept for back compatibility for users using customizations
   TAG_PAGE_SCREENSAVER: nspanel.page.screensaver
 
 esphome:
