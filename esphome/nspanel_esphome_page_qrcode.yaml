@@ -15,7 +15,6 @@ substitutions:
   qrcode_background_color: 65535
   qrcode_foreground_color: 0
   qrcode_border_size: 8
-  PAGE_QRCODE_ID: 17
   TAG_PAGE_QRCODE: nspanel.page.qrcode
 
 api:
@@ -41,7 +40,7 @@ api:
             id(qrcode_title) = title;
             id(qrcode_string) = qrcode;
             if (show) {
-              goto_page->execute(hmi::qrcode::PAGE.id);
+              goto_page->execute(get_page_id("qrcode"));
             } else {
               page_qrcode->execute();
             }
@@ -58,10 +57,10 @@ display:
       then:
         - lambda: |-
             if (touch_event) return;  // Ignore the touch, so only the release will be used
-            if (page_id == hmi::home::PAGE.id and            // Page `home`
-                component_id == hmi::home::BT_QRCODE.id and  // QRcode button
-                !id(qrcode_string).empty()) {                // QRcode string is not empty
-              goto_page->execute(hmi::qrcode::PAGE.id);
+            if (page_id == hmi::home::PAGE.id and          // Page `home`
+                component_id == get_page_id("qrcode") and  // QRcode button
+                !id(qrcode_string).empty()) {              // QRcode string is not empty
+              goto_page->execute(get_page_id("qrcode"));
               return;
             }
 
@@ -133,7 +132,9 @@ script:
 
   - id: !extend page_change
     then:
-      - lambda: if (new_page_id == hmi::qrcode::PAGE.id) page_qrcode->execute();
+      - lambda: |-
+          if (new_page_id == get_page_id("qrcode"))
+            page_qrcode->execute();
 
   - id: !extend page_home
     then:
@@ -146,7 +147,7 @@ script:
     mode: single
     then:
       - lambda: |-
-          if (current_page_id != hmi::qrcode::PAGE.id) {
+          if (current_page_id != get_page_id("qrcode")) {
             return;  // Page QRcode not visible
           }
 

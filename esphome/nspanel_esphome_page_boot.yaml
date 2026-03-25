@@ -8,7 +8,6 @@
 
 ---
 substitutions:
-  BOOT_STEP_PAGE_BOOT: 29
   PAGE_BOOT_COMPONENT_ID_BT_REBOOT: 21
   PAGE_BOOT_DELAY_TO_EXIT: 30s
   PAGE_BOOT_ID: 0
@@ -22,7 +21,7 @@ display:
         - lambda: |-
             if (
                   !touch_event and  // Only act with release
-                  page_id == ${PAGE_BOOT_ID} and
+                  page_id == get_page_id("boot") and
                   component_id == ${PAGE_BOOT_COMPONENT_ID_BT_REBOOT}  // Reboot button
                 ) {
               screen_power->turn_off();
@@ -38,7 +37,7 @@ script:
   - id: !extend boot_log
     then:
       - lambda: |-
-          if (current_page_id == ${PAGE_BOOT_ID}) {
+          if (current_page_id == get_page_id("boot")) {
             disp1->send_command_printf("log_body.txt+=\"%s: %s\\r\"", category.c_str(), log_message.c_str());
             feed_wdt_delay(${DELAY_SHORT});
           }
@@ -105,14 +104,14 @@ script:
       - delay: ${PAGE_BOOT_DELAY_TO_EXIT}
       - script.wait: wait_for_version_tft
       - lambda: |-
-          if (current_page_id == ${PAGE_BOOT_ID})
+          if (current_page_id == get_page_id("boot"))
             wakeup->execute(false);
 
   - id: page_boot_show_blueprint_version
     mode: single
     then:
       - lambda: |-
-          if (current_page_id == ${PAGE_BOOT_ID} and version_blueprint > 0)
+          if (current_page_id == get_page_id("boot") and version_blueprint > 0)
             disp1->set_component_text_printf("ver_blueprint", "Blueprint: %" PRIu8, version_blueprint);
 
   - id: page_boot_show_ip
@@ -120,7 +119,7 @@ script:
     then:
       - lambda: |-
           if (!wifi_component->is_connected()) return;
-          if (current_page_id != ${PAGE_BOOT_ID}) return;
+          if (current_page_id != get_page_id("boot")) return;
           auto ips = network::get_ip_addresses();
           if (ips.empty()) return;
           char ip[16];  // sufficient for IPv4: "255.255.255.255" + '\0'
@@ -130,7 +129,7 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
-          if (new_page_id == ${PAGE_BOOT_ID} and display_mode != 4)
+          if (new_page_id == get_page_id("boot") and display_mode != 4)
             page_boot->execute();
 
   - id: !extend stop_all
@@ -155,7 +154,8 @@ script:
     then:
       - while:
           condition:
-            - lambda: return current_page_id == ${PAGE_BOOT_ID};
+            - lambda: |-
+                return current_page_id == get_page_id("boot");
           then:
             - lambda: |-
                 ESP_LOGV("${TAG_PAGE_BOOT}", "Waiting for boot page exit");
@@ -164,7 +164,7 @@ script:
   - id: !extend watchdog_round
     then:
       - lambda: |-
-          if (current_page_id == ${PAGE_BOOT_ID} and version_tft > 0)
+          if (current_page_id == get_page_id("boot") and version_tft > 0)
             wakeup->execute(true);
 
 wifi:

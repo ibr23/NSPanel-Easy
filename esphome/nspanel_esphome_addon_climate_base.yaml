@@ -61,7 +61,7 @@ climate:
               ESP_LOGW("${TAG_ADDON_CLIMATE}", "Device not ready to work with the new state");
               return;
             }
-            if (current_page_id == ${PAGE_CLIMATE_ID} and detailed_entity->state == "embedded_climate") {
+            if (current_page_id == get_page_id("climate") and detailed_entity->state == "embedded_climate") {
               ESP_LOGV("${TAG_ADDON_CLIMATE}", "Update page 'climate'");
               page_climate->execute();
             }
@@ -200,7 +200,7 @@ script:
   - id: !extend page_climate
     then:
       - lambda: |-
-          if (current_page_id != ${PAGE_CLIMATE_ID}) return;
+          if (current_page_id != get_page_id("climate")) return;
           if (not id(is_embedded_thermostat)) return;
           if (detailed_entity->state.empty()) return;
           if (detailed_entity->state != "embedded_climate") return;
@@ -218,7 +218,7 @@ script:
           // Feed watchdog
           delay(${DELAY_SHORT});
           App.feed_wdt();
-          if (current_page_id != ${PAGE_CLIMATE_ID}) return;
+          if (current_page_id != get_page_id("climate")) return;
 
           // Extract temperature values (static since they don't change during runtime)
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Extracted temperature values:");
@@ -238,7 +238,7 @@ script:
           // Feed watchdog
           delay(${DELAY_SHORT});
           App.feed_wdt();
-          if (current_page_id != ${PAGE_CLIMATE_ID}) return;
+          if (current_page_id != get_page_id("climate")) return;
 
           // Calculate static values
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Calculated static values:");
@@ -251,7 +251,7 @@ script:
           // Feed watchdog
           delay(${DELAY_SHORT});
           App.feed_wdt();
-          if (current_page_id != ${PAGE_CLIMATE_ID}) return;
+          if (current_page_id != get_page_id("climate")) return;
 
           // Get dynamic temperature values
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Get dynamic temperature values:");
@@ -274,7 +274,7 @@ script:
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "  temp_target_low: %f${temp_units}", temp_target_low);
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "  temp_current: %f${temp_units}", temp_current);
           feed_wdt_delay(${DELAY_SHORT});
-          if (current_page_id != ${PAGE_CLIMATE_ID}) return;
+          if (current_page_id != get_page_id("climate")) return;
 
           #ifdef NSPANEL_EASY_ADDON_CLIMATE_DUAL
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Is add-on Climate dual: YES");
@@ -302,7 +302,7 @@ script:
           set_climate_climate_icon = "";
           set_climate_embedded_climate = true;
           feed_wdt_delay(${DELAY_SHORT});
-          if (current_page_id != ${PAGE_CLIMATE_ID}) return;
+          if (current_page_id != get_page_id("climate")) return;
 
           // Execute set_climate
           ESP_LOGV("${TAG_ADDON_CLIMATE}", "Call set_climate");
@@ -330,7 +330,7 @@ script:
             (thermostat_embedded->mode==climate::CLIMATE_MODE_HEAT_COOL) ? Colors::WHITE : Colors::GRAY_DARK));
           #endif  // NSPANEL_EASY_ADDON_CLIMATE_DUAL
           feed_wdt_delay(${DELAY_SHORT});
-          if (current_page_id != ${PAGE_CLIMATE_ID}) return;
+          if (current_page_id != get_page_id("climate")) return;
 
           #if defined(NSPANEL_EASY_ADDON_CLIMATE_HEAT) || defined(NSPANEL_EASY_ADDON_CLIMATE_DUAL)
           disp1->show_component("button03");  // Heat
@@ -342,7 +342,7 @@ script:
             (thermostat_embedded->mode==climate::CLIMATE_MODE_HEAT) ? Colors::DEEP_ORANGE : Colors::GRAY_DARK));
           #endif  // NSPANEL_EASY_ADDON_CLIMATE_HEAT || NSPANEL_EASY_ADDON_CLIMATE_DUAL
           feed_wdt_delay(${DELAY_SHORT});
-          if (current_page_id != ${PAGE_CLIMATE_ID}) return;
+          if (current_page_id != get_page_id("climate")) return;
 
           #if defined(NSPANEL_EASY_ADDON_CLIMATE_COOL) || defined(NSPANEL_EASY_ADDON_CLIMATE_DUAL)
           disp1->show_component("button04");  // Cool
@@ -354,17 +354,17 @@ script:
             (thermostat_embedded->mode==climate::CLIMATE_MODE_COOL) ? Colors::BLUE : Colors::GRAY_DARK));
           #endif  // NSPANEL_EASY_ADDON_CLIMATE_COOL || NSPANEL_EASY_ADDON_CLIMATE_DUAL
           feed_wdt_delay(${DELAY_SHORT});
-          if (current_page_id != ${PAGE_CLIMATE_ID}) return;
+          if (current_page_id != get_page_id("climate")) return;
 
           disp1->hide_component("button05");
           disp1->set_component_font_color("climate.button05", static_cast<uint16_t>(Colors::GRAY_DARK));
           feed_wdt_delay(${DELAY_SHORT});
-          if (current_page_id != ${PAGE_CLIMATE_ID}) return;
+          if (current_page_id != get_page_id("climate")) return;
 
           disp1->hide_component("button06");
           disp1->set_component_font_color("climate.button06", static_cast<uint16_t>(Colors::GRAY_DARK));
           feed_wdt_delay(${DELAY_SHORT});
-          if (current_page_id != ${PAGE_CLIMATE_ID}) return;
+          if (current_page_id != get_page_id("climate")) return;
 
           disp1->show_component("button07");  // Off
           disp1->set_component_font_color("climate.button07", static_cast<uint16_t>(

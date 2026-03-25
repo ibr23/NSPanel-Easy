@@ -8,11 +8,6 @@
 
 ---
 substitutions:
-  BOOT_STEP_PAGE_ENTITIES: 15
-  PAGE_ENTITYPAGE01_ID: 18
-  PAGE_ENTITYPAGE02_ID: 19
-  PAGE_ENTITYPAGE03_ID: 20
-  PAGE_ENTITYPAGE04_ID: 21
   half_width_chars: "iljtIf '-,;:!.\\\"|()[]{}*^~\\\\/_"
   TAG_PAGE_ENTITIES: nspanel.page.entities
 
@@ -90,7 +85,7 @@ script:
           if (component == "is_entitypages") {  // Visibility of entity pages button on page "Home"
             const uint8_t is_entitypages = (val > 0) ? 1 : 0;
             disp1->send_command_printf("vis_bt_entities=%d", is_entitypages);
-            if (current_page_id == ${PAGE_HOME_ID}) {
+            if (current_page_id == get_page_id("home")) {
               disp1->send_command_printf("vis bt_entities,%d", is_entitypages);
             }
           }
@@ -98,10 +93,10 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
-          if (new_page_id == ${PAGE_ENTITYPAGE01_ID}) page_entitypage->execute(1);
-          else if (new_page_id == ${PAGE_ENTITYPAGE02_ID}) page_entitypage->execute(2);
-          else if (new_page_id == ${PAGE_ENTITYPAGE03_ID}) page_entitypage->execute(3);
-          else if (new_page_id == ${PAGE_ENTITYPAGE04_ID}) page_entitypage->execute(4);
+          if (new_page_id == get_page_id("entitypage01")) page_entitypage->execute(1);
+          else if (new_page_id == get_page_id("entitypage02")) page_entitypage->execute(2);
+          else if (new_page_id == get_page_id("entitypage03")) page_entitypage->execute(3);
+          else if (new_page_id == get_page_id("entitypage04")) page_entitypage->execute(4);
 
   - id: page_entitypage
     mode: single
@@ -110,10 +105,10 @@ script:
     then:
       - lambda: |-
           // Set value alignment
-          if (current_page_id == ${PAGE_ENTITYPAGE01_ID} or
-              current_page_id == ${PAGE_ENTITYPAGE02_ID} or
-              current_page_id == ${PAGE_ENTITYPAGE03_ID} or
-              current_page_id == ${PAGE_ENTITYPAGE04_ID}) {
+          if (current_page_id == get_page_id("entitypage01") or
+              current_page_id == get_page_id("entitypage02") or
+              current_page_id == get_page_id("entitypage03") or
+              current_page_id == get_page_id("entitypage04")) {
             for (uint8_t i = 1; i <= 8; ++i) {
               disp1->send_command_printf("value%02d.xcen=%" PRIu8, i, page_entities_value_horizontal_alignment);
             }

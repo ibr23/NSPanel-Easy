@@ -7,7 +7,6 @@
 #####################################################################################################
 ---
 substitutions:
-  PAGE_BUTTON_ID: 33
   page_button_color_idle: 16904
   page_button_color_pressed: 15483
   page_button_color_unavail: 10565

@@ -13,8 +13,6 @@ substitutions:
   PAGE_ALARM_DELAY_LONG: ${DELAY_LONG}
   PAGE_ALARM_DELAY_SHORT: ${DELAY_SHORT}
 
-  BOOT_STEP_PAGE_ALARM: 10
-  PAGE_ALARM_ID: 23
   TAG_PAGE_ALARM: nspanel.page.alarm
 
 api:
@@ -31,7 +29,7 @@ api:
       then:
         # To do: This page constructor should be moved to Blueprint
         - lambda: |-
-            if (current_page_id != ${PAGE_ALARM_ID}) return;
+            if (current_page_id != get_page_id("alarm")) return;
 
             // Helper function to update alarm button state and visibility
             // Handles feature checking, logging, and UI updates for all buttons including disarm
@@ -177,9 +175,9 @@ script:
 
             if (code_format == "number" && (key == "disarm" || code_arm_req == "1")) {
               ESP_LOGV("${TAG_PAGE_ALARM}", "Open keypad");
-              goto_page->execute(${PAGE_KEYB_NUM_ID});
+              goto_page->execute(get_page_id("keyb_num"));
 
-              disp1->set_component_value("page_id", ${PAGE_ALARM_ID});
+              disp1->set_component_value("page_id", get_page_id("alarm"));
               disp1->set_component_text("domain", "alarm");
               disp1->set_component_text("key", key.c_str());
               disp1->set_component_text("value", "click");
@@ -243,7 +241,7 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
-          if (new_page_id == ${PAGE_ALARM_ID})
+          if (new_page_id == get_page_id("alarm"))
             page_alarm->execute();
 
   - id: !extend stop_all

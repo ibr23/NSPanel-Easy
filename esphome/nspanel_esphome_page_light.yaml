@@ -8,8 +8,6 @@
 
 ---
 substitutions:
-  BOOT_STEP_PAGE_LIGHT: 19
-  PAGE_LIGHT_ID: 10
   TAG_PAGE_LIGHT: nspanel.page.light
 
 display:
@@ -18,7 +16,7 @@ display:
       then:
         - lambda: |-
             if (
-                  page_id == ${PAGE_LIGHT_ID} and  // Page light
+                  page_id == get_page_id("light") and  // Page light
                   !touch_event and                 // Release
                   component_id == 29               // power button
                 ) {
@@ -107,7 +105,9 @@ script:
 
   - id: !extend page_change
     then:
-      - lambda: if (new_page_id == ${PAGE_LIGHT_ID}) page_light->execute();
+      - lambda: |-
+          if (new_page_id == get_page_id("light"))
+            page_light->execute();
 
   - id: page_light
     mode: single
