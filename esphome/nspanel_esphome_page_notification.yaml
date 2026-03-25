@@ -8,8 +8,6 @@
 
 ---
 substitutions:
-  BOOT_STEP_PAGE_NOTIFICATION: 21
-  PAGE_NOTIFICATION_ID: 16
   tone_notification: "two short:d=4,o=5,b=100:16e6,16e6"
   TAG_PAGE_NOTIFICATION: nspanel.page.notification
 
@@ -34,10 +32,10 @@ api:
             notification_label = label;
             notification_text = message;
             notification_unread->publish_state(true);
-            if (current_page_id == ${PAGE_NOTIFICATION_ID}) {
+            if (current_page_id == get_page_id("notification")) {
               page_notification->execute();
             } else {
-              goto_page->execute(${PAGE_NOTIFICATION_ID});
+              goto_page->execute(get_page_id("notification"));
             }
             // Only when buzzer is available
             #ifdef NSPANEL_EASY_HW_BUZZER
@@ -62,7 +60,7 @@ display:
       then:
         - lambda: |-
             if (
-                  page_id == ${PAGE_NOTIFICATION_ID} and  // Page notification
+                  page_id == get_page_id("notification") and  // Page notification
                   !touch_event                            // Only act with release
                 ) {
               switch (component_id) {
@@ -103,13 +101,13 @@ script:
 
   - id: !extend page_change
     then:
-      - lambda: if (new_page_id == ${PAGE_NOTIFICATION_ID}) page_notification->execute();
+      - lambda: if (new_page_id == get_page_id("notification")) page_notification->execute();
 
   - id: page_notification
     mode: single
     then:
       - lambda: |-
-          if (current_page_id == ${PAGE_NOTIFICATION_ID}) {
+          if (current_page_id == get_page_id("notification")) {
             disp1->set_component_text("notifi_label", notification_label.c_str());
             disp1->set_component_text("notifi_text01", wrapText(notification_text.c_str(),
                                                                 display_mode == 2 ? 23 : 32,
@@ -137,7 +135,7 @@ script:
     mode: single
     then:
       - lambda: |-
-          if (current_page_id == ${PAGE_NOTIFICATION_ID})
+          if (current_page_id == get_page_id("notification"))
             goto_page->execute(hmi::home::PAGE.id);
           notification_label = "";
           notification_text = "";

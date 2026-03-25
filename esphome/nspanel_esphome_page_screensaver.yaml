@@ -9,8 +9,7 @@
 ---
 substitutions:
   wakeup_with_button_press: false
-  BOOT_STEP_PAGE_SCREENSAVER: 23
-  PAGE_SCREENSAVER_ID: 9
+  PAGE_SCREENSAVER_ID: 9  # Kept for back compatibility for users using customizations
   TAG_PAGE_SCREENSAVER: nspanel.page.screensaver
 
 esphome:
@@ -67,7 +66,7 @@ number:
     on_value:
       then:
         - lambda: |-
-            if (x == 0 and current_page_id == ${PAGE_SCREENSAVER_ID}) {
+            if (x == 0 and current_page_id == get_page_id("screensaver")) {
               wakeup->execute(false);
             }
             timer_sleep->execute();
@@ -100,7 +99,7 @@ script:
   - id: !extend ha_button
     then:
       - lambda: |-
-          if (current_page_id != ${PAGE_SCREENSAVER_ID}) {
+          if (current_page_id != get_page_id("screensaver")) {
             timer_reset_all->execute();
             return;
           }
@@ -111,14 +110,14 @@ script:
 
   - id: !extend page_change
     then:
-      - lambda: if (new_page_id == ${PAGE_SCREENSAVER_ID}) page_screensaver->execute();
+      - lambda: if (new_page_id == get_page_id("screensaver")) page_screensaver->execute();
 
   - id: page_screensaver
     mode: single
     then:
       - if:
           condition:
-            - lambda: return (current_page_id == ${PAGE_SCREENSAVER_ID} and not system_flags.tft_upload_active);
+            - lambda: return (current_page_id == get_page_id("screensaver") and not system_flags.tft_upload_active);
           then:
             - lambda: |-
                 page_screensaver_set_brightness->execute();
@@ -136,7 +135,7 @@ script:
     mode: single
     then:
       - lambda: |-
-          if (current_page_id == ${PAGE_SCREENSAVER_ID})
+          if (current_page_id == get_page_id("screensaver"))
             set_brightness->execute(int(display_sleep_brightness->state));
 
   - id: !extend stop_all
@@ -157,11 +156,11 @@ script:
             - lambda: |-
                 if (
                       timeout_sleep->state > 0 and
-                      current_page_id != ${PAGE_SCREENSAVER_ID} and
+                      current_page_id != get_page_id("screensaver") and
                       current_page_id != ${PAGE_BOOT_ID}
                     ) {
                   ESP_LOGD("${TAG_PAGE_SCREENSAVER}", "Sleep from '%s'", page_names[current_page_id]);
-                  goto_page->execute(${PAGE_SCREENSAVER_ID});
+                  goto_page->execute(get_page_id("screensaver"));
                   set_brightness->execute(display_sleep_brightness->state);
                 }
 

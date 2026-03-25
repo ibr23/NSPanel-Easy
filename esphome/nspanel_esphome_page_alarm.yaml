@@ -13,8 +13,6 @@ substitutions:
   PAGE_ALARM_DELAY_LONG: ${DELAY_LONG}
   PAGE_ALARM_DELAY_SHORT: ${DELAY_SHORT}
 
-  BOOT_STEP_PAGE_ALARM: 10
-  PAGE_ALARM_ID: 23
   TAG_PAGE_ALARM: nspanel.page.alarm
 
 api:
@@ -22,7 +20,6 @@ api:
     # Updates the alarm settings page with current state and configuration, integrating with the panel's interface.
     - action: page_alarm
       variables:
-        page_title: string       # Title for the alarm settings page, displayed prominently at the top.
         state: string            # Current state of the alarm system (e.g., "armed_home", "disarmed").
         supported_features: int  # Bitmask representing the alarm system's supported features, determining available controls on the page.
         code_format: string      # Format required for the alarm code (numeric, alphanumeric).
@@ -31,7 +28,7 @@ api:
       then:
         # To do: This page constructor should be moved to Blueprint
         - lambda: |-
-            if (current_page_id != ${PAGE_ALARM_ID}) return;
+            if (current_page_id != get_page_id("alarm")) return;
 
             // Helper function to update alarm button state and visibility
             // Handles feature checking, logging, and UI updates for all buttons including disarm
@@ -131,20 +128,6 @@ api:
                                       10, ${LANG_BYTES_PER_CHAR}).c_str());
             feed_wdt_delay(${PAGE_ALARM_DELAY_SHORT});
 
-            // Page header
-            ESP_LOGV("${TAG_PAGE_ALARM}", "Page header");
-            update_alarm_icon->execute("icon_state", state.c_str());  // Icon
-            // Page header - Title
-            std::string title = page_title.c_str();
-
-            // Replace the first occurrence of "\r" (two chars: backslash + r) with a space
-            auto pos = title.find("\\r");
-            if (pos != std::string::npos) {
-              title.replace(pos, 2, " ");
-            }
-
-            disp1->set_component_text("page_label", title.c_str());
-
             ESP_LOGV("${TAG_PAGE_ALARM}", "Done!");
 
 esphome:
@@ -177,9 +160,9 @@ script:
 
             if (code_format == "number" && (key == "disarm" || code_arm_req == "1")) {
               ESP_LOGV("${TAG_PAGE_ALARM}", "Open keypad");
-              goto_page->execute(${PAGE_KEYB_NUM_ID});
+              goto_page->execute(get_page_id("keyb_num"));
 
-              disp1->set_component_value("page_id", ${PAGE_ALARM_ID});
+              disp1->set_component_value("page_id", get_page_id("alarm"));
               disp1->set_component_text("domain", "alarm");
               disp1->set_component_text("key", key.c_str());
               disp1->set_component_text("value", "click");
@@ -243,7 +226,7 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
-          if (new_page_id == ${PAGE_ALARM_ID})
+          if (new_page_id == get_page_id("alarm"))
             page_alarm->execute();
 
   - id: !extend stop_all

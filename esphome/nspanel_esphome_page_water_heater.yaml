@@ -7,7 +7,6 @@
 #####################################################################################################
 ---
 substitutions:
-  PAGE_WATER_HEATER_ID: 30
   TAG_PAGE_WATER_HEATER: nspanel.page.water_heater
 
 esphome:
@@ -53,7 +52,9 @@ script:
 
   - id: !extend page_change
     then:
-      - lambda: if (new_page_id == ${PAGE_WATER_HEATER_ID}) page_water_heater->execute();
+      - lambda: |-
+          if (new_page_id == get_page_id("water_heater"))
+            page_water_heater->execute();
 
   - id: page_water_heater
     mode: single

@@ -8,8 +8,6 @@
 
 ---
 substitutions:
-  BOOT_STEP_PAGE_HOME: 17
-  PAGE_HOME_ID: 1
   TAG_PAGE_HOME: nspanel.page.home
   THEME_DARK_PIC_PAGE_HOME_WEATHER_OFFSET: 48
 
@@ -216,7 +214,9 @@ script:
 
   - id: !extend page_change
     then:
-      - lambda: if (new_page_id == hmi::home::PAGE.id) page_home->execute();
+      - lambda: |-
+          if (new_page_id == get_page_id("home"))
+            page_home->execute();
 
   - id: page_home
     mode: single
@@ -233,7 +233,7 @@ script:
       show: bool
     then:
       - lambda: |-
-          const bool is_current_page = (current_page_id == hmi::home::PAGE.id);
+          const bool is_current_page = (current_page_id == get_page_id("home"));
 
           // Extract component parts (handles both "id" and "page.id" formats)
           const esphome::nspanel_easy::NSPanelEasyNextionComponent component =

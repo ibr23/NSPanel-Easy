@@ -506,7 +506,6 @@ allowing for real-time interaction with the alarm system directly from the panel
 
 **Parameters:**
 
-- `page_title` (string): The title displayed at the top of the alarm settings page.
 - `state` (string): The current state of the alarm system, such as "armed_home" or "disarmed".
 - `supported_features` (int): A bitmask indicating the features supported by the alarm system.
 This determines the controls and options available on the alarm settings page.
@@ -521,7 +520,6 @@ The bitmask values are aligned with the
 ```yaml
 action: esphome.<your_panel_name>_page_alarm
 data:
-  page_title: "Home Security System"
   state: "disarmed"
   supported_features: 31  # Example: Supports arm/disarm, home/away modes, etc.
   code_format: "number"
@@ -624,7 +622,6 @@ allowing real-time interaction with the media player directly from the panel.
 - `entity` (string): The entity ID of the media player.
 - `state` (string): The current state of the media player (e.g., playing, paused, stopped).
 - `is_volume_muted` (bool): Indicates whether the volume is currently muted.
-- `friendly_name` (string): The friendly name of the media player to be displayed as the page title.
 - `volume_level` (int): The current volume level of the media player.
 - `media_title` (string): The title of the currently playing media.
 - `media_artist` (string): The artist of the currently playing media.
@@ -643,7 +640,6 @@ data:
   entity: "media_player.living_room"
   state: "playing"
   is_volume_muted: false
-  friendly_name: "Living Room Player"
   volume_level: 40
   media_title: "Favorite Song"
   media_artist: "Famous Artist"

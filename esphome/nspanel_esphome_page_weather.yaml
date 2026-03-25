@@ -7,11 +7,6 @@
 #####################################################################################################
 ---
 substitutions:
-  PAGE_WEATHER01_ID: 2
-  PAGE_WEATHER02_ID: 3
-  PAGE_WEATHER03_ID: 4
-  PAGE_WEATHER04_ID: 5
-  PAGE_WEATHER05_ID: 6
   TAG_PAGE_WEATHER: nspanel.page.weather
   SECONDS_PER_DAY: 86400
 
@@ -21,11 +16,11 @@ display:
       then:
         - lambda: |-
             if (touch_event) return;  // Ignore the touch, so only the release will be used
-            if (page_id == hmi::home::PAGE.id and               // Page `home`
+            if (page_id == get_page_id("home") and              // Page `home`
                 system_flags.api_ready and                      // Is API available?
                 (component_id == hmi::home::WEATHER.id or       // Outdoor temperature
                 component_id == hmi::home::OUTDOOR_TEMP.id)) {  // Weather picture
-              goto_page->execute(${PAGE_WEATHER01_ID});
+              goto_page->execute(get_page_id("weather01"));
               return;
             }
 
@@ -53,14 +48,14 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
-          if (new_page_id >= ${PAGE_WEATHER01_ID} and new_page_id <= ${PAGE_WEATHER05_ID})
+          if (new_page_id >= get_page_id("weather01") and new_page_id <= get_page_id("weather05"))
             page_weather->execute();
 
   - id: page_weather
     mode: restart
     then:
       - lambda: |-
-          const uint8_t page_index = current_page_id - ${PAGE_WEATHER01_ID};
+          const uint8_t page_index = current_page_id - get_page_id("weather01");
           if (page_index >= 5) {
             ESP_LOGW("${TAG_PAGE_WEATHER}", "Unexpected page_index: %" PRIu8, page_index);
             return;
@@ -99,10 +94,10 @@ script:
   - id: theme_update_all_weather_icon
     then:
       - lambda: |-
-          if ( current_page_id >= ${PAGE_WEATHER01_ID} and current_page_id <= ${PAGE_WEATHER05_ID}) {
+          if ( current_page_id >= get_page_id("weather01") and current_page_id <= get_page_id("weather05")) {
             const uint8_t weather_icon_corrected = id(weather_icon) +
                                 ((current_theme == ThemeMode::LIGHT) ? ${THEME_DARK_PIC_PAGE_HOME_WEATHER_OFFSET} : 0);
-            ESP_LOGD("${TAG_PAGE_HOME}", "Update weather icon: %" PRIu8, weather_icon_corrected);
+            ESP_LOGD("${TAG_PAGE_WEATHER}", "Update weather icon: %" PRIu8, weather_icon_corrected);
             disp1->set_component_pic("weather_icon", weather_icon_corrected);
           }
 ...

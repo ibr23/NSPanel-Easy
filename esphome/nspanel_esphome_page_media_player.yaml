@@ -8,12 +8,9 @@
 
 ---
 substitutions:
-  BOOT_STEP_PAGE_MEDIA_PLAYER: 20
   PAGE_MEDIA_PLAYER_DELAY_DEFAULT: ${DELAY_DEFAULT}
   PAGE_MEDIA_PLAYER_DELAY_LONG: ${DELAY_LONG}
   PAGE_MEDIA_PLAYER_DELAY_SHORT: ${DELAY_SHORT}
-  PAGE_MEDIA_PLAYER_ID: 25
-  PAGE_MEDIA_PLAYER_NAME: media_player
   COMPONENT_ID_MEDIA_PLAYER_BT_VOL_DOWN: 6
   COMPONENT_ID_MEDIA_PLAYER_BT_VOL_UP: 7
   MEDIA_PLAYER_FEATURE_PAUSE: 1
@@ -51,7 +48,6 @@ api:
         entity: string             # Entity ID of the media player, used for state updates and control.
         state: string              # Current playback state of the media player (e.g., "playing", "paused", "stopped").
         is_volume_muted: bool      # Indicates if the media volume is currently muted.
-        friendly_name: string      # Display name of the media player, shown as the page title.
         volume_level: int          # Current volume level, typically expressed as a percentage.
         media_title: string        # Title of the currently playing media.
         media_artist: string       # Artist of the currently playing media.
@@ -65,7 +61,6 @@ api:
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "  entity: %s", entity.c_str());
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "  state: %s", state.c_str());
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "  is_volume_muted: %s", YESNO(is_volume_muted));
-            ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "  friendly_name: %s", friendly_name.c_str());
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "  volume_level: %i", volume_level);
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "  media_title: %s", media_title.c_str());
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "  media_artist: %s", media_artist.c_str());
@@ -74,7 +69,7 @@ api:
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "  media_position_delta: %i", media_position_delta);
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "  supported_features: %i", supported_features);
 
-            if (current_page_id != ${PAGE_MEDIA_PLAYER_ID}) {
+            if (current_page_id != get_page_id("media_player")) {
               ESP_LOGW("${TAG_PAGE_MEDIA_PLAYER}", "Not on Media Player page");
               return;
             }
@@ -82,10 +77,6 @@ api:
             // Set detailed entity sensor
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "Set detailed entity sensor");
             detailed_entity->publish_state(entity.c_str());
-
-            // Page header
-            ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "Page header");
-            disp1->set_component_text("page_label", friendly_name.c_str());
 
             // Media title
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "Media title");
@@ -200,7 +191,7 @@ script:
       - lambda: |-
           if (params_count < 2) return;
 
-          if (params[0] == "${PAGE_MEDIA_PLAYER_NAME}") {
+          if (params[0] == "media_player") {
             // CSV Format:
             // media_player,volume_mute,<value>
             // media_player,volume_set,<value>
@@ -259,7 +250,7 @@ script:
 
   - id: !extend page_change
     then:
-      - lambda: if (new_page_id == ${PAGE_MEDIA_PLAYER_ID}) page_media_player->execute();
+      - lambda: if (new_page_id == get_page_id("media_player")) page_media_player->execute();
 
   - id: page_media_player
     mode: restart

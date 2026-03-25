@@ -8,8 +8,6 @@
 
 ---
 substitutions:
-  BOOT_STEP_PAGE_UTILITIES: '24'
-  PAGE_UTILITIES_ID: 27
   TAG_PAGE_UTILITIES: nspanel.page.utilities
 
 api:

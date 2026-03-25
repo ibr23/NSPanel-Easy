@@ -404,13 +404,13 @@ script:
       - lambda: |-
           update_flag_api_ready->execute();
           if (!system_flags.api_ready and
-              current_page_id != ${PAGE_BOOT_ID} and
-              current_page_id != ${PAGE_CONFIRM_ID} and
-              current_page_id != ${PAGE_HOME_ID} and
-              current_page_id != ${PAGE_QRCODE_ID} and
-              current_page_id != ${PAGE_SCREENSAVER_ID} and
-              current_page_id != ${PAGE_SETTINGS_ID}) {
+              current_page_id != get_page_id("boot") and
+              current_page_id != get_page_id("confirm") and
+              current_page_id != get_page_id("home") and
+              current_page_id != get_page_id("qrcode") and
+              current_page_id != get_page_id("screensaver") and
+              current_page_id != get_page_id("settings")) {
             ESP_LOGW("${TAG_API}", "API disconnected. Falling back to Home page.");
-            goto_page->execute(${PAGE_HOME_ID});
+            goto_page->execute(get_page_id("home"));
           }
 ...

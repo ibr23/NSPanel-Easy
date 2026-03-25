@@ -8,8 +8,6 @@
 
 ---
 substitutions:
-  BOOT_STEP_PAGE_CONFIRM: 13
-  PAGE_CONFIRM_ID: 26
   TAG_PAGE_CONFIRM: nspanel.page.confirm
 
 esphome:
@@ -21,14 +19,14 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
-          if (new_page_id == ${PAGE_CONFIRM_ID})
+          if (new_page_id == get_page_id("confirm"))
             page_confirm->execute();
 
   - id: page_confirm
     mode: single
     then:
       - lambda: |-
-          if (current_page_id != ${PAGE_CONFIRM_ID}) return;
+          if (current_page_id != get_page_id("confirm")) return;
           if (!is_device_ready_for_tasks()) return;
           disp1->set_component_text("confirm.title", wrapText(
                                                                 "${LOCALIZATION[LANG].please_confirm}",

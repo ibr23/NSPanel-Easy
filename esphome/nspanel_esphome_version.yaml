@@ -11,7 +11,7 @@ substitutions:
   # Value is imported from versioning/version.yaml
   <<: !include ../versioning/version.yaml
   # Minimum required versions for compatibility
-  min_blueprint_version: 12
+  min_blueprint_version: 13
   min_tft_version: 13
   min_esphome_compiler_version: 2026.1.0
   TAG_VERSIONING: nspanel.versioning
