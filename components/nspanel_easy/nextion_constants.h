@@ -55,15 +55,15 @@ constexpr const char *THERMOMETER = "\uE50E";    ///< mdi:thermometer - Idle sta
 constexpr const char *NONE = "\uFFFF";           ///< Hidden/no icon (blank character)
 
 // System/WiFi icons
-constexpr const char *WIFI = "\uE5A8";               ///< mdi:wifi - WiFi connected
+constexpr const char *WIFI = "\uE5A8";  ///< mdi:wifi - WiFi connected
 // Renamed to avoid collision with Arduino WiFiType.h macro WIFI_OFF
 constexpr const char *WIFI_DISCONNECTED = "\uE5A9";  ///< mdi:wifi-off - WiFi disconnected
 // constexpr const char* WIFI_OFF = "\uE5A9";        ///< mdi:wifi-off - WiFi disconnected
-constexpr const char *API_OFF = "\uF256";            ///< mdi:api-off - API disconnected
-constexpr const char *HOME_ASSISTANT = "\uE7CF";     ///< mdi:home-assistant - Blueprint disconnected
-constexpr const char *RESTART = "\uE708";            ///< mdi:restart - System restart
+constexpr const char *API_OFF = "\uF256";         ///< mdi:api-off - API disconnected
+constexpr const char *HOME_ASSISTANT = "\uE7CF";  ///< mdi:home-assistant - Blueprint disconnected
+constexpr const char *RESTART = "\uE708";         ///< mdi:restart - System restart
 
-constexpr const char *QRCODE_SCAN = "\uE432";        ///< mdi:qrcode-scan - QRcode default icon on the main page
+constexpr const char *QRCODE_SCAN = "\uE432";  ///< mdi:qrcode-scan - QRcode default icon on the main page
 }  // namespace Icons
 
 // =============================================================================
