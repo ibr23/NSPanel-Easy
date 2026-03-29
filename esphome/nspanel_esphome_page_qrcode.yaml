@@ -28,7 +28,7 @@ api:
         show: bool      # Flag to immediately display the QR code page upon service invocation.
       then:
         - lambda: |-
-            ESP_LOGV("${TAG_PAGE_QRCODE}", "Action: qrcode");
+            ESP_LOGD("${TAG_PAGE_QRCODE}", "Action: qrcode");
             ESP_LOGV("${TAG_PAGE_QRCODE}", "  title: %s", title.c_str());
             ESP_LOGV("${TAG_PAGE_QRCODE}", "  qrcode: %s", qrcode.c_str());
             ESP_LOGV("${TAG_PAGE_QRCODE}", "  show: %s", YESNO(show));
@@ -43,7 +43,7 @@ api:
             }  // qrcode.length() > ${qrcode_max_length}
 
             if (!show and title == id(qrcode_title) and qrcode == id(qrcode_string)) {
-              ESP_LOGV("${TAG_PAGE_QRCODE}", "QR code unchanged");
+              ESP_LOGD("${TAG_PAGE_QRCODE}", "QR code unchanged");
               return;
             }
 
@@ -74,6 +74,10 @@ api:
               data_changed = true;
             }
 
+            if (data_changed) {
+              disp1->send_command("vis_bt_qrcode=1");
+            }
+
             if (data_changed and current_page_id == qrcode_page_id) {
               page_qrcode->execute();
               return;  // Already on QR code page; navigation not needed
@@ -89,9 +93,9 @@ display:
       then:
         - lambda: |-
             if (touch_event) return;  // Ignore the touch, so only the release will be used
-            if (page_id == hmi::home::PAGE.id and          // Page `home`
-                component_id == get_page_id("qrcode") and  // QRcode button
-                !id(qrcode_string).empty()) {              // QRcode string is not empty
+            if (page_id == get_page_id("home") and           // Page `home`
+                component_id == hmi::home::BT_QRCODE.id and  // QRcode button
+                !id(qrcode_string).empty()) {                // QRcode string is not empty
               goto_page->execute(get_page_id("qrcode"));
               return;
             }
@@ -129,9 +133,7 @@ script:
           if (page != "mem") return;
           if (component == "qrcode_icon_color" and id(qrcode_icon_color) != color) {
             id(qrcode_icon_color) = color;
-            page_home_icon_visibility->execute(hmi::home::BT_QRCODE.name,
-                                                id(qrcode_icon_color),
-                                                (not id(qrcode_string).empty()));
+            disp1->set_component_foreground_color(hmi::home::BT_QRCODE.name, id(qrcode_icon_color));
             blueprint_status_flags.page_qrcode = true;
             return;
           }

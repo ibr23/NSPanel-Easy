@@ -24,41 +24,70 @@ Page qrcode
             button_back.picc=pic_background_main
             button_back.picc2=pic_background_main
             button_back.pco=color_pco_navigation
-            qrcode_label.picc=pic_background_main
-            qrcode_label.pco=color_pco_main
+            icon_state.picc=pic_background_main
+            icon_state.pco=color_pco_main
+            page_label.picc=pic_background_main
+            page_label.pco=color_pco_main
             dim=brightness
             sendme
         
-Text qrcode_label
+Text icon_state
     Attributes
-        ID                      : 1
+        ID                      : 3
         Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 10
-        y coordinate            : 7
-        Width                   : 244
+        y coordinate            : 8
+        Width                   : 35
+        Height                  : 35
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 8
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 4
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text page_label
+    Attributes
+        ID                      : 4
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 46
+        y coordinate            : 8
+        Width                   : 204
         Height                  : 30
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
         Fill                    : crop image
         Associated Keyboard     : none
-        Font ID                 : 3
+        Font ID                 : 2
         Cropped Back. Picture ID: 0
         Horizontal Alignment    : left
-        Vertical Alignment      : bottom
+        Vertical Alignment      : center
         Input Type              : character
         Text                    : 
-        Max. Text Size          : 100
+        Max. Text Size          : 30
         Word wrap               : disabled
         Horizontal Spacing      : 0
         Vertical Spacing        : 0
     
 QR Code qr
     Attributes
-        ID               : 3
+        ID               : 2
         Scope            : local
         Dragging         : 0
         Send Component ID: disabled
@@ -76,7 +105,7 @@ QR Code qr
     
 Button button_back
     Attributes
-        ID                                  : 2
+        ID                                  : 1
         Scope                               : local
         Dragging                            : 0
         Send Component ID                   : on press and release

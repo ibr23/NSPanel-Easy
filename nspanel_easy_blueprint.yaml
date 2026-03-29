@@ -6744,7 +6744,6 @@ actions:
                             alias: qrcode_update
                             sequence:
                               - variables:
-                                  qrcode_title: !input qrcode_label
                                   qrcode_entity: !input qrcode_entity
                                   qrcode_fallback_value: !input qrcode_value
                                   qrcode_value: >
@@ -6760,7 +6759,7 @@ actions:
                               - *delay_boot
                               - action: 'esphome.{{ nspanel_name }}_qrcode'
                                 data:
-                                  title: '{{ qrcode_title }}'
+                                  title: !input qrcode_label
                                   qrcode: '{{ qrcode_value }}'
                                   show: false
                                 continue_on_error: true
@@ -7978,14 +7977,17 @@ actions:
                                         | selectattr("attributes.device_class", "defined")
                                         | selectattr("attributes.device_class", "eq", "battery")
                                         | map(attribute="state")
-                                        | map("float")
+                                        | map("float", default=none)
+                                        | select("ne", none)
                                         | list
                                         | count > 0 %}
                                   {{
                                     expand(device_entities(device_id(entity_id)))
                                     | selectattr("attributes.device_class", "defined")
                                     | selectattr("attributes.device_class", "eq", "battery")
-                                    | map(attribute="state") | map("float")
+                                    | map(attribute="state")
+                                    | map("float", default=none)
+                                    | select("ne", none)
                                     | list
                                     | first
                                     | round(0)
@@ -8640,7 +8642,11 @@ actions:
                               water_heater_entity_temp: >
                                 {{
                                   nspanel_event.entity
-                                  if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
+                                  if
+                                    nspanel_event is defined and
+                                    nspanel_event.entity is defined and
+                                    nspanel_event.entity is string and
+                                    nspanel_event.entity | length > 1
                                   else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
                                 }}
                               water_heater_entity: >
