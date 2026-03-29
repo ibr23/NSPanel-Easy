@@ -5,7 +5,7 @@
 #ifdef NSPANEL_EASY_ADDON_CLIMATE_BASE
 
 #include <string>
-#include "icons.h"
+#include "nextion_constants.h"
 
 namespace esphome {
 namespace nspanel_easy {

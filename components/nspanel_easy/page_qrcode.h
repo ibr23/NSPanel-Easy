@@ -32,17 +32,20 @@ namespace qrcode {
 // Page definition
 constexpr HMIComponent PAGE = {"qrcode", 17};  ///< QR Code page (index 17 in page_names array)
 
-// Display components
-constexpr HMIComponent QRCODE_LABEL = {"qrcode_label", 1};  ///< QR code label text (100 chars max)
-
 // Button components
-constexpr HMIComponent BUTTON_BACK = {"button_back", 2};  ///< Back button (3 chars max) - returns to home
+constexpr HMIComponent BUTTON_BACK = {"button_back", 1};  ///< Back button (3 chars max) - returns to home
 
 // The QRcode box
-constexpr HMIComponent QR = {"qr", 3};  ///< The QRcode itself
+constexpr HMIComponent QR = {"qr", 2};  ///< The QRcode itself
+
+// Display components
+constexpr HMIComponent ICON_STATE = {"icon_state", 3};  ///< QR code icon (4 chars max)
+
+// Display components
+constexpr HMIComponent PAGE_LABEL = {"page_label", 4};  ///< QR code label text (30 chars max)
 
 // All visual components for iteration
-constexpr HMIComponent ALL[] = {PAGE, QRCODE_LABEL, BUTTON_BACK, QR};
+constexpr HMIComponent ALL[] = {PAGE, BUTTON_BACK, QR, ICON_STATE, PAGE_LABEL};
 
 constexpr size_t COMPONENT_COUNT = sizeof(ALL) / sizeof(ALL[0]);
 

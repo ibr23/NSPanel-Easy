@@ -15,6 +15,7 @@ substitutions:
   qrcode_background_color: 65535
   qrcode_foreground_color: 0
   qrcode_border_size: 8
+  qrcode_max_length: 105  # Must match the setting on Nextion
   TAG_PAGE_QRCODE: nspanel.page.qrcode
 
 api:
@@ -31,25 +32,56 @@ api:
             ESP_LOGV("${TAG_PAGE_QRCODE}", "  title: %s", title.c_str());
             ESP_LOGV("${TAG_PAGE_QRCODE}", "  qrcode: %s", qrcode.c_str());
             ESP_LOGV("${TAG_PAGE_QRCODE}", "  show: %s", YESNO(show));
-            // Validate QR code length (Nextion limit: 77 characters)
-            if (qrcode.length() > 77) {
-              ESP_LOGE("${TAG_PAGE_QRCODE}", "QR code exceeds Nextion limit: %zu chars (max 77)", qrcode.length());
-              return;
-            }  // if (qrcode.length() > 77)
-
-            id(qrcode_title) = title;
-            id(qrcode_string) = qrcode;
-            if (show) {
-              goto_page->execute(get_page_id("qrcode"));
-            } else {
-              page_qrcode->execute();
-            }
-            page_home_icon_visibility->execute(hmi::home::BT_QRCODE.name,
-                                                id(qrcode_icon_color),
-                                                (not id(qrcode_string).empty()));
 
             // Update blueprint status
             blueprint_status_flags.page_qrcode = true;
+
+            // Validate QRcode length
+            if (qrcode.length() > ${qrcode_max_length}) {
+              ESP_LOGE("${TAG_PAGE_QRCODE}", "QR code exceeds Nextion limit: %zu chars (max ${qrcode_max_length})", qrcode.length());
+              return;
+            }  // qrcode.length() > ${qrcode_max_length}
+
+            if (!show and title == id(qrcode_title) and qrcode == id(qrcode_string)) {
+              ESP_LOGV("${TAG_PAGE_QRCODE}", "QR code unchanged");
+              return;
+            }
+
+            const uint8_t qrcode_page_id = get_page_id("qrcode");
+            const uint8_t home_page_id = get_page_id("home");
+            bool data_changed = false;
+
+            if (qrcode.empty() and !id(qrcode_string).empty()) {
+              ESP_LOGD("${TAG_PAGE_QRCODE}", "QR code empty");
+              id(qrcode_string) = qrcode;
+              disp1->send_command("vis_bt_qrcode=0");
+              if (current_page_id == home_page_id) {
+                disp1->hide_component(hmi::home::BT_QRCODE.name);
+                return;
+              }
+              if (current_page_id == qrcode_page_id) {
+                goto_page->execute(home_page_id);
+              }
+              return;
+            }  // qrcode.empty() and !id(qrcode_string).empty()
+
+            if (id(qrcode_title) != title) {
+              id(qrcode_title) = title;
+              data_changed = true;
+            }
+            if (id(qrcode_string) != qrcode) {
+              id(qrcode_string) = qrcode;
+              data_changed = true;
+            }
+
+            if (data_changed and current_page_id == qrcode_page_id) {
+              page_qrcode->execute();
+              return;  // Already on QR code page; navigation not needed
+            }
+
+            if (show) {
+              goto_page->execute(qrcode_page_id);
+            }
 
 display:
   - id: !extend disp1
@@ -70,6 +102,11 @@ esphome:
       - -D NSPANEL_EASY_PAGE_QRCODE
 
 globals:
+  - id: qrcode_icon
+    type: std::string
+    restore_value: ${qrcode_restore_value}
+    initial_value: 'Icons::WIFI_DISCONNECTED'
+
   - id: qrcode_icon_color
     type: uint16_t
     restore_value: ${qrcode_restore_value}
@@ -89,40 +126,25 @@ script:
   - id: !extend action_component_color
     then:
       - lambda: |-
-          if (page == "mem") {
-            if (component == "qrcode_icon_color") {
-              id(qrcode_icon_color) = color;
-              page_home_icon_visibility->execute(hmi::home::BT_QRCODE.name,
-                                                  id(qrcode_icon_color),
-                                                  (not id(qrcode_string).empty()));
-              blueprint_status_flags.page_qrcode = true;
-              return;
-            }
+          if (page != "mem") return;
+          if (component == "qrcode_icon_color" and id(qrcode_icon_color) != color) {
+            id(qrcode_icon_color) = color;
+            page_home_icon_visibility->execute(hmi::home::BT_QRCODE.name,
+                                                id(qrcode_icon_color),
+                                                (not id(qrcode_string).empty()));
+            blueprint_status_flags.page_qrcode = true;
+            return;
           }
 
   - id: !extend action_component_text
     then:
       - lambda: |-
-          if (page == "mem") {
-            if (component == "qrcode_icon") {
-              disp1->set_component_text(hmi::home::BT_QRCODE.name, txt.c_str());
-              blueprint_status_flags.page_qrcode = true;
-              return;
-            }
-          }
-
-  - id: !extend action_component_val
-    then:
-      - lambda: |-
-          if (page == "mem") {
-            if (component == "qrcode_enabled") {
-              if (val < 1) id(qrcode_string) = "";
-              page_home_icon_visibility->execute(hmi::home::BT_QRCODE.name,
-                                                  id(qrcode_icon_color),
-                                                  (not id(qrcode_string).empty()));
-              blueprint_status_flags.page_qrcode = true;
-              return;
-            }
+          if (page != "mem") return;
+          if (component == "qrcode_icon" and txt != id(qrcode_icon)) {
+            id(qrcode_icon) = txt.c_str();
+            disp1->set_component_text(hmi::home::BT_QRCODE.name, txt.c_str());
+            blueprint_status_flags.page_qrcode = true;
+            return;
           }
 
   - id: !extend boot
@@ -136,40 +158,35 @@ script:
           if (new_page_id == get_page_id("qrcode"))
             page_qrcode->execute();
 
-  - id: !extend page_home
-    then:
-      - lambda: |-
-          page_home_icon_visibility->execute(hmi::home::BT_QRCODE.name,
-                                              id(qrcode_icon_color),
-                                              (not id(qrcode_string).empty()));
-
   - id: page_qrcode
     mode: single
     then:
       - lambda: |-
-          if (current_page_id != get_page_id("qrcode")) {
-            return;  // Page QRcode not visible
+          if (current_page_id != get_page_id("qrcode")) return;  // Page QRcode not visible
+          if (id(qrcode_string).empty()) {
+            goto_page->execute(get_page_id("home"));
+            return;
           }
+          // Draw QRcode
+          disp1->set_component_text(hmi::qrcode::QR.name, id(qrcode_string).c_str());
+          #if ${qrcode_background_color} != 65535
+          disp1->set_component_background_color(hmi::qrcode::QR.name, ${qrcode_background_color});
+          #endif  // qrcode_background_color
+          #if ${qrcode_foreground_color} > 0
+          disp1->set_component_foreground_color(hmi::qrcode::QR.name, ${qrcode_foreground_color});
+          #endif  // qrcode_foreground_color
+          #if ${qrcode_border_size} != 8
+          disp1->send_command("qr.dis=${qrcode_border_size}");
+          #endif  // qrcode_border_size
 
           if (not id(qrcode_title).empty()) {
-            disp1->set_component_text(hmi::qrcode::QRCODE_LABEL.name, id(qrcode_title).c_str());
+            disp1->set_component_text(hmi::qrcode::PAGE_LABEL.name, id(qrcode_title).c_str());
           }
 
-          const bool qrcode_show = !id(qrcode_string).empty();
-          if (qrcode_show) {
-            // Draw QRcode
-            disp1->set_component_text(hmi::qrcode::QR.name, id(qrcode_string).c_str());
-            #if ${qrcode_background_color} != 65535
-            disp1->send_command("qr.bco=${qrcode_background_color}");
-            #endif  // qrcode_background_color
-            #if ${qrcode_foreground_color} > 0
-            disp1->send_command("qr.pco=${qrcode_foreground_color}");
-            #endif  // qrcode_foreground_color
-            #if ${qrcode_border_size} != 8
-            disp1->send_command("qr.dis=${qrcode_border_size}");
-            #endif  // qrcode_border_size
+          if (not id(qrcode_icon).empty()) {
+            disp1->set_component_text(hmi::qrcode::ICON_STATE.name, id(qrcode_icon).c_str());
           }
-          disp1->set_component_visibility(hmi::qrcode::QR.name, qrcode_show);
+
 
   - id: !extend stop_page_constructors
     then:

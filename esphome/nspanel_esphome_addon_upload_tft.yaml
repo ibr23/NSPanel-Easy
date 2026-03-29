@@ -79,8 +79,14 @@ globals:
     initial_value: '0'
 
 nspanel_easy:
-  lwip_tcp_mss: 1400
+  lwip_tcp_mss: 1400  # to do: Review the need of this
+  # To do: Change this after v2025.5.0
+  # Replace `task_wdt_timeout_s`by `tft_upload_watchdog_timeout`, `tft_upload_http_timeout` and `tft_upload_http_retries`
+  # Remove unused code from component
   task_wdt_timeout_s: 30
+  # tft_upload_http_retries: 15
+  # tft_upload_http_timeout: 15s
+  # tft_upload_watchdog_timeout: 30s
 
 script:
   - id: !extend check_versions
@@ -245,6 +251,13 @@ script:
           ESP_LOGI("${TAG_UPLOAD_TFT}", "Free heap before: %u bytes, largest block: %u bytes",
                                         esp_get_free_heap_size(), heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
           App.feed_wdt();
+
+          // Hide Bluetooth icon on page "home"
+          disp1->send_command("vis_bt_icon=0");
+          if (current_page_id == get_page_id("home")) disp1->hide_component(hmi::home::BT_ICON.name);
+          App.feed_wdt();
+
+          // Disable BLE stack
           if (esp32_ble::global_ble != nullptr) {
             ESP_LOGI("${TAG_UPLOAD_TFT}", "Disabling BLE stack");
             esp32_ble::global_ble->disable();

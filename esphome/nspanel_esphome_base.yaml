@@ -70,7 +70,7 @@ logger:
 
 nspanel_easy:  # Adds custom library for NSPanel HA Blueprint project
   id: nspanel_easy_component
-  disable_bootloader_logs: false
+  disable_bootloader_logs: false  # To do: The code supporting this should be removed
   on_dump_config:
     then:
       - script.execute: dump_config

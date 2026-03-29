@@ -1120,12 +1120,6 @@ blueprint:
         Exceeding this limit will prevent the QRcode to be rendered properly.
       collapsed: true
       input:
-        qrcode_enabled:
-          name: Enable QR code?
-          description: Activate QR Code page and QR Code Button on the Home page.
-          default: false
-          selector:
-            boolean:
         qrcode_label:
           name: QR Code page - Label (Optional)
           description: "Label which should be displayed."
@@ -4181,8 +4175,6 @@ trigger_variables:
       else ("climate." ~ device_name ~ "_thermostat")
     }}
 
-  qrcode_enabled: !input qrcode_enabled
-
   utilities_line_reference:
     page01:
       main: !input utilities_page01_main_line_reference
@@ -4900,7 +4892,7 @@ triggers:
       - alias: QRcode entity
         id: qrcode_changed
         trigger: state
-        entity_id: !input "qrcode_entity"
+        entity_id: !input qrcode_entity
 
   - triggers:  # Utilities page - Main line
       - alias: Utilities page - Main line
@@ -5148,11 +5140,6 @@ conditions:
     {{
       trigger.id != "indoortemp_state" or
       ((home_page_background_update or pages.current == pages.home ) and not embedded_indoor_temperature)
-    }}
-  - >  # Don't update qrcode if not enabled
-    {{
-      trigger.id != "qrcode_changed" or
-      qrcode_enabled
     }}
   - condition: or  # Do not update component if state haven't changed (ignore attributes changed) - event based triggers
     conditions:
@@ -6728,65 +6715,55 @@ actions:
 
                       - alias: QRcode
                         sequence:
-                          - if: '{{ qrcode_enabled }}'
-                            then:
-                              - *delay_boot
-                              - alias: qrcode_icon
-                                sequence:
-                                  - variables:
-                                      bt_qrcode_icon: !input home_button05_icon
-                                  - alias: qrcode_icon_action
-                                    action: 'esphome.{{ nspanel_name }}_component_text'
-                                    data:
-                                      page: mem
-                                      id: qrcode_icon
-                                      txt: >
-                                        {{
-                                          all_icons[bt_qrcode_icon.split("mdi:")[1]]
-                                          if bt_qrcode_icon is string and bt_qrcode_icon.split("mdi:")[1] in all_icons
-                                          else all_icons["qrcode-scan"]
-                                        }}
-                                    continue_on_error: true
-                              - *delay_boot
-                              - alias: qrcode_icon_color
-                                action: 'esphome.{{ nspanel_name }}_component_color'
+                          - *delay_boot
+                          - alias: qrcode_icon
+                            sequence:
+                              - variables:
+                                  bt_qrcode_icon: !input home_button05_icon
+                              - alias: qrcode_icon_action
+                                action: 'esphome.{{ nspanel_name }}_component_text'
                                 data:
                                   page: mem
-                                  id: qrcode_icon_color
-                                  color: !input home_button05_icon_color
+                                  id: qrcode_icon
+                                  txt: >
+                                    {{
+                                      all_icons[bt_qrcode_icon.split("mdi:")[1]]
+                                      if bt_qrcode_icon is string and bt_qrcode_icon.split("mdi:")[1] in all_icons
+                                      else all_icons["qrcode-scan"]
+                                    }}
                                 continue_on_error: true
-                              - &qrcode_update
-                                alias: qrcode_update
-                                sequence:
-                                  - variables:
-                                      qrcode_title: !input qrcode_label
-                                      qrcode_entity: !input qrcode_entity
-                                      qrcode_fallback_value: !input qrcode_value
-                                      qrcode_value: >
-                                        {{
-                                          states(qrcode_entity, rounded=True, with_unit=True)
-                                          if
-                                            qrcode_entity is defined and
-                                            qrcode_entity is string and
-                                            has_value(qrcode_entity)
-                                          else
-                                            qrcode_fallback_value
-                                        }}
-                                  - *delay_boot
-                                  - action: 'esphome.{{ nspanel_name }}_qrcode'
-                                    data:
-                                      title: '{{ qrcode_title }}'
-                                      qrcode: '{{ qrcode_value }}'
-                                      show: false
-                                    continue_on_error: true
                           - *delay_boot
-                          - alias: qrcode_enabled
-                            action: 'esphome.{{ nspanel_name }}_component_val'
+                          - alias: qrcode_icon_color
+                            action: 'esphome.{{ nspanel_name }}_component_color'
                             data:
                               page: mem
-                              id: qrcode_enabled
-                              val: '{{ 1 if qrcode_enabled else 0 }}'
+                              id: qrcode_icon_color
+                              color: !input home_button05_icon_color
                             continue_on_error: true
+                          - &qrcode_update
+                            alias: qrcode_update
+                            sequence:
+                              - variables:
+                                  qrcode_title: !input qrcode_label
+                                  qrcode_entity: !input qrcode_entity
+                                  qrcode_fallback_value: !input qrcode_value
+                                  qrcode_value: >
+                                    {{
+                                      states(qrcode_entity, rounded=True, with_unit=True)
+                                      if
+                                        qrcode_entity is defined and
+                                        qrcode_entity is string and
+                                        has_value(qrcode_entity)
+                                      else
+                                        qrcode_fallback_value
+                                    }}
+                              - *delay_boot
+                              - action: 'esphome.{{ nspanel_name }}_qrcode'
+                                data:
+                                  title: '{{ qrcode_title }}'
+                                  qrcode: '{{ qrcode_value }}'
+                                  show: false
+                                continue_on_error: true
 
                       - alias: Relay settings
                         sequence:
@@ -10540,7 +10517,6 @@ actions:
         conditions:
           - condition: trigger
             id: qrcode_changed
-          - '{{ qrcode_enabled }}'
         sequence:
           - *qrcode_update
 

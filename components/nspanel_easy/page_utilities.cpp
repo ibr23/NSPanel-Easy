@@ -2,7 +2,7 @@
 
 #ifdef NSPANEL_EASY_PAGE_UTILITIES
 
-#include "icons.h"
+#include "nextion_constants.h"
 #include "page_utilities.h"
 #include <cstdlib>  // For malloc/free
 #ifdef USE_ESP_IDF
