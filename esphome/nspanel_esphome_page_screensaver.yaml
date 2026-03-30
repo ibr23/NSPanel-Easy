@@ -75,25 +75,29 @@ script:
   - id: !extend action_component_color
     then:
       - lambda: |-
-          if (page == "screensaver") {
-            if (component == "text") {
-              id(screensaver_display_time_color) = color;
-            } else if (component == "screensaver_bco") {
-              disp1->set_component_value("screensaver_bco", color);
-            }
+          if (page != "screensaver") return;
+          if (component == "text") {
+            id(screensaver_display_time_color) = color;
+            return;
+          }
+          if (component == "screensaver_bco") {
+            disp1->set_component_value("screensaver_bco", color);
+            return;
           }
 
   - id: !extend action_component_val
     then:
       - lambda: |-
-          if (page == "mem") {
-            if (component == "screensaver_display_time") {
-              id(screensaver_display_time) = (val > 0);
-              page_screensaver->execute();
-            } else if (component == "screensaver_time_font") {
-              id(screensaver_display_time_font) = val;
-              page_screensaver->execute();
-            }
+          if (page != "mem") return;
+          if (component == "screensaver_display_time") {
+            id(screensaver_display_time) = (val > 0);
+            page_screensaver->execute();
+            return;
+          }
+          if (component == "screensaver_time_font") {
+            id(screensaver_display_time_font) = val;
+            page_screensaver->execute();
+            return;
           }
 
   - id: !extend ha_button
@@ -110,14 +114,17 @@ script:
 
   - id: !extend page_change
     then:
-      - lambda: if (new_page_id == get_page_id("screensaver")) page_screensaver->execute();
+      - lambda: |-
+          if (new_page_id == get_page_id("screensaver"))
+            page_screensaver->execute();
 
   - id: page_screensaver
     mode: single
     then:
       - if:
           condition:
-            - lambda: return (current_page_id == get_page_id("screensaver") and not system_flags.tft_upload_active);
+            - lambda: |-
+                return (current_page_id == get_page_id("screensaver") and not system_flags.tft_upload_active);
           then:
             - lambda: |-
                 page_screensaver_set_brightness->execute();

@@ -55,11 +55,11 @@ constexpr const char *MDI_THERMOMETER = "\uE50E";    ///< mdi:thermometer - Idle
 constexpr const char *MDI_NONE = "\uFFFF";           ///< Hidden/no icon (blank character)
 
 // System/WiFi icons
-constexpr const char *MDI_WIFI = "\uE5A8";  ///< mdi:wifi - WiFi connected
-constexpr const char *MDI_WIFI_OFF = "\uE5A9";  ///< mdi:wifi-off - WiFi disconnected
-constexpr const char *MDI_API_OFF = "\uF256";            ///< mdi:api-off - API disconnected
-constexpr const char *MDI_HOME_ASSISTANT = "\uE7CF";     ///< mdi:home-assistant - Blueprint disconnected
-constexpr const char *MDI_RESTART = "\uE708";            ///< mdi:restart - System restart
+constexpr const char *MDI_WIFI = "\uE5A8";            ///< mdi:wifi - WiFi connected
+constexpr const char *MDI_WIFI_OFF = "\uE5A9";        ///< mdi:wifi-off - WiFi disconnected
+constexpr const char *MDI_API_OFF = "\uF256";         ///< mdi:api-off - API disconnected
+constexpr const char *MDI_HOME_ASSISTANT = "\uE7CF";  ///< mdi:home-assistant - Blueprint disconnected
+constexpr const char *MDI_RESTART = "\uE708";         ///< mdi:restart - System restart
 
 // QR code icons
 constexpr const char *MDI_QRCODE_SCAN = "\uE432";  ///< mdi:qrcode-scan - QRcode default icon on the main page

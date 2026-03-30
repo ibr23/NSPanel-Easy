@@ -78,15 +78,15 @@ script:
           const int hour12 = (now.hour == 0) ? 12 : (now.hour > 12) ? (now.hour - 12) : now.hour;
           nspanel_easy::replace_all(time_format_str, "%-I", to_string(hour12).c_str());
 
-          const char* const meridiem_text = (now.hour < 12) ?
-                                              "${LOCALIZATION[LANG].meridiem.am}" :
-                                              "${LOCALIZATION[LANG].meridiem.pm}";
+          const char* const meridiem_text = (now.hour < 12) ? "${LOCALIZATION[LANG].meridiem.am}"
+                                                            : "${LOCALIZATION[LANG].meridiem.pm}";
           const bool has_meridiem = (time_format_str.find("%p") != std::string::npos);
 
-          if (current_page->state == "screensaver" and id(screensaver_display_time)) {
+          if (id(screensaver_display_time) and current_page_id == get_page_id("screensaver")) {
             std::string time_format_str_sleep = time_format_str;
             nspanel_easy::replace_all(time_format_str_sleep, "%p", meridiem_text);
             disp1->set_component_text("text", now.strftime(time_format_str_sleep).c_str());
+            disp1->show_component("text");
           }
 
           // Resolve %p for home page — strip from time string, set meridiem component separately
