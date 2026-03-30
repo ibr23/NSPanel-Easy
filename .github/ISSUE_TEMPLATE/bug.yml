@@ -26,21 +26,21 @@ body:
     attributes:
       label: TFT Version
       description: Enter the TFT version number.
-      placeholder: e.g., 13
+      placeholder: e.g., 14
     validations:
       required: false
   - type: input
     attributes:
       label: Firmware Version
       description: Enter the ESPHome firmware version number.
-      placeholder: e.g., 2026.3.16
+      placeholder: e.g., 2026.3.17
     validations:
       required: false
   - type: input
     attributes:
       label: Blueprint Version
       description: Enter the Blueprint version number.
-      placeholder: e.g., 13
+      placeholder: e.g., 14
     validations:
       required: false
   - type: dropdown
@@ -147,9 +147,15 @@ body:
 
 
 
+
+
+
             Look for errors or unusual messages during this period.
 
         - **TFT File Update Issues**: For problems related to TFT file updates, include logs from the moment you press the **Update TFT Display** button until a few seconds after the device restarts.
+
+
+
 
 
 
