@@ -32,7 +32,7 @@ namespace screensaver {
  */
 
 // Page definition
-constexpr HMIComponent PAGE = {"screensaver", 9};  ///< Screensaver page (index 9 in page_names array)
+constexpr HMIComponent PAGE = {"screensaver", get_page_id("screensaver")};
 
 // Display components
 constexpr HMIComponent TEXT = {"text", 4};  ///< Time/clock label (word-wrap enabled, 1000 chars max)
