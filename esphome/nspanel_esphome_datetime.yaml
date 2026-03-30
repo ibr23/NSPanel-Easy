@@ -105,7 +105,7 @@ script:
           disp1->set_component_text("home.time", now.strftime(time_format_str).c_str());
 
           // Date
-          render_date->execute("home.date", 0);
+          render_date->execute("home.date", static_cast<uint32_t>(now.timestamp));
 
   - id: render_date
     mode: restart
