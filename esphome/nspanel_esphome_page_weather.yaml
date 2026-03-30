@@ -60,12 +60,6 @@ script:
             ESP_LOGW("${TAG_PAGE_WEATHER}", "Unexpected page_index: %" PRIu8, page_index);
             return;
           }
-          const ESPTime now = id(time_provider).now();
-          // Anchor to local noon to avoid DST boundary edge cases where
-          // adding 86400s could resolve to the wrong calendar date
-          const int32_t seconds_to_noon = (12 - static_cast<int32_t>(now.hour)) * 3600;
-          const uint32_t timestamp = static_cast<uint32_t>(
-              static_cast<int64_t>(now.timestamp) + seconds_to_noon + (page_index * ${SECONDS_PER_DAY}));
 
           static const char* const relative_days[5] = {
             "${LOCALIZATION[LANG].relative_day.today}",
@@ -74,8 +68,16 @@ script:
             "${LOCALIZATION[LANG].relative_day.in_3_days}",
             "${LOCALIZATION[LANG].relative_day.in_4_days}"
           };
-
           disp1->set_component_text("day", relative_days[page_index]);
+
+          const ESPTime now = id(time_provider).now();
+          if (!now.is_valid()) return;
+
+          // Anchor to local noon to avoid DST boundary edge cases where
+          // adding 86400s could resolve to the wrong calendar date
+          const int32_t seconds_to_noon = (12 - static_cast<int32_t>(now.hour)) * 3600;
+          const uint32_t timestamp = static_cast<uint32_t>(
+              static_cast<int64_t>(now.timestamp) + seconds_to_noon + (page_index * ${SECONDS_PER_DAY}));
           render_date->execute("date", timestamp);
 
   - id: !extend stop_page_constructors

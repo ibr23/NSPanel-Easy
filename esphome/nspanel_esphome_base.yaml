@@ -124,7 +124,7 @@ script:
             watchdog_round->stop();
             return;
           }
-          ESP_LOGD("${TAG_BASE}", "The watchdog is starting a round");
+          ESP_LOGV("${TAG_BASE}", "The watchdog is starting a round");
           watchdog_round_wait_to_end->execute();
 
   - id: watchdog_round_wait_to_end
@@ -132,5 +132,5 @@ script:
     then:
       - script.wait: watchdog_round
       - lambda: |-
-          ESP_LOGD("${TAG_BASE}", "The watchdog completed the round");
+          ESP_LOGV("${TAG_BASE}", "The watchdog completed the round");
 ...

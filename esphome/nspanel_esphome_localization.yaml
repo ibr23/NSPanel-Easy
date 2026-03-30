@@ -4134,8 +4134,8 @@ substitutions:
   LANG_ALARM_BYPASS: "${LOCALIZATION[LANG].alarm.bypass}"
   LANG_ALARM_DISARM: "${LOCALIZATION[LANG].alarm.disarm}"
   SENTINEL_NO_NAME: "__no_name__"
-  SENTINEL_UNAVAILABLE: "__unavailable__"
-  SENTINEL_UNKNOWN: "__unknown__"
+  SENTINEL_UNAVAILABLE: "_{_unavailable_}_"
+  SENTINEL_UNKNOWN: "_{_unknown_}_"
 
 esphome:
   platformio_options:

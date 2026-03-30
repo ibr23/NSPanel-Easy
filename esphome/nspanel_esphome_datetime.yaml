@@ -64,11 +64,15 @@ script:
     mode: restart
     then:
       - lambda: |-
-          if (system_flags.tft_upload_active)  // Do not refresh if uploading TFT
-            return;
+          if (system_flags.tft_upload_active) return;  // Do not refresh if uploading TFT
 
           // Time
           ESPTime now = id(time_provider).now();
+          if (!now.is_valid()) {
+            ESP_LOGW("${TAG_DATETIME}", "refresh_datetime: time provider not yet synchronized");
+            return;
+          }
+
           std::string time_format_str = id(mui_time_format);
 
           // Resolve %-H (no-padding 24h hour)
@@ -101,7 +105,7 @@ script:
           disp1->set_component_text("home.time", now.strftime(time_format_str).c_str());
 
           // Date
-          render_date->execute("home.date", 0);
+          render_date->execute("home.date", static_cast<uint32_t>(now.timestamp));
 
   - id: render_date
     mode: restart
@@ -151,6 +155,17 @@ script:
           if (timestamp > 0)
             dt = ESPTime::from_epoch_local(timestamp);
 
+          if (!dt.is_valid()) {
+            if (timestamp > 0) {
+              ESP_LOGW("${TAG_DATETIME}", "render_date(%s): invalid time from epoch %" PRIu32,
+                      component.c_str(), timestamp);
+            } else {
+              ESP_LOGW("${TAG_DATETIME}", "render_date(%s): time provider not yet synchronized",
+                      component.c_str());
+            }
+            return;
+          }
+
           const int dow = (dt.day_of_week + 5) % 7;
           const int mon = dt.month - 1;
 
@@ -159,8 +174,16 @@ script:
           nspanel_easy::replace_all(date_str, "%a", weekdays_short[dow]);
           nspanel_easy::replace_all(date_str, "%B", months[mon]);
           nspanel_easy::replace_all(date_str, "%b", months_short[mon]);
+          nspanel_easy::replace_all(date_str, "%-d", to_string(dt.day_of_month).c_str());
+          nspanel_easy::replace_all(date_str, "%-m", to_string(dt.month).c_str());
 
-          disp1->set_component_text(component.c_str(), dt.strftime(date_str).c_str());
+          const std::string date_string = dt.strftime(date_str);
+          if (date_string == "ERROR") {
+            ESP_LOGW("${TAG_DATETIME}", "render_date(%s): strftime failed - format '%s' (raw: '%s')",
+                    component.c_str(), date_str.c_str(), id(mui_date_format).c_str());
+            return;
+          }
+          disp1->set_component_text(component.c_str(), date_string.c_str());
 
   - id: !extend stop_all
     then:

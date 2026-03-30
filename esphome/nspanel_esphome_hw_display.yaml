@@ -71,7 +71,7 @@ display:
     uart_id: tf_uart
     command_spacing: 10ms     # Increased from 5ms to prevent "Nextion Buffer Overflow"
     # dump_device_info: true  # To-do: Enable when pr#13566 is released
-    max_commands_per_loop: 15
+    # max_commands_per_loop: 15
     # max_queue_size: 128     # Enable with v2026.6.0
     update_interval: never
     on_setup:
@@ -314,7 +314,7 @@ script:
               new_page_id != get_page_id("confirm") &&
               new_page_id != get_page_id("keyb_num")) {
               detailed_entity->publish_state("");
-              disp1->send_command("back_page_id=1");
+              disp1->send_command_printf("back_page_id=%" PRIu8, get_page_id("home"));
           } else {  // Report detailed entity
             ESP_LOGD("${TAG_HW_DISPLAY}", "Entity shown: %s", detailed_entity->state.c_str());
           }
@@ -325,9 +325,9 @@ script:
           }
 
           // Reset timers
-          if (current_page_id != get_page_id("screen_saver")) {
-                ESP_LOGV("${TAG_HW_DISPLAY}", "Reset timers");
-                timer_reset_all->execute();
+          if (new_page_id != get_page_id("screensaver")) {
+            ESP_LOGV("${TAG_HW_DISPLAY}", "Reset timers");
+            timer_reset_all->execute();
           }
 
       # Wait for other constructors to stop before telling the blueprint about a new page

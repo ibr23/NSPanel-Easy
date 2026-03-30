@@ -11,8 +11,6 @@ blueprint:
   description: >
     # NSPanel Easy Configuration via Blueprint
 
-    **Blueprint release**: 14
-
 
     This project enables comprehensive configuration of your NSPanel through a Blueprint featuring a user interface.
 
@@ -4203,7 +4201,7 @@ trigger_variables:
     }}
 
 variables:
-  blueprint_version: 14
+  blueprint_version: 15
   pages:
     current: '{{ states(currentpage) }}'
     alarm: "alarm"
@@ -7726,7 +7724,7 @@ actions:
                                 {{
                                   nspanel_event.entity
                                   if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
-                                  else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
+                                  else (trigger.entity_id if trigger.entity_id is defined else ((trigger.event | default({})).get('data') or {}).get('entity_id'))
                                 }}
                           - *variable_entity
                           - &entity_details_title_with_icon
@@ -7907,7 +7905,7 @@ actions:
                                 {{
                                   nspanel_event.entity
                                   if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
-                                  else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
+                                  else (trigger.entity_id if trigger.entity_id is defined else ((trigger.event | default({})).get('data') or {}).get('entity_id'))
                                 }}
                               entity_device_class: '{{ state_attr(entity_id, "device_class") | default("") }}'
                               cover_icons:
@@ -8044,7 +8042,7 @@ actions:
                                 {{
                                   nspanel_event.entity
                                   if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
-                                  else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
+                                  else (trigger.entity_id if trigger.entity_id is defined else ((trigger.event | default({})).get('data') or {}).get('entity_id'))
                                 }}
                               fan:
                                 supported_features: '{{ state_attr(entity_id, "supported_features") | int(0) }}'
@@ -8137,7 +8135,7 @@ actions:
                                 {{
                                   nspanel_event.entity
                                   if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
-                                  else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
+                                  else (trigger.entity_id if trigger.entity_id is defined else ((trigger.event | default({})).get('data') or {}).get('entity_id'))
                                 }}
                               wait_completed: false
                           - *variable_entity
@@ -8236,7 +8234,7 @@ actions:
                                 {{
                                   nspanel_event.entity
                                   if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
-                                  else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
+                                  else (trigger.entity_id if trigger.entity_id is defined else ((trigger.event | default({})).get('data') or {}).get('entity_id'))
                                 }}
                               alarm_entity: >
                                 {{
@@ -8280,7 +8278,7 @@ actions:
                                 {{
                                   nspanel_event.entity
                                   if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
-                                  else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
+                                  else (trigger.entity_id if trigger.entity_id is defined else ((trigger.event | default({})).get('data') or {}).get('entity_id'))
                                 }}
                               climate_entity: >
                                 {{
@@ -8356,6 +8354,7 @@ actions:
                                 {{
                                   climate_page_entities
                                   | selectattr("entity", "defined")
+                                  | rejectattr("entity", "eq", "")
                                   | rejectattr("entity", "eq", [])
                                   | list
                                 }}
@@ -8553,7 +8552,7 @@ actions:
                                 {{
                                   nspanel_event.entity
                                   if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
-                                  else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
+                                  else (trigger.entity_id if trigger.entity_id is defined else ((trigger.event | default({})).get('data') or {}).get('entity_id'))
                                 }}
                           - condition:
                               - '{{ entity_id is defined }}'
@@ -8598,7 +8597,7 @@ actions:
                                 {{
                                   nspanel_event.entity
                                   if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
-                                  else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
+                                  else (trigger.entity_id if trigger.entity_id is defined else ((trigger.event | default({})).get('data') or {}).get('entity_id'))
                                 }}
                           - condition:
                               - '{{ entity_id is defined }}'
@@ -8647,7 +8646,7 @@ actions:
                                     nspanel_event.entity is defined and
                                     nspanel_event.entity is string and
                                     nspanel_event.entity | length > 1
-                                  else (trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id)
+                                  else (trigger.entity_id if trigger.entity_id is defined else ((trigger.event | default({})).get('data') or {}).get('entity_id'))
                                 }}
                               water_heater_entity: >
                                 {{
