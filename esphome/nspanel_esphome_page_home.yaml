@@ -185,11 +185,7 @@ script:
 
           // Bluetooth icon
           #if defined(USE_ESP32_BLE_SERVER) || defined(USE_ESP32_BLE_CLIENT) || defined(USE_BLUETOOTH_PROXY)
-          disp1->send_command("vis_bt_icon=1");
-          if (current_page_id == get_page_id("home")) {
-            disp1->show_component("bt_icon");
-          }
-          feed_wdt_delay(${DELAY_SHORT});
+          action_component_visibility->execute("home", "bt_icon", true);
           #endif
 
           // Chips icon size
