@@ -58,7 +58,7 @@ climate:
         - lambda: |-
             ESP_LOGV("${TAG_ADDON_CLIMATE}", "Climate have a new state");
             if (!is_device_ready_for_tasks()) {
-              ESP_LOGW("${TAG_ADDON_CLIMATE}", "Device not ready to work with the new state");
+              ESP_LOGV("${TAG_ADDON_CLIMATE}", "Device not ready to work with the new state");
               return;
             }
             if (current_page_id == get_page_id("climate") and detailed_entity->state == "embedded_climate") {
