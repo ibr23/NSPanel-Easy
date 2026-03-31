@@ -3,6 +3,7 @@ Program.s
     int sys0=0,sys1=0,sys2=0,swipex=0,swipey=0,swipex2=0,swipey2=0,swipec=0,swipec2=0,swipedx=100,swipedy=100     //At present, the definition of global variable only supports 4-byte signed integer (int), and other types of global quantity declaration are not supported. If you want to use string type, you can use variable control in the page to implement
     // page home visibility items
     int vis_chip_relay1=0, vis_chip_relay2=0,vis_chip_climate=0,vis_chip01=0,vis_chip02=0,vis_chip03=0,vis_chip04=0,vis_chip05=0,vis_chip06=0,vis_chip07=0
+    int vis_indr_temp=0
     int vis_bt_icon=0
     int vis_bt_utilities=0, vis_bt_notific=0, vis_bt_qrcode=0, vis_bt_entities=0
     int vis_button01=0, vis_button02=0, vis_button03=0, vis_button04=0, vis_button05=0, vis_button06=0, vis_button07=0
@@ -20,7 +21,10 @@ Program.s
     int brightness=100,brightness_dim=40,brightness_sleep=0
     int display_mode=2 // 1 = EU, 2 = US, 3 = US landscape, 4 = blank, 5 = US landscape (inverted)
     int charset=2 // 1 = International (original), 2 = CJK
+    // screensaver components
     int screensaver_bco=0
+    int screensaver_font=4
+    int screensaver_pco=16904
     bauds=115200 //Configure baudrate
     recmod=0//Serial data parsing mode:0-Passive mode;1-Active mode
     printh 00 00 00 ff ff ff 88 ff ff ff//Output power on information to serial port

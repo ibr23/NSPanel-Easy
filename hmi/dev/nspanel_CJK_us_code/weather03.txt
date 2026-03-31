@@ -27,32 +27,30 @@ Page weather03
             if(theme==1)
             {
                 weather_icon.pic=49
-            }else
-            {
-                weather_icon.pic=1
+                // Page background
+                b[0].pic=pic_background_main
+                // button_back
+                button_back.pco=color_pco_navigation
+                button_back.picc=pic_background_main
+                button_back.picc2=pic_background_main
+                // day, date & temperature
+                for(sys0=4;sys0<=6;sys0++)
+                {
+                    b[sys0].picc=pic_background_main
+                    b[sys0].pco=color_pco_main
+                }
+                // values 01-05
+                for(sys0=7;sys0<=16;sys0++)
+                {
+                    b[sys0].picc=pic_background_main
+                    b[sys0].pco=color_pco_secondary
+                }
+                // page_index
+                page_index.picc=pic_background_main
+                page_index.pco=color_pco_navigation
             }
-            // Page background
-            b[0].pic=pic_background_main
-            // button_back
+            // button_back font size
             button_back.font=button_back_font
-            button_back.pco=color_pco_navigation
-            button_back.picc=pic_background_main
-            button_back.picc2=pic_background_main
-            // day, date & temperature
-            for(sys0=4;sys0<=6;sys0++)
-            {
-                b[sys0].picc=pic_background_main
-                b[sys0].pco=color_pco_main
-            }
-            // values 01-05
-            for(sys0=7;sys0<=16;sys0++)
-            {
-                b[sys0].picc=pic_background_main
-                b[sys0].pco=color_pco_secondary
-            }
-            // page_index
-            page_index.picc=pic_background_main
-            page_index.pco=color_pco_navigation
             dim=brightness
             sendme
         

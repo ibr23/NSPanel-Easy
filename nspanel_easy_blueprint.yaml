@@ -4201,7 +4201,7 @@ trigger_variables:
     }}
 
 variables:
-  blueprint_version: 15
+  blueprint_version: 16
   pages:
     current: '{{ states(currentpage) }}'
     alarm: "alarm"

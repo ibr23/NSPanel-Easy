@@ -58,91 +58,91 @@ Page boot
         
 Variable (string) version
     Attributes
-        ID            : 6
+        ID            : 5
         Scope         : global
-        Text          : 14
+        Text          : 15
         Max. Text Size: 3
     
 Variable (int32) log_len
     Attributes
-        ID   : 15
+        ID   : 14
         Scope: local
         Value: 0
     
 Variable (int32) log_pos
     Attributes
-        ID   : 16
+        ID   : 15
         Scope: local
         Value: 0
     
 Variable (int32) log_line_count
     Attributes
-        ID   : 17
+        ID   : 16
         Scope: local
         Value: 0
     
 Variable (int32) log_start_pos
     Attributes
-        ID   : 18
+        ID   : 17
         Scope: local
         Value: 0
     
 Variable (int32) log_end_pos
     Attributes
-        ID   : 19
+        ID   : 18
         Scope: local
         Value: 0
     
 Variable (string) log_temp
     Attributes
-        ID            : 20
+        ID            : 19
         Scope         : local
         Text          : 
         Max. Text Size: 2
     
 Variable (string) tmp_baudrate
     Attributes
-        ID            : 22
+        ID            : 21
         Scope         : local
         Text          : 
         Max. Text Size: 8
     
 Variable (int32) log_max_lines
     Attributes
-        ID   : 23
+        ID   : 22
         Scope: local
         Value: 7
     
 Variable (int32) counter
     Attributes
-        ID   : 24
+        ID   : 23
         Scope: local
         Value: 0
     
 Variable (string) va0
     Attributes
-        ID            : 26
+        ID            : 25
         Scope         : local
         Text          : 
         Max. Text Size: 10
     
 Variable (string) va1
     Attributes
-        ID            : 27
+        ID            : 26
         Scope         : local
         Text          : 
         Max. Text Size: 10
     
 Variable (string) csv
     Attributes
-        ID            : 28
+        ID            : 27
         Scope         : local
         Text          : 
         Max. Text Size: 50
     
 Text log_body
     Attributes
-        ID                      : 2
+        ID                      : 1
         Scope                   : local
         Dragging                : 0
         Send Component ID       : disabled
@@ -169,7 +169,7 @@ Text log_body
     
 Text nspanel_easy
     Attributes
-        ID                      : 3
+        ID                      : 2
         Scope                   : local
         Dragging                : 0
         Send Component ID       : disabled
@@ -196,7 +196,7 @@ Text nspanel_easy
     
 Text ver_title
     Attributes
-        ID                      : 4
+        ID                      : 3
         Scope                   : local
         Dragging                : 0
         Send Component ID       : disabled
@@ -223,7 +223,7 @@ Text ver_title
     
 Text ver_tft
     Attributes
-        ID                      : 5
+        ID                      : 4
         Scope                   : local
         Dragging                : 0
         Send Component ID       : disabled
@@ -250,7 +250,7 @@ Text ver_tft
     
 Text ver_firmware
     Attributes
-        ID                      : 7
+        ID                      : 6
         Scope                   : local
         Dragging                : 0
         Send Component ID       : disabled
@@ -277,7 +277,7 @@ Text ver_firmware
     
 Text ver_blueprint
     Attributes
-        ID                      : 8
+        ID                      : 7
         Scope                   : local
         Dragging                : 0
         Send Component ID       : disabled
@@ -304,7 +304,7 @@ Text ver_blueprint
     
 Text sys_title
     Attributes
-        ID                      : 9
+        ID                      : 8
         Scope                   : local
         Dragging                : 0
         Send Component ID       : disabled
@@ -331,7 +331,7 @@ Text sys_title
     
 Text sys_ip
     Attributes
-        ID                      : 10
+        ID                      : 9
         Scope                   : local
         Dragging                : 0
         Send Component ID       : disabled
@@ -358,7 +358,7 @@ Text sys_ip
     
 Text sys_framework
     Attributes
-        ID                      : 11
+        ID                      : 10
         Scope                   : local
         Dragging                : 0
         Send Component ID       : disabled
@@ -385,7 +385,7 @@ Text sys_framework
     
 Text sys_baudrate
     Attributes
-        ID                      : 12
+        ID                      : 11
         Scope                   : local
         Dragging                : 0
         Send Component ID       : disabled
@@ -412,7 +412,7 @@ Text sys_baudrate
     
 Text log_title
     Attributes
-        ID                      : 13
+        ID                      : 12
         Scope                   : local
         Dragging                : 0
         Send Component ID       : disabled
@@ -437,29 +437,9 @@ Text log_title
         Horizontal Spacing      : 0
         Vertical Spacing        : 0
     
-Progress Bar progress
-    Attributes
-        ID                   : 1
-        Scope                : local
-        Dragging             : 0
-        Send Component ID    : disabled
-        Opacity              : 127
-        x coordinate         : 0
-        y coordinate         : 465
-        Width                : 320
-        Height               : 15
-        Effect               : load
-        Effect Priority      : 0
-        Effect Time          : 300
-        Fill                 : solid color
-        Direction            : horizontal
-        Value                : 0
-        Background Picture ID: 65535
-        Foreground Picture ID: 65535
-    
 Dual-state Button bt_reboot
     Attributes
-        ID                        : 21
+        ID                        : 20
         Scope                     : local
         Dragging                  : 0
         Send Component ID         : on press and release
@@ -498,7 +478,7 @@ Dual-state Button bt_reboot
         
 Timer log_scroll
     Attributes
-        ID         : 14
+        ID         : 13
         Scope      : local
         Period (ms): 400
         Enabled    : yes
@@ -546,7 +526,7 @@ Timer log_scroll
         
 Timer tm_esphome
     Attributes
-        ID         : 25
+        ID         : 24
         Scope      : local
         Period (ms): 1000
         Enabled    : yes

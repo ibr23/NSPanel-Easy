@@ -19,10 +19,6 @@ Page screensaver
     
     Events
         Preinitialize Event
-            vis text,0
-            dim=brightness_sleep
-            screensaver.bco=screensaver_bco
-            text.bco=screensaver_bco
             sendme
         
         Touch Release Event
@@ -72,6 +68,22 @@ Timer swipestore
         Timer Event
             swipex=tch0
             swipey=tch1
+        
+Timer apply_settings
+    Attributes
+        ID         : 5
+        Scope      : local
+        Period (ms): 50
+        Enabled    : yes
+    
+    Events
+        Timer Event
+            apply_settings.en=0
+            dim=brightness_sleep
+            screensaver.bco=screensaver_bco
+            text.bco=screensaver_bco
+            text.font=screensaver_font
+            text.pco=screensaver_pco
         
 TouchCap wakeup
     Attributes

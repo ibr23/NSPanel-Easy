@@ -32,6 +32,9 @@ Page home
             vis chip05,vis_chip05
             vis chip06,vis_chip06
             vis chip07,vis_chip07
+            // indoor temp
+            vis indr_temp,vis_indr_temp
+            vis indr_temp_icon,vis_indr_temp
             // buttons
             vis bt_utilities,vis_bt_utilities
             vis bt_notific,vis_bt_notific
