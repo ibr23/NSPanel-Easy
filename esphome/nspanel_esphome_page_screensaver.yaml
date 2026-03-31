@@ -130,6 +130,7 @@ script:
           disp1->send_command_printf("screensaver_bco=%" PRIu16, id(screensaver_background_color));
           disp1->send_command_printf("screensaver_font=%" PRIu16, id(screensaver_display_time_font));
           disp1->send_command_printf("screensaver_pco=%" PRIu16, id(screensaver_display_time_color));
+          disp1->send_command_printf("brightness_sleep=%i", int(display_sleep_brightness->state));
           page_screensaver_apply_settings->execute();
 
   - id: !extend page_change
@@ -144,7 +145,6 @@ script:
       - lambda: |-
           if (current_page_id != get_page_id("screensaver")) return;
           page_screensaver_apply_settings->execute();
-          disp1->send_command_printf("wakeup_page_id=%" PRIu8, wakeup_page_id);
           refresh_hardware_buttons_bars->execute(3);
           if (id(screensaver_display_time)) refresh_datetime->execute();
           page_screensaver_apply_settings_with_delay->execute();
@@ -161,20 +161,12 @@ script:
       - delay: 5s
       - script.execute: page_screensaver_apply_settings
 
-  - id: page_screensaver_set_brightness
-    mode: single
-    then:
-      - lambda: |-
-          if (current_page_id != get_page_id("screensaver")) return;
-          set_brightness->execute(int(display_sleep_brightness->state));
-
   - id: !extend stop_all
     then:
       - lambda: |-
           page_screensaver->stop();
           page_screensaver_apply_settings->stop();
           page_screensaver_apply_settings_with_delay->stop();
-          page_screensaver_set_brightness->stop();
           timer_sleep->stop();
 
   - id: timer_sleep      # Handles the sleep (go to screensaver page) after a timeout
@@ -191,7 +183,6 @@ script:
                 if (current_page_id == get_page_id("boot")) return;         // Don't sleep during boot
                 ESP_LOGD("${TAG_PAGE_SCREENSAVER}", "Sleep from '%s'", page_names[current_page_id]);
                 goto_page->execute(get_page_id("screensaver"));
-                set_brightness->execute(display_sleep_brightness->state);
 
   - id: !extend timer_reset_all
     then:
@@ -199,11 +190,7 @@ script:
 
   - id: !extend watchdog_round
     then:
-      - script.execute: page_screensaver_set_brightness
-
-select:
-  - id: !extend wakeup_page_name
-    on_value:
-      then:
-        - script.execute: page_screensaver
+      - lambda: |-
+          if (current_page_id != get_page_id("screensaver")) return;
+          disp1->send_command("dim=brightness_sleep");
 ...
