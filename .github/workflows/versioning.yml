@@ -184,15 +184,22 @@ jobs:
           MIN_UPSTREAM_VERSION: ${{ steps.min_upstream.outputs.version }}
         run: |
           ESPHOME_VERSION_FILE="esphome/nspanel_esphome_version.yaml"
+
+          # sed is used intentionally here instead of yq — yq re-serializes the
+          # entire file on in-place edits, stripping blank lines, normalizing merge
+          # keys (<<: to !!merge <<:), and removing spaces before comments, all of
+          # which break the project's formatting conventions and cause spurious diffs.
+
+          # Read the current value using yq (read-only — does not modify the file).
           MIN_BP=$(yq eval '.substitutions.min_blueprint_version' "$ESPHOME_VERSION_FILE")
 
-          # If min_blueprint_version is set to the sentinel "next", replace it
-          # with the actual version being released, tying the compatibility
+          # If min_blueprint_version is set to the sentinel "next" or "${version}",
+          # replace it with the actual version being released, tying the compatibility
           # requirement to this exact release.
           if [[ "$MIN_BP" == "next" || "$MIN_BP" == '${version}' ]]; then
-            yq eval \
-              '.substitutions.min_blueprint_version = strenv(NEW_VERSION)' \
-              -i "$ESPHOME_VERSION_FILE"
+            sed -i \
+              "s/^  min_blueprint_version: .*/  min_blueprint_version: ${NEW_VERSION}/" \
+              "$ESPHOME_VERSION_FILE"
             echo "Resolved min_blueprint_version sentinel to ${NEW_VERSION}"
           else
             echo "min_blueprint_version is already set to ${MIN_BP}, no sentinel to resolve"
@@ -200,9 +207,9 @@ jobs:
 
           # Always update the minimum ESPHome compiler version to 2 months ago,
           # keeping the upstream contract in sync with the release date.
-          yq eval \
-            '.substitutions.min_esphome_compiler_version = strenv(MIN_UPSTREAM_VERSION)' \
-            -i "$ESPHOME_VERSION_FILE"
+          sed -i \
+            "s/^  min_esphome_compiler_version: .*/  min_esphome_compiler_version: ${MIN_UPSTREAM_VERSION}/" \
+            "$ESPHOME_VERSION_FILE"
           echo "Updated min_esphome_compiler_version to ${MIN_UPSTREAM_VERSION}"
 
       - name: Extract cross-component version information
@@ -230,20 +237,37 @@ jobs:
         run: |
           TEMPLATE=".github/ISSUE_TEMPLATE/bug.yml"
 
-          # Update TFT Version placeholder (index 2)
-          yq eval \
-            '.body[2].attributes.placeholder = ("e.g., " + strenv(MIN_TFT_VERSION))' \
-            -i "$TEMPLATE"
+          # Python is used instead of yq — yq re-serializes the entire file on
+          # in-place edits, introducing unwanted blank lines across releases.
+          # Python updates only the targeted placeholder values by body index,
+          # leaving all other formatting and content untouched.
+          python3 - <<EOF
+import re
 
-          # Update Firmware Version placeholder (index 3)
-          yq eval \
-            '.body[3].attributes.placeholder = ("e.g., " + strenv(VERSION))' \
-            -i "$TEMPLATE"
+with open("${TEMPLATE}", "r") as f:
+    content = f.read()
 
-          # Update Blueprint Version placeholder (index 4)
-          yq eval \
-            '.body[4].attributes.placeholder = ("e.g., " + strenv(MIN_BLUEPRINT_VERSION))' \
-            -i "$TEMPLATE"
+# Update placeholder values by matching the label that precedes each one.
+# Each label+placeholder pair is unique, making this safe and index-independent.
+content = re.sub(
+    r'(label: TFT Version\b.*?placeholder: )e\.g\.,.*',
+    r'\g<1>e.g., ${MIN_TFT_VERSION}',
+    content, flags=re.DOTALL, count=1
+)
+content = re.sub(
+    r'(label: Firmware Version\b.*?placeholder: )e\.g\.,.*',
+    r'\g<1>e.g., ${VERSION}',
+    content, flags=re.DOTALL, count=1
+)
+content = re.sub(
+    r'(label: Blueprint Version\b.*?placeholder: )e\.g\.,.*',
+    r'\g<1>e.g., ${MIN_BLUEPRINT_VERSION}',
+    content, flags=re.DOTALL, count=1
+)
+
+with open("${TEMPLATE}", "w") as f:
+    f.write(content)
+EOF
 
       - name: Update blueprint version and name
         if: steps.skip_check.outputs.skip == 'false'
@@ -278,9 +302,9 @@ jobs:
         if: steps.skip_check.outputs.skip == 'false'
         run: |
           # yq strips the YAML document end marker (...) on in-place edits.
-          # Re-append it to all files modified by yq.
-          for file in ./versioning/version.yaml .github/ISSUE_TEMPLATE/bug.yml \
-                      esphome/nspanel_esphome_version.yaml; do
+          # Only versioning/version.yaml is still modified by yq — all other
+          # files now use sed or python, which preserve the marker.
+          for file in ./versioning/version.yaml; do
             if [ -f "$file" ] && ! tail -1 "$file" | grep -qx '\.\.\.'; then
               echo '...' >> "$file"
             fi
