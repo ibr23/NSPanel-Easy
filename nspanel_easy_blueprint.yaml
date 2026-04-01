@@ -6346,11 +6346,11 @@ actions:
                           - &delay_boot
                             delay:
                               milliseconds: !input delay_boot
-                          - action: 'esphome.{{ nspanel_name }}_component_val'
+                          - action: 'esphome.{{ nspanel_name }}_component_text'
                             data:
                               page: mem
                               id: ver_blueprint
-                              val: '{{ blueprint_version | int(0) }}'
+                              txt: '{{ blueprint_version }}'
                             continue_on_error: true
 
                       - &variables_hardware

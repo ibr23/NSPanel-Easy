@@ -66,15 +66,15 @@ script:
             // Parse display parameters
             display_mode = atoi(params[2].c_str());
             display_charset = atoi(params[3].c_str());
-            version_tft = atoi(params[4].c_str());
-            versions_publish->execute();
+            const uint16_t temp_version_tft = atoi(params[4].c_str());
+            const bool tft_ver_valid = (temp_version_tft > 0);
 
-            const bool tft_ver_valid = (version_tft > 0);
+            if (tft_ver_valid) version_tft->publish_state(temp_version_tft);
 
             ESP_LOGI("${TAG_PAGE_BOOT}", "Display params:");
             ESP_LOGI("${TAG_PAGE_BOOT}", "  Mode:        %" PRIu8, display_mode);
             ESP_LOGI("${TAG_PAGE_BOOT}", "  Charset:     %" PRIu8, display_charset);
-            ESP_LOGI("${TAG_PAGE_BOOT}", "  TFT version: %" PRIu8 "%s", version_tft, tft_ver_valid ? "" : " (INVALID)");
+            ESP_LOGI("${TAG_PAGE_BOOT}", "  TFT version: %" PRIu16 "%s", temp_version_tft, tft_ver_valid ? "" : " (INVALID)");
 
             system_flags.display_settings_received = tft_ver_valid and display_mode > 0 and display_charset > 0;
           }
@@ -111,8 +111,8 @@ script:
     mode: single
     then:
       - lambda: |-
-          if (current_page_id == get_page_id("boot") and version_blueprint > 0)
-            disp1->set_component_text_printf("ver_blueprint", "Blueprint: %" PRIu8, version_blueprint);
+          if (current_page_id == get_page_id("boot") and !version_blueprint->state.empty())
+            disp1->set_component_text_printf("ver_blueprint", "Blueprint: %s", version_blueprint->state);
 
   - id: page_boot_show_ip
     mode: single
@@ -164,7 +164,7 @@ script:
   - id: !extend watchdog_round
     then:
       - lambda: |-
-          if (current_page_id == get_page_id("boot") and version_tft > 0)
+          if (current_page_id == get_page_id("boot") and version_tft->state > 0)
             wakeup->execute(true);
 
 wifi:
