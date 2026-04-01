@@ -217,5 +217,7 @@ text_sensor:
         - lambda: |-
             ESP_LOGI("${TAG_VERSIONING}", "Blueprint version: %s", version_blueprint->state.c_str());
             blueprint_status_flags.version = (calver_gte(version_blueprint->state, "${min_blueprint_version}"));
-            check_versions->execute(!blueprint_status_flags.version || (version_tft->state <= 0));
+            check_versions->execute(!blueprint_status_flags.version
+                                    || (version_tft->state <= 0)
+                                    || std::isnan(version_tft->state));
 ...
