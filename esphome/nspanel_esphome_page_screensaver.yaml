@@ -136,8 +136,7 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
-          if (new_page_id != get_page_id("screensaver")) return;
-          page_screensaver->execute();
+          if (new_page_id == get_page_id("screensaver")) page_screensaver->execute();
 
   - id: page_screensaver
     mode: restart
