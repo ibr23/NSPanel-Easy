@@ -166,7 +166,7 @@ script:  # Scripts
           count: 60  # seconds
           then:
             - lambda: |-
-                if (system_flags.wifi_ready) wait_for_api->stop();
+                if (system_flags.api_ready) wait_for_api->stop();
                 if (iteration % 5 == 1) boot_log->execute("Boot", "Waiting for API");
             - delay: 1s
 
