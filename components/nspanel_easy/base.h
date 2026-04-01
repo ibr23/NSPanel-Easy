@@ -31,12 +31,11 @@ struct SystemFlags {
   uint16_t version_check_ok : 1;           ///< All component versions verified
   uint16_t display_settings_received : 1;  ///< All display settings received
 
-  // Runtime operation flags (bits 9-11)
-  uint16_t tft_upload_active : 1;  ///< TFT firmware upload in progress
-  uint16_t ota_in_progress : 1;    ///< Over-the-air update active
-  uint16_t display_sleep : 1;      ///< Display is in sleep mode
+  // Runtime operation flags (bits 9-10)
+  uint16_t tft_upload_active : 1;          ///< TFT firmware upload in progress
+  uint16_t ota_in_progress : 1;            ///< Over-the-air update active
 
-  // Reserved flags (bits 12-15)
+  // Reserved flags (bits 11-15)
   uint16_t reserved : 4;  ///< Reserved for future expansion
 
   // Default constructor - all flags start as false (zero-initialized)
@@ -52,7 +51,6 @@ struct SystemFlags {
         display_settings_received(0),
         tft_upload_active(0),
         ota_in_progress(0),
-        display_sleep(0),
         reserved(0) {}
 };
 
