@@ -199,9 +199,7 @@ text_sensor:
     icon: mdi:tag-text-outline
     internal: false
     update_interval: never
-    lambda: |-
-      // ESPHome version is a compile-time constant — publish once and never update.
-      return std::string("${version}");
+    # Published by boot_early_routines during boot sequence.
 
   - id: version_blueprint
     name: "Version - Blueprint"
