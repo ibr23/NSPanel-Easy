@@ -2,11 +2,13 @@
 #
 # Triggered by merging a PR to the main branch, it automatically:
 # 1. Bumps the CalVer version (YYYY.M.seq)
-# 2. Updates the bug report template with current version placeholders
-# 3. Commits the changes and pushes to main
-# 4. Creates a version tag and GitHub Release
-# 5. Updates the stable and latest floating tags
-# 6. Announces the release on Discord
+# 2. Resolves the "next" sentinel in min_blueprint_version, if set
+# 3. Updates the bug report template with current version placeholders
+# 4. Updates the blueprint version and display name
+# 5. Commits the changes and pushes to main
+# 6. Creates a version tag and GitHub Release
+# 7. Updates the stable and latest floating tags
+# 8. Announces the release on Discord
 #
 # The workflow skips execution if the merge commit message contains
 # [skip-versioning] to prevent loops from its own version bump commits.
@@ -151,6 +153,26 @@ jobs:
         run: |
           yq eval '.version = strenv(NEW_VERSION)' -i ./versioning/version.yaml
 
+      - name: Resolve min_blueprint_version sentinel
+        if: steps.skip_check.outputs.skip == 'false'
+        env:
+          NEW_VERSION: ${{ steps.next_version.outputs.version }}
+        run: |
+          ESPHome_VERSION="esphome/nspanel_esphome_version.yaml"
+          MIN_BP=$(yq eval '.substitutions.min_blueprint_version' "$ESPHome_VERSION")
+
+          # If min_blueprint_version is set to the sentinel "next", replace it
+          # with the actual version being released, tying the compatibility
+          # requirement to this exact release.
+          if [[ "$MIN_BP" == "next" ]]; then
+            yq eval \
+              '.substitutions.min_blueprint_version = strenv(NEW_VERSION)' \
+              -i "$ESPHome_VERSION"
+            echo "Resolved min_blueprint_version sentinel to ${NEW_VERSION}"
+          else
+            echo "min_blueprint_version is already set to ${MIN_BP}, no sentinel to resolve"
+          fi
+
       - name: Extract cross-component version information
         id: versions
         if: steps.skip_check.outputs.skip == 'false'
@@ -191,12 +213,35 @@ jobs:
             '.body[4].attributes.placeholder = ("e.g., " + strenv(MIN_BLUEPRINT_VERSION))' \
             -i "$TEMPLATE"
 
+      - name: Update blueprint version and name
+        if: steps.skip_check.outputs.skip == 'false'
+        env:
+          NEW_VERSION: ${{ steps.next_version.outputs.version }}
+        run: |
+          BLUEPRINT="nspanel_easy_blueprint.yaml"
+
+          # sed is used intentionally here instead of yq — the blueprint contains
+          # a large icon table with unicode escape sequences (\uXXXX) that yq would
+          # silently convert to their literal UTF-8 characters, corrupting the file.
+
+          # Update the blueprint display name shown in the HA Blueprints dashboard.
+          sed -i \
+            "s/^  name: NSPanel Easy Configuration.*/  name: NSPanel Easy Configuration (v${NEW_VERSION})/" \
+            "$BLUEPRINT"
+
+          # Update the blueprint's own version number, used by ESPHome to verify
+          # compatibility against min_blueprint_version at runtime.
+          sed -i \
+            "s/^  blueprint_version: .*/  blueprint_version: ${NEW_VERSION}/" \
+            "$BLUEPRINT"
+
       - name: Restore YAML document end markers
         if: steps.skip_check.outputs.skip == 'false'
         run: |
           # yq strips the YAML document end marker (...) on in-place edits.
           # Re-append it to all files modified by yq.
-          for file in ./versioning/version.yaml .github/ISSUE_TEMPLATE/bug.yml; do
+          for file in ./versioning/version.yaml .github/ISSUE_TEMPLATE/bug.yml \
+                      esphome/nspanel_esphome_version.yaml; do
             if [ -f "$file" ] && ! tail -1 "$file" | grep -qx '\.\.\.'; then
               echo '...' >> "$file"
             fi
@@ -211,7 +256,8 @@ jobs:
         env:
           NEW_VERSION: ${{ steps.next_version.outputs.version }}
         run: |
-          git add ./versioning/version.yaml .github/ISSUE_TEMPLATE/bug.yml
+          git add ./versioning/version.yaml .github/ISSUE_TEMPLATE/bug.yml \
+                  esphome/nspanel_esphome_version.yaml nspanel_easy_blueprint.yaml
           git commit -m "Bump version to ${NEW_VERSION} [skip-versioning]"
 
       - name: Build tag message from PR
