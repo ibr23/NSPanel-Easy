@@ -4,8 +4,7 @@
 
 #include "page_climate.h"
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 float set_climate_current_temp;
 uint32_t set_climate_supported_features;
@@ -18,7 +17,6 @@ uint16_t set_climate_temp_offset;
 std::string set_climate_climate_icon;
 bool set_climate_embedded_climate;
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_PAGE_CLIMATE

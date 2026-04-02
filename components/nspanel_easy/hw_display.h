@@ -12,8 +12,7 @@
 #include "pages.h"
 #include "base.h"
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 /**
  * @brief Display theme modes.
@@ -31,7 +30,6 @@ extern uint8_t brightness_current;
 extern uint8_t display_mode;
 extern uint8_t display_charset;
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_HW_DISPLAY

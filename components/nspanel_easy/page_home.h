@@ -14,10 +14,8 @@
  * of the NSPanel interface.
  */
 
-namespace esphome {
-namespace nspanel_easy {
-namespace hmi {
-namespace home {
+namespace esphome::nspanel_easy {
+namespace hmi::home {
 
 /**
  * @namespace home
@@ -99,9 +97,7 @@ constexpr HMIComponent TIMER_SETTINGS = {"home.settings_timer", 34};     ///< Se
 constexpr HMIComponent TIMER_CLICK = {"home.click_timer", 39};           ///< Click timer
 constexpr HMIComponent TIMER_SHORT_CLICK = {"home.short_click_tm", 47};  ///< Short click timer
 
-}  // namespace home
-}  // namespace hmi
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace hmi::home
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_PAGE_HOME

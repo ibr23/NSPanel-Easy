@@ -7,8 +7,7 @@
 #include <cstdint>
 #include <string>
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 extern float set_climate_current_temp;
 extern uint32_t set_climate_supported_features;
@@ -21,7 +20,6 @@ extern uint16_t set_climate_temp_offset;
 extern std::string set_climate_climate_icon;
 extern bool set_climate_embedded_climate;
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_PAGE_CLIMATE

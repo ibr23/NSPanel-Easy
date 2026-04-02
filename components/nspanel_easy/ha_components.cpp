@@ -2,8 +2,7 @@
 
 #include "ha_components.h"
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 // Function Definition
 HomeAssistantEntity extractHomeAssistantEntity(const std::string &entity_id) {
@@ -25,5 +24,4 @@ HomeAssistantEntity extractHomeAssistantEntity(const std::string &entity_id) {
   return result;
 }
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy

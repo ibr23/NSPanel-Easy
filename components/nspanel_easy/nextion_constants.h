@@ -18,8 +18,7 @@
  * - IconData: Structure pairing icons with colors
  */
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 // =============================================================================
 // Icon Constants
@@ -118,5 +117,4 @@ struct IconData {
   uint16_t color;    ///< RGB565 color value for icon display
 };
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy

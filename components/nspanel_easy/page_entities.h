@@ -6,12 +6,10 @@
 
 #include <cstdint>
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 extern uint8_t page_entities_value_horizontal_alignment;
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_PAGE_ENTITIES

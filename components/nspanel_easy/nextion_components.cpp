@@ -4,8 +4,7 @@
 #include <algorithm>
 #include <cstring>
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 NSPanelEasyNextionComponent extractNextionComponent(const std::string &input, const std::string &defaultPage) {
   NSPanelEasyNextionComponent result{};
@@ -28,5 +27,4 @@ NSPanelEasyNextionComponent extractNextionComponent(const std::string &input, co
   return result;
 }
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy

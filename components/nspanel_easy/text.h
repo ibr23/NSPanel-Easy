@@ -6,8 +6,7 @@
 #include <initializer_list>
 #include <string>
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 /**
  * Adjusts the decimal separator in a numeric string to the specified character.
@@ -96,5 +95,4 @@ constexpr bool strings_equal(const char *a, const char *b) {
  */
 void replace_all(std::string &str, const char *token, const char *value);
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy

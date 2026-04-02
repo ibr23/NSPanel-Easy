@@ -7,8 +7,7 @@
 #include <string>
 #include "nextion_constants.h"
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 // Global var for the friendly name of the embedded climate entity
 extern std::string addon_climate_friendly_name;
@@ -121,7 +120,6 @@ constexpr IconData climate_action_icons[] = {
     {Icons::MDI_FAN, Colors::RGB565_CYAN}               // CLIMATE_ACTION_FAN (6)
 };
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_ADDON_CLIMATE_BASE

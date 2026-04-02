@@ -22,8 +22,7 @@
  * of the NSPanel interface.
  */
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 extern bool page_utilities_enabled;
 extern uint16_t page_utilities_icon_color;
@@ -136,7 +135,6 @@ constexpr HMIComponent BUTTON_BACK = {"button_back", 90};  ///< Back button (loc
 
 }  // namespace utilities
 }  // namespace hmi
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_PAGE_UTILITIES

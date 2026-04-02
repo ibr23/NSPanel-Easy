@@ -2,8 +2,7 @@
 #include "base.h"
 #include "esphome/core/application.h"
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 static const char *TAG_COMPONENT_BASE = "nspanel.component.base";
 
@@ -39,5 +38,4 @@ void fire_ha_event(const std::string &type, std::map<std::string, std::string> d
   ESP_LOGV(TAG_COMPONENT_BASE, "HA event 'esphome.nspanel_easy' sent successfully");
 }
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy

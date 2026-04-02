@@ -16,11 +16,9 @@
  * avoid redundant display updates.
  */
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
-namespace hmi {
-namespace screensaver {
+namespace hmi::screensaver {
 
 /**
  * @namespace screensaver
@@ -49,9 +47,7 @@ constexpr HMIComponent ALL[] = {PAGE, TEXT};
 
 constexpr size_t COMPONENT_COUNT = sizeof(ALL) / sizeof(ALL[0]);
 
-}  // namespace screensaver
-}  // namespace hmi
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace hmi::screensaver
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_PAGE_SCREENSAVER

@@ -4,8 +4,7 @@
 #include "esphome/core/component.h"
 #include "esphome/core/log.h"
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 /// @brief Main NSPanel Easy component — provides on_setup and on_dump_config triggers.
 class NSPanelEasyComponent : public Component {
@@ -46,5 +45,4 @@ class DumpConfigTrigger : public Trigger<> {
   }
 };
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy

@@ -2,8 +2,7 @@
 
 #ifdef NSPANEL_EASY_PAGE_ALARM
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 // Home Assistant alarm control panel supported features
 // Matches Home Assistant AlarmControlPanelEntityFeature values
@@ -16,7 +15,6 @@ enum class AlarmFeature : uint8_t {
   ALWAYS_SHOW = 0          // Special value for always-visible buttons
 };
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_PAGE_ALARM

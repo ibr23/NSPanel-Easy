@@ -11,8 +11,7 @@
 #include "esp32-hal-psram.h"
 #endif
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 bool page_utilities_enabled = false;
 uint16_t page_utilities_icon_color = Colors::RGB565_GRAY_LIGHT;
@@ -52,7 +51,6 @@ uint8_t findUtilitiesGroupIndex(const char *group_id) {
   return UINT8_MAX;  // Not found
 }
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_PAGE_UTILITIES

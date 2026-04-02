@@ -13,8 +13,7 @@
  * Defines constants and functions related to page names for the NSPanel HA Blueprint project.
  */
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 // Constants
 /**
@@ -127,5 +126,4 @@ static_assert(get_page_id("weather03") != UINT8_MAX, "Missing required page: wea
 static_assert(get_page_id("weather04") != UINT8_MAX, "Missing required page: weather04");
 static_assert(get_page_id("weather05") != UINT8_MAX, "Missing required page: weather05");
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy

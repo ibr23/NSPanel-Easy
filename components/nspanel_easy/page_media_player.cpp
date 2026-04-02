@@ -4,14 +4,12 @@
 
 #include "page_media_player.h"
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 uint8_t last_volume_level = 0;
 uint32_t last_media_duration = 0;
 uint32_t last_media_position = 0;
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_PAGE_MEDIA_PLAYER

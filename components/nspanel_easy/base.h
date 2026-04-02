@@ -9,8 +9,7 @@
 #include <map>
 #include <string>
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 /**
  * @brief System-wide flags for NSPanel HA Blueprint component state tracking
@@ -202,5 +201,4 @@ extern std::string cached_device_name;
  */
 void fire_ha_event(const std::string &type, std::map<std::string, std::string> data = {});
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy

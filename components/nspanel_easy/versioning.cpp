@@ -4,8 +4,7 @@
 
 #include "versioning.h"
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 bool calver_gte(const std::string &version, const std::string &min_version) {
   int ver_y = 0, ver_m = 0, ver_s = 0;
@@ -30,7 +29,6 @@ bool calver_gte(const std::string &version, const std::string &min_version) {
   return ver_s >= min_s;
 }
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_VERSIONING

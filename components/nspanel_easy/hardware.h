@@ -4,8 +4,7 @@
 
 #include <cstdint>
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 /**
  * @brief Combined hardware settings using bitfields
@@ -93,5 +92,4 @@ inline void set_hardware_settings(uint8_t &raw_value, const HardwareSettings &se
   raw_value = to_raw(settings);
 }
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy

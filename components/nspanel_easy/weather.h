@@ -27,8 +27,7 @@
  * @c on_sunrise and @c on_sunset triggers.
  */
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 // =============================================================================
 // Sun elevation state
@@ -228,7 +227,6 @@ inline const WeatherPicVariant &select_weather_variant(const WeatherPics &pics, 
   return is_dark_theme ? pics.legacy_dark : pics.legacy_light;
 }
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_USE_WEATHER

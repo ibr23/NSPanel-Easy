@@ -6,8 +6,7 @@
 #include <vector>
 #include <cstdint>
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 /**
  * @struct HMIComponent
@@ -74,5 +73,4 @@ template<typename Container> inline uint16_t rgbTo565(const Container &rgb) {
  */
 constexpr uint16_t invertColor565(uint16_t color) { return (~color) & 0xFFFF; }
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy

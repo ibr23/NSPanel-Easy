@@ -15,10 +15,8 @@
  * of the NSPanel interface.
  */
 
-namespace esphome {
-namespace nspanel_easy {
-namespace hmi {
-namespace qrcode {
+namespace esphome::nspanel_easy {
+namespace hmi::qrcode {
 
 /**
  * @namespace qrcode
@@ -49,9 +47,7 @@ constexpr HMIComponent ALL[] = {PAGE, BUTTON_BACK, QR, ICON_STATE, PAGE_LABEL};
 
 constexpr size_t COMPONENT_COUNT = sizeof(ALL) / sizeof(ALL[0]);
 
-}  // namespace qrcode
-}  // namespace hmi
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace hmi::qrcode
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_PAGE_QRCODE

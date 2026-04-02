@@ -4,8 +4,7 @@
 
 #include "weather.h"
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 SunInfo sun_info = {
     .is_up = true,            // Safe daytime default before first blueprint update or SNTP sync
@@ -14,7 +13,6 @@ SunInfo sun_info = {
 
 uint8_t weather_condition_index = 0;  // Defaults to fallback until first blueprint update
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_USE_WEATHER

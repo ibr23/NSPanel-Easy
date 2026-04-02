@@ -6,8 +6,7 @@
 #include <cstdlib>
 #include <cstring>
 
-namespace esphome {
-namespace nspanel_easy {
+namespace esphome::nspanel_easy {
 
 std::string adjustDecimalSeparator(const std::string &input, char decimalSeparator) {
   if (decimalSeparator == '.') {
@@ -185,5 +184,4 @@ void replace_all(std::string &str, const char *token, const char *value) {
   }
 }
 
-}  // namespace nspanel_easy
-}  // namespace esphome
+}  // namespace esphome::nspanel_easy
