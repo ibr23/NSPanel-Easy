@@ -12,7 +12,7 @@ your panel is on with the same automation you use for your lights.
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - nspanel_esphome.yaml # Basic package

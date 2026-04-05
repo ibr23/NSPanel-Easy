@@ -60,7 +60,7 @@ substitutions:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - nspanel_esphome.yaml # Basic package (already includes this add-on)
@@ -79,7 +79,7 @@ add the Upload TFT package explicitly:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - esphome/nspanel_esphome_core.yaml
@@ -118,7 +118,7 @@ substitutions:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - nspanel_esphome.yaml
@@ -141,7 +141,7 @@ substitutions:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - nspanel_esphome.yaml
@@ -164,7 +164,7 @@ substitutions:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - nspanel_esphome.yaml

@@ -91,7 +91,7 @@ Find your `remote_package` block. It currently looks something like this:
 packages:
   remote_package:
     url: https://github.com/Blackymas/NSPanel_HA_Blueprint
-    ref: v4.3.30  # or whatever version you were using
+    ref: main  # or whatever version you were using
     refresh: 300s
     files:
       - nspanel_esphome.yaml # Base package
@@ -108,7 +108,7 @@ Change it to:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - nspanel_esphome.yaml # Base package
@@ -126,7 +126,7 @@ packages:
 | `ota_password` | It was set on the remote package to use your WiFi password | You have to add the substitution `ota_password: ${wifi_password}` for backward compatibility |
 | `language` | Selected via Blueprint dropdown | Set as `language: xx` substitution in ESPHome YAML - see [Localization](localization.md) |
 | `url` | `https://github.com/Blackymas/NSPanel_HA_Blueprint` | `https://github.com/edwardtfn/NSPanel-Easy` |
-| `ref` | A version tag (e.g. `v4.3.30`) | `main` |
+| `ref` | `main` (or a specific version) | `latest` |
 | Add-on file paths | Root level (e.g. `nspanel_esphome_addon_climate_heat.yaml`) | Inside `esphome/` folder (e.g. `esphome/nspanel_esphome_addon_climate_heat.yaml`) |
 | Base package | `nspanel_esphome.yaml` | `nspanel_esphome.yaml` *(no change)* |
 
@@ -162,7 +162,7 @@ substitutions:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - nspanel_esphome.yaml # Base package
@@ -330,7 +330,7 @@ and you'll now receive updates from the new repository.
 Double-check that:
 
 - The `url` is exactly `https://github.com/edwardtfn/NSPanel-Easy`
-- The `ref` is `main` (not a version tag from the old repository).
+- The `ref` is `latest` (not a version tag from the old repository).
   After this first migration install, you'll be able to use version tags
   in the same format (e.g. `ref: v5.0.0`) once NSPanel Easy publishes releases.
 - Add-on files use the `esphome/` prefix (e.g. `esphome/nspanel_esphome_addon_climate_heat.yaml`)

@@ -132,7 +132,7 @@ Follow these steps to add a new device in the ESPHome Dashboard:
    packages:
      remote_package:
        url: https://github.com/edwardtfn/NSPanel-Easy
-       ref: main
+       ref: latest
        refresh: 300s
        files:
          - nspanel_esphome.yaml # Basic package
@@ -537,7 +537,7 @@ api:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - esphome/nspanel_esphome_core.yaml        # Core NSPanel functionality
@@ -592,7 +592,7 @@ substitutions:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - esphome/nspanel_esphome_core.yaml
@@ -639,7 +639,7 @@ api:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - esphome/nspanel_esphome_core.yaml

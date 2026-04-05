@@ -51,7 +51,7 @@ substitutions:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - nspanel_esphome.yaml # Basic package
@@ -127,7 +127,7 @@ substitutions:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - nspanel_esphome.yaml # Basic package
@@ -170,7 +170,7 @@ substitutions:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - nspanel_esphome.yaml # Basic package
@@ -216,7 +216,7 @@ substitutions:
 packages:
   remote_package:
     url: https://github.com/edwardtfn/NSPanel-Easy
-    ref: main
+    ref: latest
     refresh: 300s
     files:
       - nspanel_esphome.yaml # Basic package
