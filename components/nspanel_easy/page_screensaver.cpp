@@ -12,6 +12,6 @@
  * page_screensaver.h.
  */
 
- namespace esphome::nspanel_easy {}  // namespace esphome::nspanel_easy
+namespace esphome::nspanel_easy {}  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_PAGE_SCREENSAVER
