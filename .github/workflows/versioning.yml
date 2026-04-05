@@ -259,18 +259,30 @@ jobs:
           sed -i \
             "s/^  name: NSPanel Easy Configuration.*/  name: NSPanel Easy Configuration (v${NEW_VERSION})/" \
             "$BLUEPRINT"
+          if ! grep -q "^  name: NSPanel Easy Configuration (v${NEW_VERSION})" "$BLUEPRINT"; then
+            echo "ERROR: Failed to update blueprint display name in $BLUEPRINT"
+            exit 1
+          fi
 
           # Update the blueprint's own version number, used by ESPHome to verify
           # compatibility against min_blueprint_version at runtime.
           sed -i \
             "s/^  blueprint_version: .*/  blueprint_version: ${NEW_VERSION}/" \
             "$BLUEPRINT"
+          if ! grep -q "^  blueprint_version: ${NEW_VERSION}$" "$BLUEPRINT"; then
+            echo "ERROR: Failed to update blueprint_version in $BLUEPRINT"
+            exit 1
+          fi
 
           # Update the minimum Home Assistant version required to run this blueprint,
           # kept 2 months behind the release date to match the upstream contract.
           sed -i \
             "s/^    min_version: .*/    min_version: ${MIN_UPSTREAM_VERSION}/" \
             "$BLUEPRINT"
+          if ! grep -q "^    min_version: ${MIN_UPSTREAM_VERSION}$" "$BLUEPRINT"; then
+            echo "ERROR: Failed to update min_version in $BLUEPRINT"
+            exit 1
+          fi
 
       - name: Restore YAML document end markers
         if: steps.skip_check.outputs.skip == 'false'
