@@ -44,6 +44,7 @@ jobs:
     outputs:
       skip: ${{ steps.skip_check.outputs.skip }}
       version: ${{ steps.next_version.outputs.version }}
+      release_sha: ${{ steps.capture_sha.outputs.sha }}
       pr_title: ${{ fromJson(steps.pr_info.outputs.result).title }}
       pr_body: ${{ fromJson(steps.pr_info.outputs.result).body }}
 
@@ -219,6 +220,11 @@ jobs:
           }
           git push origin HEAD:main
 
+      - name: Capture post-bump SHA
+        id: capture_sha
+        if: steps.skip_check.outputs.skip == 'false'
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
   # ---------------------------------------------------------------------------
   # Build pre-built firmware: nspanel-easy
   # Runs in parallel with build-wall-display once bump completes.
@@ -235,7 +241,7 @@ jobs:
       - name: Checkout post-bump main
         uses: actions/checkout@v6
         with:
-          ref: main
+          ref: ${{ needs.bump.outputs.release_sha }}
           fetch-depth: 1
 
       - name: Build firmware
@@ -323,7 +329,7 @@ jobs:
       - name: Checkout post-bump main
         uses: actions/checkout@v6
         with:
-          ref: main
+          ref: ${{ needs.bump.outputs.release_sha }}
           fetch-depth: 1
 
       - name: Build firmware
@@ -419,13 +425,19 @@ jobs:
       - name: Checkout post-bump main
         uses: actions/checkout@v6
         with:
-          ref: main
+          ref: ${{ needs.bump.outputs.release_sha }}
           fetch-depth: 0
 
       - name: Set up Git
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
+
+      - name: Remove previously committed generated artifacts
+        run: |
+          # Remove all known generated files so stale artifacts from a previous
+          # release (e.g. factory binaries) are not silently carried forward.
+          rm -f             prebuilt/nspanel_esphome_prebuilt.bin             prebuilt/nspanel_esphome_prebuilt.bin.md5             prebuilt/nspanel_esphome_prebuilt.manifest.json             prebuilt/nspanel_esphome_prebuilt-factory.bin             prebuilt/nspanel_esphome_prebuilt-factory.bin.md5             prebuilt/wall_display.bin             prebuilt/wall_display.bin.md5             prebuilt/wall_display.manifest.json             prebuilt/wall_display-factory.bin             prebuilt/wall_display-factory.bin.md5
 
       - name: Download nspanel-easy artifacts
         uses: actions/download-artifact@v4
@@ -464,23 +476,8 @@ jobs:
         env:
           NEW_VERSION: ${{ needs.bump.outputs.version }}
         run: |
-          git add \
-            prebuilt/nspanel_esphome_prebuilt.bin \
-            prebuilt/nspanel_esphome_prebuilt.bin.md5 \
-            prebuilt/nspanel_esphome_prebuilt.manifest.json \
-            prebuilt/wall_display.bin \
-            prebuilt/wall_display.bin.md5 \
-            prebuilt/wall_display.manifest.json
-
-          # Factory binaries are optional — add only if present
-          for f in \
-            prebuilt/nspanel_esphome_prebuilt-factory.bin \
-            prebuilt/nspanel_esphome_prebuilt-factory.bin.md5 \
-            prebuilt/wall_display-factory.bin \
-            prebuilt/wall_display-factory.bin.md5; do
-            [ -f "$f" ] && git add "$f" || true
-          done
-
+          # Stage all changes under prebuilt/ including deletions of stale files.
+          git add -A prebuilt/
           git diff --cached --quiet || \
             git commit -m "build: pre-built firmware for v${NEW_VERSION} [skip-versioning]"
 
@@ -488,12 +485,12 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git fetch origin main
-          git rebase origin/main || {
-            echo "Rebase failed - main has diverged"
+          # Push directly — no rebase. If main has advanced since the bump job
+          # pushed, abort rather than silently tagging the wrong revision.
+          git push origin HEAD:main || {
+            echo "ERROR: main has advanced since artifacts were built; aborting to avoid tagging the wrong revision"
             exit 1
           }
-          git push origin HEAD:main
 
       # -------------------------------------------------------------------
       # Tag and release (after binary commit, so tag points to final state)
