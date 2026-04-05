@@ -98,6 +98,11 @@ script:
           // Nextion object name limit: 14 chars + NUL = 15
           // Longest case: "button07" (8) + "icon"/"text" (4) = 12 chars — within limit
           const char *btn = button_id.c_str();
+          if (button_id.size() > 10) {
+            ESP_LOGE("${TAG_PAGE_BUTTONS}", "button_id '%s' exceeds 10 chars, skipping render", btn);
+            return;
+          }
+
           char comp_pic[15];
           char comp_bri[15];
           char comp_text[15];
