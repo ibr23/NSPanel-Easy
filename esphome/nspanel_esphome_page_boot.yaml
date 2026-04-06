@@ -64,24 +64,28 @@ script:
             disp1->send_command("tm_esphome.en=0");
 
             // Parse display parameters
-            display_mode = atoi(params[2].c_str());
+            display_mode    = atoi(params[2].c_str());
             display_charset = atoi(params[3].c_str());
 
-            char *end = nullptr;
-            const float parsed_version_tft = strtof(params[4].c_str(), &end);
+            // Validate TFT version string — must be bare "major" or "major.minor",
+            // with both sides non-empty and no more than one dot.
+            const std::string &ver_str = params[4];
+            const size_t dot = ver_str.find('.');
             const bool tft_ver_valid =
-                end != nullptr &&            // strtof out-param was set
-                end != params[4].c_str() &&  // at least one character was consumed
-                *end == '\0' &&              // entire string was consumed (no trailing garbage)
-                parsed_version_tft > 0.0f;   // must be positive
-            version_tft->publish_state(tft_ver_valid ? parsed_version_tft : NAN);
+                !ver_str.empty() &&
+                ver_str.find_first_not_of("0123456789.") == std::string::npos &&  // digits and dot only
+                (dot == std::string::npos ||                  // bare integer, no dot
+                 (dot != 0 &&                                 // dot not at start
+                  dot != ver_str.size() - 1 &&               // dot not at end
+                  ver_str.find('.', dot + 1) == std::string::npos));  // no second dot
+            version_tft->publish_state(tft_ver_valid ? ver_str : "");
 
             ESP_LOGI("${TAG_PAGE_BOOT}", "Display params:");
             ESP_LOGI("${TAG_PAGE_BOOT}", "  Mode:        %" PRIu8, display_mode);
             ESP_LOGI("${TAG_PAGE_BOOT}", "  Charset:     %" PRIu8, display_charset);
-            ESP_LOGI("${TAG_PAGE_BOOT}", "  TFT version: %.1f%s", parsed_version_tft, tft_ver_valid ? "" : " (INVALID)");
+            ESP_LOGI("${TAG_PAGE_BOOT}", "  TFT version: %s%s", ver_str.c_str(), tft_ver_valid ? "" : " (INVALID)");
 
-            system_flags.display_settings_received = tft_ver_valid and display_mode > 0 and display_charset > 0;
+            system_flags.display_settings_received = tft_ver_valid && display_mode > 0 && display_charset > 0;
           }
 
   - id: page_boot
@@ -163,8 +167,9 @@ script:
   - id: !extend watchdog_round
     then:
       - lambda: |-
-          if (current_page_id == get_page_id("boot") and version_tft->state > 0)
-            wakeup->execute(true);
+          if (current_page_id != get_page_id("boot")) return;
+          if (version_tft->state.empty()) return;
+          wakeup->execute(true);
 
 text_sensor:
   - id: !extend version_blueprint

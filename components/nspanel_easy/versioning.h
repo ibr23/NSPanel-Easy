@@ -41,6 +41,37 @@ namespace esphome::nspanel_easy {
  */
 bool calver_gte(const std::string &version, const std::string &min_version);
 
+/**
+ * @brief Compare two 2-segment TFT version strings segment by segment.
+ *
+ * Compares two version strings in the format `major.minor` (e.g. "16.12")
+ * using numeric comparison per segment. This avoids the lexicographic ordering
+ * pitfall where "16.2" would incorrectly sort after "16.12" as strings.
+ *
+ * The comparison evaluates as: version >= min_version
+ *
+ * Both segments are optional — a bare integer (e.g. "16") is accepted and
+ * treated as `major.0`.
+ *
+ * @param version     The version string to test (e.g. the TFT version received from the display).
+ * @param min_version The minimum required version string to compare against.
+ * @return true  if version is equal to or newer than min_version.
+ * @return false if version is older than min_version, or if either string is malformed.
+ *
+ * @note Returns false conservatively when either string cannot be parsed,
+ *       to avoid incorrectly passing a version check on bad input.
+ *
+ * @code
+ * tft_ver_gte("16.12", "16.2")   // true  — minor 12 > minor 2
+ * tft_ver_gte("16.2",  "16.12")  // false — minor 2 < minor 12
+ * tft_ver_gte("16.1",  "16.1")   // true  — equal
+ * tft_ver_gte("17",    "16.9")   // true  — major 17 > major 16
+ * tft_ver_gte("16",    "16.0")   // true  — treated as 16.0 >= 16.0
+ * tft_ver_gte("",      "16.1")   // false — malformed input
+ * @endcode
+ */
+bool tft_ver_gte(const std::string &version, const std::string &min_version);
+
 }  // namespace esphome::nspanel_easy
 
 #endif  // NSPANEL_EASY_VERSIONING
