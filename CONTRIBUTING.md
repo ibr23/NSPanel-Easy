@@ -18,7 +18,7 @@ This document covers everything you need to know before opening a pull request.
 
 Every pull request title **must** follow this format:
 
-```
+```text
 <prefix>: <Description starting with a capital letter>
 ```
 
@@ -44,7 +44,7 @@ Every pull request title **must** follow this format:
 
 ### Examples
 
-```
+```text
 fix: Correct baud rate negotiation timeout on EU model
 feat: Add per-page brightness control
 improve: Reduce boot time by deferring TFT version check
