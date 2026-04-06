@@ -7403,7 +7403,7 @@ actions:
                                                 if unit_of_measurement_raw and unit_of_measurement_raw is string and unit_of_measurement_raw | length > 0
                                                 else ""
                                               }}
-                                        - if: '{{ overlap.icon is not string }}'  # Do not plot icon if it has overlap
+                                        - if: '{{ entity.icon | length > 0 }}'
                                           then:
                                             - *delay_default
                                             - action: 'esphome.{{ nspanel_name }}_component_text'
