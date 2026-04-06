@@ -45,10 +45,10 @@ namespace esphome::nspanel_easy {
  * @see all_icons.h for the full set of MDI icon constants.
  */
 namespace Icons {
-constexpr const char *MDI_NONE = "\uFFFF";                 ///< Suppresses icon rendering (U+FFFF, guaranteed non-character)
-constexpr const char *MDI_BLANK = MDI_NONE;                ///< Alias for MDI_NONE
-constexpr const char *MDI_VOID = MDI_NONE;                 ///< Alias for MDI_NONE
-constexpr const char *MDI_UNKNOWN = MDI_ALERT_CIRCLE;      ///< Unknown entity state — mdi:alert-circle
+constexpr const char *MDI_NONE = "\uFFFF";             ///< Suppresses icon rendering (U+FFFF, guaranteed non-character)
+constexpr const char *MDI_BLANK = MDI_NONE;            ///< Alias for MDI_NONE
+constexpr const char *MDI_VOID = MDI_NONE;             ///< Alias for MDI_NONE
+constexpr const char *MDI_UNKNOWN = MDI_ALERT_CIRCLE;  ///< Unknown entity state — mdi:alert-circle
 constexpr const char *MDI_UNAVAILABLE = MDI_ALERT_CIRCLE;  ///< Unavailable entity state — mdi:alert-circle
 }  // namespace Icons
 
