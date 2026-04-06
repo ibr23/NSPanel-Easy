@@ -192,25 +192,36 @@ jobs:
           MIN_UPSTREAM_VERSION: ${{ steps.min_upstream.outputs.version }}
         run: |
           ESPHOME_VERSION_FILE="esphome/nspanel_esphome_version.yaml"
-          MIN_BP=$(yq eval '.substitutions.min_blueprint_version' "$ESPHOME_VERSION_FILE")
 
-          # If min_blueprint_version is set to the sentinel "next", replace it
-          # with the actual version being released, tying the compatibility
+          # sed is used intentionally here instead of yq — yq strips the !!merge
+          # tag from the !include line and removes blank lines, corrupting the file.
+
+          # If min_blueprint_version is set to the sentinel "next" or "${version}",
+          # replace it with the actual version being released, tying the compatibility
           # requirement to this exact release.
-          if [[ "$MIN_BP" == "next" || "$MIN_BP" == '${version}' ]]; then
-            yq eval \
-              '.substitutions.min_blueprint_version = strenv(NEW_VERSION)' \
-              -i "$ESPHOME_VERSION_FILE"
+          if grep -qE "^  min_blueprint_version: (next|\$\{version\})$" "$ESPHOME_VERSION_FILE"; then
+            sed -i \
+              "s/^  min_blueprint_version: .*/  min_blueprint_version: ${NEW_VERSION}/" \
+              "$ESPHOME_VERSION_FILE"
+            if ! grep -q "^  min_blueprint_version: ${NEW_VERSION}$" "$ESPHOME_VERSION_FILE"; then
+              echo "ERROR: Failed to resolve min_blueprint_version sentinel in $ESPHOME_VERSION_FILE"
+              exit 1
+            fi
             echo "Resolved min_blueprint_version sentinel to ${NEW_VERSION}"
           else
+            MIN_BP=$(grep "^  min_blueprint_version:" "$ESPHOME_VERSION_FILE" | awk '{print $2}')
             echo "min_blueprint_version is already set to ${MIN_BP}, no sentinel to resolve"
           fi
 
           # Always update the minimum ESPHome compiler version to 2 months ago,
           # keeping the upstream contract in sync with the release date.
-          yq eval \
-            '.substitutions.min_esphome_compiler_version = strenv(MIN_UPSTREAM_VERSION)' \
-            -i "$ESPHOME_VERSION_FILE"
+          sed -i \
+            "s/^  min_esphome_compiler_version: .*/  min_esphome_compiler_version: ${MIN_UPSTREAM_VERSION}/" \
+            "$ESPHOME_VERSION_FILE"
+          if ! grep -q "^  min_esphome_compiler_version: ${MIN_UPSTREAM_VERSION}$" "$ESPHOME_VERSION_FILE"; then
+            echo "ERROR: Failed to update min_esphome_compiler_version in $ESPHOME_VERSION_FILE"
+            exit 1
+          fi
           echo "Updated min_esphome_compiler_version to ${MIN_UPSTREAM_VERSION}"
 
       - name: Extract cross-component version information
@@ -289,7 +300,7 @@ jobs:
         run: |
           # yq strips the YAML document end marker (...) on in-place edits.
           # Re-append it to all files modified by yq.
-          for file in ./versioning/version.yaml esphome/nspanel_esphome_version.yaml; do
+          for file in ./versioning/version.yaml; do
             if [ -f "$file" ] && ! tail -1 "$file" | grep -qx '\.\.\.'; then
               echo '...' >> "$file"
             fi
