@@ -6,8 +6,11 @@
 # Used by:
 #   - .github/workflows/esphome_build.yml (code_scan job)
 #   - .github/workflows/validate_blueprint.yml
+#   - .github/workflows/validate_yamllint.yml
+#   - .github/workflows/validate_python.yml (flake8)
 #
 # Note: ESPHome itself is intentionally absent — its version is resolved
 # dynamically by the workflow (latest/dev tracks) and must not be pinned.
 
+flake8==7.3.0
 yamllint==1.38.0

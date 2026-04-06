@@ -19,15 +19,17 @@ updates:
   # ---------------------------------------------------------------------------
   # GitHub Actions
   # Covers ALL `uses:` references in .github/workflows/*.yml, including:
-  #   - actions/*          (checkout, setup-python, cache, artifacts, stale)
+  #   - actions/*          (checkout, setup-python, cache, artifacts, stale,
+  #                         download-artifact, github-script)
   #   - tj-actions/*       (changed-files in validate_markdown)
   #   - step-security/*    (changed-files in validate_yamllint)
   #   - DavidAnson/*       (markdownlint-cli2-action)
+  #   - tcort/*            (github-action-markdown-link-check)
   #   - stefanzweifel/*    (git-auto-commit-action)
-  #   - gaurav-nelson/*    (github-action-markdown-link-check)
   #   - ludeeus/*          (action-shellcheck)
-  #   - py-actions/*       (flake8)
   #   - RafikFarhad/*      (clang-format-github-action)
+  #   - mikefarah/*        (yq in versioning)
+  #   - softprops/*        (action-gh-release in versioning)
   # ---------------------------------------------------------------------------
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -50,24 +52,26 @@ updates:
       actions-markdown:
         patterns:
           - "DavidAnson/*"
-          - "gaurav-nelson/*"
+          - "tcort/*"
           - "stefanzweifel/*"
       actions-linting:
         patterns:
           - "ludeeus/*"
-          - "py-actions/*"
           - "RafikFarhad/*"
       actions-file-detection:
         patterns:
           - "tj-actions/*"
           - "step-security/*"
+      # Actions used exclusively in the versioning/release workflow
+      actions-versioning:
+        patterns:
+          - "mikefarah/*"
+          - "softprops/*"
 
   # ---------------------------------------------------------------------------
   # Python (pip)
   # Tracks pinned Python tooling versions.
-  # Requires a .github/requirements.txt file to be effective — create it with:
-  #
-  #   yamllint==<current-version>
+  # Requires a .github/requirements.txt file to be effective.
   #
   # ESPHome is intentionally excluded: latest/dev tracks are resolved
   # dynamically in the workflow and should not be pinned here.
