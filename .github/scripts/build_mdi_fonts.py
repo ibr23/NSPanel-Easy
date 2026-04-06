@@ -455,8 +455,9 @@ def build_header(zi_map, version_str, output_path):
         name: "MDI_" + name.upper().replace("-", "_")
         for name in zi_map
     }
+    if not const_names:
+        raise ValueError("No icon constants generated (zi_map is empty).")
     max_len = max(len(c) for c in const_names.values())
-
     lines = [
         "// all_icons.h",
         f"// Auto-generated from MDI v{version_str} — do not edit manually.",
