@@ -119,6 +119,12 @@ packages:
       # - esphome/nspanel_esphome_addon_cover.yaml
 ```
 
+## CJK language support
+
+CJK (Chinese, Japanese, Korean) language support is now built into the standard TFT files.
+There are no separate CJK variants, simply select the model matching your hardware
+(**NSPanel EU**, **NSPanel US**, or **NSPanel US Landscape**) regardless of the language you use.
+
 ### Summary of changes
 
 | Setting | Before (Blackymas) | After (NSPanel Easy) |

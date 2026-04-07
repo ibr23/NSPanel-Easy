@@ -51,11 +51,11 @@ script:
       - lambda: |-
           if (params[0] == "boot" and params[1] == "params") {
             // CSV Format: boot,params,<display_mode>,<charset>,<version>
-            // params[0]=page, params[1]=params, params[2]=display_mode, params[3]=charset, params[4]=version
+            // params[0]=page, params[1]=params, params[2]=display_mode, params[3]=version
 
             system_flags.display_settings_received = false;
 
-            if (params_count != 5) {
+            if (params_count != 4) {
               ESP_LOGW("${TAG_PAGE_BOOT}", "Bad params");
               return;
             }
@@ -74,11 +74,10 @@ script:
             };
 
             display_mode    = parse_uint8_strict(params[2]);
-            display_charset = parse_uint8_strict(params[3]);
 
             // Validate TFT version string — must be bare "major" or "major.minor",
             // with both sides non-empty and no more than one dot.
-            const std::string &ver_str = params[4];
+            const std::string &ver_str = params[3];
             const size_t dot = ver_str.find('.');
             const bool tft_ver_valid =
                 !ver_str.empty() &&
@@ -91,10 +90,9 @@ script:
 
             ESP_LOGI("${TAG_PAGE_BOOT}", "Display params:");
             ESP_LOGI("${TAG_PAGE_BOOT}", "  Mode:        %" PRIu8, display_mode);
-            ESP_LOGI("${TAG_PAGE_BOOT}", "  Charset:     %" PRIu8, display_charset);
             ESP_LOGI("${TAG_PAGE_BOOT}", "  TFT version: %s%s", ver_str.c_str(), tft_ver_valid ? "" : " (INVALID)");
 
-            system_flags.display_settings_received = tft_ver_valid && display_mode > 0 && display_charset > 0;
+            system_flags.display_settings_received = tft_ver_valid && display_mode > 0 && display_mode < UINT8_MAX;
           }
 
   - id: page_boot

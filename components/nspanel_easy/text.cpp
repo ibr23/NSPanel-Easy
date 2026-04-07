@@ -3,6 +3,7 @@
 #include "text.h"
 #include <algorithm>
 #include <cctype>
+#include <cmath>
 #include <cstdlib>
 #include <cstring>
 
@@ -182,6 +183,14 @@ void replace_all(std::string &str, const char *token, const char *value) {
     str.replace(pos, token_len, value);
     pos += value_len;  // Advance past the replacement to avoid infinite loop
   }
+}
+
+uint8_t adjusted_text_length(const std::string &text, const std::string &half_width_chars) {
+  float length = 0.0f;
+  for (char const &c : text) {
+    length += (half_width_chars.find(c) != std::string::npos) ? 0.5f : 1.0f;
+  }
+  return static_cast<uint8_t>(std::ceil(length));
 }
 
 }  // namespace esphome::nspanel_easy

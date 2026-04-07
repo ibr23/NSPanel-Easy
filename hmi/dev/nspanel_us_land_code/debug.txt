@@ -44,9 +44,6 @@ Page debug
             global_vars.txt+="\r- display_mode: "
             covx display_mode,aux.txt,0,0
             global_vars.txt+=aux.txt
-            global_vars.txt+="\r- charset: "
-            covx charset,aux.txt,0,0
-            global_vars.txt+=aux.txt
             pages_flags.txt+="\r- is_buttonpage01: "
             covx is_buttonpage01,aux.txt,0,0
             pages_flags.txt+=aux.txt

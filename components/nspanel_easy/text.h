@@ -95,4 +95,23 @@ constexpr bool strings_equal(const char *a, const char *b) {
  */
 void replace_all(std::string &str, const char *token, const char *value);
 
+/**
+ * @brief Calculates the adjusted display length of a string for font selection purposes.
+ *
+ * Iterates over each byte in the string, counting characters found in
+ * @p half_width_chars as 0.5 and all others as 1.0. The result is rounded
+ * up to the nearest integer, allowing direct comparison against font
+ * switching thresholds without floating-point arithmetic at the call site.
+ *
+ * @note Operates on raw bytes, not Unicode code points. Multi-byte UTF-8
+ *       characters (e.g., CJK) contribute one count per byte, which causes
+ *       them to be weighted more heavily than single-byte Latin characters.
+ *       This is intentional — longer strings trigger smaller fonts sooner.
+ *
+ * @param text            The string to measure.
+ * @param half_width_chars Set of characters to count as half-width (0.5).
+ * @return Adjusted length rounded up to the nearest integer, as @c uint8_t.
+ */
+uint8_t adjusted_text_length(const std::string &text, const std::string &half_width_chars);
+
 }  // namespace esphome::nspanel_easy

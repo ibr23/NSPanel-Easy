@@ -12,7 +12,6 @@ ThemeMode current_theme = ThemeMode::DARK;  ///< Active display theme
 
 uint8_t brightness_current = 100;
 uint8_t display_mode = UINT8_MAX;
-uint8_t display_charset = UINT8_MAX;
 
 }  // namespace esphome::nspanel_easy
 

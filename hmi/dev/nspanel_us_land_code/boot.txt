@@ -60,7 +60,7 @@ Variable (string) version
     Attributes
         ID            : 5
         Scope         : global
-        Text          : 16.2
+        Text          : 17.0
         Max. Text Size: 5
     
 Variable (int32) log_len
@@ -539,8 +539,7 @@ Timer tm_esphome
                 rest
             }
             covx display_mode,va0.txt,0,0
-            covx charset,va1.txt,0,0
-            csv.txt="boot,params,"+va0.txt+","+va1.txt+","+version.txt
+            csv.txt="boot,params,"+va0.txt+","+version.txt
             printh 92
             prints "localevent",0
             printh 00
