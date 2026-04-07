@@ -4,18 +4,23 @@
 
 #include <cstdint>
 
+#include "all_icons.h"
+
 /**
  * @file nextion_constants.h
- * @brief Display icon constants and color definitions for NSPanel interface elements.
+ * @brief Display constants for NSPanel interface elements.
  *
- * This file contains compile-time constants for icon Unicode characters and display colors
- * used throughout the NSPanel interface. All constants are defined as constexpr to ensure
- * they are stored in flash memory rather than RAM, optimizing memory usage.
+ * Defines special icon aliases, RGB565 color constants, and the IconData
+ * structure used throughout the NSPanel firmware.
+ *
+ * All MDI icon constants are auto-generated and live in all_icons.h.
+ * This file extends that set with special aliases that are not part of
+ * the MDI icon set and are independent of the ZI codepoint mapping.
  *
  * Organization:
- * - Icons: Unicode characters for display icons (MDI)
- * - Colors: RGB565 color values for state visualization
- * - IconData: Structure pairing icons with colors
+ * - Icons:    Special icon aliases (blank, void, unknown, unavailable)
+ * - Colors:   RGB565 color values for state visualization
+ * - IconData: Structure pairing an icon with a color
  */
 
 namespace esphome::nspanel_easy {
@@ -26,42 +31,25 @@ namespace esphome::nspanel_easy {
 
 /**
  * @namespace Icons
- * @brief MDI icon Unicode characters for display visualization.
+ * @brief Special icon aliases extending the MDI constants in all_icons.h.
  *
- * These constants represent Material Design Icons (MDI) used to display
- * different device states and modes on the NSPanel display.
+ * These aliases cover display states that have no MDI equivalent:
+ * - MDI_NONE, MDI_BLANK, MDI_VOID: suppress icon rendering entirely.
+ *   U+FFFF is a guaranteed non-character in Unicode and renders as blank
+ *   on the Nextion display regardless of the active font.
+ * - MDI_UNKNOWN, MDI_UNAVAILABLE: displayed when an entity state cannot
+ *   be determined. Resolved to mdi:alert-circle (MDI_ALERT_CIRCLE) from
+ *   all_icons.h so the codepoint stays in sync with the ZI font mapping
+ *   automatically when all_icons.h is regenerated.
+ *
+ * @see all_icons.h for the full set of MDI icon constants.
  */
 namespace Icons {
-// Alarm icons
-constexpr const char *MDI_SHIELD_ALERT_OUTLINE = "\uEECC";     ///< mdi:shield-alert-outline - Triggered
-constexpr const char *MDI_SHIELD_OFF_OUTLINE = "\uE99B";       ///< mdi:shield-off-outline - Disarmed
-constexpr const char *MDI_SHIELD_HOME_OUTLINE = "\uECCA";      ///< mdi:shield-home-outline - Armed home
-constexpr const char *MDI_SHIELD_LOCK_OUTLINE = "\uECCB";      ///< mdi:shield-lock-outline - Armed away
-constexpr const char *MDI_SHIELD_MOON_OUTLINE = "\uF828";      ///< mdi:shield-moon-outline - Armed night
-constexpr const char *MDI_SHIELD_AIRPLANE_OUTLINE = "\uECC6";  ///< mdi:shield-airplane-outline - Armed vacation
-constexpr const char *MDI_SHIELD_HALF_FULL = "\uE77F";         ///< mdi:shield-half-full - Armed custom bypass
-constexpr const char *MDI_SHIELD_OUTLINE = "\uE498";           ///< mdi:shield-outline - Pending/arming
-
-// Climate icons
-constexpr const char *MDI_AUTORENEW = "\uE069";      ///< mdi:autorenew - Auto/heat-cool mode
-constexpr const char *MDI_SNOWFLAKE = "\uE716";      ///< mdi:snowflake - Cooling mode
-constexpr const char *MDI_FIRE = "\uE237";           ///< mdi:fire - Heating mode
-constexpr const char *MDI_FAN = "\uE20F";            ///< mdi:fan - Fan mode
-constexpr const char *MDI_WATER_PERCENT = "\uE58D";  ///< mdi:water-percent - Dry/dehumidify mode
-constexpr const char *MDI_CALENDAR_SYNC = "\uEE8D";  ///< mdi:calendar-sync - Auto mode (deprecated)
-constexpr const char *MDI_REFRESH_AUTO = "\uF8F1";   ///< mdi:refresh-auto - Auto mode
-constexpr const char *MDI_THERMOMETER = "\uE50E";    ///< mdi:thermometer - Idle state
-constexpr const char *MDI_NONE = "\uFFFF";           ///< Hidden/no icon (blank character)
-
-// System/WiFi icons
-constexpr const char *MDI_WIFI = "\uE5A8";            ///< mdi:wifi - WiFi connected
-constexpr const char *MDI_WIFI_OFF = "\uE5A9";        ///< mdi:wifi-off - WiFi disconnected
-constexpr const char *MDI_API_OFF = "\uF256";         ///< mdi:api-off - API disconnected
-constexpr const char *MDI_HOME_ASSISTANT = "\uE7CF";  ///< mdi:home-assistant - Blueprint disconnected
-constexpr const char *MDI_RESTART = "\uE708";         ///< mdi:restart - System restart
-
-// QR code icons
-constexpr const char *MDI_QRCODE_SCAN = "\uE432";  ///< mdi:qrcode-scan - QRcode default icon on the main page
+constexpr const char *MDI_NONE = "\uFFFF";             ///< Suppresses icon rendering (U+FFFF, guaranteed non-character)
+constexpr const char *MDI_BLANK = MDI_NONE;            ///< Alias for MDI_NONE
+constexpr const char *MDI_VOID = MDI_NONE;             ///< Alias for MDI_NONE
+constexpr const char *MDI_UNKNOWN = MDI_ALERT_CIRCLE;  ///< Unknown entity state — mdi:alert-circle
+constexpr const char *MDI_UNAVAILABLE = MDI_ALERT_CIRCLE;  ///< Unavailable entity state — mdi:alert-circle
 }  // namespace Icons
 
 // =============================================================================
@@ -86,12 +74,12 @@ constexpr uint16_t RGB565_CYAN_BRIGHT = 7519;     ///< Bright cyan (RGB565: 0x1D
 constexpr uint16_t RGB565_DEEP_ORANGE = 64164;    ///< Heating action (RGB565: 0xFAA4)
 constexpr uint16_t RGB565_GREEN = 19818;          ///< Armed/active state (RGB565: 0x4D6A)
 constexpr uint16_t RGB565_GRAY = 35921;           ///< Inactive/off state (RGB565: 0x8C51)
-constexpr uint16_t RGB565_GRAY_DARK = 16904;      ///< Hidden/disabled buttons
-constexpr uint16_t RGB565_GRAY_DARKEST = 6339;    ///< Hidden/disabled buttons
+constexpr uint16_t RGB565_GRAY_DARK = 16904;      ///< Hidden/disabled buttons (RGB565: 0x41C8)
+constexpr uint16_t RGB565_GRAY_DARKEST = 6339;    ///< Hidden/disabled buttons (RGB565: 0x18C3)
 constexpr uint16_t RGB565_GRAY_LIGHT = 52857;     ///< Gray light/silver (RGB565: 0xCE79)
 constexpr uint16_t RGB565_GRAY_MEDIUM = 29614;    ///< Mid gray, secondary text on light bg (RGB565: 0x73AE)
 constexpr uint16_t RGB565_GRAY_MOSS = 33808;      ///< Moss gray/green (RGB565: 0x8410)
-constexpr uint16_t RGB565_YELLOW_GREEN = 48631;   ///< Inactive buttons
+constexpr uint16_t RGB565_YELLOW_GREEN = 48631;   ///< Inactive buttons (RGB565: 0xBDF7)
 constexpr uint16_t RGB565_ORANGE = 64704;         ///< Drying action (RGB565: 0xFCC0)
 constexpr uint16_t RGB565_PURPLE_MEDIUM = 38004;  ///< Medium purple (RGB565: 0x9474)
 constexpr uint16_t RGB565_RED = 63488;            ///< Alert/triggered state (RGB565: 0xF800)
@@ -108,9 +96,9 @@ constexpr uint16_t RGB565_YELLOW_GOLDEN = 64992;  ///< Golden yellow (RGB565: 0x
  * @struct IconData
  * @brief Associates an icon character with its display color.
  *
- * This structure pairs a pointer to an icon Unicode character with
- * a corresponding RGB565 color value for display on the NSPanel.
- * Used for various entity types including climate, light, cover, etc.
+ * Pairs a pointer to an icon Unicode character with a corresponding
+ * RGB565 color value for display on the NSPanel. Used for various
+ * entity types including climate, light, cover, etc.
  */
 struct IconData {
   const char *icon;  ///< Pointer to icon Unicode character string

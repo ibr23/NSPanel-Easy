@@ -1,0 +1,103 @@
+# .github/release.yml
+#
+# Controls the auto-generated release notes produced by GitHub when
+# `generate_release_notes: true` is set in the release creation step.
+#
+# Categories are evaluated in order — the first matching label wins.
+# PRs with no matching label fall into the catch-all at the bottom.
+#
+# Label-to-prefix mapping (applied by the PR title validation workflow):
+#   fix:       -> Bug
+#   feat:      -> Enhancement
+#   improve:   -> Improvement
+#   ci:        -> CI
+#   docs:      -> Documentation
+#   style:     -> Style
+#   build:     -> Build
+#   refactor:  -> Refactor
+#   test:      -> Test
+#   chore:     -> Chore
+#   Dependabot -> Dependencies (applied automatically by GitHub)
+#
+# Note: GitHub matches on PR labels, not on the title prefix directly.
+# The labels above must be created in the repository and applied to PRs
+# — either manually or via a labeler workflow — for categorization to work.
+# Until a labeler is in place, all PRs will appear under "Other Changes".
+
+---
+changelog:
+  exclude:
+    # Exclude the automated version-bump PRs opened by the versioning workflow.
+    labels:
+      - skip-changelog
+
+  categories:
+    # -----------------------------------------------------------------
+    # User-facing: fixes first — most actionable for users on older versions
+    # -----------------------------------------------------------------
+    - title: "Bug Fixes"
+      labels:
+        - Bug
+
+    # -----------------------------------------------------------------
+    # User-facing: new capabilities
+    # -----------------------------------------------------------------
+    - title: "New Features"
+      labels:
+        - Enhancement
+
+    # -----------------------------------------------------------------
+    # User-facing: improvements to existing behavior
+    # -----------------------------------------------------------------
+    - title: "Improvements"
+      labels:
+        - Improvement
+
+    # -----------------------------------------------------------------
+    # User-facing: documentation changes
+    # -----------------------------------------------------------------
+    - title: "Documentation"
+      labels:
+        - Documentation
+
+    # -----------------------------------------------------------------
+    # Internal: still visible, but lower priority for end users
+    # -----------------------------------------------------------------
+    - title: "CI & Automation"
+      labels:
+        - ci
+
+    - title: "Style & Formatting"
+      labels:
+        - Style
+
+    - title: "Build System"
+      labels:
+        - Build
+
+    - title: "Refactoring"
+      labels:
+        - Refactor
+
+    - title: "Tests"
+      labels:
+        - Test
+
+    - title: "Chores"
+      labels:
+        - Chore
+
+    # -----------------------------------------------------------------
+    # Dependabot last — visible but not noise for users reading top-down
+    # -----------------------------------------------------------------
+    - title: "Dependency Updates"
+      labels:
+        - dependencies
+
+    # -----------------------------------------------------------------
+    # Catch-all: unlabelled PRs still appear rather than being silently dropped
+    # -----------------------------------------------------------------
+    - title: "Other Changes"
+      labels:
+        - "*"
+...

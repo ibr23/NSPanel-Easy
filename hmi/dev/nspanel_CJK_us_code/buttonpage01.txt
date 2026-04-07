@@ -58,7 +58,6 @@ Page buttonpage01
                 page_index.pco=color_pco_navigation
                 page_index.picc=pic_background_main
                 // Back button
-                button_back.font=button_back_font
                 button_back.pco=color_pco_navigation
                 button_back.picc=pic_background_main
                 button_back.picc2=pic_background_main
@@ -68,6 +67,7 @@ Page buttonpage01
                     b[sys0].picc=pic_background_main
                 }
             }
+            button_back.font=button_back_font
             // Show navigation components
             vis button_back,1
             vis page_label,1

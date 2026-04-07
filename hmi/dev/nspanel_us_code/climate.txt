@@ -23,62 +23,72 @@ Page climate
             {
                 page home_page_id
             }
+            // Hide sliders and temperature display initially
+            vis current_temp,0
             vis target_icon,0
             vis target_high,0
             vis target_low,0
-            vis current_temp,0
             vis climateslider,0
             vis slider_high,0
             vis slider_low,0
-            vis button01,0
-            vis button02,0
-            vis button03,0
-            vis button04,0
-            vis button05,0
-            vis button06,0
-            vis button07,0
-            button01.font=button_font.val
-            button02.font=button_font.val
-            button03.font=button_font.val
-            button04.font=button_font.val
-            button05.font=button_font.val
-            button06.font=button_font.val
-            button07.font=button_font.val
-            button08.font=button_font.val
-            button09.font=button_font.val
-            // set background image and fg color to all components
-            for(sys0=1;sys0<=last_component.id;sys0++)
+            // Hide HVAC mode buttons initially (ids 17-23) and set button fonts
+            for(sys0=17;sys0<=23;sys0++)
             {
-                b[sys0].picc=climate.pic
+                vis b[sys0],0
+                b[sys0].font=button_font.val
             }
-            slider_high.picc1=climate.pic
-            slider_low.picc1=climate.pic
-            climateslider.picc1=climate.pic
+            // button08 (id 30) and button09 (id 31): set fonts
+            for(sys0=30;sys0<=31;sys0++)
+            {
+                b[sys0].font=button_font.val
+            }
             button_back.font=button_back_font
-            button_back.pco=color_pco_navigation
-            button_back.picc2=climate.pic
-            page_label.pco=color_pco_main
-            current_temp.pco=color_pco_main
-            target_icon.pco=color_pco_main
-            target_high.pco=color_pco_main
-            target_low.pco=color_pco_main
-            value01.pco=color_pco_secondary
-            value01_icon.pco=color_pco_secondary
-            value02.pco=color_pco_secondary
-            value02_icon.pco=color_pco_secondary
-            value03.pco=color_pco_secondary
-            value03_icon.pco=color_pco_secondary
-            value04.pco=color_pco_secondary
-            value04_icon.pco=color_pco_secondary
-            button01.pco=color_pco_unsupported
-            button02.pco=color_pco_unsupported
-            button03.pco=color_pco_unsupported
-            button04.pco=color_pco_unsupported
-            button05.pco=color_pco_unsupported
-            button06.pco=color_pco_unsupported
-            button07.pco=color_pco_unsupported
-            button08.pco=color_pco_secondary
-            button09.pco=color_pco_secondary
+            if(theme==1)
+            {
+                // page_label (6), slider_high (7, picc=track bg), target_icon (8),
+                // value01_icon..value04_icon, value01..value04 (9-16),
+                // button01..button07 (17-23)
+                for(sys0=6;sys0<=23;sys0++)
+                {
+                    b[sys0].picc=climate.pic
+                }
+                // value slots (ids 9-16): secondary color
+                for(sys0=9;sys0<=16;sys0++)
+                {
+                    b[sys0].pco=color_pco_secondary
+                }
+                // HVAC mode buttons (ids 17-23): unsupported color
+                for(sys0=17;sys0<=23;sys0++)
+                {
+                    b[sys0].pco=color_pco_unsupported
+                }
+                // button08, button09 (ids 30-31): secondary color; target_high (id 32)
+                for(sys0=30;sys0<=32;sys0++)
+                {
+                    b[sys0].picc=climate.pic
+                    if(sys0<=31)
+                    {
+                        b[sys0].pco=color_pco_secondary
+                    }
+                }
+                // Sliders use picc1 for the track background
+                slider_high.picc1=climate.pic
+                slider_low.picc1=climate.pic
+                climateslider.picc1=climate.pic
+                // button_back
+                button_back.pco=color_pco_navigation
+                button_back.picc=climate.pic
+                button_back.picc2=climate.pic
+                // Labels and temperatures
+                page_label.pco=color_pco_main
+                // current_temp
+                current_temp.picc=climate.pic
+                current_temp.pco=color_pco_main
+                target_icon.pco=color_pco_main
+                target_high.pco=color_pco_main
+                target_low.pco=color_pco_main
+                target_low.picc=climate.pic
+            }
             dim=brightness
             sendme
         
@@ -247,12 +257,6 @@ Variable (int32) button_font
         ID   : 54
         Scope: global
         Value: 8
-    
-Variable (int32) last_component
-    Attributes
-        ID   : 55
-        Scope: local
-        Value: 0
     
 Text current_temp
     Attributes

@@ -1,0 +1,73 @@
+# .github/workflows/validate_pr_title.yml
+#
+# Validates that every PR title targeting `main` conforms to the project's
+# prefix convention before the PR is allowed to merge.
+#
+# Format:  <prefix>: <Description starting with a capital letter>
+# Example: fix: Correct baud rate negotiation timeout on EU model
+#
+# Allowed prefixes (lowercase only):
+#   fix, feat, improve, ci, docs, style, build, refactor, test, chore
+#
+# The job is triggered on the PR lifecycle events that can change the title:
+#   - opened      : first submission
+#   - edited      : title or body changed after opening
+#   - synchronize : new commits pushed (title may have been corrected)
+#   - reopened    : PR reopened after being closed
+#
+# To enforce this as a merge gate, add "Validate PR title" to the list of
+# required status checks in the branch protection rules for `main`.
+
+---
+name: Validate PR title
+
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate PR title
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check title format
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          # ---------------------------------------------------------------------------
+          # Allowed prefixes — update CONTRIBUTING.md in sync with any change here.
+          # ---------------------------------------------------------------------------
+          PATTERN='^(fix|feat|improve|ci|docs|style|build|refactor|test|chore): [A-Z].*[^.]$'
+
+          echo "PR title: ${PR_TITLE}"
+
+          if echo "${PR_TITLE}" | grep -qP "${PATTERN}"; then
+            echo "Title is valid."
+          else
+            echo "::error::PR title does not conform to the required format."
+            echo ""
+            echo "  Expected:  <prefix>: <Description starting with a capital letter>"
+            echo "  Received:  ${PR_TITLE}"
+            echo ""
+            echo "  Allowed prefixes (lowercase):"
+            echo "    fix, feat, improve, ci, docs, style, build, refactor, test, chore"
+            echo ""
+            echo "  Examples:"
+            echo "    fix: Correct baud rate negotiation timeout on EU model"
+            echo "    feat: Add per-page brightness control"
+            echo "    improve: Reduce boot time by deferring TFT version check"
+            echo ""
+            echo "  See CONTRIBUTING.md for the full specification."
+            exit 1
+          fi
+...
