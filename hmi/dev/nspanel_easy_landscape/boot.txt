@@ -535,13 +535,16 @@ Timer tm_esphome
             prints "localevent",0
             printh 00
             prints "boot,params,",0
-            prints display_mode,0
+            covx display_mode,va0.txt,0,0
+            prints va0.txt,0
             prints ",",0
-            prints hard_coded_display_mode,0
+            covx hard_coded_display_mode,va0.txt,0,0
+            prints va0.txt,0
             prints ",",0
             prints version.txt,0
             prints ",",0
-            prints magic_flag_found_at_boot,0
+            covx magic_flag_found_at_boot,va0.txt,0,0
+            prints va0.txt,0
             printh 00
             printh FF FF FF
         
