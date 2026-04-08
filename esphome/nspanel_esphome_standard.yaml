@@ -22,6 +22,7 @@ packages:
   - !include nspanel_esphome_page_alarm.yaml
   - !include nspanel_esphome_page_button.yaml
   - !include nspanel_esphome_page_buttons.yaml
+  - !include nspanel_esphome_page_canvas.yaml
   - !include nspanel_esphome_page_climate.yaml
   - !include nspanel_esphome_page_confirm.yaml
   - !include nspanel_esphome_page_cover.yaml

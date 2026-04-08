@@ -1,0 +1,31 @@
+#####################################################################################################
+#####                 NSPanel Easy - https://github.com/edwardtfn/NSPanel-Easy                  #####
+#####################################################################################################
+##### ESPHOME Page canvas                                                                       #####
+##### PLEASE only make changes if it is necessary and also the required knowledge is available. #####
+##### For normal use with the Blueprint, no changes are necessary.                              #####
+#####################################################################################################
+
+---
+substitutions:
+  TAG_PAGE_CANVAS: nspanel.page.canvas
+
+esphome:
+  platformio_options:
+    build_flags:
+      - -D NSPANEL_EASY_PAGE_CANVAS
+
+script:
+  - id: !extend page_change
+    then:
+      - lambda: |-
+          if (new_page_id == get_page_id("canvas")) page_canvas->execute();
+
+  - id: page_canvas
+    mode: single
+    then:
+
+  - id: !extend stop_page_constructors
+    then:
+      - lambda: page_canvas->stop();
+...

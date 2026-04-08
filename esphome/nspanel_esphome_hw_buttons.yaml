@@ -171,6 +171,8 @@ script:
             return;
           }
           const uint8_t display_mode_idx = display_model->active_index().value_or(UINT8_MAX);
+          if (display_mode_idx == UINT8_MAX) return;
+          display_mode_idx += 1;
           // Left button
           if (button_mask & 1 and id(hardware_settings).button_left_enabled) {
             static uint16_t button_bar_text_left_last_color_sent;

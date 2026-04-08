@@ -97,8 +97,8 @@ script:
             }
 
             // Only proceed when a standard TFT is selected (indices 1+)
-            if (display_model->active_index().value_or(UINT8_MAX) == UINT8_MAX) {
-              ESP_LOGV("${TAG_UPLOAD_TFT}", "No standard TFT selected");
+            if (!display_valid || display_model->current_option() == "${DISPLAY_MODES.BLANK.TEXT}") {
+              ESP_LOGD("${TAG_UPLOAD_TFT}", "No hardware TFT selected");
               return;
             }
 
