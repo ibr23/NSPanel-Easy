@@ -133,13 +133,6 @@ Variable (string) va1
         Text          : 
         Max. Text Size: 10
     
-Variable (string) csv
-    Attributes
-        ID            : 27
-        Scope         : local
-        Text          : 
-        Max. Text Size: 50
-    
 Text log_body
     Attributes
         ID                      : 1
@@ -538,23 +531,17 @@ Timer tm_esphome
             {
                 rest
             }
-            covx display_mode,va0.txt,0,0
-            csv.txt="boot,params,"+va0.txt+","+version.txt
             printh 92
             prints "localevent",0
             printh 00
-            prints csv.txt,0
+            prints "boot,params,",0
+            prints display_mode,0
+            prints ",",0
+            prints hard_coded_display_mode,0
+            prints ",",0
+            prints version.txt,0
+            prints ",",0
+            prints magic_flag_found_at_boot,0
             printh 00
             printh FF FF FF
-            sys0=counter.val%10
-            if(sys0==0)
-            {
-                bauds=115200
-            }
-            covx baud,tmp_baudrate.txt,0,0
-            sys_baudrate.txt="Baud rate: "
-            sys_baudrate.txt+=tmp_baudrate.txt
-            sys_baudrate.txt+=" bps"
-            sendme
-            doevents
         

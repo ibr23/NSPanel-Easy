@@ -11,7 +11,10 @@ static const char *TAG_COMPONENT_HW_DISPLAY = "nspanel.component.hw_display";
 ThemeMode current_theme = ThemeMode::DARK;  ///< Active display theme
 
 uint8_t brightness_current = 100;
-uint8_t display_mode = UINT8_MAX;
+bool display_easy = false;
+uint8_t display_mode_eeprom = UINT8_MAX;  // Populated from boot report, UINT8_MAX = unknown
+bool display_portrait = false;
+bool display_valid = false;
 
 }  // namespace esphome::nspanel_easy
 

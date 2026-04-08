@@ -26,8 +26,17 @@ Depending on your configuration, the add-on will either:
 1. **Automatically upload** the matching TFT file after a configurable wait period, or
 2. **Wait for a manual trigger** via the "Update TFT display" button in Home Assistant.
 
-The TFT file source is determined by the "Update TFT display - Model" selector
-on the device's page in Home Assistant (**Settings** > **Devices & services** > **ESPHome**).
+The TFT file URL is resolved in this order:
+
+1. If `nextion_update_url` is set in your substitutions → use it as-is, bypassing all other logic
+2. Otherwise → build the URL automatically from the **Display model** selector and the current
+   firmware version
+
+> [!IMPORTANT]
+> The **Display model** selector (under **Configuration** on your device's page in Home Assistant)
+> serves two purposes: it determines which TFT file is downloaded during an upload, and it
+> configures the panel's runtime behavior (touch calibration, button layout, display orientation).
+> Always keep it set to the option matching your physical hardware.
 
 ## Installation
 
@@ -91,14 +100,37 @@ packages:
 
 The following keys are available to be used in your `substitutions`:
 
-<!-- markdownlint-disable MD013 MD033 -->
-Key|Required|Supported values|Default|Description
-:-|:-:|:-:|:-:|:-
-upload_tft_automatically|Optional|`true` or `false`|`true`|When enabled, the device will automatically upload the TFT file when a version mismatch is detected after boot. When disabled, you must manually press the "Update TFT display" button in Home Assistant.
-upload_tft_baud_rate|Optional|Positive integer (bps)|`115200`|Baud rate used for the serial transfer to the Nextion display. Lower values are more reliable on noisy setups; higher values are faster. Common values: `9600`, `115200`, `921600`.
-upload_tft_wait_ms_after_boot|Optional|Positive integer (milliseconds)|`300000` (5 min)|Time to wait after the first NTP time sync before starting an automatic TFT upload. This delay allows the system to stabilize after boot. Reduce for faster updates; increase if you experience boot instability.
-nextion_update_url|Optional|Valid HTTP/HTTPS URL|GitHub raw URL for EU TFT|The URL from which the TFT file is downloaded. This is used as a fallback when "Use nextion\_update\_url" is selected in the model selector. For most users, the model selector in Home Assistant is the preferred way to choose the TFT source.
-<!-- markdownlint-enable MD013 MD033 -->
+| Key | Required | Supported values | Default | Description |
+| :- | :-: | :-: | :-: | :- |
+| `upload_tft_automatically` | Optional | `true` or `false` | `true` | When enabled, the device will automatically upload the TFT file when a version mismatch is detected after boot. When disabled, you must manually press the "Update TFT display" button in Home Assistant. |
+| `upload_tft_baud_rate` | Optional | Positive integer (bps) | `115200` | Baud rate used for the serial transfer to the Nextion display. Lower values are more reliable on noisy setups; higher values are faster. Common values: `9600`, `115200`, `921600`. |
+| `upload_tft_wait_ms_after_boot` | Optional | Positive integer (milliseconds) | `300000` (5 min) | Time to wait after the first NTP time sync before starting an automatic TFT upload. This delay allows the system to stabilize after boot. Reduce for faster updates; increase if you experience boot instability. |
+| `nextion_update_base_url` | Optional | Valid HTTP/HTTPS base URL | `https://raw.githubusercontent.com/edwardtfn/NSPanel-Easy/` | Base URL used when building the TFT download URL automatically. Override this to host TFT files on a local server while still benefiting from automatic model and version selection. |
+| `nextion_update_url` | Optional | Valid HTTP/HTTPS URL | _(empty)_ | Full URL override for the TFT file. When set, this takes absolute priority. The model selector and version logic are completely bypassed and this URL is used as-is. Use only when you need full control over the TFT source, such as for custom TFT files. See [important note below](#nextion_update_url-behaviour). |
+### `nextion_update_url` behaviour
+
+> [!WARNING]
+> Setting `nextion_update_url` disables all automatic URL management. The **Display model**
+> selector is still used for runtime behavior (touch calibration, button layout), but the
+> TFT file downloaded will always be the one at the URL you specified, regardless of which
+> model is selected or which version is current. You are responsible for keeping this URL
+> pointing to a compatible and up-to-date TFT file.
+
+When `nextion_update_url` is left empty (the default), the add-on builds the download URL
+automatically from the selected **Display model** and the current firmware version. This is
+the recommended configuration for most users.
+
+### Display model options
+
+This add-on extends the **Display model** selector with additional options beyond the hardware
+models defined in the base firmware:
+
+| Option | TFT file | Notes |
+| --- | --- | --- |
+| NSPanel EU | `nspanel_landscape.tft` | Standard EU hardware |
+| NSPanel US | `nspanel_portrait.tft` | Standard US hardware (portrait) |
+| NSPanel US Landscape | `nspanel_landscape.tft` | US hardware mounted in landscape |
+| NSPanel Blank | `nspanel_blank.tft` | First-time installation only. See [NSPanel Blank](nspanel_blank.md) |
 
 ### Example: Automatic updates with a shorter wait time
 
@@ -147,7 +179,11 @@ packages:
       - nspanel_esphome.yaml
 ```
 
-### Example: Using a local TFT file
+### Example: Using a locally hosted TFT file
+
+Use `nextion_update_url` only when you need to serve a custom or locally hosted TFT file.
+For standard setups, the automatic URL resolution based on the **Display model** selector
+is recommended instead.
 
 ```yaml
 substitutions:
@@ -158,8 +194,8 @@ substitutions:
   ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
   language: en      # Language code - see docs/localization.md for all supported codes
 
-  # Use a locally hosted TFT file
-  nextion_update_url: "http://homeassistant.local:8123/local/nspanel_eu.tft"
+  # Use a locally hosted TFT file - bypasses automatic model and version selection
+  nextion_update_url: "http://homeassistant.local:8123/local/nspanel_landscape.tft"
 
 packages:
   remote_package:
@@ -170,9 +206,31 @@ packages:
       - nspanel_esphome.yaml
 ```
 
-> [!NOTE]
-> When using `nextion_update_url`, make sure to select "Use nextion\_update\_url"
-> in the "Update TFT display - Model" selector on the device's page in Home Assistant.
+### Example: Using a local base URL with automatic model selection
+
+If your network cannot reach GitHub but you want to keep automatic model and version selection,
+override `nextion_update_base_url` instead of `nextion_update_url`:
+
+```yaml
+substitutions:
+  device_name: "YOUR_NSPANEL_NAME"
+  friendly_name: "Your panel's friendly name"
+  wifi_ssid: !secret wifi_ssid
+  wifi_password: !secret wifi_password
+  ota_password: ""  # Optional: set OTA password, or use ${wifi_password} for backward compatibility (see migration guide)
+  language: en      # Language code - see docs/localization.md for all supported codes
+
+  # Mirror the TFT files locally and point to your server
+  nextion_update_base_url: "http://homeassistant.local:8123/local/nspanel-easy/"
+
+packages:
+  remote_package:
+    url: https://github.com/edwardtfn/NSPanel-Easy
+    ref: latest
+    refresh: 300s
+    files:
+      - nspanel_esphome.yaml
+```
 
 ## Updating the TFT
 
@@ -183,7 +241,7 @@ When `upload_tft_automatically` is set to `true` (the default), the device will:
 1. Boot and connect to Home Assistant.
 2. Receive the current TFT version from the display.
 3. Compare it with the expected version from the firmware.
-4. If a mismatch is detected and a standard model is selected, wait for the configured delay
+4. If a mismatch is detected, wait for the configured delay
    (`upload_tft_wait_ms_after_boot`) after the first NTP time sync.
 5. Automatically start the TFT upload.
 
@@ -201,7 +259,8 @@ When `upload_tft_automatically` is set to `true` (the default), the device will:
 To manually trigger a TFT upload:
 
 1. Go to **Settings** > **Devices & services** > **ESPHome** and select your panel.
-2. Under **Configuration**, select the appropriate model in "Update TFT display - Model".
+2. Under **Configuration**, verify that **Display model** is set to the option matching
+   your physical hardware.
 3. Press the "Update TFT display" button.
 4. The display will start the update process and the device will restart when complete.
 

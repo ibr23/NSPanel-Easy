@@ -83,6 +83,28 @@ For the full list of supported language codes, see [Localization](localization.m
 > If you skip this step your panel will fall back to English after migration,
 > regardless of what language you had selected in the old Blueprint.
 
+#### `nextion_update_url`
+
+If you had `nextion_update_url` defined in your substitutions, read this carefully
+before updating.
+
+In the Blackymas project, `nextion_update_url` was the primary way to specify the TFT
+file source, and a dedicated selector option ("Use nextion\_update\_url") was required
+to activate it. In NSPanel Easy, this substitution now acts as a **full override**.
+When set, it bypasses the model selector and version logic entirely, and the specified
+URL is used as-is for every upload.
+
+**If you defined `nextion_update_url` only to select your panel model**, remove it from
+your substitutions. The **Display model** selector in Home Assistant now handles model
+selection automatically, including building the correct versioned download URL.
+
+**If you defined `nextion_update_url` to host a custom or local TFT file**, you can
+keep it, but be aware that automatic version management is disabled and you are responsible
+for keeping the URL pointing to a compatible and up-to-date TFT file.
+
+For full details on the new TFT upload behavior and available substitutions,
+see the [TFT Upload Add-on documentation](addon_upload_tft.md).
+
 #### Remote package reference
 
 Find your `remote_package` block. It currently looks something like this:
@@ -125,6 +147,7 @@ packages:
 | :------ | :------------------ | :------------------- |
 | `ota_password` | It was set on the remote package to use your WiFi password | You have to add the substitution `ota_password: ${wifi_password}` for backward compatibility |
 | `language` | Selected via Blueprint dropdown | Set as `language: xx` substitution in ESPHome YAML - see [Localization](localization.md) |
+| `nextion_update_url` | Used to select the TFT model or override the URL | Now a full override only. Remove it unless you are hosting a custom TFT file locally |
 | `url` | `https://github.com/Blackymas/NSPanel_HA_Blueprint` | `https://github.com/edwardtfn/NSPanel-Easy` |
 | `ref` | `main` (or a specific version) | `latest` |
 | Add-on file paths | Root level (e.g. `nspanel_esphome_addon_climate_heat.yaml`) | Inside `esphome/` folder (e.g. `esphome/nspanel_esphome_addon_climate_heat.yaml`) |
@@ -172,7 +195,7 @@ packages:
 ## CJK language support
 
 CJK (Chinese, Japanese, Korean) language support is now built into the standard TFT files.
-There are no separate CJK variants, simply select the model matching your hardware
+There are no separate CJK variants. Simply select the model matching your hardware
 (**NSPanel EU**, **NSPanel US**, or **NSPanel US Landscape**) regardless of the language you use.
 
 ---
@@ -382,3 +405,9 @@ A: No. You can migrate one panel at a time. Each panel is independent.
 **Q: My panel is now showing English instead of my language after migration.**
 A: Language is no longer configured in the Blueprint. Add `language: xx` to your
 ESPHome `substitutions` block and reflash. See [Localization](localization.md) for supported codes.
+
+**Q: I had `nextion_update_url` defined. Do I need to keep it?**
+A: Only if you are hosting a custom or local TFT file. If you set it to select your panel
+model in the Blackymas project, remove it. Model selection is now handled automatically
+by the **Display model** selector in Home Assistant. See the
+[TFT Upload Add-on documentation](addon_upload_tft.md) for details.

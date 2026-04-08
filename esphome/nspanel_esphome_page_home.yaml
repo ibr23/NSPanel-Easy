@@ -54,7 +54,7 @@ script:
   - id: !extend action_component_color
     then:
       - lambda: |-
-          if (display_mode == 4) return;  // To do: Implement logic for new format
+          if (display_easy) return;  // To do: Implement logic for new format
           if (page != "mem") return;
           if (component == "date_color") {
             id(home_date_color) = color;
@@ -127,7 +127,7 @@ script:
     then:
       - lambda: |-
           // Only applies to home page buttons (button01..button08) on new design
-          if (display_mode != 4) return;
+          if (!display_easy) return;
           if (!is_home_page) return;
           if (!is_current_page) return;  // cirs only affects the visible page
 
@@ -231,7 +231,7 @@ script:
                                 ((current_theme == ThemeMode::LIGHT) ? ${THEME_DARK_PIC_PAGE_HOME_WEATHER_OFFSET} : 0);
           ESP_LOGD("${TAG_PAGE_HOME}", "Update weather pic: %" PRIu8, weather_pic_corrected);
           disp1->set_component_pic(hmi::home::WEATHER.name, weather_pic_corrected);
-          if (display_mode==4) {  // To do: Implement logic for new format
+          if (display_easy) {  // To do: Implement logic for new format
             disp1->send_command_printf("home_weather_pic=%" PRIu8, id(weather_pic));
           }
 

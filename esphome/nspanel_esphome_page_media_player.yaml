@@ -81,13 +81,13 @@ api:
             // Media title
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "Media title");
             disp1->set_component_text("track", wrapText(media_title.c_str(),
-                                                        display_mode == 2 ? 16 : 27,
+                                                        display_portrait ? 16 : 27,
                                                         ${LANG_BYTES_PER_CHAR}).c_str());
 
             // Media artist
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "Media artist");
             disp1->set_component_text("artist", wrapText(media_artist.c_str(),
-                                                          display_mode == 2 ? 26 : 40,
+                                                          display_portrait ? 26 : 40,
                                                           ${LANG_BYTES_PER_CHAR}).c_str());
             feed_wdt_delay(${DELAY_SHORT});
 
