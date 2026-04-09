@@ -102,7 +102,7 @@ script:
 
             // Only proceed when a standard TFT is selected (indices 1+)
             if (!has_url_override &&
-                (!display_valid || display_model->current_option() == "${DISPLAY_MODES.BLANK.TEXT}")) {
+                (!display_valid || display_model->current_option() == "${DISPLAY_MODES_BLANK_TEXT}")) {
               ESP_LOGD("${TAG_UPLOAD_TFT}", "No hardware TFT selected");
               return;
             }
