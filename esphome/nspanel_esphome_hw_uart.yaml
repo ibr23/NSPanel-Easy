@@ -72,8 +72,8 @@ script:
           #endif  // ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
 
       # Wait for TX to drain and Nextion to finish transmitting at old rate
-      - script.execute: wait_for_uart_available
-      - script.wait: wait_for_uart_available
+      - script.execute: wait_for_uart_drain
+      - script.wait: wait_for_uart_drain
       - delay: 150ms
 
       - lambda: |-
@@ -208,8 +208,8 @@ script:
                 disp1->send_command_printf("baud=%" PRIu32, static_cast<uint32_t>(${BAUD_RATE}));
 
             # Wait for TX to drain and Nextion to finish at old rate
-            - script.execute: wait_for_uart_available
-            - script.wait: wait_for_uart_available
+            - script.execute: wait_for_uart_drain
+            - script.wait: wait_for_uart_drain
             - delay: 150ms
 
             - lambda: |-
@@ -317,16 +317,16 @@ script:
       - lambda: |-
           baud_negotiate->stop();
           baud_upgrade->stop();
-          wait_for_uart_available->stop();
+          wait_for_uart_drain->stop();
 
-  - id: wait_for_uart_available
+  - id: wait_for_uart_drain
     mode: single
     then:
       - repeat:
           count: 60  # seconds
           then:
             - lambda: |-
-                if (tf_uart->available() == 0) wait_for_uart_available->stop();
+                if (tf_uart->available() == 0) wait_for_uart_drain->stop();
                 if (iteration % 5 == 0) boot_log->execute("Boot", "Waiting for UART empty queue");
             - delay: 1s
 
@@ -340,6 +340,7 @@ text_sensor:
       return std::to_string(tf_uart->get_baud_rate());
     filters:
       - append: " bps"
+    update_interval: 111min
 
 uart:
   - id: tf_uart  # UART for Nextion display
