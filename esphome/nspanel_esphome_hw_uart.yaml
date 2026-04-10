@@ -273,31 +273,6 @@ script:
                   disp1->send_command_printf("baud=%" PRIu32, static_cast<uint32_t>(${BAUD_RATE_FALLBACK}));
                 }
 
-            - delay: !lambda return ${BAUD_RATE_UPGRADE_PROBE_MS};
-
-            - lambda: |-
-                if (!system_flags.baud_fallback_active) return;
-
-                if (tf_uart->available() > 0) {
-                  // Flush probe response
-                  while (tf_uart->available()) {
-                    uint8_t discard;
-                    tf_uart->read_byte(&discard);
-                  }
-                  system_flags.baud_fallback_active = false;
-                  ESP_LOGI("${TAG_HW_UART}", "Baud upgrade: success - now at %" PRIu32 " bps",
-                                              static_cast<uint32_t>(${BAUD_RATE}));
-                  boot_log->execute("Baud", "Upgraded to primary rate");
-                } else {
-                  // Probe failed - revert UART to fallback before next attempt
-                  ESP_LOGW("${TAG_HW_UART}", "Baud upgrade: probe failed on attempt %u - reverting UART",
-                                              static_cast<unsigned>(iteration + 1u));
-                  tf_uart->set_baud_rate(${BAUD_RATE_FALLBACK});
-                  tf_uart->load_settings();
-                  baud_rate_active->update();
-                  disp1->send_command_printf("baud=%" PRIu32, static_cast<uint32_t>(${BAUD_RATE_FALLBACK}));
-                }
-
             - delay: 500ms
 
       - lambda: |-
