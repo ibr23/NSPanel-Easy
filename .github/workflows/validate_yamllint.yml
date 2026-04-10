@@ -4,9 +4,6 @@ name: Validate YAML (secondary files)
 # yamllint disable-line rule:truthy
 on:
   pull_request:
-    paths:
-      - '**/*.yml'
-      - '**/*.yaml'
   workflow_dispatch:
 
 permissions:
@@ -26,7 +23,9 @@ jobs:
         uses: step-security/changed-files@v47.0.1
         id: changed-files
         with:
-          files: '**/*.yaml'
+          files: |
+            **/*.yml
+            **/*.yaml
           separator: ","
 
       - name: Validate YAML
@@ -50,4 +49,21 @@ jobs:
             echo "::endgroup::"
           done
           exit $failed
+
+  # ===========================================================================
+  # Gate — required status check for branch protection
+  # ===========================================================================
+  all-checks-passed:
+    name: Validate YAML (secondary files) / All checks passed
+    runs-on: ubuntu-latest
+    needs: code_scan
+    if: always()
+    steps:
+      - name: Check result
+        run: |
+          echo "code_scan: ${{ needs.code_scan.result }}"
+          case "${{ needs.code_scan.result }}" in
+            success|skipped) exit 0 ;;
+            *) exit 1              ;;
+          esac
 ...

@@ -4,8 +4,6 @@ name: Validate Blueprint YAML
 # yamllint disable-line rule:truthy
 on:
   pull_request:
-    paths:
-      - "nspanel_easy_blueprint.yaml"
   workflow_dispatch:
 
 permissions:
@@ -20,14 +18,37 @@ jobs:
         with:
           fetch-depth: '0'
 
+      - name: Get changed files
+        id: changed
+        uses: step-security/changed-files@v47.0.1
+        with:
+          files: 'nspanel_easy_blueprint.yaml'
+
       - name: Set up Python
+        if: steps.changed.outputs.any_changed == 'true'
         uses: actions/setup-python@v6.2.0
         with:
           python-version: "3.11"
 
       - name: Install dependencies
+        if: steps.changed.outputs.any_changed == 'true'
         run: pip install -r .github/requirements.txt
 
       - name: Validate nspanel_easy_blueprint.yaml
+        if: steps.changed.outputs.any_changed == 'true'
         run: yamllint -c "./.rules/yamllint.yml" nspanel_easy_blueprint.yaml
+
+  all-checks-passed:
+    name: Validate Blueprint YAML / All checks passed
+    runs-on: ubuntu-latest
+    needs: code_scan
+    if: always()
+    steps:
+      - name: Check result
+        run: |
+          echo "code_scan: ${{ needs.code_scan.result }}"
+          case "${{ needs.code_scan.result }}" in
+            success|skipped) exit 0 ;;
+            *)               exit 1 ;;
+          esac
 ...

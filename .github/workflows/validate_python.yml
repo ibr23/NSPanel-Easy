@@ -4,8 +4,6 @@ name: Validate Python (flake8)
 # yamllint disable-line rule:truthy
 on:
   pull_request:
-    paths:
-      - "**/*.py"
   workflow_dispatch:
 
 permissions:
@@ -13,20 +11,47 @@ permissions:
 
 jobs:
   flake8-lint:
+    name: Validate Python (flake8)
     runs-on: ubuntu-latest
-    name: Lint
     steps:
       - name: Check out source repository
         uses: actions/checkout@v6.0.2
 
+      - name: Detect changed Python files
+        id: changed
+        if: github.event_name == 'pull_request'
+        uses: step-security/changed-files@v47.0.1
+        with:
+          files: '**/*.py'
+
       - name: Set up Python environment
+        if: github.event_name != 'pull_request' || steps.changed.outputs.any_changed == 'true'
         uses: actions/setup-python@v6.2.0
         with:
           python-version: "3.11"
 
       - name: Install flake8
+        if: github.event_name != 'pull_request' || steps.changed.outputs.any_changed == 'true'
         run: pip install flake8
 
       - name: flake8 Lint
+        if: github.event_name != 'pull_request' || steps.changed.outputs.any_changed == 'true'
         run: flake8 --max-line-length=200 components/nspanel_easy
+
+  # ===========================================================================
+  # Gate — required status check for branch protection
+  # ===========================================================================
+  all-checks-passed:
+    name: Validate Python (flake8) / All checks passed
+    runs-on: ubuntu-latest
+    needs: flake8-lint
+    if: always()
+    steps:
+      - name: Check result
+        run: |
+          echo "flake8-lint: ${{ needs.flake8-lint.result }}"
+          case "${{ needs.flake8-lint.result }}" in
+            success|skipped) exit 0 ;;
+            *) exit 1              ;;
+          esac
 ...

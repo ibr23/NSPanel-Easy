@@ -4,11 +4,6 @@ name: Validate C++ (Clang Format)
 # yamllint disable-line rule:truthy
 on:
   pull_request:
-    paths:
-      - '**/*.h'
-      - '**/*.c'
-      - '**/*.cpp'
-      - '.clang-format'
   workflow_dispatch:
 
 permissions:
@@ -16,25 +11,59 @@ permissions:
 
 jobs:
   clang-format-checking:
+    name: Clang Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref || github.ref_name }}  # PR head branch, otherwise selected dispatch ref
 
+      - name: Detect changed C/C++ files
+        id: changed
+        if: github.event_name == 'pull_request'
+        uses: step-security/changed-files@v47.0.1
+        with:
+          files: |
+            **/*.h
+            **/*.c
+            **/*.cpp
+            .clang-format
+
       - name: Install clang-format
+        if: github.event_name != 'pull_request' || steps.changed.outputs.any_changed == 'true'
         run: sudo apt-get install -y clang-format
 
       - name: Apply clang-format
+        if: github.event_name != 'pull_request' || steps.changed.outputs.any_changed == 'true'
         run: |
           find ./components/nspanel_easy ./.test/unit \
             \( -name "*.h" -o -name "*.c" -o -name "*.cpp" \) \
             -print0 | xargs -0 -r clang-format --style=file -i
 
       - name: Commit clang-format fixes
-        if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository }}
+        if: >-
+          (github.event_name != 'pull_request' || steps.changed.outputs.any_changed == 'true') &&
+          (github.event_name == 'workflow_dispatch' ||
+           github.event.pull_request.head.repo.full_name == github.repository)
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "style: apply clang-format"
           commit_options: "--no-verify"
+
+  # ===========================================================================
+  # Gate — required status check for branch protection
+  # ===========================================================================
+  all-checks-passed:
+    name: Validate C++ (Clang Format) / All checks passed
+    runs-on: ubuntu-latest
+    needs: clang-format-checking
+    if: always()
+    steps:
+      - name: Check result
+        run: |
+          echo "clang-format-checking: ${{ needs.clang-format-checking.result }}"
+          case "${{ needs.clang-format-checking.result }}" in
+            success|skipped) exit 0 ;;
+            *) exit 1              ;;
+          esac
 ...
