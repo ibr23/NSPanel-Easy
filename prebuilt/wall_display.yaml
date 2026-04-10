@@ -34,9 +34,9 @@ esphome:
       - -D NSPANEL_EASY_PREBUILT_WALL_DISPLAY
 text:
   - id: !extend fw_url
-    initial_value: "https://raw.githubusercontent.com/edwardtfn/NSPanel-Easy/main/prebuilt/wall_display.bin"
+    initial_value: "https://github.com/edwardtfn/NSPanel-Easy/raw/refs/tags/latest/prebuilt/wall_display.bin"
 
 update:
   - id: !extend update_std
-    source: "https://raw.githubusercontent.com/edwardtfn/NSPanel-Easy/main/prebuilt/wall_display.manifest.json"
+    source: "https://github.com/edwardtfn/NSPanel-Easy/raw/refs/tags/latest/prebuilt/wall_display.manifest.json"
 ...

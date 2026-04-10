@@ -1,0 +1,184 @@
+# This GitHub Actions workflow handles tagging, releasing, and Discord notification.
+#
+# Triggered by merging a bump PR (identified by [skip-versioning] in the title)
+# to the main branch, it automatically:
+# 1. Recovers the original PR title and body from the bump PR description
+# 2. Creates a version tag and GitHub Release
+# 3. Updates the stable and latest floating tags
+# 4. Announces the release on Discord
+
+---
+name: Release & Tags
+
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Extract release metadata from the bump PR and create the release.
+  # Only runs when a bump PR (containing [skip-versioning]) is merged.
+  # ---------------------------------------------------------------------------
+  release:
+    name: Tag & release
+    if: >-
+      github.event.pull_request.merged == true &&
+      contains(github.event.pull_request.title, '[skip-versioning]')
+    runs-on: ubuntu-latest
+    concurrency:
+      group: version-and-release
+      cancel-in-progress: false
+    permissions:
+      contents: write
+
+    outputs:
+      released: ${{ steps.push_tag.outcome == 'success' }}
+      version: ${{ steps.meta.outputs.version }}
+      release_url: ${{ steps.create_release.outputs.url }}
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Extract release metadata
+        id: meta
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          # Read the version from version.yaml on the post-merge main.
+          VERSION=$(grep '^version:' ./versioning/version.yaml | awk '{print $2}')
+          if [[ -z "$VERSION" || "$VERSION" == "null" ]]; then
+            echo "ERROR: Could not read version from versioning/version.yaml"
+            exit 1
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+          # Recover original PR title from the bump PR description.
+          # The bump PR body contains a hidden HTML comment block:
+          #   <!-- release-meta
+          #   original_title: <title>
+          #   -->
+          ORIGINAL_TITLE=$(echo "$PR_BODY" \
+            | grep 'original_title:' \
+            | sed 's/original_title: //')
+
+          # Fall back to the bump PR title (minus the ci: prefix and marker)
+          # if the meta block is missing for any reason.
+          if [[ -z "$ORIGINAL_TITLE" ]]; then
+            ORIGINAL_TITLE=$(echo "$PR_TITLE" \
+              | sed 's/ci: Bump version to [^ ]* //' \
+              | sed 's/ \[skip-versioning\]//')
+          fi
+
+          # Extract the original PR body — everything after the closing --> of
+          # the meta comment block.
+          ORIGINAL_BODY=$(echo "$PR_BODY" \
+            | awk '/^-->/{found=1; next} found{print}' \
+            | sed '/^$/N;s/^\n//')
+
+          if [[ -z "$ORIGINAL_BODY" ]]; then
+            ORIGINAL_BODY="Automated version bump"
+          fi
+
+          # Use heredoc-style output to safely handle multiline values.
+          {
+            echo "pr_title=${ORIGINAL_TITLE}"
+            echo "pr_body<<EOF"
+            echo "${ORIGINAL_BODY}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build tag message from PR
+        env:
+          NEW_VERSION: ${{ steps.meta.outputs.version }}
+          PR_TITLE: ${{ steps.meta.outputs.pr_title }}
+          PR_BODY: ${{ steps.meta.outputs.pr_body }}
+        run: |
+          {
+            printf '# v%s - %s\n\n' "$NEW_VERSION" "$PR_TITLE"
+            printf '%s\n' "$PR_BODY"
+          } > tag_message.txt
+
+      - name: Create and push version tag
+        id: push_tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NEW_VERSION: ${{ steps.meta.outputs.version }}
+        run: |
+          git tag -a "v${NEW_VERSION}" -F tag_message.txt
+          git push origin "v${NEW_VERSION}"
+
+      - name: Create GitHub Release
+        id: create_release
+        if: steps.push_tag.outcome == 'success'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.meta.outputs.version }}
+          name: v${{ steps.meta.outputs.version }} - ${{ steps.meta.outputs.pr_title }}
+          generate_release_notes: true
+
+      # -------------------------------------------------------------------
+      # Update floating tags (stable & latest)
+      # -------------------------------------------------------------------
+
+      - name: Update stable tag
+        if: steps.push_tag.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git rev-parse --verify stable >/dev/null 2>&1; then
+            echo "Previous stable: $(git rev-parse stable)"
+          fi
+          git tag -fa stable -F tag_message.txt
+          git push origin stable --force
+
+      - name: Update latest tag
+        if: steps.push_tag.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git rev-parse --verify latest >/dev/null 2>&1; then
+            echo "Previous latest: $(git rev-parse latest)"
+          fi
+          git tag -fa latest -F tag_message.txt
+          git push origin latest --force
+
+  # ---------------------------------------------------------------------------
+  # Announce the new release on Discord.
+  # Always runs last — only when a release was actually published.
+  # ---------------------------------------------------------------------------
+  notify-discord:
+    name: Notify Discord
+    needs: [release]
+    if: needs.release.outputs.released == 'true'
+    runs-on: ubuntu-latest
+    permissions: {}
+
+    steps:
+      - name: Send release message to Discord
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_CH_GENERAL_WEBHOOK }}
+          RELEASE_TAG: v${{ needs.release.outputs.version }}
+          RELEASE_URL: ${{ needs.release.outputs.release_url }}
+        run: |
+          MESSAGE="🚀 New NSPanel Easy release published
+          ${RELEASE_TAG}
+          ${RELEASE_URL}"
+
+          jq -n --arg content "$MESSAGE" '{content: $content}' \
+          | curl --fail-with-body \
+            -H "Content-Type: application/json" \
+            -d @- \
+            "$DISCORD_WEBHOOK"
+...

@@ -1,4 +1,4 @@
-# This GitHub Actions workflow handles version bumping, pre-built firmware, releases, and tag updates.
+# This GitHub Actions workflow handles version bumping and pre-built firmware builds.
 #
 # Triggered by merging a PR to the main branch, it automatically:
 # 1. Bumps the CalVer version (YYYY.M.seq)
@@ -7,18 +7,18 @@
 # 4. Updates min_esphome_compiler_version and blueprint homeassistant.min_version
 # 5. Updates the bug report template with current version placeholders
 # 6. Updates the blueprint version and display name
-# 7. Commits all version changes and pushes to main
-# 8. Builds pre-built firmware binaries in parallel (nspanel-easy, wall-display)
-# 9. Commits the compiled binaries, checksums, and manifests to main
-# 10. Creates a version tag and GitHub Release
-# 11. Updates the stable and latest floating tags
-# 12. Announces the release on Discord
+# 7. Builds pre-built firmware binaries in parallel (nspanel-easy, wall-display)
+# 8. Commits all version changes and pre-built binaries to a bump branch
+# 9. Opens a PR with auto-merge enabled
 #
 # The workflow skips execution if the merge commit message contains
 # [skip-versioning] to prevent loops from its own version bump commits.
+#
+# The bump PR title contains [skip-versioning] and the original PR title/body
+# are stored in the bump PR description for use by release.yml.
 
 ---
-name: Version, Release & Tags
+name: Version bump
 
 on:  # yamllint disable-line rule:truthy
   pull_request:
@@ -31,7 +31,7 @@ on:  # yamllint disable-line rule:truthy
 
 jobs:
   # ---------------------------------------------------------------------------
-  # Bump version, update bug template, and push to main.
+  # Bump version and update all version-controlled files.
   # All downstream jobs depend on this one completing successfully.
   # ---------------------------------------------------------------------------
   bump:
@@ -43,12 +43,13 @@ jobs:
       cancel-in-progress: false
     permissions:
       contents: write
-      pull-requests: read
+      pull-requests: write
 
     outputs:
       skip: ${{ steps.skip_check.outputs.skip }}
       version: ${{ steps.next_version.outputs.version }}
-      release_sha: ${{ steps.capture_sha.outputs.sha }}
+      bump_sha: ${{ steps.commit.outputs.bump_sha }}
+      bump_branch: ${{ steps.commit.outputs.bump_branch }}
       pr_title: ${{ fromJson(steps.pr_info.outputs.result).title }}
       pr_body: ${{ fromJson(steps.pr_info.outputs.result).body }}
 
@@ -306,32 +307,29 @@ jobs:
             fi
           done
 
-      - name: Commit version and template changes
+      - name: Create bump branch
+        id: commit
         if: steps.skip_check.outputs.skip == 'false'
         env:
           NEW_VERSION: ${{ steps.next_version.outputs.version }}
         run: |
-          git add ./versioning/version.yaml .github/ISSUE_TEMPLATE/bug.yml \
-                  esphome/nspanel_esphome_version.yaml nspanel_easy_blueprint.yaml
-          git commit -m "Bump version to ${NEW_VERSION} [skip-versioning]"
+          BRANCH="ci/bump-version-${NEW_VERSION}"
+          git checkout -b "${BRANCH}"
+          git add \
+            ./versioning/version.yaml \
+            .github/ISSUE_TEMPLATE/bug.yml \
+            esphome/nspanel_esphome_version.yaml \
+            nspanel_easy_blueprint.yaml
+          git commit -m "ci: Bump version to ${NEW_VERSION} [skip-versioning]"
+          echo "bump_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "bump_branch=${BRANCH}" >> "$GITHUB_OUTPUT"
 
-      - name: Push changes to main
+      - name: Push bump branch
         if: steps.skip_check.outputs.skip == 'false'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Rebase in case main advanced during workflow execution
-          git fetch origin main
-          git rebase origin/main || {
-            echo "Rebase failed - main has diverged"
-            exit 1
-          }
-          git push origin HEAD:main
-
-      - name: Capture post-bump SHA
-        id: capture_sha
-        if: steps.skip_check.outputs.skip == 'false'
-        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          git push origin "${{ steps.commit.outputs.bump_branch }}"
 
   # ---------------------------------------------------------------------------
   # Build pre-built firmware: nspanel-easy
@@ -346,10 +344,10 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout post-bump main
+      - name: Checkout bump branch
         uses: actions/checkout@v6
         with:
-          ref: ${{ needs.bump.outputs.release_sha }}
+          ref: ${{ needs.bump.outputs.bump_branch }}
           fetch-depth: 1
 
       - name: Build firmware
@@ -357,7 +355,7 @@ jobs:
         with:
           yaml-file: prebuilt/nspanel_esphome_prebuilt.yaml
           substitutions: |
-            ref_name=${{ needs.bump.outputs.release_sha }}
+            ref_name=${{ needs.bump.outputs.bump_sha }}
             ref_url=https://github.com/edwardtfn/NSPanel-Easy
 
       - name: Locate compiled binaries
@@ -437,10 +435,10 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout post-bump main
+      - name: Checkout bump branch
         uses: actions/checkout@v6
         with:
-          ref: ${{ needs.bump.outputs.release_sha }}
+          ref: ${{ needs.bump.outputs.bump_branch }}
           fetch-depth: 1
 
       - name: Build firmware
@@ -448,7 +446,7 @@ jobs:
         with:
           yaml-file: prebuilt/wall_display.yaml
           substitutions: |
-            ref_name=${{ needs.bump.outputs.release_sha }}
+            ref_name=${{ needs.bump.outputs.bump_sha }}
             ref_url=https://github.com/edwardtfn/NSPanel-Easy
 
       - name: Locate compiled binaries
@@ -516,11 +514,11 @@ jobs:
           retention-days: 1
 
   # ---------------------------------------------------------------------------
-  # Collect both firmware artifacts, commit to main, tag, and release.
-  # Runs only after both build jobs succeed.
+  # Commit all artifacts to the bump branch and open the bump PR.
+  # Runs after both builds succeed.
   # ---------------------------------------------------------------------------
-  commit-and-release:
-    name: Commit artifacts & release
+  open-bump-pr:
+    name: Commit artifacts & open bump PR
     needs: [bump, build-nspanel, build-wall-display]
     if: needs.bump.outputs.skip == 'false'
     runs-on: ubuntu-latest
@@ -529,17 +527,13 @@ jobs:
       cancel-in-progress: false
     permissions:
       contents: write
-
-    outputs:
-      released: ${{ steps.push_tag.outcome == 'success' }}
-      version: ${{ needs.bump.outputs.version }}
-      release_url: ${{ steps.create_release.outputs.url }}
+      pull-requests: write
 
     steps:
-      - name: Checkout post-bump main
+      - name: Checkout bump branch
         uses: actions/checkout@v6
         with:
-          ref: ${{ needs.bump.outputs.release_sha }}
+          ref: ${{ needs.bump.outputs.bump_branch }}
           fetch-depth: 0
 
       - name: Set up Git
@@ -596,7 +590,7 @@ jobs:
           done
           [ "$ok" = true ] || exit 1
 
-      - name: Commit pre-built artifacts
+      - name: Commit pre-built artifacts to bump branch
         env:
           NEW_VERSION: ${{ needs.bump.outputs.version }}
         run: |
@@ -605,101 +599,32 @@ jobs:
           git diff --cached --quiet || \
             git commit -m "build: pre-built firmware for v${NEW_VERSION} [skip-versioning]"
 
-      - name: Push artifacts to main
+      - name: Push updated bump branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Push directly — no rebase. If main has advanced since the bump job
-          # pushed, abort rather than silently tagging the wrong revision.
-          git push origin HEAD:main || {
-            echo "ERROR: main has advanced since artifacts were built; aborting to avoid tagging the wrong revision"
-            exit 1
-          }
+          git push origin "${{ needs.bump.outputs.bump_branch }}"
 
-      # -------------------------------------------------------------------
-      # Tag and release (after binary commit, so tag points to final state)
-      # -------------------------------------------------------------------
-
-      - name: Build tag message from PR
+      - name: Open bump PR with auto-merge
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEW_VERSION: ${{ needs.bump.outputs.version }}
           PR_TITLE: ${{ needs.bump.outputs.pr_title }}
           PR_BODY: ${{ needs.bump.outputs.pr_body }}
         run: |
-          {
-            printf '# v%s - %s\n\n' "$NEW_VERSION" "$PR_TITLE"
-            printf '%s\n' "$PR_BODY"
-          } > tag_message.txt
+          # Store original PR title and body in the bump PR description so
+          # release.yml can recover them after this PR merges.
+          BODY="$(printf \
+            '<!-- release-meta\noriginal_title: %s\n-->\n\n%s' \
+            "$PR_TITLE" \
+            "$PR_BODY")"
 
-      - name: Create and push version tag
-        id: push_tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_VERSION: ${{ needs.bump.outputs.version }}
-        run: |
-          git tag -a "v${NEW_VERSION}" -F tag_message.txt
-          git push origin "v${NEW_VERSION}"
+          PR_URL=$(gh pr create \
+            --title "ci: Bump version to ${NEW_VERSION} [skip-versioning]" \
+            --body "$BODY" \
+            --base main \
+            --head "${{ needs.bump.outputs.bump_branch }}")
 
-      - name: Create GitHub Release
-        id: create_release
-        if: steps.push_tag.outcome == 'success'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ needs.bump.outputs.version }}
-          name: v${{ needs.bump.outputs.version }} - ${{ needs.bump.outputs.pr_title }}
-          generate_release_notes: true
-
-      # -------------------------------------------------------------------
-      # Update floating tags (stable & latest)
-      # -------------------------------------------------------------------
-
-      - name: Update stable tag
-        if: steps.push_tag.outcome == 'success'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if git rev-parse --verify stable >/dev/null 2>&1; then
-            echo "Previous stable: $(git rev-parse stable)"
-          fi
-          git tag -fa stable -F tag_message.txt
-          git push origin stable --force
-
-      - name: Update latest tag
-        if: steps.push_tag.outcome == 'success'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if git rev-parse --verify latest >/dev/null 2>&1; then
-            echo "Previous latest: $(git rev-parse latest)"
-          fi
-          git tag -fa latest -F tag_message.txt
-          git push origin latest --force
-
-  # ---------------------------------------------------------------------------
-  # Announce the new release on Discord.
-  # Always runs last — only when a release was actually published.
-  # ---------------------------------------------------------------------------
-  notify-discord:
-    name: Notify Discord
-    needs: [commit-and-release]
-    if: needs.commit-and-release.outputs.released == 'true'
-    runs-on: ubuntu-latest
-    permissions: {}
-
-    steps:
-      - name: Send release message to Discord
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_CH_GENERAL_WEBHOOK }}
-          RELEASE_TAG: v${{ needs.commit-and-release.outputs.version }}
-          RELEASE_URL: ${{ needs.commit-and-release.outputs.release_url }}
-        run: |
-          MESSAGE="🚀 New NSPanel Easy release published
-          ${RELEASE_TAG}
-          ${RELEASE_URL}"
-
-          jq -n --arg content "$MESSAGE" '{content: $content}' \
-          | curl --fail-with-body \
-            -H "Content-Type: application/json" \
-            -d @- \
-            "$DISCORD_WEBHOOK"
+          echo "Bump PR created: ${PR_URL}"
+          gh pr merge "${PR_URL}" --auto --squash
 ...
