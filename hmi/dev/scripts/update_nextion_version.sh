@@ -38,10 +38,6 @@ update_version () {
     rm -rf "$TEMP_DIR"
 }
 
-update_version "$HMI_DIR/nspanel_blank.HMI"
-update_version "$HMI_DIR/nspanel_CJK_eu.HMI"
-update_version "$HMI_DIR/nspanel_CJK_us_land.HMI"
-update_version "$HMI_DIR/nspanel_CJK_us.HMI"
-update_version "$HMI_DIR/nspanel_eu.HMI"
-update_version "$HMI_DIR/nspanel_us.HMI"
-update_version "$HMI_DIR/nspanel_us_land.HMI"
+update_version "$HMI_DIR/nspanel_blank.hmi"
+update_version "$HMI_DIR/nspanel_landscape.hmi"
+update_version "$HMI_DIR/nspanel_portrait.hmi"

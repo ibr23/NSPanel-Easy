@@ -1,0 +1,154 @@
+Page theme_apply
+    Attributes
+        ID                 : 0
+        Scope              : local
+        Dragging           : 0
+        Send Component ID  : disabled
+        Opacity            : 127
+        Width              : 320
+        Effect             : load
+        Effect Priority    : 0
+        Effect Time        : 300
+        Locked             : no
+        Swide up page ID   : disabled
+        Swide down page ID : disabled
+        Swide left page ID : disabled
+        Swide right page ID: disabled
+        Fill               : no background (white)
+    
+    Events
+        Preinitialize Event
+            if(display_mode==2)
+            {
+                xstr 135,215,50,50,10,RED,BLACK,1,1,3,"\xee\x94\x8d"
+            }else
+            {
+                xstr 215,135,50,50,10,RED,BLACK,1,1,3,"\xee\x94\x8d"
+            }
+            if(theme==1)
+            {
+                // LIGHT theme
+                // global background
+                pic_background_main=48
+                // home page - weather pic
+                if(home.weather.pic<48)
+                {
+                    home.weather.pic+=48
+                }
+                // climate page
+                climate.b[0].pic=64
+                // cover page
+                cover.coverslider.pic=75
+                cover.coverslider.pic1=74
+                // fan page
+                fan.fanslider.pic=72
+                fan.fanslider.pic1=73
+                // light page
+                light.light_b_press.pic=76
+                light.light_button.pic=76
+                light.temp_b_press.pic=77
+                light.temp_button.pic=77
+                light.color_b_pres.pic=78
+                light.color_button.pic=78
+                light.colorwheel_pic.val=70
+                light.tempslider_pic.val=71
+                light.lslider_pic.val=72
+                light.lslider_pic1.val=73
+            }else
+            {
+                // DARK theme
+                // global background
+                pic_background_main=0
+                // home page - weather pic
+                if(home.weather.pic>48)
+                {
+                    home.weather.pic-=48
+                }
+                // climate page
+                climate.b[0].pic=37
+                // cover page
+                cover.coverslider.pic=20
+                cover.coverslider.pic1=19
+                // fan page
+                fan.fanslider.pic=39
+                fan.fanslider.pic1=40
+                // light page
+                light.light_b_press.pic=23
+                light.light_button.pic=22
+                light.temp_b_press.pic=25
+                light.temp_button.pic=24
+                light.color_b_pres.pic=27
+                light.color_button.pic=26
+                light.colorwheel_pic.val=17
+                light.tempslider_pic.val=21
+                light.lslider_pic.val=28
+                light.lslider_pic1.val=29
+            }
+            // set home page
+            home.b[0].pic=pic_background_main
+            // home time, date and temperatures
+            for(sys0=3;sys0<=6;sys0++)
+            {
+                home.b[sys0].picc=pic_background_main
+                home.b[sys0].pco=color_pco_main
+            }
+            home.indr_temp_icon.picc=pic_background_main
+            home.indr_temp_icon.pco=color_pco_main
+            home.meridiem.picc=pic_background_main
+            home.meridiem.pco=color_pco_main
+            // home hw button's labels
+            home.right_bt_text.picc=pic_background_main
+            home.right_bt_text.pco=color_pco_main
+            home.left_bt_text.picc=pic_background_main
+            home.left_bt_text.pco=color_pco_main
+            // home chips
+            for(sys0=11;sys0<=20;sys0++)
+            {
+                home.b[sys0].picc=pic_background_main
+                home.b[sys0].pco=color_pco_secondary
+            }
+            home.wifi_icon.picc=pic_background_main
+            home.wifi_icon.pco=color_pco_secondary
+            home.bt_icon.picc=pic_background_main
+            // home values 01-04
+            home.value01.picc=pic_background_main
+            home.value01.pco=color_pco_secondary
+            home.value01_icon.picc=pic_background_main
+            home.value01_icon.pco=color_pco_secondary
+            home.value02.picc=pic_background_main
+            home.value02.pco=color_pco_secondary
+            home.value02_icon.picc=pic_background_main
+            home.value02_icon.pco=color_pco_secondary
+            home.value03.picc=pic_background_main
+            home.value03.pco=color_pco_secondary
+            home.value03_icon.picc=pic_background_main
+            home.value03_icon.pco=color_pco_secondary
+            home.value04.picc=pic_background_main
+            home.value04.pco=color_pco_secondary
+            home.value04_icon.picc=pic_background_main
+            home.value04_icon.pco=color_pco_secondary
+            // home buttons
+            for(sys0=28;sys0<=31;sys0++)
+            {
+                home.b[sys0].picc=pic_background_main
+                home.b[sys0].pco=color_pco_secondary
+            }
+            for(sys0=35;sys0<=37;sys0++)
+            {
+                home.b[sys0].picc=pic_background_main
+                home.b[sys0].pco=color_pco_secondary
+            }
+            for(sys0=40;sys0<=43;sys0++)
+            {
+                home.b[sys0].picc=pic_background_main
+                home.b[sys0].pco=color_pco_secondary
+            }
+            // return to previously visible page
+            page previous_page.val
+        
+Variable (int32) previous_page
+    Attributes
+        ID   : 1
+        Scope: global
+        Value: 0
+    

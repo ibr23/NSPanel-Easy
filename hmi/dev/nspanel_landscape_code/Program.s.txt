@@ -1,0 +1,54 @@
+Program.s
+    //The following code is only run once when power on, and is generally used for global variable definition and power on initialization data
+    int sys0=0,sys1=0,sys2=0,swipex=0,swipey=0,swipex2=0,swipey2=0,swipec=0,swipec2=0,swipedx=100,swipedy=100     //At present, the definition of global variable only supports 4-byte signed integer (int), and other types of global quantity declaration are not supported. If you want to use string type, you can use variable control in the page to implement
+    // page home visibility items
+    int vis_chip_relay1=0, vis_chip_relay2=0,vis_chip_climate=0,vis_chip01=0,vis_chip02=0,vis_chip03=0,vis_chip04=0,vis_chip05=0,vis_chip06=0,vis_chip07=0
+    int vis_indr_temp=0
+    int vis_bt_icon=0
+    int vis_bt_utilities=0, vis_bt_notific=0, vis_bt_qrcode=0, vis_bt_entities=0
+    int vis_button01=0, vis_button02=0, vis_button03=0, vis_button04=0, vis_button05=0, vis_button06=0, vis_button07=0
+    int is_buttonpage01=0, is_buttonpage02=0, is_buttonpage03=0, is_buttonpage04=0
+    int is_entitypage01=0, is_entitypage02=0, is_entitypage03=0, is_entitypage04=0
+    int home_page_id=1, back_page_id=1, wakeup_page_id=1
+    int theme=0  // 0 = Dark, 1 = Light
+    int pic_background_main=0 // Background picture to be used on pages by default
+    int color_pco_main=65535  // Foreground font color for main information
+    int color_pco_secondary=52857  // Foreground font color for secondary information
+    int color_pco_navigation=33808  // Foreground font color for navigation components, like back button or page index
+    int color_pco_unsupported=6339  // Foreground font color for unsupported or unavailable components
+    int button_back_font=8
+    int api=0 // 0 = disconnected from HA, 1 = connected to HA
+    int brightness=100,brightness_dim=40,brightness_sleep=0
+    // screensaver components
+    int screensaver_bco=0
+    int screensaver_font=4
+    int screensaver_pco=16904
+    // Model & EEPROM management
+    int hard_coded_display_mode=1  // 1=EU, 2=US, 3=US Land, 4=Blank, 5=Easy EU, 6=Easy US, 7=Easy US Land
+    int display_mode=0
+    int magic_flag_found_at_boot=0
+    repo sys0,0  // Read magic byte from addresses 0-3
+    if(sys0==2037602629)  // "Easy" in ASCII little-endian
+    {
+      magic_flag_found_at_boot=1
+      repo display_mode,4  // Read display_mode from addresses 4-7
+      if(display_mode<1||display_mode>7)
+      {
+        display_mode=hard_coded_display_mode
+        wepo hard_coded_display_mode,4
+      }
+    }else
+    {
+      display_mode=hard_coded_display_mode
+      wepo 2037602629,0   // "Easy" magic
+      wepo hard_coded_display_mode,4
+      bauds=921600 //Configure baudrate
+    }
+    baud=921600 //Configure baudrate
+    recmod=0//Serial data parsing mode:0-Passive mode;1-Active mode
+    printh 00 00 00 ff ff ff 88 ff ff ff//Output power on information to serial port
+    if(display_mode==1)
+    {
+      lcd_dev fffb 0002 0000 0020// Fix touch offset for EU Version
+    }
+    page 0//Power on start page boot

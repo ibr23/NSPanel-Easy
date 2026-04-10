@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 #
-# Usage: ./generate_images <background_file_to_use> <eu*|us*>
+# Usage: ./generate_images <background_file_to_use> <landscape*|portrait*>
 #
-# Default values are: ./generate_images pics/0.png eu
+# Default values are: ./generate_images pics/0.png landscape
 
 set -e
 
@@ -10,7 +10,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 IMAGES_DIR=$SCRIPT_DIR/../ui
 
 BACKGROUND=${1-"$IMAGES_DIR/pics/0.png"}
-VARIANT=${2-"eu"}
+VARIANT=${2-"landscape"}
 
 magick_command() {
   if command -v magick >/dev/null 2>&1; then
@@ -30,7 +30,7 @@ magick_command() {
 rm -f "$IMAGES_DIR"/"$VARIANT"/*.png "$IMAGES_DIR"/"$VARIANT"/*.jpg || true
 mkdir -p "$IMAGES_DIR/$VARIANT"
 
-if [[ $VARIANT = eu* ]]; then
+if [[ $VARIANT = landscape* ]]; then
   echo "Generating Landscape images"
 else
   echo "Generating Portrait images"
@@ -41,7 +41,7 @@ cp "$BACKGROUND" "$IMAGES_DIR/$VARIANT/0.png"
 
 # 1-15 Weather icons
 for i in {1..15}; do
-  if [[ $VARIANT = eu* ]]; then
+  if [[ $VARIANT = landscape* ]]; then
     magick_command "$VARIANT/0.png" "pics/$i.png" -geometry +20+45 -composite -background black -flatten -crop 100x100+20+45 +repage "$VARIANT/$i.png"
   else
     magick_command "$VARIANT/0.png" "pics/$i.png" -geometry +20+154 -composite -background black -flatten -crop 100x100+20+154 +repage "$VARIANT/$i.png"
@@ -55,7 +55,7 @@ done
 # 24,25 light.temp_b_press
 # 26,27 light.color_b_pres
 # 28,29 light.lightslider
-if [[ $VARIANT = eu* ]]; then
+if [[ $VARIANT = landscape* ]]; then
   magick_command "$VARIANT/0.png" "pics/17.png" -geometry +106+68 -composite -background black -flatten -crop 200x200+106+68 +repage "$VARIANT/17.png"
   magick_command "$VARIANT/0.png" "pics/19.png" -geometry +183+67 -composite -background black -flatten -crop 83x233+183+67 +repage "$VARIANT/19.png"
   magick_command "$VARIANT/0.png" "pics/20.png" -geometry +183+67 -composite -background black -flatten -crop 83x233+183+67 +repage "$VARIANT/20.png"
@@ -85,7 +85,7 @@ fi
 
 # 39,40 Fan settings
 for i in 39 40; do
-  if [[ $VARIANT = eu* ]]; then
+  if [[ $VARIANT = landscape* ]]; then
     magick_command "$VARIANT/0.png" "pics/$i.png" -geometry +183+67 -composite -background black -flatten -crop 83x233+183+67 +repage "$VARIANT/$i.png"
   else
     magick_command "$VARIANT/0.png" "pics/$i.png" -geometry +119+143 -composite -background black -flatten -crop 83x233+119+143 +repage "$VARIANT/$i.png"
@@ -97,7 +97,7 @@ done
 # 37 Climate controls
 # 46,47 Home Alt
 for i in 32 33 34 37 46 47; do
-  if [[ $VARIANT = eu* ]]; then
+  if [[ $VARIANT = landscape* ]]; then
     magick_command "$VARIANT/0.png" "pics/$i.png" -geometry +0+0 -composite -background black -flatten -crop 480x320 +repage "$VARIANT/$i.png"
   else
     magick_command "$VARIANT/0.png" "pics/$i-portrait.png" -geometry +0+0 -composite -background black -flatten -crop 320x480 +repage "$VARIANT/$i.png"

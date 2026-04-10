@@ -214,7 +214,7 @@ script:
           ESP_LOGV("${TAG_API}", "  component: %s", component.c_str());
           ESP_LOGV("${TAG_API}", "  color: %" PRIu16, color);
           if (page == "mem") return;
-          if (display_mode == 4) return;  // To do: Implement logic for new format
+          if (display_easy) return;  // To do: Implement logic for new format
           if (page.empty()) {
             disp1->set_component_font_color(component.c_str(), color);
             return;

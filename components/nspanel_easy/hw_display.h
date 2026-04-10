@@ -27,7 +27,10 @@ enum class ThemeMode : uint8_t {
 extern ThemeMode current_theme;  ///< Active display theme
 
 extern uint8_t brightness_current;
-extern uint8_t display_mode;
+extern bool display_easy;
+extern uint8_t display_mode_eeprom;
+extern bool display_portrait;
+extern bool display_valid;
 
 }  // namespace esphome::nspanel_easy
 

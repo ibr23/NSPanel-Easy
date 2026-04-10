@@ -21,7 +21,6 @@ substitutions:
   THEME_LIGHT_COLOR_PCO_SECONDARY: ${COLOR_GRAY_MEDIUM}    # Mid gray for secondary
   THEME_LIGHT_COLOR_PCO_NAVIGATION: ${COLOR_GRAY_DARK}     # Colors::RGB565_GRAY_DARK for navigation
   THEME_LIGHT_COLOR_PCO_UNSUPPORTED: ${COLOR_GRAY_LIGHT}   # Light gray - visually "faded"
-  BAUD_RATE: '115200'
   button_back_font: "8"
   COLOR_BLACK: '0'              # Colors::RGB565_BLACK
   COLOR_BLUE_INDIGO: '10597'    # Colors::RGB565_BLUE_INDIGO
@@ -34,11 +33,46 @@ substitutions:
   COLOR_RED_PRIMARY: '63488'    # Colors::RGB565_RED
   COLOR_WHITE: '65535'          # Colors::RGB565_WHITE
   COLOR_YELLOW_GOLDEN: '64992'  # Colors::RGB565_YELLOW_GOLDEN
-  GPIO_DISPLAY_NEXTION_RX_PIN: 17
-  GPIO_DISPLAY_NEXTION_TX_PIN: 16
   GPIO_DISPLAY_POWER_PIN:
     number: 4
     inverted: true
+  DISPLAY_MODES:
+    EU:
+      FILE: "landscape"
+      ID: 1
+      IDX: 0
+      TEXT: "NSpanel EU"
+    US:
+      FILE: "portrait"
+      ID: 2
+      IDX: 1
+      TEXT: "NSpanel US"
+    US_LAND:
+      FILE: "landscape"
+      ID: 3
+      IDX: 2
+      TEXT: "NSpanel US Landscape"
+    BLANK:
+      FILE: "blank"
+      ID: 4
+      IDX: 3
+      TEXT: "NSpanel Blank"
+    EASY_EU:
+      FILE: "easy_landscape"
+      ID: 5
+      IDX: 4
+      TEXT: "NSpanel Easy EU (Under construction)"
+    EASY_US:
+      FILE: "easy_portrait"
+      ID: 6
+      IDX: 5
+      TEXT: "NSpanel Easy US (Under construction)"
+    EASY_US_LAND:
+      FILE: "easy_landscape"
+      ID: 7
+      IDX: 6
+      TEXT: "NSpanel Easy US Landscape (Under construction)"
+
   TAG_HW_DISPLAY: nspanel.hw.display
 
 api:
@@ -183,12 +217,6 @@ script:
 
   - id: !extend dump_config
     then:
-      # Report UART
-      - lambda: |-
-          ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "UART:");
-          ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "  Baud rate: %" PRIu32 " bps", tf_uart->get_baud_rate());
-          ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "  Queue size: %d", tf_uart->available());
-
       # Report Nextion status
       - lambda: |-
           ESP_LOGCONFIG("${TAG_HW_DISPLAY}", "Nextion:");
@@ -388,7 +416,6 @@ script:
           timer_dim->stop();
           timer_page->stop();
           timer_reset_all->stop();
-          wait_for_uart_available->stop();
           wait_for_version_tft->stop();
           wakeup->stop();
 
@@ -400,7 +427,7 @@ script:
     then:
       - lambda: |-
           ESP_LOGI("${TAG_HW_DISPLAY}", "Apply theme: %s", background_type->current_option());
-          if (display_mode == 4) {  // To do: Implement logic for new format
+          if (display_easy) {  // To do: Implement logic for new format
             ESP_LOGI("${TAG_HW_DISPLAY}", "New format - No themes yet");
             return;
           }
@@ -504,28 +531,33 @@ script:
             - lambda: return !disp1->is_setup();
           then:
             - switch.turn_on: screen_power
-            - delay: 19s
-            - while:
+            - wait_until:
+                condition:
+                  - lambda: return disp1->is_setup();
+                timeout: 19s
+            - if:
                 condition:
                   - lambda: return !disp1->is_setup();
                 then:
+                  # Primary baud rate did not produce a setup — attempt fallback
+                  # negotiation. If baud_negotiate is not compiled in (equal rates),
+                  # the #if gate inside it stops it immediately and the while loop
+                  # below takes over with the existing power-cycle reboot behaviour.
                   - lambda: |-
-                      ESP_LOGE("${TAG_HW_DISPLAY}", "Display is not set. Restarting.");
-                      screen_power->turn_off();
-                  - delay: 2s
-                  - switch.turn_on: screen_power
-                  - delay: 19s
-
-  - id: wait_for_uart_available
-    mode: single
-    then:
-      - repeat:
-          count: 60  # seconds
-          then:
-            - lambda: |-
-                if (tf_uart->available() < 1) wait_for_uart_available->stop();
-                if (iteration % 5 == 0) boot_log->execute("Boot", "Waiting for UART empty queue");
-            - delay: 1s
+                      #if ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
+                        baud_negotiate->execute();
+                      #endif  // ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
+                  - script.wait: baud_negotiate
+                  - while:
+                      condition:
+                        - lambda: return !disp1->is_setup();
+                      then:
+                        - lambda: |-
+                            ESP_LOGE("${TAG_HW_DISPLAY}", "Display is not set. Restarting.");
+                            screen_power->turn_off();
+                        - delay: 2s
+                        - switch.turn_on: screen_power
+                        - delay: 19s
 
   - id: wait_for_version_tft
     mode: single
@@ -559,7 +591,7 @@ script:
             ESP_LOGE("${TAG_HW_DISPLAY}", "TFT version invalid");
             return;
           }
-          if (display_mode == 4) {  // To do: Implement logic for new format
+          if (display_easy) {  // To do: Implement logic for new format
             ESP_LOGI("${TAG_HW_DISPLAY}", "New format - Just go to home page");
             goto_page->execute(get_page_id("home"));
             return;
@@ -607,6 +639,35 @@ select:
     on_value:
       then:
         - script.execute: theme_update
+
+  - id: display_model
+    name: Display model
+    platform: template
+    options:
+      - ${DISPLAY_MODES.EU.TEXT}
+      - ${DISPLAY_MODES.US.TEXT}
+      - ${DISPLAY_MODES.US_LAND.TEXT}
+    initial_option: ${DISPLAY_MODES.EU.TEXT}
+    optimistic: true
+    restore_value: false
+    entity_category: config
+    update_interval: never
+    on_value:
+      then:
+        - lambda: |-
+            display_valid = (i < UINT8_MAX);
+            if (!display_valid) return;
+
+            display_easy = (i >= ${DISPLAY_MODES.EASY_EU.IDX} && i <= ${DISPLAY_MODES.EASY_US_LAND.IDX});
+            display_portrait = (i == ${DISPLAY_MODES.US.IDX} || i == ${DISPLAY_MODES.EASY_US.IDX});
+
+            // Persist to Nextion EEPROM
+            const uint8_t mode = static_cast<uint8_t>(i) + 1;
+            if (mode != display_mode_eeprom) {
+              disp1->send_command_printf("wepo %" PRIu8 ",4", mode);
+              disp1->send_command_printf("display_mode=%" PRIu8, mode);
+              display_mode_eeprom = mode;  // Update baseline
+            }
 
   - id: wakeup_page_name
     name: Wake-up page
@@ -722,10 +783,4 @@ text_sensor:
 
             // Call new CSV handler
             event_from_display->execute(params, static_cast<uint8_t>(params.size()));
-
-uart:
-  - id: tf_uart  # UART for Nextion display
-    tx_pin: ${GPIO_DISPLAY_NEXTION_TX_PIN}
-    rx_pin: ${GPIO_DISPLAY_NEXTION_RX_PIN}
-    baud_rate: ${BAUD_RATE}
 ...

@@ -84,16 +84,6 @@ ota:
   - id: ota_http
     platform: http_request
 
-select:
-  - id: !extend tft_file_model
-    options:
-      - "NSPanel EU"
-      - "NSPanel US"
-      - "NSPanel US Landscape"
-      - "NSPanel EU (CJK languages)"
-      - "NSPanel US (CJK languages)"
-      - "NSPanel US Landscape (CJK languages)"
-
 text:
   - id: fw_url
     name: Firmware URL

@@ -49,16 +49,42 @@ script:
   - id: !extend event_from_display  # Defined by hw_display
     then:
       - lambda: |-
-          if (params[0] == "boot" and params[1] == "params") {
-            // CSV Format: boot,params,<display_mode>,<charset>,<version>
-            // params[0]=page, params[1]=params, params[2]=display_mode, params[3]=version
+          if ((params[0] == "blank" || params[0] == "boot") && params[1] == "params") {
+            // Protocol versions:
+            // CSV Format v0:      boot,params,<display_mode>,<charset>,<version>
+            // CSV Format v1:      boot,params,<display_mode>,<version>
+            // CSV Format v2(new): boot,params,<display_mode>,<hard_coded_mode>,<version>,<magic_flag_found_at_boot>
+            // params[0] = "boot"
+            // params[1] = "params"
+            // params[2] = display_mode               // EEPROM-backed or hard_coded
+            // params[3] = hard_coded_mode            // new: compile-time default for this TFT file
+            //           = charset (ignored)          // old: no longer used
+            // params[4] = version                    // both contracts
+            // params[5] = magic_flag_found_at_boot   // new only: 0 = uninitialized, 1 = valid
 
             system_flags.display_settings_received = false;
 
-            if (params_count != 4) {
-              ESP_LOGW("${TAG_PAGE_BOOT}", "Bad params");
+            uint8_t protocol_version = UINT8_MAX;
+
+            switch (params_count) {
+              case 4:  // Contract v1
+                protocol_version = 1;
+                break;
+              case 5:  // Contract v0 (Blackymas)
+                protocol_version = 0;
+                break;
+              case 6:  // Contract v2 (new)
+                protocol_version = 2;
+                break;
+            }
+
+            if (protocol_version > 2) {
+              ESP_LOGW("${TAG_PAGE_BOOT}", "Unexpected params count: %zu", params_count);
               return;
             }
+
+            const bool old_contract = (params_count == 5);
+
 
             // Stop the timer which sends these params, as those are not going to change anymore
             disp1->send_command("tm_esphome.en=0");
@@ -73,26 +99,77 @@ script:
               return (parsed <= UINT8_MAX) ? static_cast<uint8_t>(parsed) : 0;
             };
 
-            display_mode    = parse_uint8_strict(params[2]);
+            const uint8_t display_mode_from_tft = parse_uint8_strict(params[2]);
+            ESP_LOGI("${TAG_PAGE_BOOT}", "Display params:");
+            ESP_LOGI("${TAG_PAGE_BOOT}", "  Contract ver:  %" PRIu8, protocol_version);
+            ESP_LOGI("${TAG_PAGE_BOOT}", "  Mode:          %" PRIu8, display_mode_from_tft);
 
-            // Validate TFT version string — must be bare "major" or "major.minor",
-            // with both sides non-empty and no more than one dot.
-            const std::string &ver_str = params[3];
+            switch (protocol_version) {
+              case 0:  // Blackymas / pre-CJK removal: boot,params,<display_mode>,<charset>,<version>
+                ESP_LOGW("${TAG_PAGE_BOOT}", "  Old TFT contract v0 — initializing EEPROM");
+                if (display_mode_from_tft > 0 && display_mode_from_tft <= ${DISPLAY_MODES.EASY_US_LAND.ID}) {
+                  display_mode_eeprom = display_mode_from_tft;
+                  auto call = display_model->make_call();
+                  call.set_index(display_mode_from_tft - 1);
+                  call.perform();
+                } else {
+                  ESP_LOGW("${TAG_PAGE_BOOT}", "  Invalid display_mode: %" PRIu8, display_mode_from_tft);
+                }
+                break;
+              case 1:  // v2026.4.9 only: boot,params,<display_mode>,<version>
+                ESP_LOGW("${TAG_PAGE_BOOT}", "  Old TFT contract v1 — initializing EEPROM");
+                if (display_mode_from_tft > 0 && display_mode_from_tft <= ${DISPLAY_MODES.EASY_US_LAND.ID}) {
+                  display_mode_eeprom = display_mode_from_tft;
+                  auto call = display_model->make_call();
+                  call.set_index(display_mode_from_tft - 1);
+                  call.perform();
+                } else {
+                  ESP_LOGW("${TAG_PAGE_BOOT}", "  Invalid display_mode: %" PRIu8, display_mode_from_tft);
+                }
+                break;
+              case 2: {  // v2026.4.10+: boot,params,<display_mode>,<hard_coded_mode>,<version>,<magic_flag_found_at_boot>
+                const uint8_t hard_coded_mode          = parse_uint8_strict(params[3]);
+                const uint8_t magic_flag_found_at_boot = parse_uint8_strict(params[5]);
+                ESP_LOGI("${TAG_PAGE_BOOT}", "  Hard-coded:    %" PRIu8, hard_coded_mode);
+                ESP_LOGI("${TAG_PAGE_BOOT}", "  Magic flag:    %" PRIu8, magic_flag_found_at_boot);
+
+                if (magic_flag_found_at_boot == 0) {
+                  ESP_LOGW("${TAG_PAGE_BOOT}", "  EEPROM was uninitialized at boot — using hard-coded default");
+                  if (hard_coded_mode > 0 && hard_coded_mode <= ${DISPLAY_MODES.EASY_US_LAND.ID}) {
+                    auto call = display_model->make_call();
+                    call.set_index(hard_coded_mode - 1);
+                    call.perform();
+                  } else {
+                    ESP_LOGW("${TAG_PAGE_BOOT}", "  Invalid hard_coded_mode: %" PRIu8, hard_coded_mode);
+                  }
+                } else {
+                  if (display_mode_from_tft > 0 && display_mode_from_tft <= ${DISPLAY_MODES.EASY_US_LAND.ID}) {
+                    auto call = display_model->make_call();
+                    call.set_index(display_mode_from_tft - 1);
+                    call.perform();
+                  } else {
+                    ESP_LOGW("${TAG_PAGE_BOOT}", "  Invalid display_mode: %" PRIu8, display_mode_from_tft);
+                  }
+                }
+                break;
+              }
+            }
+
+            // Version position depends on contract
+            const std::string &ver_str = (protocol_version == 1) ? params[3] : params[4];
             const size_t dot = ver_str.find('.');
             const bool tft_ver_valid =
                 !ver_str.empty() &&
                 ver_str.find_first_not_of("0123456789.") == std::string::npos &&  // digits and dot only
                 (dot == std::string::npos ||                                      // bare integer, no dot
-                 (dot != 0 &&                                                     // dot not at start
+                (dot != 0 &&                                                      // dot not at start
                   dot != ver_str.size() - 1 &&                                    // dot not at end
                   ver_str.find('.', dot + 1) == std::string::npos));              // no second dot
             version_tft->publish_state(tft_ver_valid ? ver_str : "");
 
-            ESP_LOGI("${TAG_PAGE_BOOT}", "Display params:");
-            ESP_LOGI("${TAG_PAGE_BOOT}", "  Mode:        %" PRIu8, display_mode);
-            ESP_LOGI("${TAG_PAGE_BOOT}", "  TFT version: %s%s", ver_str.c_str(), tft_ver_valid ? "" : " (INVALID)");
+            ESP_LOGI("${TAG_PAGE_BOOT}", "  TFT version:   %s%s", ver_str.c_str(), tft_ver_valid ? "" : " (INVALID)");
 
-            system_flags.display_settings_received = tft_ver_valid && display_mode > 0 && display_mode < UINT8_MAX;
+            system_flags.display_settings_received = tft_ver_valid && display_valid;
           }
 
   - id: page_boot
@@ -145,12 +222,14 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
-          if (new_page_id == get_page_id("boot") and display_mode != 4)
+          if (new_page_id == get_page_id("boot") and !display_easy)
             page_boot->execute();
 
   - id: !extend stop_all
     then:
-      - lambda: wait_for_page_boot_exit->stop();
+      - lambda: |-
+          if (current_page_id == get_page_id("boot")) disp1->send_command("tm_esphome.en=0");
+          wait_for_page_boot_exit->stop();
 
   - id: !extend stop_page_constructors
     then:

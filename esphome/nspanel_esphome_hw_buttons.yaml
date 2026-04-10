@@ -170,6 +170,9 @@ script:
             ESP_LOGV("${TAG_HW_BUTTONS}", "Buttons bars not visible");
             return;
           }
+          const uint8_t display_mode_index = display_model->active_index().value_or(UINT8_MAX);
+          if (display_mode_index == UINT8_MAX) return;
+          const uint8_t display_mode_idx = display_mode_index + 1;
           // Left button
           if (button_mask & 1 and id(hardware_settings).button_left_enabled) {
             static uint16_t button_bar_text_left_last_color_sent;
@@ -181,7 +184,7 @@ script:
               button_bar_text_left_last_color_sent = button_bar_left_color;
               disp1->set_component_font_color(hmi::home::LEFT_BT_TEXT.name, button_bar_left_color);
             }
-            switch (display_mode) {
+            switch (display_mode_idx) {
               case 1:  // EU model
                 disp1->fill_area(48, 307, 118, 3, button_bar_left_color);
                 disp1->fill_area(47, 308, 120, 1, button_bar_left_color);
@@ -208,7 +211,7 @@ script:
               button_bar_text_right_last_color_sent = button_bar_right_color;
               disp1->set_component_font_color(hmi::home::RIGHT_BT_TEXT.name, button_bar_right_color);
             }
-            switch (display_mode) {
+            switch (display_mode_idx) {
               case 1:  // EU model
                 disp1->fill_area(289, 307, 118, 3, button_bar_right_color);
                 disp1->fill_area(288, 308, 120, 1, button_bar_right_color);

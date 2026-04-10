@@ -1,0 +1,997 @@
+Page light
+    Attributes
+        ID                 : 0
+        Scope              : local
+        Dragging           : 0
+        Send Component ID  : on press and release
+        Opacity            : 127
+        Width              : 320
+        Effect             : load
+        Effect Priority    : 0
+        Effect Time        : 300
+        Locked             : no
+        Swide up page ID   : disabled
+        Swide down page ID : disabled
+        Swide left page ID : disabled
+        Swide right page ID: disabled
+        Fill               : picture
+        Back. Picture ID   : 0
+    
+    Events
+        Preinitialize Event
+            if(api==0)
+            {
+                page home_page_id
+            }
+            vis light_b_press,1
+            vis lightslider,1
+            vis light_value,1
+            // #### OFF Button #####
+            vis temp_b_press,0
+            vis color_b_pres,0
+            // #### OFF Value #####
+            vis temp_value,0
+            vis light_value_2,0
+            // #### OFF Slider #####
+            vis tempslider,0
+            vis colorwheel,0
+            // #### Hide color & temp buttons #####
+            vis temp_b_press,0
+            vis temp_value_2,0
+            vis temp_button,0
+            vis color_b_pres,0
+            vis color_button,0
+            // set background image and fg color to all components
+            light.pic=pic_background_main
+            for(sys0=0;sys0<=last_component.id;sys0++)
+            {
+                b[sys0].picc=b[0].pic
+            }
+            colorwheel.pic=colorwheel_pic.val
+            tempslider.pic=tempslider_pic.val
+            tempslider.pic1=tempslider_pic.val
+            lightslider.pic=lslider_pic.val
+            lightslider.pic1=lslider_pic1.val
+            button_back.font=button_back_font
+            button_back.pco=color_pco_navigation
+            button_back.picc=pic_background_main
+            button_back.picc2=pic_background_main
+            icon_state.pco=color_pco_main
+            page_label.pco=color_pco_main
+            light_value.pco=color_pco_main
+            temp_value.pco=color_pco_main
+            temp_value_2.pco=color_pco_main
+            power_button.pco=color_pco_secondary
+            dim=brightness
+            sendme
+        
+Variable (int32) rgb565
+    Attributes
+        ID   : 17
+        Scope: local
+        Value: 0
+    
+Variable (string) va1
+    Attributes
+        ID            : 18
+        Scope         : local
+        Text          : newtxt
+        Max. Text Size: 20
+    
+Variable (string) va2
+    Attributes
+        ID            : 19
+        Scope         : local
+        Text          : newtxt
+        Max. Text Size: 10
+    
+Variable (string) va3
+    Attributes
+        ID            : 20
+        Scope         : local
+        Text          : newtxt
+        Max. Text Size: 10
+    
+Variable (int32) currenttab
+    Attributes
+        ID   : 21
+        Scope: local
+        Value: 0
+    
+Variable (string) lightsetting
+    Attributes
+        ID            : 25
+        Scope         : local
+        Text          : 
+        Max. Text Size: 255
+    
+Variable (int32) colorwheel_pic
+    Attributes
+        ID   : 28
+        Scope: global
+        Value: 17
+    
+Variable (int32) tempslider_pic
+    Attributes
+        ID   : 29
+        Scope: global
+        Value: 21
+    
+Variable (int32) lslider_pic
+    Attributes
+        ID   : 30
+        Scope: global
+        Value: 28
+    
+Variable (int32) lslider_pic1
+    Attributes
+        ID   : 31
+        Scope: global
+        Value: 29
+    
+Variable (int32) last_component
+    Attributes
+        ID   : 32
+        Scope: local
+        Value: 0
+    
+Variable (int32) r
+    Attributes
+        ID   : 33
+        Scope: local
+        Value: 0
+    
+Variable (int32) g
+    Attributes
+        ID   : 34
+        Scope: local
+        Value: 0
+    
+Variable (int32) b
+    Attributes
+        ID   : 35
+        Scope: local
+        Value: 0
+    
+Variable (int32) h
+    Attributes
+        ID   : 36
+        Scope: local
+        Value: 0
+    
+Variable (int32) s
+    Attributes
+        ID   : 37
+        Scope: local
+        Value: 0
+    
+Variable (int32) v
+    Attributes
+        ID   : 38
+        Scope: local
+        Value: 0
+    
+Variable (int32) p
+    Attributes
+        ID   : 39
+        Scope: local
+        Value: 0
+    
+Variable (int32) q
+    Attributes
+        ID   : 40
+        Scope: local
+        Value: 0
+    
+Variable (int32) t
+    Attributes
+        ID   : 41
+        Scope: local
+        Value: 0
+    
+Variable (int32) f
+    Attributes
+        ID   : 42
+        Scope: local
+        Value: 0
+    
+Number ring
+    Attributes
+        ID                      : 4
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 312
+        y coordinate            : 440
+        Width                   : 8
+        Height                  : 40
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 1
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : right
+        Vertical Alignment      : center
+        Value                   : 0
+        Significant digits shown: all
+        Format                  : decimal
+        Word wrap               : enabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Number field
+    Attributes
+        ID                      : 5
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 305
+        y coordinate            : 440
+        Width                   : 9
+        Height                  : 40
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 1
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : right
+        Vertical Alignment      : center
+        Value                   : 0
+        Significant digits shown: all
+        Format                  : decimal
+        Word wrap               : enabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text light_value
+    Attributes
+        ID                      : 1
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 117
+        y coordinate            : 169
+        Width                   : 83
+        Height                  : 20
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 2
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 10
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text page_label
+    Attributes
+        ID                      : 2
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 46
+        y coordinate            : 8
+        Width                   : 204
+        Height                  : 30
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 2
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : left
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 100
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text temp_value
+    Attributes
+        ID                      : 14
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 117
+        y coordinate            : 169
+        Width                   : 83
+        Height                  : 20
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 2
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 10
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text light_value_2
+    Attributes
+        ID                      : 22
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 25
+        y coordinate            : 123
+        Width                   : 50
+        Height                  : 20
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 2
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : right
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 10
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text temp_value_2
+    Attributes
+        ID                      : 23
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : disabled
+        Opacity                 : 127
+        x coordinate            : 129
+        y coordinate            : 123
+        Width                   : 55
+        Height                  : 20
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 2
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : right
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 10
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text icon_state
+    Attributes
+        ID                      : 24
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 10
+        y coordinate            : 8
+        Width                   : 35
+        Height                  : 35
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 8
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : 
+        Max. Text Size          : 10
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+Text power_button
+    Attributes
+        ID                      : 27
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 228
+        y coordinate            : 405
+        Width                   : 60
+        Height                  : 60
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 10
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : \xee\x90\xa4
+        Max. Text Size          : 3
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+    Events
+        Touch Release Event
+            power_button.pco=31
+        
+Picture light_button
+    Attributes
+        ID               : 8
+        Scope            : global
+        Dragging         : 0
+        Send Component ID: on press and release
+        Opacity          : 127
+        x coordinate     : 25
+        y coordinate     : 71
+        Width            : 50
+        Height           : 50
+        Effect           : load
+        Effect Priority  : 0
+        Effect Time      : 300
+        Picture ID       : 22
+    
+    Events
+        Touch Press Event
+            vis light_b_press,1
+            vis lightslider,1
+            vis light_value,1
+            vis temp_value_2,1
+            // #### OFF Button #####
+            vis light_button,0
+            vis temp_b_press,0
+            vis color_b_pres,0
+            // #### OFF Value #####
+            vis temp_value,0
+            vis light_value_2,0
+            // #### OFF Slider #####
+            vis tempslider,0
+            vis colorwheel,0
+        
+Picture color_button
+    Attributes
+        ID               : 9
+        Scope            : global
+        Dragging         : 0
+        Send Component ID: on press and release
+        Opacity          : 127
+        x coordinate     : 243
+        y coordinate     : 71
+        Width            : 50
+        Height           : 50
+        Effect           : load
+        Effect Priority  : 0
+        Effect Time      : 300
+        Picture ID       : 26
+    
+    Events
+        Touch Press Event
+            vis color_b_pres,1
+            vis colorwheel,1
+            vis light_value_2,1
+            // #### OFF Button #####
+            vis color_button,0
+            vis light_b_press,0
+            vis light_button,1
+            vis temp_b_press,0
+            vis temp_button,1
+            // #### OFF Value #####
+            vis light_value,0
+            vis temp_value,0
+            vis temp_value_2,0
+            // #### OFF Slider #####
+            vis lightslider,0
+            vis tempslider,0
+            // #### OFF Color #####
+        
+Picture temp_button
+    Attributes
+        ID               : 10
+        Scope            : global
+        Dragging         : 0
+        Send Component ID: on press and release
+        Opacity          : 127
+        x coordinate     : 134
+        y coordinate     : 71
+        Width            : 50
+        Height           : 50
+        Effect           : load
+        Effect Priority  : 0
+        Effect Time      : 300
+        Picture ID       : 24
+    
+    Events
+        Touch Press Event
+            vis temp_b_press,1
+            vis tempslider,1
+            vis temp_value,1
+            vis light_value_2,1
+            // #### OFF Button #####
+            vis temp_button,0
+            vis light_b_press,0
+            vis color_b_pres,0
+            // #### OFF Value #####
+            vis light_value,0
+            vis temp_value_2,0
+            // #### OFF Slider #####
+            vis lightslider,0
+            vis colorwheel,0
+        
+Picture light_b_press
+    Attributes
+        ID               : 11
+        Scope            : global
+        Dragging         : 0
+        Send Component ID: on press and release
+        Opacity          : 127
+        x coordinate     : 25
+        y coordinate     : 71
+        Width            : 50
+        Height           : 50
+        Effect           : load
+        Effect Priority  : 0
+        Effect Time      : 300
+        Picture ID       : 23
+    
+Picture temp_b_press
+    Attributes
+        ID               : 12
+        Scope            : global
+        Dragging         : 0
+        Send Component ID: on press and release
+        Opacity          : 127
+        x coordinate     : 134
+        y coordinate     : 71
+        Width            : 50
+        Height           : 50
+        Effect           : load
+        Effect Priority  : 0
+        Effect Time      : 300
+        Picture ID       : 25
+    
+Picture color_b_pres
+    Attributes
+        ID               : 13
+        Scope            : global
+        Dragging         : 0
+        Send Component ID: on press and release
+        Opacity          : 127
+        x coordinate     : 243
+        y coordinate     : 71
+        Width            : 50
+        Height           : 50
+        Effect           : load
+        Effect Priority  : 0
+        Effect Time      : 300
+        Picture ID       : 27
+    
+Picture colorwheel
+    Attributes
+        ID               : 16
+        Scope            : local
+        Dragging         : 0
+        Send Component ID: on press and release
+        Opacity          : 127
+        x coordinate     : 61
+        y coordinate     : 211
+        Width            : 200
+        Height           : 200
+        Effect           : load
+        Effect Priority  : 0
+        Effect Time      : 300
+        Picture ID       : 17
+    
+    Events
+        Touch Press Event
+            // Circular Color Picker for Nextion (c) Max Zuidberg 2022
+            // This Source Code Form is subject to the terms of the Mozilla Public
+            // License, v. 2.0. If a copy of the MPL was not distributed with this
+            // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+            //
+            // Put this code in the touch press or release
+            // event of the pic component with the color wheel.
+            // Requires the two variables field.val and ring.val
+            //
+            // sya0 = x, sya1 = sya1
+            // Note the usage of the hidden sya0, sya1 variables
+            // within event code as local, temporary variable is fine.
+            sya0=tch0
+            sya1=tch1
+            //
+            // Convert absolute coordinates to coordinates relative to
+            // the color wheel center.
+            // sys0 = x_center, sys1 = y_center
+            sys0=colorwheel.w/2
+            sys0+=colorwheel.x
+            sys1=colorwheel.h/2
+            sys1+=colorwheel.y
+            sya0-=sys0
+            sya1-=sys1
+            //
+            // Determine ring
+            ring.val=0
+            // sys0 = r^2 = x^2 + y^2
+            sys0=sya0*sya0
+            sys1=sya1*sya1
+            sys0+=sys1
+            // repeat for all rings
+            if(sys0>=156)
+            {
+                ring.val++
+            }
+            if(sys0>=625)
+            {
+                ring.val++
+            }
+            if(sys0>=1406)
+            {
+                ring.val++
+            }
+            if(sys0>=2500)
+            {
+                ring.val++
+            }
+            if(sys0>=3906)
+            {
+                ring.val++
+            }
+            if(sys0>=5625)
+            {
+                ring.val++
+            }
+            if(sys0>=7656)
+            {
+                ring.val++
+            }
+            //
+            // Determine quadrant (0-3). Note: pixel y coords are inverted
+            // compared to mathematical y coords. But we want math. quadrants.
+            sya1*=-1
+            sys2=0
+            if(sya1<0)
+            {
+                sys2+=2
+            }
+            sys0=sya0*sya1
+            if(sys0<0)
+            {
+                sys2+=1
+                // In this case we also want to swap x and y otherwise the
+                // atan(abs(x/y)) (calculated below) gives values running
+                // "the wrong way" (cw instead of ccw).
+                sys1=sya1
+                sya1=sya0
+                sya0=sys1
+            }
+            //
+            field.val=sys2*6
+            //
+            // x,y sign is not required anymore
+            if(sya0<0)
+            {
+                sya0*=-1
+            }
+            if(sya1<0)
+            {
+                sya1*=-1
+            }
+            //
+            // Determine field in ring quadrant
+            // Factor 100000 chosen more or less arbitrarily.
+            // sys0 = 100000 * tan_a = 100000 * y / x
+            sys0=100000*sya1
+            sys0/=sya0
+            // repeat for all fields
+            if(sys0>=26794)
+            {
+                field.val++
+            }
+            if(sys0>=57735)
+            {
+                field.val++
+            }
+            if(sys0>=99999)
+            {
+                field.val++
+            }
+            if(sys0>=173205)
+            {
+                field.val++
+            }
+            if(sys0>=373205)
+            {
+                field.val++
+            }
+            covx r.val,va1.txt,0,0
+            covx g.val,va2.txt,0,0
+            covx b.val,va3.txt,0,0
+            va1.txt=""
+            va2.txt=""
+            va3.txt=""
+        
+        Touch Release Event
+            // Adjust field.val "orientation" and offset to match the h value of the colors in the wheel
+            h.val=23-field.val// 0 <= field.val <= 23
+            // h is expected to be 0-6*256 (see hsv2rgb)
+            h.val*=6*256
+            h.val/=24// Number of fields
+            //
+            // s is expected to be 0-256 (see hsv2rgb)
+            s.val=ring.val*256
+            s.val/=8// Number of rings
+            // no "value" selectable; fix it to the maximum (matching the colors in the wheels shown.
+            v.val=255
+            click hsv2rgb,0
+            click rgb888to565,0
+            //colPreview.bco=rgb565.val
+            covx r.val,va1.txt,0,0
+            covx g.val,va2.txt,0,0
+            covx b.val,va3.txt,0,0
+            lightsetting.txt="light,rgb_color,"+va1.txt+","+va2.txt+","+va3.txt
+            printh 92
+            prints "localevent",0
+            printh 00
+            prints lightsetting.txt,0
+            printh 00
+            printh FF FF FF
+            va1.txt=""
+            va2.txt=""
+            va3.txt=""
+        
+Slider lightslider
+    Attributes
+        ID                     : 3
+        Scope                  : local
+        Dragging               : 0
+        Send Component ID      : on press and release
+        Opacity                : 127
+        x coordinate           : 117
+        y coordinate           : 194
+        Width                  : 85
+        Height                 : 235
+        Effect                 : load
+        Effect Priority        : 0
+        Effect Time            : 300
+        Direction              : vertical
+        Fill                   : image
+        Cursor width           : auto
+        Cursor height          : 255
+        Back. Picture ID       : 28
+        Slided Back. Picture ID: 29
+        Position               : 0
+        Upper range limit      : 100
+        Lower range limit      : 0
+    
+    Events
+        Touch Release Event
+            covx lightslider.val,va1.txt,0,0
+            light_value.txt=va1.txt+"%"
+            light_value_2.txt=va1.txt+"%"
+            lightsetting.txt="light,brightness_pct,"+va1.txt
+            printh 92
+            prints "localevent",0
+            printh 00
+            prints lightsetting.txt,0
+            printh 00
+            printh FF FF FF
+        
+        Touch Move Event
+            covx lightslider.val,va1.txt,0,0
+            light_value.txt=va1.txt+"%"
+            light_value_2.txt=va1.txt+"%"
+        
+Slider tempslider
+    Attributes
+        ID                     : 15
+        Scope                  : local
+        Dragging               : 0
+        Send Component ID      : on press and release
+        Opacity                : 127
+        x coordinate           : 117
+        y coordinate           : 194
+        Width                  : 85
+        Height                 : 235
+        Effect                 : load
+        Effect Priority        : 0
+        Effect Time            : 300
+        Direction              : vertical
+        Fill                   : image
+        Cursor width           : auto
+        Cursor height          : 255
+        Back. Picture ID       : 21
+        Slided Back. Picture ID: 21
+        Position               : 0
+        Upper range limit      : 6535
+        Lower range limit      : 2000
+    
+    Events
+        Touch Release Event
+            covx tempslider.val,va1.txt,0,0
+            temp_value.txt=va1.txt
+            temp_value.txt+="K"
+            temp_value_2.txt=va1.txt
+            temp_value_2.txt+="K"
+            lightsetting.txt="light,color_temp_kelvin,"+va1.txt
+            printh 92
+            prints "localevent",0
+            printh 00
+            prints lightsetting.txt,0
+            printh 00
+            printh FF FF FF
+        
+        Touch Move Event
+            covx tempslider.val,va1.txt,0,0
+            temp_value.txt=va1.txt
+            temp_value.txt+="K"
+            temp_value_2.txt=va1.txt
+            temp_value_2.txt+="K"
+        
+Button button_back
+    Attributes
+        ID                                  : 26
+        Scope                               : local
+        Dragging                            : 0
+        Send Component ID                   : on press and release
+        Opacity                             : 127
+        x coordinate                        : 260
+        y coordinate                        : 0
+        Width                               : 60
+        Height                              : 48
+        Effect                              : load
+        Effect Priority                     : 0
+        Effect Time                         : 300
+        Fill                                : crop image
+        Font ID                             : 8
+        Cropped Back. Picture ID (Unpressed): 0
+        Back. Picture ID (Pressed)          : 65535
+        Cropped Back. Picture ID (Pressed)  : 0
+        Horizontal Alignment                : center
+        Vertical Alignment                  : top
+        State                               : unpressed
+        Text                                : \xee\x85\x98
+        Max. Text Size                      : 3
+        Word wrap                           : disabled
+        Horizontal Spacing                  : 0
+        Vertical Spacing                    : 0
+    
+    Events
+        Touch Press Event
+            page back_page_id
+        
+Hotspot hsv2rgb
+    Attributes
+        ID               : 6
+        Scope            : local
+        Dragging         : 0
+        Send Component ID: on press and release
+        Opacity          : 127
+        x coordinate     : 51
+        y coordinate     : 459
+        Width            : 40
+        Height           : 20
+        Effect           : load
+        Effect Priority  : 0
+        Effect Time      : 300
+    
+    Events
+        Touch Release Event
+            // https://de.wikipedia.org/wiki/HSV-Farbraum#Umrechnung_HSV_in_RGB
+            // The values range from 0..255 instead of 0..1
+            // h ranges from 0..(6*256)
+            if(s.val>=256)
+            {
+                s.val=255
+            }else if(s.val<0)
+            {
+                s.val=0
+            }
+            if(v.val>=256)
+            {
+                v.val=255
+            }else if(v.val<0)
+            {
+                v.val=0
+            }
+            f.val=h.val&0xff
+            p.val=256-s.val
+            p.val*=v.val
+            p.val=p.val>>8// / 256
+            q.val=s.val*f.val// 0-256*256 = 0-65536
+            q.val=65536-q.val
+            q.val*=v.val
+            q.val=q.val>>16
+            t.val=256-f.val
+            t.val*=s.val
+            t.val=65536-t.val
+            t.val*=v.val
+            t.val=t.val>>16
+            //
+            f.val=h.val>>8
+            if(f.val==1)
+            {
+                r.val=q.val
+                g.val=v.val
+                b.val=p.val
+            }else if(f.val==2)
+            {
+                r.val=p.val
+                g.val=v.val
+                b.val=t.val
+            }else if(f.val==3)
+            {
+                r.val=p.val
+                g.val=q.val
+                b.val=v.val
+            }else if(f.val==4)
+            {
+                r.val=t.val
+                g.val=p.val
+                b.val=v.val
+            }else if(f.val==5)
+            {
+                r.val=v.val
+                g.val=p.val
+                b.val=q.val
+            }else
+            {
+                r.val=v.val
+                g.val=t.val
+                b.val=p.val
+            }
+        
+Hotspot rgb888to565
+    Attributes
+        ID               : 7
+        Scope            : local
+        Dragging         : 0
+        Send Component ID: on press and release
+        Opacity          : 127
+        x coordinate     : 8
+        y coordinate     : 458
+        Width            : 40
+        Height           : 20
+        Effect           : load
+        Effect Priority  : 0
+        Effect Time      : 300
+    
+    Events
+        Touch Release Event
+            r.val=r.val&0xff
+            g.val=g.val&0xff
+            b.val=b.val&0xff
+            sys1=r.val>>3
+            sys2=sys1<<6
+            sys1=g.val>>2
+            sys2+=sys1
+            sys2=sys2<<5
+            sys1=b.val>>3
+            sys2+=sys1
+            rgb565.val=sys2
+        

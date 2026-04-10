@@ -10,13 +10,14 @@
 ---
 substitutions:
   ################## Defaults ##################
-  nextion_update_base_url: "https://raw.githubusercontent.com/edwardtfn/NSPanel-Easy/"
-  nextion_update_url: "${nextion_update_base_url}/main/hmi/nspanel_blank.tft"
+  nextion_update_base_url: "https://raw.githubusercontent.com/edwardtfn/NSPanel-Easy/v${version}/hmi"
+  nextion_update_url: ""
   upload_tft_automatically: true
-  upload_tft_baud_rate: 115200
+  upload_tft_baud_rate: ${BAUD_RATE}
   upload_tft_wait_ms_after_boot: 300000  # 5min
   ##############################################
   TAG_UPLOAD_TFT: "nspanel.addon.upload_tft"
+  DISPLAY_MODES_BLANK_TEXT: ${DISPLAY_MODES.BLANK.TEXT}
 
 esphome:
   platformio_options:
@@ -69,7 +70,7 @@ button:
 
 display:
   - id: !extend disp1
-    tft_url: ${nextion_update_url}
+    tft_url: "${nextion_update_base_url}/nspanel_blank.tft"
     exit_reparse_on_start: true
 
 esp32:
@@ -90,15 +91,19 @@ script:
       - lambda: |-
           // Automatic upload is enabled
           #if NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
+            static const char* const NEXTION_UPDATE_URL = "${nextion_update_url}";
+            const bool has_url_override = NEXTION_UPDATE_URL[0] != '\0';
+
             // Return if sensor has value and versions match (no update needed)
-            if (tft_ver_gte(version_tft->state, "${min_tft_version}")) {
+            if (!has_url_override && tft_ver_gte(version_tft->state, "${min_tft_version}")) {
               ESP_LOGV("${TAG_UPLOAD_TFT}", "Supported version");
               return;
             }
 
             // Only proceed when a standard TFT is selected (indices 1+)
-            if (tft_file_model->active_index().value_or(0) == 0) {
-              ESP_LOGV("${TAG_UPLOAD_TFT}", "No standard TFT selected");
+            if (!has_url_override &&
+                (!display_valid || display_model->current_option() == "${DISPLAY_MODES_BLANK_TEXT}")) {
+              ESP_LOGD("${TAG_UPLOAD_TFT}", "No hardware TFT selected");
               return;
             }
 
@@ -115,8 +120,8 @@ script:
           if (system_flags.tft_upload_active)
             ESP_LOGW("${TAG_UPLOAD_TFT}", "TFT upload in progress");
           ESP_LOGCONFIG("${TAG_UPLOAD_TFT}", "Add-on Upload TFT:");
-          ESP_LOGCONFIG("${TAG_UPLOAD_TFT}", "  File model: %s", tft_file_model->current_option());
-          ESP_LOGCONFIG("${TAG_UPLOAD_TFT}", "  Valid TFT:  %s", YESNO((display_mode > 0 and display_mode < 5)));
+          ESP_LOGCONFIG("${TAG_UPLOAD_TFT}", "  File model: %s", display_model->current_option());
+          ESP_LOGCONFIG("${TAG_UPLOAD_TFT}", "  Valid TFT:  %s", YESNO(display_valid));
 
   - id: nextion_status
     mode: restart
@@ -179,49 +184,44 @@ script:
 
           ESP_LOGD("${TAG_UPLOAD_TFT}", "Preparing for upload");
 
-          // Then start the upload
           nextion_status->execute();
           system_flags.tft_upload_active = true;
           ESP_LOGD("${TAG_UPLOAD_TFT}", "Starting the upload script");
-          ESP_LOGV("${TAG_UPLOAD_TFT}", "  Valid TFT: %s", YESNO((display_mode > 0 and display_mode < 4)));
           ESP_LOGV("${TAG_UPLOAD_TFT}", "  Baud rate: %" PRIu32, tf_uart->get_baud_rate());
 
-          // Calculate URL if needed
-          std::string resolved_url = url;
+          // Calculate URL
+          std::string resolved_url;
 
-          // Trim whitespace (both ends) for comparisons, but keep original casing
-          auto startPos = resolved_url.find_first_not_of(" \t");
-          auto endPos = resolved_url.find_last_not_of(" \t");
-          std::string trimmed = (startPos == std::string::npos)
-                                  ? ""
-                                  : resolved_url.substr(startPos, endPos - startPos + 1);
-
-          std::string normalized = trimmed;
-          std::transform(normalized.begin(), normalized.end(), normalized.begin(),
-                        [](unsigned char c){ return std::tolower(c); });
-
-          // Calculate URL if empty or "default"
-          if (normalized.empty() || normalized == "default") {
-            auto idx_opt = tft_file_model->active_index();
-            if (!idx_opt.has_value()) {
-              resolved_url = "${nextion_update_url}";  // Fallback if no valid index
-            } else {
-              const int idx = idx_opt.value();
-
-              if (idx == 0) {
-                resolved_url = "${nextion_update_url}";
-              } else if (idx >= 1 && idx <= 5) {
-                static const char* const FILENAME_PARTS[] = { "blank", "eu", "us", "us_land", "easy_landscape" };
-
-                resolved_url = std::string("${nextion_update_base_url}") +
-                              "v${version}/hmi/nspanel_" +
-                              FILENAME_PARTS[idx-1] + ".tft";
-              } else {
-                resolved_url = "${nextion_update_url}";
-              }
-            }
+          // nextion_update_url substitution takes absolute priority
+          static const char* const NEXTION_UPDATE_URL = "${nextion_update_url}";
+          if (NEXTION_UPDATE_URL[0] != '\0') {
+            resolved_url = NEXTION_UPDATE_URL;
+          } else if (!url.empty() && url != "default") {
+            // URL explicitly provided to this script
+            resolved_url = url;
           } else {
-            resolved_url = trimmed;
+            // Build URL from selected model
+            static const char* const FILENAMES[] = {
+              "${DISPLAY_MODES.EU.FILE}",            // 0: NSPanel EU
+              "${DISPLAY_MODES.US.FILE}",            // 1: NSPanel US
+              "${DISPLAY_MODES.US_LAND.FILE}",       // 2: NSPanel US Landscape
+              "${DISPLAY_MODES.BLANK.FILE}",         // 3: NSPanel Blank
+              "${DISPLAY_MODES.EASY_EU.FILE}",       // 4: NSPanel Easy EU
+              "${DISPLAY_MODES.EASY_US.FILE}",       // 5: NSPanel Easy US
+              "${DISPLAY_MODES.EASY_US_LAND.FILE}",  // 6: NSPanel Easy US Landscape
+            };
+            static const size_t FILENAMES_COUNT = sizeof(FILENAMES) / sizeof(FILENAMES[0]);
+
+            const auto idx_opt = display_model->active_index();
+            const size_t idx = idx_opt.value_or(UINT8_MAX);
+
+            if (idx < FILENAMES_COUNT) {
+              resolved_url = std::string("${nextion_update_base_url}/nspanel_") + FILENAMES[idx] + ".tft";
+            } else {
+              ESP_LOGE("${TAG_UPLOAD_TFT}", "TFT upload aborted: No valid display model selected");
+              upload_tft->stop();
+              return;
+            }
           }
 
           ESP_LOGV("${TAG_UPLOAD_TFT}", "  Upload URL: %s", resolved_url.c_str());
@@ -234,7 +234,7 @@ script:
       - script.wait: stop_all
       - wait_until:
           condition:
-            - lambda: return (!(display_mode > 0 and display_mode < UINT8_MAX));
+            - lambda: return !display_valid;
           timeout: 1s
 
       # Stop Bluetooth stack if present
@@ -343,24 +343,10 @@ script:
           App.safe_reboot();
 
 select:
-  - id: tft_file_model
-    name: Update TFT display - Model
-    platform: template
+  - id: !extend display_model
     options:
-      - "Use nextion_update_url"
-      - "NSPanel Blank"
-      - "NSPanel EU"
-      - "NSPanel US"
-      - "NSPanel US Landscape"
-      - "NSPanel Easy EU (under construction)"
-    initial_option: "NSPanel Blank"
-    optimistic: true
-    restore_value: true
-    internal: false
-    entity_category: config
-    disabled_by_default: false
-    icon: mdi:file-sync
-    update_interval: never
+      - ${DISPLAY_MODES.BLANK.TEXT}
+      - ${DISPLAY_MODES.EASY_EU.TEXT}
 
 time:
   - id: !extend time_provider

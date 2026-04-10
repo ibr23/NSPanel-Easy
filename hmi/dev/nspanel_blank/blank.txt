@@ -71,7 +71,7 @@ Variable (string) version
     Attributes
         ID            : 14
         Scope         : local
-        Text          : 2026.3.0
+        Text          : 2026.4.0
         Max. Text Size: 8
     
 Text nspanel_easy
@@ -346,18 +346,24 @@ Timer tm_esphome
             {
                 rest
             }
-            covx display_mode,va0.txt,0,0
-            covx charset,va1.txt,0,0
-            csv.txt="blank,params,"+va0.txt+","+va1.txt+","+version.txt
-            printh 92
-            prints "localevent",0
-            printh 00
-            prints csv.txt,0
-            printh 00
-            printh FF FF FF
             covx counter.val,aux1.txt,0,0
             ver_firmware.txt="ESP: Retry #"+aux1.txt
             covx baud,baud_rate.txt,0,0
             baud_rate.txt+=" bps"
-            sendme
+            printh 92
+            prints "localevent",0
+            printh 00
+            prints "blank,params,",0
+            covx display_mode,va0.txt,0,0
+            prints va0.txt,0
+            prints ",",0
+            covx hard_coded_display_mode,va0.txt,0,0
+            prints va0.txt,0
+            prints ",",0
+            prints version.txt,0
+            prints ",",0
+            covx magic_flag_found_at_boot,va0.txt,0,0
+            prints va0.txt,0
+            printh 00
+            printh FF FF FF
         
