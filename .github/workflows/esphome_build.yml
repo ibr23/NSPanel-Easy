@@ -279,6 +279,7 @@ jobs:
   all-checks-passed:
     name: Build ESPHome / All checks passed
     runs-on: ubuntu-latest
+    permissions: {}
     needs:
       - changes
       - code_scan
@@ -291,6 +292,7 @@ jobs:
       - name: Check all jobs passed
         run: |
           results=(
+            "changes=${{ needs.changes.result }}"
             "code_scan=${{ needs.code_scan.result }}"
             "build_latest=${{ needs.build_latest.result }}"
             "build_dev=${{ needs.build_dev.result }}"
