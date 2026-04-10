@@ -3853,6 +3853,14 @@ blueprint:
       icon: mdi:cogs
       collapsed: true
       input:
+        value_hide_when_zero:
+          name: Values - Hide when zero
+          description: >-
+            When enabled, entity states that round to `0` (and their icons)
+            are hidden from the display. Only applies to numeric states.
+          default: false
+          selector:
+            boolean: {}
         icon_color_fallback_on:
           name: Icon fallback color when state is "**ON**"
           description: >
@@ -5845,6 +5853,9 @@ actions:
       embedded_climate: '{{ climate == thermostat_embedded }}'
       domain_automation_button_action: !input domain_automation_button_action
 
+      ##### GENERAL SETTINGS #####
+      hide_if_zero: !input value_hide_when_zero
+
       # yamllint disable rule:truthy rule:line-length rule:comments-indentation
       enum:
         ColorMode:  # Possible light color modes. - https://github.com/home-assistant/core/blob/dev/homeassistant/components/light/__init__.py
@@ -7374,7 +7385,6 @@ actions:
                                     - '{{ repeat.item.entity is defined }}'
                                     - '{{ repeat.item.entity is string }}'
                                     - '{{ repeat.item.entity.split(".") | count == 2 }}'
-                                    - '{{ has_value(repeat.item.entity) }}'
                                   then:
                                     - *delay_default
                                     - variables:
@@ -7403,32 +7413,72 @@ actions:
                                                 if unit_of_measurement_raw and unit_of_measurement_raw is string and unit_of_measurement_raw | length > 0
                                                 else ""
                                               }}
-                                        - if: '{{ entity.icon | length > 0 }}'
+                                            value_is_zero: >
+                                              {{
+                                                is_number(states(entity_id)) and
+                                                (states(entity_id, rounded=true) | float == 0)
+                                              }}
+                                        - if: '{{ hide_if_zero is defined and hide_if_zero and value_is_zero }}'
                                           then:
+                                            # Numeric state rounds to zero: hide both value and icon
                                             - *delay_default
-                                            - action: 'esphome.{{ nspanel_name }}_component_text'
+                                            - action: 'esphome.{{ nspanel_name }}_components_visibility'
                                               data:
                                                 page: '{{ repeat.item.page }}'
-                                                id: '{{ repeat.item.component }}_icon'
-                                                txt: '{{ entity.icon }}'
+                                                ids:
+                                                  - '{{ repeat.item.component }}'
+                                                  - '{{ repeat.item.component }}_icon'
+                                                visible: false
                                               continue_on_error: true
-
+                                          else:
+                                            - if: '{{ entity.icon | length > 0 }}'
+                                              then:
+                                                - *delay_default
+                                                - action: 'esphome.{{ nspanel_name }}_component_text'
+                                                  data:
+                                                    page: '{{ repeat.item.page }}'
+                                                    id: '{{ repeat.item.component }}_icon'
+                                                    txt: '{{ entity.icon }}'
+                                                  continue_on_error: true
+                                            - *delay_default
+                                            - alias: value_with_unit_and_translations
+                                              action: 'esphome.{{ nspanel_name }}_component_text'
+                                              data:
+                                                page: '{{ repeat.item.page }}'
+                                                id: '{{ repeat.item.component }}'
+                                                txt: &value_with_unit_and_translations >
+                                                  {{
+                                                    (
+                                                      (states(entity_id, rounded=true) ~ (unit_of_measurement if unit_of_measurement is string and unit_of_measurement | length > 0 else ""))
+                                                      if is_number(entity_state)
+                                                      else state_translated(entity_id)
+                                                    )
+                                                    if entity_id_valid and entity_has_value
+                                                    else "_{_unavailable_}_"
+                                                  }}
+                                              continue_on_error: true
+                                            # Restore visibility for zero → non-zero transitions
+                                            - if: '{{ hide_if_zero is defined and hide_if_zero }}'
+                                              then:
+                                                - *delay_default
+                                                - action: 'esphome.{{ nspanel_name }}_components_visibility'
+                                                  data:
+                                                    page: '{{ repeat.item.page }}'
+                                                    ids:
+                                                      - '{{ repeat.item.component }}'
+                                                      - '{{ repeat.item.component }}_icon'
+                                                    visible: true
+                                                  continue_on_error: true
+                                      else:
+                                        # No value (unavailable/unknown): hide both value and icon
                                         - *delay_default
-                                        - alias: value_with_unit_and_translations
-                                          action: 'esphome.{{ nspanel_name }}_component_text'
+                                        - action: 'esphome.{{ nspanel_name }}_components_visibility'
                                           data:
                                             page: '{{ repeat.item.page }}'
-                                            id: '{{ repeat.item.component }}'
-                                            txt: &value_with_unit_and_translations >
-                                              {{
-                                                (
-                                                  (states(entity_id, rounded=true) ~ (unit_of_measurement if unit_of_measurement is string and unit_of_measurement | length > 0 else ""))
-                                                  if is_number(entity_state)
-                                                  else state_translated(entity_id)
-                                                )
-                                                if entity_id_valid and entity_has_value
-                                                else "_{_unavailable_}_"
-                                              }}
+                                            ids:
+                                              - '{{ repeat.item.component }}'
+                                              - '{{ repeat.item.component }}_icon'
+                                            visible: false
                                           continue_on_error: true
 
                       ## BUTTON PAGES 01 - 04 ##

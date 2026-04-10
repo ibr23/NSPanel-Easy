@@ -48,6 +48,14 @@ Page home
             vis button05,vis_button05
             vis button06,vis_button06
             vis button07,vis_button07
+            vis value01,vis_value01
+            vis value02,vis_value02
+            vis value03,vis_value03
+            vis value04,vis_value04
+            vis value01_icon,vis_value01
+            vis value02_icon,vis_value02
+            vis value03_icon,vis_value03
+            vis value04_icon,vis_value04
             // Bluetooth icon
             vis bt_icon,vis_bt_icon
             // HW Button's labels

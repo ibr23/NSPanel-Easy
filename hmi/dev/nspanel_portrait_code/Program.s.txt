@@ -7,6 +7,7 @@ Program.s
     int vis_bt_icon=0
     int vis_bt_utilities=0, vis_bt_notific=0, vis_bt_qrcode=0, vis_bt_entities=0
     int vis_button01=0, vis_button02=0, vis_button03=0, vis_button04=0, vis_button05=0, vis_button06=0, vis_button07=0
+    int vis_value01=0, vis_value02=0, vis_value03=0, vis_value04=0
     int is_buttonpage01=0, is_buttonpage02=0, is_buttonpage03=0, is_buttonpage04=0
     int is_entitypage01=0, is_entitypage02=0, is_entitypage03=0, is_entitypage04=0
     int home_page_id=1, back_page_id=1, wakeup_page_id=1

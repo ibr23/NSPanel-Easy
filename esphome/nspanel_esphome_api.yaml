@@ -303,7 +303,12 @@ script:
 
           // Always update the home page persistent visibility variable,
           // regardless of which page is currently active
-          if (is_home_page && strcmp(target_id, "indr_temp_icon") != 0)
+          if (is_home_page &&
+              strcmp(target_id, "indr_temp_icon") != 0 &&
+              strcmp(target_id, "value01_icon") != 0 &&
+              strcmp(target_id, "value02_icon") != 0 &&
+              strcmp(target_id, "value03_icon") != 0 &&
+              strcmp(target_id, "value04_icon") != 0)
             disp1->send_command_printf("vis_%s=%" PRIu8, target_id, (uint8_t)visible);
 
           // Apply the vis command only when the target page is currently visible
