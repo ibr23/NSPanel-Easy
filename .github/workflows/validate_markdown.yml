@@ -79,9 +79,10 @@ jobs:
   # Gate — required status check for branch protection
   # ===========================================================================
   all-checks-passed:
+  all-checks-passed:
     name: Validate Markdown / All checks passed
-    permissions: {}
     runs-on: ubuntu-latest
+    permissions: {}
     needs:
       - markdown-lint
       - markdown-links
