@@ -62,7 +62,7 @@ updates:
         patterns:
           - "tj-actions/*"
           - "step-security/*"
-      # Actions used exclusively in the versioning/release workflow
+      # Actions used in the versioning and release workflows
       actions-versioning:
         patterns:
           - "mikefarah/*"
