@@ -6,7 +6,7 @@
 ##################################################################################################
 ---
 blueprint:
-  name: NSPanel Easy Configuration (v2026.4.11)
+  name: NSPanel Easy Configuration (v9999.99.9)
   author: Edward Firmo (https://github.com/edwardtfn)
   description: >
     # NSPanel Easy Configuration via Blueprint
@@ -4052,7 +4052,7 @@ trigger_variables:
     }}
 
 variables:
-  blueprint_version: 2026.4.11
+  blueprint_version: 9999.99.9
   pages:
     current: '{{ states(currentpage) }}'
     alarm: "alarm"
@@ -9997,8 +9997,10 @@ actions:
                               and blueprint_reported_parts[1] == blueprint_min_parts[1]
                               and blueprint_reported_parts[2] >= blueprint_min_parts[2])
                         }}
-                      # True when blueprint_min > blueprint_reported (ESPHome is outdated)
-                      esphome_outdated: >-
+                      # True when blueprint_min > blueprint_reported, meaning the ESPHome
+                      # firmware requires a Blueprint version newer than what it received.
+                      # In this case the Blueprint (not ESPHome) needs to be updated.
+                      blueprint_behind_esphome_req: >-
                         {{
                           blueprint_min_parts[0] > blueprint_reported_parts[0]
                           or (blueprint_min_parts[0] == blueprint_reported_parts[0]
@@ -10059,52 +10061,16 @@ actions:
                                 Troubleshooting steps and more information are available in the online documentation: [Panel startup issues - Blueprint is not detected](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/error_initializing.md#blueprint-is-not-detected).
                             continue_on_error: true
 
-                      - alias: ESPHome firmware outdated
-                        conditions:
-                          # Blueprint is ahead of what ESPHome requires, meaning
-                          # the user updated the blueprint but not the firmware.
-                          - >-
-                            {{
-                              versions.blueprint | length >= 8
-                              and not is_number(versions.blueprint)
-                            }}
-                          - '{{ esphome_outdated }}'
-                        sequence:
-                          - action: persistent_notification.create
-                            data:
-                              notification_id: 'NSPanel_Easy_version_mismatch_{{ nspanel_name }}'
-                              title: "NSPanel Easy - Version mismatch: ESPHome firmware"
-                              message: >
-                                The NSPanel Easy firmware (ESPHome) is outdated for the panel **{{ nspanel_full_name }}**.
-
-                                - Current firmware version: {{ versions.esphome if versions.esphome | length > 0 else "Unknown" }}
-
-                                - Current Blueprint version: {{ blueprint_version }}
-
-                                ---
-
-                                **How to Resolve This Issue**
-
-                                1. Go to your ESPHome Dashboard.
-
-                                2. Locate the panel named **{{ nspanel_full_name }}**.
-
-                                3. Click on the corresponding 3-dot menu.
-
-                                4. Choose "**Clean Build Files**".
-
-                                5. In the pop-up dialog, wait for the cleaning to finish, then click "**Install**".
-
-                                6. Select "**Wirelessly**".
-
-
-                                *For more detailed instructions, please refer to the online documentation: [How to Update ESPHome](https://github.com/edwardtfn/NSPanel-Easy/blob/main/docs/howto.md#update-esphome).*
-                            continue_on_error: true
-
                       - alias: Blueprint version mismatch
                         conditions:
-                          # Blueprint version is valid CalVer but older than what
-                          # the ESPHome firmware requires.
+                          # Blueprint version is valid CalVer and at least one of:
+                          #   - older than the live blueprint_version (ESPHome echoed back a
+                          #     stale version, meaning the Blueprint was updated but the
+                          #     automation was not reloaded yet), or
+                          #   - older than what the ESPHome firmware requires (ESPHome was
+                          #     updated and its min_blueprint_version moved forward, but the
+                          #     Blueprint in HA was not updated yet).
+                          # Both cases require the user to update the Blueprint, not ESPHome.
                           - >-
                             {{
                               versions.blueprint | length >= 8
@@ -10118,6 +10084,7 @@ actions:
                               or (blueprint_reported_parts[0] == blueprint_version_parts[0]
                                   and blueprint_reported_parts[1] == blueprint_version_parts[1]
                                   and blueprint_reported_parts[2] < blueprint_version_parts[2])
+                              or blueprint_behind_esphome_req
                             }}
                         sequence:
                           - action: persistent_notification.create
