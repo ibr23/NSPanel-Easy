@@ -9957,18 +9957,8 @@ actions:
                       # Parse CalVer strings into comparable integer tuples.
                       # This is required because lexicographic comparison fails for
                       # CalVer when month digits differ in length (e.g. "4" vs "10").
-                      # blueprint_version is the CalVer string defined in blueprint variables.
-                      # versions.blueprint is the same value echoed back by ESPHome,
+                      # versions.blueprint is the blueprint version echoed back by ESPHome,
                       # used to verify the blueprint version ESPHome is talking to.
-                      blueprint_version_parts: >-
-                        {{
-                          blueprint_version.split('.')
-                          | map('int')
-                          | list
-                          if blueprint_version | length >= 8
-                          and not is_number(blueprint_version)
-                          else [0, 0, 0]
-                        }}
                       blueprint_reported_parts: >-
                         {{
                           versions.blueprint.split('.')
@@ -10063,29 +10053,20 @@ actions:
 
                       - alias: Blueprint version mismatch
                         conditions:
-                          # Blueprint version is valid CalVer and at least one of:
-                          #   - older than the live blueprint_version (ESPHome echoed back a
-                          #     stale version, meaning the Blueprint was updated but the
-                          #     automation was not reloaded yet), or
-                          #   - older than what the ESPHome firmware requires (ESPHome was
-                          #     updated and its min_blueprint_version moved forward, but the
-                          #     Blueprint in HA was not updated yet).
-                          # Both cases require the user to update the Blueprint, not ESPHome.
+                          # ESPHome firmware requires a Blueprint version newer than what it
+                          # received (blueprint_min > blueprint_reported). This happens when
+                          # ESPHome is updated and its min_blueprint_version moves forward
+                          # but the Blueprint in HA has not been updated yet.
+                          # The stale-report case (blueprint_reported != blueprint_version)
+                          # is intentionally left to the 'Blueprint version not detected'
+                          # branch above, as it is a communication/sync issue, not a
+                          # Blueprint version mismatch requiring a re-import.
                           - >-
                             {{
                               versions.blueprint | length >= 8
                               and not is_number(versions.blueprint)
                             }}
-                          - >-
-                            {{
-                              blueprint_reported_parts[0] < blueprint_version_parts[0]
-                              or (blueprint_reported_parts[0] == blueprint_version_parts[0]
-                                  and blueprint_reported_parts[1] < blueprint_version_parts[1])
-                              or (blueprint_reported_parts[0] == blueprint_version_parts[0]
-                                  and blueprint_reported_parts[1] == blueprint_version_parts[1]
-                                  and blueprint_reported_parts[2] < blueprint_version_parts[2])
-                              or blueprint_behind_esphome_req
-                            }}
+                          - '{{ blueprint_behind_esphome_req }}'
                         sequence:
                           - action: persistent_notification.create
                             data:
