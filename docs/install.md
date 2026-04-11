@@ -367,11 +367,10 @@ The options are:
   instructions. Useful for first-time installations to clear the Nextion Active Reparse Mode
   left by Sonoff's original firmware or other custom implementations before uploading the
   full TFT file.
-- **Use `nextion_update_url`:** Forces ESPHome to download the TFT file from the URL set
-  in your `nextion_update_url` substitution, bypassing automatic model and version selection
-  entirely. Use this only when serving a custom or locally hosted TFT file where you need
-  full control over the source. See the [Upload TFT Add-on documentation](addon_upload_tft.md)
-  for details.
+- **Custom TFT URL (`nextion_update_url` substitution):** If you set `nextion_update_url`,
+  ESPHome bypasses automatic model/version URL building and uses that exact file URL. This is
+  a configuration override, not a model-selector option. See the
+  [Upload TFT Add-on documentation](addon_upload_tft.md) for details.
 
 ### Uploading to Nextion
 
@@ -574,7 +573,7 @@ this service directly.
 > [!IMPORTANT]
 > If either of these actions has stopped appearing in Home Assistant after a firmware update
 > and you were calling them from automations or scripts, add the corresponding
-> `include_action_*: "true"` substitution to restore them. This is a deliberate breaking
+> `include_action_*: true` substitution to restore them. This is a deliberate breaking
 > change introduced to improve boot stability on memory-constrained devices.
 
 ##### Dynamic Memory Management
