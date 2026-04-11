@@ -152,16 +152,14 @@ Follow these steps to add a new device in the ESPHome Dashboard:
 10. For Wi-Fi credentials, use `!secret` for added security or input them directly.
 Learn about secrets in ESPHome: [Home Assistant Secrets in ESPHome](https://www.youtube.com/watch?v=eW4vKDeHh7Y).
 
-11. (Optional) Adjust `nextion_update_url` to the URL of a TFT file hosted on an HTTP or HTTPS server,
-    ensuring that the file is accessible to the NSPanel.
-    This URL will be used by ESPHome to download the TFT file to your panel.
-    For more information on hosting the TFT file and setting up the URL, see the [Upload TFT](#upload-tft) section.
+11. (Optional) If you need to serve TFT files from a local server instead of GitHub,
+    set `nextion_update_base_url` to your local server's base URL.
+    For full control over the TFT source (e.g. a custom TFT file), set `nextion_update_url` to the exact URL of the file.
+    For more information, see the [Upload TFT Add-on documentation](addon_upload_tft.md).
     > [!CAUTION]
-    > **Prefer HTTP over HTTPS for File Transfer**  
-    > While you might encounter examples using HTTPS in URLs for file transfer,
-    > it is strongly recommended to use HTTP, especially when employing the `arduino` framework.
-    > The support for HTTPS in this context can be unstable,
-    > often leading to issues with file transfers.
+    > **Prefer HTTP over HTTPS for file transfer**
+    > HTTPS support for TFT transfers can be unstable, particularly with the `arduino` framework.
+    > Use HTTP whenever possible for local servers.
 
 12. (Optional) Enhance security with API encryption by adding the copied key from step 6 to the **My Customization** area.
     > [!TIP]
@@ -360,20 +358,20 @@ Expand the **Update TFT display - Model** control and find the model that better
 
 The options are:
 
-- **Use `nextion_update_url`:** This will indicate ESPHome to download the TFT file from the URL
-you specified in your panel's yaml setting under the ESPHome dashboard and is typically used
-when your device have issues to transfer a TFT file directly from the GitHub repository or when
-you want to use a custom TFT file hosted in your local server.
-This is the default option and this keeps the compatibility with legacy installations when this was the only option.
-- **NSPanel Blank:** This is a very small TFT file which just shows a pre-formatted QR code on the screen with a link to the instructions.
-Although it's not a functional TFT for controlling your panel, it can be usefull when you have
-issues in your first TFT upload, as it will remove the *Nextion Active Reparse Mode* used when
-a Sonoff's TFT and also when some other custom implementations are installed.
-- **NSPanel EU:** This should be used when you are using a Sonoff NSPanel EU model.
-- **NSPanel US:** This should be used when you are using a Sonoff NSPanel US model
-installed on its normal (portrait) position with the buttons below the screen.
-- **NSPanel US Landscape:** This should be used when you are using a Sonoff NSPanel US model
-installed on the landscape position with the buttons at the right side of the screen.
+- **NSPanel EU:** Select this when using a Sonoff NSPanel EU model.
+- **NSPanel US:** Select this when using a Sonoff NSPanel US model installed in the normal
+  (portrait) position, with buttons below the screen.
+- **NSPanel US Landscape:** Select this when using a Sonoff NSPanel US model installed in
+  landscape position, with buttons at the right side of the screen.
+- **NSPanel Blank:** A minimal TFT file that displays a QR code linking to the setup
+  instructions. Useful for first-time installations to clear the Nextion Active Reparse Mode
+  left by Sonoff's original firmware or other custom implementations before uploading the
+  full TFT file.
+- **Use `nextion_update_url`:** Forces ESPHome to download the TFT file from the URL set
+  in your `nextion_update_url` substitution, bypassing automatic model and version selection
+  entirely. Use this only when serving a custom or locally hosted TFT file where you need
+  full control over the source. See the [Upload TFT Add-on documentation](addon_upload_tft.md)
+  for details.
 
 ### Uploading to Nextion
 
@@ -542,6 +540,40 @@ This approach allows you to:
 - Enable only required functionality
 - Temporarily disable memory-intensive components
 - Add custom components while maintaining core functionality
+
+##### Reducing Registered API Actions
+
+Each API action registered by ESPHome consumes heap memory at boot. On memory-constrained
+configurations — such as those running Bluetooth Proxy — this can cause boot instability or crashes.
+
+The Upload TFT add-on includes an `upload_tft` API action that allows triggering TFT uploads
+programmatically from Home Assistant scripts or automations. Most users never use this action
+directly; the "Update TFT display" button and automatic upload on boot cover all standard workflows.
+
+To exclude this action and recover the memory it would consume, set:
+
+```yaml
+substitutions:
+  include_action_upload_tft: "false"  # Default — action not registered, saves boot memory
+```
+
+If you do use the `esphome.<panel>_upload_tft` service call from your own automations or scripts,
+opt back in explicitly:
+
+```yaml
+substitutions:
+  include_action_upload_tft: "true"  # Register the upload_tft API action
+```
+
+> [!NOTE]
+> `include_action_upload_tft: "false"` is the default. Only automatic uploads on version
+> mismatch, the "Update TFT display" button, and baud rate negotiation are affected by this
+> flag — all other add-on functionality remains active regardless of this setting.
+
+> [!IMPORTANT]
+> If you were previously calling `esphome.<panel>_upload_tft` from a Home Assistant automation
+> or script and the action has stopped appearing after a firmware update, add
+> `include_action_upload_tft: "true"` to your substitutions to restore it.
 
 ##### Dynamic Memory Management
 

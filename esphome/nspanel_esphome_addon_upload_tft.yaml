@@ -18,42 +18,45 @@ substitutions:
   ##############################################
   TAG_UPLOAD_TFT: "nspanel.addon.upload_tft"
   DISPLAY_MODES_BLANK_TEXT: ${DISPLAY_MODES.BLANK.TEXT}
+  include_action_upload_tft: false
+  _pkg_action_upload_tft:  # To do: move this to an external package after v2024.6.0
+    api:
+      actions:
+        ##### TFT File Update Service: `upload_tft`
+        # Updates the panel's TFT file remotely from a specified URL or the default location, requiring the "Upload TFT" add-on.
+        # Usage: Essential for applying custom TFT designs or updates, especially when direct repository access is unavailable.
+        #
+        # Parameters:
+        # - `url` (string): URL for the TFT file. If "default" or empty, uses the URL from "Update TFT - Display Model" in Home Assistant settings.
+        #
+        # Example:
+        # service: esphome.<your_panel_name>_upload_tft
+        # data:
+        #   url: "http://homeassistant.local:8123/local/custom_tft_file.tft"  # Custom or default URL to the TFT file
+        #
+        # [!NOTE]
+        # Utilize "default" to automatically use the URL associated with the display model set in Home Assistant.
+        #
+        # [!ATTENTION]
+        # Requires the "Upload TFT" add-on for functionality.
+        - action: upload_tft
+          variables:
+            url: string
+          then:
+            - lambda: |-
+                if (!system_flags.tft_upload_active) {
+                  tft_upload_manual_request = true;
+                  upload_tft->execute(url.c_str());
+                }
+
+packages:
+  action_upload_tft: ${ _pkg_action_upload_tft if include_action_upload_tft else {} }
 
 esphome:
   platformio_options:
     build_flags:
       - -D NSPANEL_EASY_ADDON_UPLOAD_TFT
       - -D NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY=${1 if upload_tft_automatically else 0}
-
-# yamllint disable rule:comments-indentation
-api:
-  actions:
-    ##### TFT File Update Service: `upload_tft`
-    # Updates the panel's TFT file remotely from a specified URL or the default location, requiring the "Upload TFT" add-on.
-    # Usage: Essential for applying custom TFT designs or updates, especially when direct repository access is unavailable.
-    #
-    # Parameters:
-    # - `url` (string): URL for the TFT file. If "default" or empty, uses the URL from "Update TFT - Display Model" in Home Assistant settings.
-    #
-    # Example:
-    # service: esphome.<your_panel_name>_upload_tft
-    # data:
-    #   url: "http://homeassistant.local:8123/local/custom_tft_file.tft"  # Custom or default URL to the TFT file
-    #
-    # [!NOTE]
-    # Utilize "default" to automatically use the URL associated with the display model set in Home Assistant.
-    #
-    # [!ATTENTION]
-    # Requires the "Upload TFT" add-on for functionality.
-    - action: upload_tft
-      variables:
-        url: string
-      then:
-        - lambda: |-
-            if (!system_flags.tft_upload_active) {
-              tft_upload_manual_request = true;
-              upload_tft->execute(url.c_str());
-            }
 
 button:
   ##### UPDATE TFT DISPLAY #####

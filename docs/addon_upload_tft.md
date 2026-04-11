@@ -108,6 +108,7 @@ The following keys are available to be used in your `substitutions`:
 | `upload_tft_wait_ms_after_boot` | Optional | Positive integer (milliseconds) | `300000` (5 min) | Time to wait after the first NTP time sync before starting an automatic TFT upload. This delay allows the system to stabilize after boot. Reduce for faster updates; increase if you experience boot instability. |
 | `nextion_update_base_url` | Optional | Valid HTTP/HTTPS base URL | `https://raw.githubusercontent.com/edwardtfn/NSPanel-Easy/v${version}/hmi` | Base URL used when building the TFT download URL automatically. Override this to host TFT files on a local server while still benefiting from automatic model and version selection. |
 | `nextion_update_url` | Optional | Valid HTTP/HTTPS URL | _(empty)_ | Full URL override for the TFT file. When set, this takes absolute priority. The model selector and version logic are completely bypassed and this URL is used as-is. Use only when you need full control over the TFT source, such as for custom TFT files. See [important note below](#nextion_update_url-behaviour). |
+| `include_action_upload_tft` | Optional | `"true"` or `"false"` | `"false"` | When set to `"true"`, registers the `upload_tft` API action, allowing the TFT upload to be triggered from Home Assistant scripts or automations via `esphome.<panel>_upload_tft`. Disabled by default to reduce memory usage at boot. See [important note below](#include_action_upload_tft-behaviour). |
 <!-- markdownlint-enable MD013 -->
 
 ### `nextion_update_url` behaviour
@@ -122,6 +123,26 @@ The following keys are available to be used in your `substitutions`:
 When `nextion_update_url` is left empty (the default), the add-on builds the download URL
 automatically from the selected **Display model** and the current firmware version. This is
 the recommended configuration for most users.
+
+### `include_action_upload_tft` behaviour
+
+> [!NOTE]
+> This substitution was introduced to address boot-time memory exhaustion on devices running
+> memory-intensive configurations (e.g. Bluetooth Proxy). Registering API actions consumes
+> heap memory at boot; disabling unused actions recovers that memory.
+
+When set to `"false"` (the default), the `upload_tft` API action is not registered.
+All other functionality of this add-on remains fully operational: automatic TFT upload on
+version mismatch, the "Update TFT display" button in Home Assistant, and baud rate negotiation
+are all unaffected.
+
+Set this to `"true"` only if you need to trigger TFT uploads programmatically from Home
+Assistant scripts or automations using the `esphome.<panel>_upload_tft` service call.
+
+> [!IMPORTANT]
+> If you were previously calling `esphome.<panel>_upload_tft` from an automation or script,
+> add `include_action_upload_tft: "true"` to your substitutions to restore that behaviour.
+> This is a breaking change introduced to improve boot stability on memory-constrained devices.
 
 ### Display model options
 
