@@ -546,34 +546,36 @@ This approach allows you to:
 Each API action registered by ESPHome consumes heap memory at boot. On memory-constrained
 configurations — such as those running Bluetooth Proxy — this can cause boot instability or crashes.
 
-The Upload TFT add-on includes an `upload_tft` API action that allows triggering TFT uploads
-programmatically from Home Assistant scripts or automations. Most users never use this action
-directly; the "Update TFT display" button and automatic upload on boot cover all standard workflows.
+The following actions are excluded by default because most users never call them directly from
+Home Assistant scripts or automations, and excluding them recovers memory without affecting
+standard panel functionality:
 
-To exclude this action and recover the memory it would consume, set:
+| Action | Default | Re-enable with |
+| :- | :-: | :- |
+| `upload_tft` | excluded | `include_action_upload_tft: "true"` |
+| `wake_up` | excluded | `include_action_wake_up: "true"` |
 
-```yaml
-substitutions:
-  include_action_upload_tft: "false"  # Default — action not registered, saves boot memory
-```
-
-If you do use the `esphome.<panel>_upload_tft` service call from your own automations or scripts,
-opt back in explicitly:
+To re-enable one or both, add the corresponding substitution:
 
 ```yaml
 substitutions:
   include_action_upload_tft: "true"  # Register the upload_tft API action
+  include_action_wake_up: "true"     # Register the wake_up API action
 ```
 
-> [!NOTE]
-> `include_action_upload_tft: "false"` is the default. Only automatic uploads on version
-> mismatch, the "Update TFT display" button, and baud rate negotiation are affected by this
-> flag — all other add-on functionality remains active regardless of this setting.
+**`upload_tft`** — triggers a TFT file upload from a specified URL. Not needed if you rely
+on the "Update TFT display" button in Home Assistant or automatic upload on boot, which cover
+all standard workflows.
+
+**`wake_up`** — wakes the display from sleep and optionally resets the sleep and dimming
+timers. Not needed if your panel wakes on touch or via other automations that do not call
+this service directly.
 
 > [!IMPORTANT]
-> If you were previously calling `esphome.<panel>_upload_tft` from a Home Assistant automation
-> or script and the action has stopped appearing after a firmware update, add
-> `include_action_upload_tft: "true"` to your substitutions to restore it.
+> If either of these actions has stopped appearing in Home Assistant after a firmware update
+> and you were calling them from automations or scripts, add the corresponding
+> `include_action_*: "true"` substitution to restore them. This is a deliberate breaking
+> change introduced to improve boot stability on memory-constrained devices.
 
 ##### Dynamic Memory Management
 

@@ -74,15 +74,19 @@ substitutions:
       TEXT: "NSpanel Easy US Landscape (Under construction)"
 
   TAG_HW_DISPLAY: nspanel.hw.display
+  include_action_wake_up: false
+  _pkg_action_wake_up:
+    api:
+      actions:
+        # Wake Up Service
+        - action: wake_up
+          variables:
+            reset_timer: bool  # Determines whether to reset the sleep and dimming timers upon waking the display.
+          then:
+            - lambda: wakeup->execute(reset_timer);
 
-api:
-  actions:
-    # Wake Up Service
-    - action: wake_up
-      variables:
-        reset_timer: bool  # Determines whether to reset the sleep and dimming timers upon waking the display.
-      then:
-        - lambda: wakeup->execute(reset_timer);
+packages:
+  action_wake_up: ${ _pkg_action_wake_up if include_action_wake_up else {} }
 
 binary_sensor:
   - id: nextion_init  # Delays initial info from HA to the display
