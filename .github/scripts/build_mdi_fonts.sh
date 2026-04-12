@@ -35,6 +35,7 @@ echo "SVG dir:   ${SVG_DIR}"
 echo "Output:    ${OUTPUT_DIR}"
 echo "Docs:      ${DOCS_DIR}"
 echo "Header:    ${HEADER_DIR}"
+echo "Script:    ${SCRIPT_DIR}"
 echo ""
 
 python3 "${SCRIPT_DIR}/build_mdi_fonts.py" \

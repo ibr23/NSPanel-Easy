@@ -53,7 +53,11 @@ Notes
 -----
   - MDI SVGs use cubic Bezier curves; TTF requires quadratic. cu2qu handles
     the conversion automatically.
-  - 1 glyph (ab-testing) may render blank due to an unusual SVG path.
+  - SVG paths that omit the leading moveTo command are auto-corrected by
+    prepending an implicit "M 0,0" (mirrors browser behaviour; see SVG spec
+    section 9.3.3).
+  - 2 glyphs (ab-testing, google-ads) render blank due to upstream SVG defects
+    that cannot be safely auto-corrected; both are in allowed_blank_glyphs.
   - Run this script whenever MDI releases new icons to keep all artifacts
     in sync. The TTF filename encodes the MDI version for traceability.
 """
@@ -152,6 +156,23 @@ def detect_version(svg_dir):
 # TTF build
 # =============================================================================
 
+def _fix_svg_path_data(d):
+    """
+    Ensure an SVG path data string starts with a moveTo command.
+
+    The SVG spec (section 9.3.3) requires that path data begin with a moveTo
+    ('M' or 'm').  Some MDI sources (e.g. google-ads) violate this, causing
+    strict parsers such as fontTools' parse_path to raise "moveTo is required".
+    Browsers silently recover by treating a missing leading moveTo as "M 0,0".
+    This helper applies the same recovery so that the glyph renders correctly
+    instead of being discarded as blank.
+    """
+    stripped = d.lstrip()
+    if stripped and stripped[0] not in ("M", "m"):
+        return "M 0,0 " + d
+    return d
+
+
 def build_ttf(meta, svg_dir, output_path, version_str):
     """
     Build a TTF from MDI SVG sources using fonttools + cu2qu.
@@ -228,7 +249,7 @@ def build_ttf(meta, svg_dir, output_path, version_str):
             paths = re.findall(r'<path[^>]+d="([^"]+)"', svg_content)
             if paths:
                 for d in paths:
-                    parse_path(d, tpen)
+                    parse_path(_fix_svg_path_data(d), tpen)
             glyphs[name] = pen.glyph()
         except Exception as e:
             glyphs[name] = TTGlyphPen(None).glyph()
@@ -242,7 +263,11 @@ def build_ttf(meta, svg_dir, output_path, version_str):
             print(f"    ... and {len(failed) - 5} more")
 
         # Prevent shipping silently-broken icon sets.
-        allowed_blank_glyphs = {"ab-testing"}
+        # Known upstream SVG defects that cannot be safely auto-corrected:
+        #   ab-testing  - unusual path structure produces no contours
+        #   google-ads  - subpath after Z lacks a required leading M command;
+        #                 the intended geometry cannot be inferred safely
+        allowed_blank_glyphs = {"ab-testing", "google-ads"}
         unexpected_failed = [name for name, _ in failed if name not in allowed_blank_glyphs]
         if unexpected_failed:
             print("ERROR: Unexpected glyph failures detected; aborting artifact generation.")
@@ -329,7 +354,11 @@ def build_cheatsheet(name_to_ttf_cp, zi_map, ttf_filename, output_path, version_
     Write searchable HTML cheatsheet for GitHub Pages.
     Glyphs are rendered using TTF codepoints (font loaded via @font-face).
     ZI codepoints (post-ZiLib remapping) are shown and noted on click.
-    Click-to-copy copies "mdi:<n>" to clipboard.
+
+    Click-to-copy behaviour (context-sensitive):
+      - Click the glyph  -> copies the Unicode character (paste into Nextion Editor)
+      - Click the name   -> copies "mdi:<n>"
+      - Click the code   -> copies the ZI codepoint string (e.g. "U+E1C8")
     """
     icon_count = len(zi_map)
 
@@ -339,11 +368,14 @@ def build_cheatsheet(name_to_ttf_cp, zi_map, ttf_filename, output_path, version_
         zi_cp  = zi_map[name]
         char   = chr(ttf_cp)  # render glyph using TTF codepoint
         zi_str = f"U+{zi_cp:04X}"
+        full   = f"mdi:{name} — {zi_str}"  # context shown in every toast
         icon_html.append(
-            f'  <div class="icon" onclick="copy(this,\'mdi:{name}\',\'{zi_str}\')">\n'
-            f'    <span class="glyph">{char}</span>\n'
-            f'    <span class="name">mdi:{name}</span>\n'
-            f'    <span class="cp">{zi_str}</span>\n'
+            f'  <div class="icon">\n'
+            f'    <span class="glyph" onclick="copy(this,\'{char}\',\'glyph\',\'{full}\')">{char}</span>\n'
+            f'    <span class="name"  onclick="copy(this,\'mdi:{name}\',\'name\',\'{full}\')">'
+            f'mdi:{name}</span>\n'
+            f'    <span class="cp"   onclick="copy(this,\'{zi_str}\',\'code\',\'{full}\')">'
+            f'{zi_str}</span>\n'
             f'  </div>'
         )
 
@@ -383,9 +415,12 @@ def build_cheatsheet(name_to_ttf_cp, zi_map, ttf_filename, output_path, version_
     }}
     .icon:hover  {{ border-color: #569cd6; }}
     .icon.copied {{ border-color: #4ec94e; }}
-    .glyph {{ font-family: 'MDI'; font-size: 28px; display: block; margin-bottom: 5px; color: #fff; }}
-    .name  {{ word-break: break-all; color: #9cdcfe; font-size: 10px; display: block; margin-bottom: 2px; }}
-    .cp    {{ color: #569cd6; font-size: 9.5px; }}
+    .glyph {{ font-family: 'MDI'; font-size: 28px; display: block; margin-bottom: 5px; color: #fff; cursor: pointer; }}
+    .name  {{ word-break: break-all; color: #9cdcfe; font-size: 10px; display: block; margin-bottom: 2px; cursor: pointer; }}
+    .cp    {{ color: #569cd6; font-size: 9.5px; cursor: pointer; }}
+    .glyph:hover {{ color: #4ec94e; }}
+    .name:hover  {{ color: #7ed4fe; }}
+    .cp:hover    {{ color: #7eb4f6; }}
     .toast {{
       position: fixed; bottom: 1.2em; left: 50%; transform: translateX(-50%);
       background: #4ec94e; color: #000; padding: 5px 14px;
@@ -421,12 +456,13 @@ def build_cheatsheet(name_to_ttf_cp, zi_map, ttf_filename, output_path, version_
     document.getElementById('count').textContent = n + ' icons';
   }}
 
-  function copy(el, text, zi) {{
+  function copy(el, text, kind, ctx) {{
     navigator.clipboard.writeText(text).then(() => {{
-      el.classList.add('copied');
-      setTimeout(() => el.classList.remove('copied'), 700);
+      const card = el.closest('.icon');
+      card.classList.add('copied');
+      setTimeout(() => card.classList.remove('copied'), 700);
       const t = document.getElementById('toast');
-      t.textContent = 'Copied: ' + text + '  (' + zi + ')';
+      t.textContent = 'Copied ' + kind + ': ' + text + '  (' + ctx + ')';
       t.classList.add('show');
       clearTimeout(window._tt);
       window._tt = setTimeout(() => t.classList.remove('show'), 1400);
