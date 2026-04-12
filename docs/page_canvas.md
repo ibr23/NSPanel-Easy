@@ -77,6 +77,7 @@ The Nextion display uses a simple drawing instruction set. The key commands are:
 Colors are in **RGB565** format (16-bit integer). A full reference for the drawing commands is
 available in the [Nextion Instruction Set — GUI Designing Commands](https://nextion.tech/instruction-set/#s4).
 
+<!-- markdownlint-disable MD028 -->
 > [!IMPORTANT]
 > Each command string sent to the display must be **under 255 bytes** after all variables are
 > substituted. Keep text strings short and avoid complex expressions inside a single `cmd` value.
@@ -87,6 +88,7 @@ available in the [Nextion Instruction Set — GUI Designing Commands](https://ne
 > are rendered after subsequent commands have already painted over their area. A `delay` of
 > **10 ms between individual commands** and **50 ms between logical groups** (such as rows in a
 > table) is sufficient in practice.
+<!-- markdownlint-enable MD028 -->
 
 ### Header components
 
