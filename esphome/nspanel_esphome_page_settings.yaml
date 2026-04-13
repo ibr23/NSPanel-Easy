@@ -15,7 +15,6 @@ display:
     on_touch:
       then:
         - lambda: |-
-            if 
             if (page_id != get_page_id("settings")) return;
             if (touch_event) return;  // Ignore any touch event and only act with release
             if (component_id == 18) {  // Reboot button hotspot

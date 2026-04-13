@@ -39,11 +39,6 @@ script:
   - id: !extend dump_config
     then:  # Report memory
       - lambda: |-
-          // Add dependencies
-          #include <esp_heap_caps.h>
-          #include <freertos/FreeRTOS.h>
-          #include <freertos/task.h>
-
           // --- Heap: Internal ---
           const size_t int_total = heap_caps_get_total_size(MALLOC_CAP_INTERNAL);
           const size_t int_free  = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
