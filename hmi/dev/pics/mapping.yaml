@@ -121,12 +121,6 @@
     src: climate/climate_background_portrait.png
     coordinates: "0,0"
     dimensions: "320x480"
-- id: climate_slider_cursor
-  src: climate/generic_slider_cursor_vertical_line_white.png
-  note: "Vertical line cursor for the climate page slider. Same image for both themes."
-  dark: 38
-  light: 38
-  copy: true
 
 # -----------------------------------------------------------------------------
 # Cover page
@@ -378,6 +372,22 @@
     src: settings/brightness_bar_vertical_gray.png
     coordinates: "193,65"
     dimensions: "40x250"
+
+# -----------------------------------------------------------------------------
+# Misc components
+# -----------------------------------------------------------------------------
+- id: misc_slider_cursor_horizontal
+  src: misc/generic_slider_cursor_horizontal_line_white.png
+  note: "Horizontal line cursor for sliders. Same image for both themes."
+  dark: 95
+  light: 95
+  copy: true
+- id: misc_slider_cursor_vertical
+  src: misc/generic_slider_cursor_vertical_line_white.png
+  note: "Vertical line cursor for sliders. Same image for both themes."
+  dark: 38
+  light: 38
+  copy: true
 
 # -----------------------------------------------------------------------------
 # Weather icons

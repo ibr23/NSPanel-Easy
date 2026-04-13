@@ -16,8 +16,9 @@ display:
       then:
         - lambda: |-
             if (page_id != get_page_id("settings")) return;
-            if (touch_event) return;  // Ignore any touch event and only act with release
+            if (touch_event) return;  // Ignore any touch event and only act with release events
             if (component_id == 18) {  // Reboot button hotspot
+              ESP_LOGW("${TAG_PAGE_SETTINGS}", "Restart button clicked");
               screen_power->turn_off();
               App.safe_reboot();
             }
