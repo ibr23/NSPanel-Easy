@@ -43,7 +43,7 @@
 # Source files live under pics/ and should follow the naming convention:
 #   <category>_<description>[_<variant>].png
 # Subdirectories under pics/ are encouraged to group by category.
-
+---
 # -----------------------------------------------------------------------------
 # Background
 # -----------------------------------------------------------------------------
@@ -438,7 +438,7 @@
     coordinates: "20,154"
     dimensions: "100x100"
 - id: weather_lightning_rainy_day
-  src: weather/weather_lightning_rainy_day.png  
+  src: weather/weather_lightning_rainy_day.png
   note: "Lightning with rain - daytime"
   dark: 13
   light: 61
@@ -449,7 +449,7 @@
     coordinates: "20,154"
     dimensions: "100x100"
 - id: weather_lightning_rainy_night
-  src: weather/weather_lightning_rainy_night.png  
+  src: weather/weather_lightning_rainy_night.png
   note: "Lightning with rain - night"
   dark: 14
   light: 62
@@ -633,3 +633,4 @@
   dark: 44
   light: null
   copy: true
+...
