@@ -33,17 +33,17 @@ number:
     on_value:
       then:
         - lambda: |-
-            disp1->set_component_value("settings.brightslider", int(x));
-            if (current_page_id == get_page_id("settings"))
-              disp1->set_component_text_printf("bright_text", "%i%%", int(x));
+            if (current_page_id != get_page_id("settings")) return;
+            disp1->set_component_value("brightslider", int(x));
+            disp1->set_component_text_printf("bright_text", "%i%%", int(x));
 
   - id: !extend display_dim_brightness
     on_value:
       then:
         - lambda: |-
-            disp1->set_component_value("settings.dimslider", int(x));
-            if (current_page_id == get_page_id("settings"))
-              disp1->set_component_text_printf("dim_text", "%i%%", int(x));
+            if (current_page_id != get_page_id("settings")) return;
+            disp1->set_component_value("dimslider", int(x));
+            disp1->set_component_text_printf("dim_text", "%i%%", int(x));
 
 script:
   - id: !extend event_from_display
