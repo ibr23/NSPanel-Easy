@@ -1,0 +1,646 @@
+# mapping.yaml
+#
+# Defines the source images and Nextion HMI slot assignments for all
+# generated picture files, for both landscape and portrait orientations.
+#
+# Schema per entry:
+#
+#   src:              Source file path relative to pics/ (applies to both
+#                     orientations when set at the top level). Can be
+#                     overridden per orientation when landscape and portrait
+#                     require different source images (e.g. horizontal vs
+#                     vertical slider bars).
+#
+#   dark:             Nextion HMI slot number for the dark-theme variant.
+#   light:            Nextion HMI slot number for the light-theme variant.
+#                     Set to null if the image has no light variant and the
+#                     dark slot file should be reused as-is.
+#
+#   landscape:        Compositing parameters for the landscape orientation.
+#     src:            Optional orientation-specific source override.
+#     coordinates:    Top-left corner where the source is placed on the
+#                     background canvas, as "X,Y".
+#     dimensions:     Size of the region to crop out, as "WxH".
+#                     The script derives the ImageMagick -geometry and
+#                     -crop arguments from these two fields.
+#
+#   portrait:         Compositing parameters for the portrait orientation.
+#     src:            Optional orientation-specific source override.
+#     coordinates:    Top-left corner where the source is placed on the
+#                     background canvas, as "X,Y".
+#     dimensions:     Size of the region to crop out, as "WxH".
+#
+#   copy:             When true, the source file is copied directly with no
+#                     compositing (black background assumed). No light variant
+#                     is generated. Overrides geometry fields.
+#
+#   id:               Short unique snake_case identifier for this entry.
+#                     Used as the opener field for human scannability and
+#                     in script error messages.
+#
+#   note:             Optional human-readable annotation.
+#
+# Source files live under pics/ and should follow the naming convention:
+#   <category>_<description>[_<variant>].png
+# Subdirectories under pics/ are encouraged to group by category.
+---
+# -----------------------------------------------------------------------------
+# Background
+# -----------------------------------------------------------------------------
+- id: background_dark
+  note: "Base background canvas for dark-theme compositing. Imported to HMI slot 0."
+  dark: 0
+  light: null
+  copy: true
+  landscape:
+    src: background/background_dark_landscape.png
+  portrait:
+    src: background/background_dark_portrait.png
+- id: background_light
+  note: "Base background canvas for light-theme compositing. Imported to HMI slot 48."
+  dark: null
+  light: 48
+  copy: true
+  landscape:
+    src: background/background_light_landscape.png
+  portrait:
+    src: background/background_light_portrait.png
+- id: splash
+  note: "Splash / boot screen"
+  dark: 32
+  light: 32
+  landscape:
+    src: background/background_splash_landscape.png
+    coordinates: "0,0"
+    dimensions: "480x320"
+  portrait:
+    src: background/background_splash_portrait.png
+    coordinates: "0,0"
+    dimensions: "320x480"
+
+# -----------------------------------------------------------------------------
+# Buttons page
+# -----------------------------------------------------------------------------
+- id: buttons_pages_background_active
+  note: "Background for pages with buttons - active state"
+  dark: 47
+  light: 80
+  landscape:
+    src: buttons_pages/buttons_pages_background_active_landscape.png
+    coordinates: "0,0"
+    dimensions: "480x320"
+  portrait:
+    src: buttons_pages/buttons_pages_background_active_portrait.png
+    coordinates: "0,0"
+    dimensions: "320x480"
+- id: buttons_pages_background_innactive
+  note: "Background for pages with buttons - inactive state"
+  dark: 46
+  light: 79
+  landscape:
+    src: buttons_pages/buttons_pages_background_innactive_landscape.png
+    coordinates: "0,0"
+    dimensions: "480x320"
+  portrait:
+    src: buttons_pages/buttons_pages_background_innactive_portrait.png
+    coordinates: "0,0"
+    dimensions: "320x480"
+
+# -----------------------------------------------------------------------------
+# Climate page
+# -----------------------------------------------------------------------------
+- id: climate_background
+  note: "Climate page full-screen background"
+  dark: 37
+  light: 64
+  landscape:
+    src: climate/climate_background_landscape.png
+    coordinates: "0,0"
+    dimensions: "480x320"
+  portrait:
+    src: climate/climate_background_portrait.png
+    coordinates: "0,0"
+    dimensions: "320x480"
+
+# -----------------------------------------------------------------------------
+# Cover page
+# -----------------------------------------------------------------------------
+- id: cover_slider_active
+  src: cover/cover_slider_active.png
+  note: "Cover slider - active / pressed state"
+  dark: 20
+  light: 75
+  landscape:
+    coordinates: "183,67"
+    dimensions: "83x233"
+  portrait:
+    coordinates: "119,143"
+    dimensions: "83x233"
+- id: cover_slider_inactive
+  src: cover/cover_slider_inactive.png
+  note: "Cover slider - inactive state"
+  dark: 19
+  light: 74
+  landscape:
+    coordinates: "183,67"
+    dimensions: "83x233"
+  portrait:
+    coordinates: "119,143"
+    dimensions: "83x233"
+
+# -----------------------------------------------------------------------------
+# Fan page
+# -----------------------------------------------------------------------------
+- id: fan_slider_active
+  src: fan/fan_slider_active.png
+  note: "Fan slider - active state"
+  dark: 40
+  light: 75
+  landscape:
+    coordinates: "183,67"
+    dimensions: "83x233"
+  portrait:
+    coordinates: "119,143"
+    dimensions: "83x233"
+- id: fan_slider_inactive
+  src: fan/fan_slider_inactive.png
+  note: "Fan slider - inactive state"
+  dark: 39
+  light: 74
+  landscape:
+    coordinates: "183,67"
+    dimensions: "83x233"
+  portrait:
+    coordinates: "119,143"
+    dimensions: "83x233"
+
+# -----------------------------------------------------------------------------
+# Light page
+# -----------------------------------------------------------------------------
+- id: light_button_brightness_normal
+  src: light/light_button_brightness_normal.png
+  note: "Light brightness button - normal state"
+  dark: 22
+  light: 76
+  landscape:
+    coordinates: "389,74"
+    dimensions: "50x50"
+  portrait:
+    coordinates: "25,71"
+    dimensions: "50x50"
+- id: light_button_brightness_pressed
+  src: light/light_button_brightness_pressed.png
+  note: "Light brightness button - pressed state"
+  dark: 23
+  light: 67
+  landscape:
+    coordinates: "389,74"
+    dimensions: "50x50"
+  portrait:
+    coordinates: "25,71"
+    dimensions: "50x50"
+- id: light_button_color_normal
+  src: light/light_button_color_normal.png
+  note: "Light color button - normal state"
+  dark: 26
+  light: 78
+  landscape:
+    coordinates: "389,201"
+    dimensions: "50x50"
+  portrait:
+    coordinates: "243,71"
+    dimensions: "50x50"
+- id: light_button_color_pressed
+  src: light/light_button_color_pressed.png
+  note: "Light color button - pressed state"
+  dark: 27
+  light: 69
+  landscape:
+    coordinates: "389,201"
+    dimensions: "50x50"
+  portrait:
+    coordinates: "243,71"
+    dimensions: "50x50"
+- id: light_button_temp_normal
+  src: light/light_button_temp_normal.png
+  note: "Light temperature button - normal state"
+  dark: 24
+  light: 77
+  landscape:
+    coordinates: "389,138"
+    dimensions: "50x50"
+  portrait:
+    coordinates: "134,71"
+    dimensions: "50x50"
+- id: light_button_temp_pressed
+  src: light/light_button_temp_pressed.png
+  note: "Light temperature button - pressed state"
+  dark: 25
+  light: 68
+  landscape:
+    coordinates: "389,138"
+    dimensions: "50x50"
+  portrait:
+    coordinates: "134,71"
+    dimensions: "50x50"
+- id: light_colorwheel  # Light page - color wheel (slot 17)
+  src: light/light_colorwheel.png
+  note: "Circular color picker wheel"
+  dark: 17
+  light: 70
+  landscape:
+    coordinates: "106,68"
+    dimensions: "200x200"
+  portrait:
+    coordinates: "61,211"
+    dimensions: "200x200"
+- id: light_slider_level_active
+  src: light/light_slider_level_active.png
+  note: "Light level slider - active state"
+  dark: 29
+  light: 73
+  landscape:
+    coordinates: "164,67"
+    dimensions: "85x235"
+  portrait:
+    coordinates: "117,194"
+    dimensions: "85x235"
+- id: light_slider_level_inactive
+  src: light/light_slider_level_inactive.png
+  note: "Light level slider - inactive state"
+  dark: 28
+  light: 72
+  landscape:
+    coordinates: "164,67"
+    dimensions: "85x235"
+  portrait:
+    coordinates: "117,194"
+    dimensions: "85x235"
+- id: light_slider_temp
+  src: light/light_slider_temp.png
+  note: "Temperature slider on the light page"
+  dark: 21
+  light: 71
+  landscape:
+    coordinates: "164,67"
+    dimensions: "85x235"
+  portrait:
+    coordinates: "117,194"
+    dimensions: "85x235"
+
+# -----------------------------------------------------------------------------
+# Settings page
+# -----------------------------------------------------------------------------
+- id: settings_brightness_slider_active
+  note: "Brightness slider - active/blue fill"
+  dark: 81
+  light: 88
+  landscape:
+    src: settings/brightness_bar_horizontal_blue.png
+    coordinates: "15,80"
+    dimensions: "420x36"
+  portrait:
+    src: settings/brightness_bar_vertical_blue.png
+    coordinates: "87,65"
+    dimensions: "40x250"
+- id: settings_brightness_slider_inactive
+  note: "Brightness slider - inactive/gray fill"
+  dark: 82
+  light: 89
+  landscape:
+    src: settings/brightness_bar_horizontal_gray.png
+    coordinates: "15,80"
+    dimensions: "420x36"
+  portrait:
+    src: settings/brightness_bar_vertical_gray.png
+    coordinates: "87,65"
+    dimensions: "40x250"
+- id: settings_button_action_reboot
+  src: settings/button_action_dark_gray.png
+  note: "Action button 1 (leftmost)"
+  dark: 85
+  light: 92
+  landscape:
+    coordinates: "57,210"
+    dimensions: "60x60"
+  portrait:
+    coordinates: "35,368"
+    dimensions: "60x60"
+- id: settings_button_action_sleep
+  src: settings/button_action_dark_gray.png
+  note: "Action button 2 (centre)"
+  dark: 86
+  light: 93
+  landscape:
+    coordinates: "177,210"
+    dimensions: "60x60"
+  portrait:
+    coordinates: "130,368"
+    dimensions: "60x60"
+- id: settings_button_action_theme
+  src: settings/button_action_dark_gray.png
+  note: "Action button 3 (rightmost)"
+  dark: 87
+  light: 94
+  landscape:
+    coordinates: "297,210"
+    dimensions: "60x60"
+  portrait:
+    coordinates: "225,368"
+    dimensions: "60x60"
+- id: settings_dim_slider_active
+  note: "Dim slider - active/blue fill"
+  dark: 83
+  light: 90
+  landscape:
+    src: settings/brightness_bar_horizontal_blue.png
+    coordinates: "15,147"
+    dimensions: "420x36"
+  portrait:
+    src: settings/brightness_bar_vertical_blue.png
+    coordinates: "193,65"
+    dimensions: "40x250"
+- id: settings_dim_slider_inactive
+  note: "Dim slider - inactive/gray fill"
+  dark: 84
+  light: 91
+  landscape:
+    src: settings/brightness_bar_horizontal_gray.png
+    coordinates: "15,147"
+    dimensions: "420x36"
+  portrait:
+    src: settings/brightness_bar_vertical_gray.png
+    coordinates: "193,65"
+    dimensions: "40x250"
+
+# -----------------------------------------------------------------------------
+# Misc components
+# -----------------------------------------------------------------------------
+- id: misc_slider_cursor_horizontal
+  src: misc/generic_slider_cursor_horizontal_line_white.png
+  note: "Horizontal line cursor for sliders. Same image for both themes."
+  dark: 95
+  light: 95
+  copy: true
+- id: misc_slider_cursor_vertical
+  src: misc/generic_slider_cursor_vertical_line_white.png
+  note: "Vertical line cursor for sliders. Same image for both themes."
+  dark: 38
+  light: 38
+  copy: true
+
+# -----------------------------------------------------------------------------
+# Weather icons
+# -----------------------------------------------------------------------------
+- id: weather_unknown
+  src: weather/weather_unknown.png
+  note: "Fallback / unknown weather condition"
+  dark: 1
+  light: 49
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_clear_night
+  src: weather/weather_clear_night.png
+  note: "Clear sky - night"
+  dark: 15
+  light: 63
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_cloudy
+  src: weather/weather_cloudy.png
+  note: "Cloudy"
+  dark: 3
+  light: 51
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_fog
+  src: weather/weather_fog.png
+  note: "Fog"
+  dark: 8
+  light: 56
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_lightning
+  src: weather/weather_lightning.png
+  note: "Lightning / thunderstorm"
+  dark: 10
+  light: 58
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_lightning_rainy_day
+  src: weather/weather_lightning_rainy_day.png
+  note: "Lightning with rain - daytime"
+  dark: 13
+  light: 61
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_lightning_rainy_night
+  src: weather/weather_lightning_rainy_night.png
+  note: "Lightning with rain - night"
+  dark: 14
+  light: 62
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_partly_cloudy_day
+  src: weather/weather_partly_cloudy_day.png
+  note: "Partly cloudy - daytime"
+  dark: 11
+  light: 59
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_partly_cloudy_night
+  src: weather/weather_partly_cloudy_night.png
+  note: "Partly cloudy - night"
+  dark: 12
+  light: 60
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_pouring
+  src: weather/weather_pouring.png
+  note: "Heavy rain / pouring"
+  dark: 5
+  light: 53
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_rainy
+  src: weather/weather_rainy.png
+  note: "Rainy"
+  dark: 4
+  light: 52
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_snowy
+  src: weather/weather_snowy.png
+  note: "Snowy"
+  dark: 6
+  light: 54
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_snowy_rainy
+  src: weather/weather_snowy_rainy.png
+  note: "Snowy with rain"
+  dark: 7
+  light: 55
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_sunny
+  src: weather/weather_sunny.png
+  note: "Clear sky - daytime"
+  dark: 2
+  light: 50
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+- id: weather_windy
+  src: weather/weather_windy.png
+  note: "Windy"
+  dark: 9
+  light: 57
+  landscape:
+    coordinates: "20,45"
+    dimensions: "100x100"
+  portrait:
+    coordinates: "20,154"
+    dimensions: "100x100"
+
+# -----------------------------------------------------------------------------
+# Unused / placeholders
+# -----------------------------------------------------------------------------
+- id: unused_16
+  note: "Unused - replaced with 1x1 placeholder to reclaim HMI flash space."
+  dark: 16
+  light: null
+  copy: true
+  placeholder: true
+- id: unused_18
+  note: "Unused - replaced with 1x1 placeholder to reclaim HMI flash space."
+  dark: 18
+  light: null
+  copy: true
+  placeholder: true
+- id: unused_30
+  note: "Unused - replaced with 1x1 placeholder to reclaim HMI flash space."
+  dark: 30
+  light: null
+  copy: true
+  placeholder: true
+- id: unused_31
+  note: "Unused - replaced with 1x1 placeholder to reclaim HMI flash space."
+  dark: 31
+  light: null
+  copy: true
+  placeholder: true
+- id: unused_33
+  note: "Unused - replaced with 1x1 placeholder to reclaim HMI flash space."
+  dark: 33
+  light: null
+  copy: true
+  placeholder: true
+- id: unused_34
+  note: "Unused - replaced with 1x1 placeholder to reclaim HMI flash space."
+  dark: 34
+  light: null
+  copy: true
+  placeholder: true
+
+# -----------------------------------------------------------------------------
+# Pending review - candidates for removal if not needed for future features
+# -----------------------------------------------------------------------------
+- id: unused_35
+  src: misc/misc_unused_35.png
+  note: "Unused - candidate for removal"
+  dark: 35
+  light: null
+  copy: true
+- id: unused_36
+  src: misc/misc_unused_36.png
+  note: "Unused - candidate for removal"
+  dark: 36
+  light: null
+  copy: true
+- id: unused_41
+  src: misc/misc_unused_41.png
+  note: "Unused - candidate for removal"
+  dark: 41
+  light: null
+  copy: true
+- id: unused_42
+  src: misc/misc_unused_42.png
+  note: "Unused - candidate for removal"
+  dark: 42
+  light: null
+  copy: true
+- id: unused_43
+  src: misc/misc_unused_43.png
+  note: "Unused - candidate for removal"
+  dark: 43
+  light: null
+  copy: true
+- id: alarm_active
+  src: alarm/alarm_active.png
+  note: "Alarm page image - active state"
+  dark: 45
+  light: null
+  copy: true
+- id: alarm_inactive
+  src: alarm/alarm_inactive.png
+  note: "Alarm page image - inactive state"
+  dark: 44
+  light: null
+  copy: true
+...

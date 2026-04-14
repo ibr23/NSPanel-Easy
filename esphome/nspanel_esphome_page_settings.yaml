@@ -15,11 +15,10 @@ display:
     on_touch:
       then:
         - lambda: |-
-            if (
-                  !touch_event and  // Only act with release
-                  page_id == get_page_id("settings") and
-                  component_id == 9  // Reboot button
-                ) {
+            if (page_id != get_page_id("settings")) return;
+            if (touch_event) return;  // Ignore any touch event and only act with release events
+            if (component_id == 18) {  // Reboot button hotspot
+              ESP_LOGW("${TAG_PAGE_SETTINGS}", "Restart button clicked");
               screen_power->turn_off();
               App.safe_reboot();
             }
@@ -34,47 +33,49 @@ number:
     on_value:
       then:
         - lambda: |-
-            disp1->set_component_value("settings.brightslider", int(x));
-            if (current_page_id == get_page_id("settings"))
-              disp1->set_component_text_printf("bright_text", "%i%%", int(x));
+            if (current_page_id != get_page_id("settings")) return;
+            disp1->set_component_value("brightslider", int(x));
+            disp1->set_component_text_printf("bright_text", "%i%%", int(x));
 
   - id: !extend display_dim_brightness
     on_value:
       then:
         - lambda: |-
-            disp1->set_component_value("settings.dimslider", int(x));
-            if (current_page_id == get_page_id("settings"))
-              disp1->set_component_text_printf("dim_text", "%i%%", int(x));
+            if (current_page_id != get_page_id("settings")) return;
+            disp1->set_component_value("dimslider", int(x));
+            disp1->set_component_text_printf("dim_text", "%i%%", int(x));
 
 script:
   - id: !extend event_from_display
     then:
       - lambda: |-
           if (params_count != 3) return;
+          if (params[0] != "settings") return;
 
-          if (params[0] == "settings") {
-            // CSV Format: settings,<event>,<value>
-            // params[0]=page, params[1]=event, params[2]=value
+          // CSV Format: settings,<event>,<value>
+          // params[0]=page, params[1]=event, params[2]=value
 
-            uint8_t value = atoi(params[2].c_str());
+          const uint8_t value = atoi(params[2].c_str());
 
-            if (value > 100) {
-              ESP_LOGW("${TAG_PAGE_SETTINGS}", "Invalid value: %" PRIu8, value);
-              return;
-            }
+          if (params[1] == "theme") {
+            // CSV Format: settings,theme,<target>
+            // target: 0 = dark, 1 = light
 
-            if (params[1] == "bright") {
-              auto call = id(display_brightness).make_call();
-              call.set_value(value);
-              call.perform();
-            } else if (params[1] == "dim") {
-              auto call = id(display_dim_brightness).make_call();
-              call.set_value(value);
-              call.perform();
-            } else {
-              ESP_LOGW("${TAG_PAGE_SETTINGS}", "Unknown event: %s", params[1].c_str());
-            }
+            if (value > 1) return;
+            auto call = background_type->make_call();
+            call.set_index(value);
+            call.perform();  // triggers background_type.on_value -> theme_update
+            return;
           }
+
+          if (params[1] != "bright" && params[1] != "dim") return;
+          if (value > 100) return;
+
+          auto call = (params[1] == "bright") ?
+                      id(display_brightness).make_call() :
+                      id(display_dim_brightness).make_call();
+          call.set_value(value);
+          call.perform();
 
   - id: !extend page_change
     then:

@@ -73,14 +73,8 @@ button:
 
 display:
   - id: !extend disp1
-    tft_url: "${nextion_update_base_url}/nspanel_blank.tft"
     exit_reparse_on_start: true
-
-esp32:
-  framework:
-    sdkconfig_options:
-      CONFIG_ESP_TASK_WDT_TIMEOUT_S: "30"
-      CONFIG_LWIP_TCP_MSS: "1436"
+    tft_url: "http://x/x.tft"  # This is an intentional placeholder URL and will be replaced dynamically
 
 globals:
   - id: first_time_synced_ms

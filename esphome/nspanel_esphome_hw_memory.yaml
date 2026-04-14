@@ -15,30 +15,18 @@ substitutions:
   GPIO_PSRAM_CS_PIN: 18
   TAG_HW_MEMORY: nspanel.hw.memory
   WIFI_USE_PSRAM: true
+  memory_dump_details: false
+  MEMORY_DUMP_DETAILS_: ${ 1 if memory_dump_details else 0 }
 
 esp32:
   framework:
     advanced:
-      loop_task_stack_size: 16384
-      # minimum_chip_revision: "3.0"  # To do: Wait as this was released on v2026.1.0
-      # sram1_as_iram: true  # To do: Enable this after v2026.6.0
-    sdkconfig_options:
-      CONFIG_ESP32_REV_MIN_3: y  # Remove after implementing `minimum_chip_revision`
-      CONFIG_BT_ALLOCATION_FROM_SPIRAM_FIRST: y
-      CONFIG_BT_BLE_DYNAMIC_ENV_MEMORY: y
-      CONFIG_ESP_MAIN_TASK_STACK_SIZE: "16384"
-      CONFIG_MBEDTLS_DYNAMIC_BUFFER: y
-      CONFIG_MBEDTLS_DYNAMIC_FREE_CA_CERT: y
-      CONFIG_MBEDTLS_DYNAMIC_FREE_CONFIG_DATA: y
-      CONFIG_MBEDTLS_EXTERNAL_MEM_ALLOC: y
-      CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY: y
-      CONFIG_SPIRAM_RODATA: y
+      minimum_chip_revision: "3.0"
 
 esphome:
   platformio_options:
     build_flags:
       - -D NSPANEL_EASY_HW_MEMORY
-      - -D USE_ESP32_MIN_CHIP_REVISION_SET  # Remove after implementing `minimum_chip_revision`
 
 nspanel_easy:
   psram_clk_pin: ${GPIO_PSRAM_CLK_PIN}
@@ -49,31 +37,94 @@ psram:
 
 script:
   - id: !extend dump_config
-    then:
-      # Report memory
+    then:  # Report memory
       - lambda: |-
-          #include <esp_heap_caps.h>
-          const size_t internal_heap_size = heap_caps_get_total_size(MALLOC_CAP_INTERNAL);
-          const size_t internal_heap_size_free = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
-          ESP_LOGCONFIG("${TAG_CORE}", "  Free heap:");
+          // --- Heap: Internal ---
+          const size_t int_total = heap_caps_get_total_size(MALLOC_CAP_INTERNAL);
+          const size_t int_free  = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+          const size_t int_min   = heap_caps_get_minimum_free_size(MALLOC_CAP_INTERNAL);
+          const size_t int_block = heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL);
 
-          if (internal_heap_size != 0) {
-            ESP_LOGCONFIG("${TAG_CORE}", "    Internal:  %7zu bytes (%0.1f%%)", internal_heap_size_free,
-                    ((float)internal_heap_size_free / internal_heap_size) * 100.0f);
+          ESP_LOGCONFIG("${TAG_CORE}", "Memory:");
+          ESP_LOGCONFIG("${TAG_CORE}", "  Heap:");
+          if (int_total != 0) {
+            ESP_LOGCONFIG("${TAG_CORE}", "    Internal:      %7zu / %7zu bytes free (%0.1f%%)",
+                          int_free, int_total, ((float)int_free / int_total) * 100.0f);
           } else {
-            ESP_LOGCONFIG("${TAG_CORE}", "    Internal:  %7zu bytes", internal_heap_size_free);
+            ESP_LOGCONFIG("${TAG_CORE}", "    Internal:      %7zu bytes free", int_free);
           }
+          ESP_LOGCONFIG("${TAG_CORE}", "    Internal min:  %7zu bytes (watermark)", int_min);
+          ESP_LOGCONFIG("${TAG_CORE}", "    Internal blk:  %7zu bytes (largest contiguous)", int_block);
 
           #ifdef USE_PSRAM
-          const size_t psram_heap_size = heap_caps_get_total_size(MALLOC_CAP_SPIRAM);
-          const size_t psram_heap_size_free = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
-          if (psram_heap_size != 0) {
-            ESP_LOGCONFIG("${TAG_CORE}", "    PSRAM:     %7zu bytes (%0.1f%%)", psram_heap_size_free,
-                                                  ((float)psram_heap_size_free / psram_heap_size) * 100.0f);
+          // --- Heap: PSRAM ---
+          const size_t psram_total = heap_caps_get_total_size(MALLOC_CAP_SPIRAM);
+          const size_t psram_free  = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
+          const size_t psram_min   = heap_caps_get_minimum_free_size(MALLOC_CAP_SPIRAM);
+          const size_t psram_block = heap_caps_get_largest_free_block(MALLOC_CAP_SPIRAM);
+
+          if (psram_total != 0) {
+            ESP_LOGCONFIG("${TAG_CORE}", "    PSRAM:         %7zu / %7zu bytes free (%0.1f%%)",
+                          psram_free, psram_total, ((float)psram_free / psram_total) * 100.0f);
           } else {
-            ESP_LOGCONFIG("${TAG_CORE}", "    PSRAM:     %7zu bytes", psram_heap_size_free);
+            ESP_LOGCONFIG("${TAG_CORE}", "    PSRAM:         %7zu bytes free", psram_free);
           }
+          ESP_LOGCONFIG("${TAG_CORE}", "    PSRAM min:     %7zu bytes (watermark)", psram_min);
+          ESP_LOGCONFIG("${TAG_CORE}", "    PSRAM blk:     %7zu bytes (largest contiguous)", psram_block);
           #endif  // USE_PSRAM
+
+          #if ${MEMORY_DUMP_DETAILS_}
+          // --- Stack: tasks ---
+          // Reports HWM for all known tasks. Current task marked with "<- current".
+          // Tasks not present in this firmware are silently skipped.
+          {
+            const TaskHandle_t current_handle = xTaskGetCurrentTaskHandle();
+            const struct { const char *name; } candidates[] = {
+              // Core ESP-IDF
+              {"loopTask"}, {"main"}, {"idf"}, {"esp_timer"}, {"sys_evt"},
+              // WiFi stack
+              {"wifi"}, {"tiT"}, {"wifi_mgr"},
+              // Bluetooth/BLE
+              {"btController"}, {"BTC_TASK"}, {"hciT"}, {"nimble_host"}, {"BLE_HS"},
+              // Async TCP / API
+              {"async_tcp"}, {"tcp_server"},
+              // ESPHome
+              {"esphome_ota"}, {"ota_task"},
+            };
+            ESP_LOGCONFIG("${TAG_CORE}", "  Stack:");
+            for (const auto &candidate : candidates) {
+              TaskHandle_t h = xTaskGetHandle(candidate.name);
+              if (h == nullptr) continue;
+              const UBaseType_t hwm     = uxTaskGetStackHighWaterMark(h);
+              const bool        current = (h == current_handle);
+              ESP_LOGCONFIG("${TAG_CORE}", "    %-16s  hwm: %5u words%s",
+                            candidate.name, hwm, current ? "  <- current" : "");
+            }
+          }
+
+          // --- Detailed heap info (only when memory_dump_details is enabled) ---
+          auto log_heap_details = [](const char *label, uint32_t caps) {
+            multi_heap_info_t info;
+            heap_caps_get_info(&info, caps);
+            const float frag = (info.total_free_bytes > 0)
+                                  ? (1.0f - ((float)info.largest_free_block / info.total_free_bytes)) * 100.0f
+                                  : 0.0f;
+            ESP_LOGCONFIG("${TAG_CORE}", "  Heap details (%s):", label);
+            ESP_LOGCONFIG("${TAG_CORE}", "    Total free:      %7zu bytes", info.total_free_bytes);
+            ESP_LOGCONFIG("${TAG_CORE}", "    Largest block:   %7zu bytes", info.largest_free_block);
+            ESP_LOGCONFIG("${TAG_CORE}", "    Fragmentation:   %6.1f%%", frag);
+            ESP_LOGCONFIG("${TAG_CORE}", "    Min free (hwm):  %7zu bytes", info.minimum_free_bytes);
+            ESP_LOGCONFIG("${TAG_CORE}", "    Allocated:       %7zu bytes", info.total_allocated_bytes);
+            ESP_LOGCONFIG("${TAG_CORE}", "    Alloc blocks:    %7zu", info.allocated_blocks);
+            ESP_LOGCONFIG("${TAG_CORE}", "    Free blocks:     %7zu", info.free_blocks);
+            ESP_LOGCONFIG("${TAG_CORE}", "    Total blocks:    %7zu", info.total_blocks);
+          };
+
+          log_heap_details("internal", MALLOC_CAP_INTERNAL);
+          #ifdef USE_PSRAM
+          log_heap_details("PSRAM", MALLOC_CAP_SPIRAM);
+          #endif  // USE_PSRAM
+          #endif  // MEMORY_DUMP_DETAILS_
 
 wifi:
   use_psram: ${WIFI_USE_PSRAM}

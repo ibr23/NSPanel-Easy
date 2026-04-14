@@ -105,9 +105,10 @@ display:
   - id: disp1
     platform: nextion
     uart_id: tf_uart
-    command_spacing: 10ms     # Increased from 5ms to prevent "Nextion Buffer Overflow"
-    # dump_device_info: true  # To-do: Enable when pr#13566 is released
+    command_spacing: 3ms
+    dump_device_info: true
     # max_commands_per_loop: 15
+    # max_queue_age: 8000
     # max_queue_size: 128     # Enable with v2026.6.0
     update_interval: never
     on_setup:

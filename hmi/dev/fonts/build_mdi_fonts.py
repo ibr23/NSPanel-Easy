@@ -1,0 +1,620 @@
+#!/usr/bin/env python3
+"""
+build_mdi_fonts.py
+==================
+Builds a MaterialDesignIconsDesktop TTF from MDI SVG sources and generates
+derived artifacts for use with NSPanel Easy / Nextion ZI font generation.
+
+Usage
+-----
+  python3 build_mdi_fonts.py [--svg-dir DIR] [--output-dir DIR] [--dry-run]
+
+Prerequisites
+-------------
+  pip3 install fonttools cu2qu --break-system-packages
+
+Input (expected in --svg-dir, default: current directory)
+----------------------------------------------------------
+  meta.json          MDI icon metadata  (from Templarian/MaterialDesign-SVG)
+  svg/<n>.svg        MDI SVG sources    (from Templarian/MaterialDesign-SVG)
+
+Outputs (written to --output-dir, default: ./output)
+-----------------------------------------------------
+  MaterialDesignIconsDesktop-<ver>.ttf
+      Drop-in replacement for the joBr99 bundled TTF.
+      Feed this into Generate-HASP-Fonts.ps1 to regenerate Nextion .zi files.
+
+  all_icons.json
+      Single-line name-to-ZI-codepoint lookup table, same format as
+      HASwitchPlate_table___all_icons__ used by the NSPanel Easy Blueprint.
+      Includes special entries: blank, void, unknown, unavailable.
+
+  cheatsheet.html
+      Searchable visual icon cheatsheet for GitHub Pages (docs/icons/).
+      Click-to-copy copies "mdi:<n>" to clipboard.
+      Shows ZI codepoints (post-ZiLib remapping) for each icon.
+
+  all_icons.h
+      C++ header with all icon ZI codepoints as constexpr constants,
+      following ESPHome/NSPanel Easy coding conventions (clang-format
+      aligned, Doxygen ///<, esphome::nspanel_easy::Icons namespace).
+
+Codepoint scheme
+----------------
+  MDI SVG sources assign each icon a TTF codepoint in the F0xxx range
+  (Supplementary PUA-B). ZiLib remaps these when writing .zi files using:
+
+      zi_codepoint = ttf_codepoint - ZI_CP_OFFSET   (ZI_CP_OFFSET = 0xE2001)
+
+  All artifacts in this script use ZI codepoints — these are the actual
+  values sent over UART to the Nextion display and used in firmware/Blueprint.
+
+Notes
+-----
+  - MDI SVGs use cubic Bezier curves; TTF requires quadratic. cu2qu handles
+    the conversion automatically.
+  - SVG paths that omit the leading moveTo command are auto-corrected by
+    prepending an implicit "M 0,0" (mirrors browser behaviour; see SVG spec
+    section 9.3.3).
+  - 2 glyphs (ab-testing, google-ads) render blank due to upstream SVG defects
+    that cannot be safely auto-corrected; both are in allowed_blank_glyphs.
+  - Run this script whenever MDI releases new icons to keep all artifacts
+    in sync. The TTF filename encodes the MDI version for traceability.
+"""
+
+import argparse
+import json
+import os
+import re
+import shutil
+import sys
+from pathlib import Path
+
+
+# =============================================================================
+# Configuration
+# =============================================================================
+
+UNITS_PER_EM = 2048     # Matches original MaterialDesignIconsDesktop.ttf
+SVG_SIZE     = 24.0     # MDI viewBox is always 0 0 24 24
+SCALE        = UNITS_PER_EM / SVG_SIZE
+
+# ZiLib codepoint remapping offset, as used in Generate-HASP-Fonts.ps1:
+#   zi_codepoint = ttf_codepoint - ZI_CP_OFFSET
+ZI_CP_OFFSET = 0xE2001
+
+# Special entries prepended to all_icons.json.
+# Values are ZI codepoints. unknown/unavailable resolve dynamically to
+# whatever codepoint alert-circle has in the current MDI version.
+SPECIAL_ICONS = {
+    "blank":       0xFFFF,
+    "void":        0xFFFF,
+    "unknown":     None,  # resolved to alert-circle at runtime
+    "unavailable": None,  # resolved to alert-circle at runtime
+}
+ALERT_CIRCLE_NAME = "alert-circle"
+
+
+# =============================================================================
+# Argument parsing
+# =============================================================================
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Build MDI Desktop TTF and derived artifacts for NSPanel Easy."
+    )
+    parser.add_argument(
+        "--svg-dir", default=".",
+        help="Directory containing meta.json and svg/ folder (default: current dir)"
+    )
+    parser.add_argument(
+        "--output-dir", default="./output",
+        help="Directory to write all output files (default: ./output)"
+    )
+    parser.add_argument(
+        "--docs-dir", default=None,
+        help="If set, also copy cheatsheet.html, TTF, and all_icons.json here "
+             "(e.g. path/to/NSPanel-Easy/docs/icons)"
+    )
+    parser.add_argument(
+        "--header-dir", default=None,
+        help="If set, also copy all_icons.h here "
+             "(e.g. path/to/NSPanel-Easy/components/nspanel_easy)"
+    )
+    parser.add_argument(
+        "--dry-run", action="store_true",
+        help="Parse inputs and report counts without writing any files"
+    )
+    return parser.parse_args()
+
+
+# =============================================================================
+# Version detection
+# =============================================================================
+
+def detect_version(svg_dir):
+    """
+    Detect MDI version from package.json or font-build.json in the SVG repo.
+    font-build.json stores version as {"major": N, "minor": N, "patch": N}.
+    package.json stores version as a plain string.
+    """
+    for fname in ("package.json", "font-build.json"):
+        p = svg_dir / fname
+        if not p.exists():
+            continue
+        with open(p) as f:
+            pkg = json.load(f)
+        v = pkg.get("version")
+        if isinstance(v, str):
+            return v
+        if isinstance(v, dict) and all(k in v for k in ("major", "minor", "patch")):
+            return f"{v['major']}.{v['minor']}.{v['patch']}"
+    return "unknown"
+
+
+# =============================================================================
+# TTF build
+# =============================================================================
+
+def _fix_svg_path_data(d):
+    """
+    Ensure an SVG path data string starts with a moveTo command.
+
+    The SVG spec (section 9.3.3) requires that path data begin with a moveTo
+    ('M' or 'm').  Some MDI sources (e.g. google-ads) violate this, causing
+    strict parsers such as fontTools' parse_path to raise "moveTo is required".
+    Browsers silently recover by treating a missing leading moveTo as "M 0,0".
+    This helper applies the same recovery so that the glyph renders correctly
+    instead of being discarded as blank.
+    """
+    stripped = d.lstrip()
+    if stripped and stripped[0] not in ("M", "m"):
+        return "M 0,0 " + d
+    return d
+
+
+def build_ttf(meta, svg_dir, output_path, version_str):
+    """
+    Build a TTF from MDI SVG sources using fonttools + cu2qu.
+    Glyphs are mapped to their F0xxx TTF codepoints (not ZI codepoints) —
+    ZiLib performs the remapping to ZI codepoints when generating .zi files.
+    Returns name_to_ttf_cp dict for use by artifact generators.
+    """
+    try:
+        from fontTools.fontBuilder import FontBuilder
+        from fontTools.pens.ttGlyphPen import TTGlyphPen
+        from fontTools.pens.transformPen import TransformPen
+        from fontTools.svgLib.path import parse_path
+        from cu2qu.pens import Cu2QuPen
+    except ImportError as e:
+        print(f"ERROR: Missing dependency: {e}")
+        print("  Run: pip3 install fonttools cu2qu --break-system-packages")
+        sys.exit(1)
+
+    # Build icon list — only icons with a corresponding SVG file
+    icons = []
+    missing_svg = []
+    for icon in meta:
+        cp       = int(icon["codepoint"], 16)
+        svg_path = os.path.join(svg_dir, "svg", f"{icon['name']}.svg")
+        if os.path.exists(svg_path):
+            icons.append((cp, icon["name"], svg_path))
+        else:
+            missing_svg.append(icon["name"])
+
+    if missing_svg:
+        print(f"  WARNING: {len(missing_svg)} icons have no SVG file and will be skipped.")
+
+    print(f"  Building {len(icons)} glyphs...")
+
+    fb = FontBuilder(UNITS_PER_EM, isTTF=True)
+    fb.setupGlyphOrder([".notdef"] + [name for _, name, _ in icons])
+    fb.setupCharacterMap({cp: name for cp, name, _ in icons})
+
+    metrics = {".notdef": (UNITS_PER_EM, 0)}
+    metrics.update({name: (UNITS_PER_EM, 0) for _, name, _ in icons})
+    fb.setupHorizontalMetrics(metrics)
+    fb.setupHorizontalHeader(ascent=UNITS_PER_EM, descent=0)
+    fb.setupNameTable({
+        "familyName": "Material Design Icons",
+        "styleName":  "Regular",
+    })
+    fb.setupOS2(
+        sTypoAscender=UNITS_PER_EM, sTypoDescender=0,
+        sTypoLineGap=0, usWinAscent=UNITS_PER_EM, usWinDescent=0,
+        sxHeight=UNITS_PER_EM, sCapHeight=UNITS_PER_EM,
+        achVendID="MDI ",
+    )
+    fb.setupPost()
+    fb.setupHead(unitsPerEm=UNITS_PER_EM)
+
+    # Y-flip transform: SVG origin is top-left, TTF origin is bottom-left
+    transform = (SCALE, 0, 0, -SCALE, 0, UNITS_PER_EM)
+
+    glyphs = {".notdef": TTGlyphPen(None).glyph()}
+    failed = []
+
+    for i, (cp, name, svg_path) in enumerate(icons):
+        if i % 500 == 0:
+            print(f"    {i}/{len(icons)}...")
+        try:
+            pen  = TTGlyphPen(None)
+            tpen = Cu2QuPen(
+                TransformPen(pen, transform),
+                max_err=1.0,
+                reverse_direction=True,
+            )
+            with open(svg_path) as f:
+                svg_content = f.read()
+            paths = re.findall(r'<path[^>]+d="([^"]+)"', svg_content)
+            if paths:
+                for d in paths:
+                    parse_path(_fix_svg_path_data(d), tpen)
+            glyphs[name] = pen.glyph()
+        except Exception as e:
+            glyphs[name] = TTGlyphPen(None).glyph()
+            failed.append((name, str(e)))
+
+    if failed:
+        print(f"  WARNING: {len(failed)} glyphs failed (rendered as blank):")
+        for name, err in failed[:5]:
+            print(f"    {name}: {err}")
+        if len(failed) > 5:
+            print(f"    ... and {len(failed) - 5} more")
+
+        # Prevent shipping silently-broken icon sets.
+        # Known upstream SVG defects that cannot be safely auto-corrected:
+        #   ab-testing  - unusual path structure produces no contours
+        #   google-ads  - subpath after Z lacks a required leading M command;
+        #                 the intended geometry cannot be inferred safely
+        allowed_blank_glyphs = {"ab-testing", "google-ads"}
+        unexpected_failed = [name for name, _ in failed if name not in allowed_blank_glyphs]
+        if unexpected_failed:
+            print("ERROR: Unexpected glyph failures detected; aborting artifact generation.")
+            sys.exit(2)
+
+    fb.setupGlyf(glyphs)
+    fb.setupHorizontalMetrics(metrics)
+    fb.font.save(str(output_path))
+    print(f"  Saved: {output_path}")
+
+    return {name: cp for cp, name, _ in icons}
+
+
+# =============================================================================
+# Shared: ZI codepoint map
+# =============================================================================
+
+def build_zi_map(name_to_ttf_cp):
+    """
+    Convert TTF codepoints to ZI codepoints using the ZiLib offset formula:
+        zi_codepoint = ttf_codepoint - ZI_CP_OFFSET
+    Only includes icons whose ZI codepoint fits in 16 bits (U+0000-U+FFFF),
+    as the Nextion .zi format stores codepoints as 16-bit values.
+    """
+    zi_map = {}
+    skipped = []
+    for name, ttf_cp in name_to_ttf_cp.items():
+        zi_cp = ttf_cp - ZI_CP_OFFSET
+        if 0 <= zi_cp <= 0xFFFF:
+            zi_map[name] = zi_cp
+        else:
+            skipped.append((name, ttf_cp, zi_cp))
+    if skipped:
+        print(f"  WARNING: {len(skipped)} icons have ZI codepoint outside U+FFFF and are excluded:")
+        for name, ttf_cp, zi_cp in skipped[:5]:
+            print(f"    {name}: TTF U+{ttf_cp:05X} -> ZI {zi_cp:#x} (out of range)")
+        if len(skipped) > 5:
+            print(f"    ... and {len(skipped) - 5} more")
+    return zi_map
+
+
+# =============================================================================
+# all_icons.json
+# =============================================================================
+
+def build_all_icons_json(zi_map, output_path):
+    """
+    Write all_icons.json — single-line Blueprint icon lookup table.
+    Format matches HASwitchPlate_table___all_icons__ used by NSPanel Easy Blueprint:
+        all_icons: { blank: "\\uFFFF", void: "\\uFFFF", unknown: "\\uXXXX", ... }
+    Special entries (blank, void, unknown, unavailable) are prepended.
+    All codepoints are ZI codepoints (post-ZiLib remapping).
+    """
+    # Resolve alert-circle ZI codepoint for unknown/unavailable
+    alert_circle_zi = zi_map.get(ALERT_CIRCLE_NAME, 0xE027)
+
+    entries = {}
+
+    # Special entries first
+    for special_name, zi_cp in SPECIAL_ICONS.items():
+        if zi_cp is None:
+            zi_cp = alert_circle_zi
+        entries[special_name] = f"\\u{zi_cp:04X}"
+
+    # All MDI icons, sorted by name
+    for name, zi_cp in sorted(zi_map.items()):
+        entries[name] = f"\\u{zi_cp:04X}"
+
+    # Single-line format with unquoted keys, matching Blueprint YAML format
+    pairs = ", ".join(f'{k}: "{v}"' for k, v in entries.items())
+    line  = f"all_icons: {{ {pairs} }}\n"
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(line)
+    print(f"  Saved: {output_path}  ({len(entries)} entries)")
+
+
+# =============================================================================
+# HTML cheatsheet
+# =============================================================================
+
+def build_cheatsheet(name_to_ttf_cp, zi_map, ttf_filename, output_path, version_str):
+    """
+    Write searchable HTML cheatsheet for GitHub Pages.
+    Glyphs are rendered using TTF codepoints (font loaded via @font-face).
+    ZI codepoints (post-ZiLib remapping) are shown and noted on click.
+
+    Click-to-copy behaviour (context-sensitive):
+      - Click the glyph  -> copies the Unicode character (paste into Nextion Editor)
+      - Click the name   -> copies "mdi:<n>"
+      - Click the code   -> copies the ZI codepoint string (e.g. "U+E1C8")
+    """
+    icon_count = len(zi_map)
+
+    icon_html = []
+    for name in sorted(zi_map):
+        ttf_cp = name_to_ttf_cp[name]
+        zi_cp  = zi_map[name]
+        char   = chr(ttf_cp)  # render glyph using TTF codepoint
+        zi_str = f"U+{zi_cp:04X}"
+        full   = f"mdi:{name} — {zi_str}"  # context shown in every toast
+        icon_html.append(
+            f'  <div class="icon">\n'
+            f'    <span class="glyph" onclick="copy(this,\'{char}\',\'glyph\',\'{full}\')">{char}</span>\n'
+            f'    <span class="name"  onclick="copy(this,\'mdi:{name}\',\'name\',\'{full}\')">'
+            f'mdi:{name}</span>\n'
+            f'    <span class="cp"   onclick="copy(this,\'{zi_str}\',\'code\',\'{full}\')">'
+            f'{zi_str}</span>\n'
+            f'  </div>'
+        )
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NSPanel Easy — MDI Icons</title>
+  <style>
+    @font-face {{
+      font-family: 'MDI';
+      src: url('{ttf_filename}');
+    }}
+    *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
+    body {{ font-family: sans-serif; background: #1e1e1e; color: #ccc; }}
+    header {{
+      position: sticky; top: 0; z-index: 10;
+      padding: 0.8em 1.2em; background: #252526;
+      border-bottom: 1px solid #3c3c3c;
+      display: flex; align-items: center; gap: 0.8em; flex-wrap: wrap;
+    }}
+    header h1 {{ color: #fff; font-size: 1.1em; flex: 1; white-space: nowrap; }}
+    header .meta {{ color: #888; font-size: 0.82em; white-space: nowrap; }}
+    #search {{
+      padding: 6px 10px; background: #2d2d2d; color: #fff;
+      border: 1px solid #555; border-radius: 4px; font-size: 13px; width: 240px;
+    }}
+    #search:focus {{ outline: none; border-color: #569cd6; }}
+    #count {{ color: #888; font-size: 0.82em; min-width: 70px; text-align: right; }}
+    .grid {{ display: flex; flex-wrap: wrap; padding: 0.8em; gap: 5px; }}
+    .icon {{
+      width: 128px; padding: 10px 6px 7px; background: #2d2d2d;
+      border-radius: 4px; text-align: center;
+      border: 1px solid transparent; transition: border-color 0.15s;
+      user-select: none;
+    }}
+    .icon:hover  {{ border-color: #569cd6; }}
+    .icon.copied {{ border-color: #4ec94e; }}
+    .glyph {{ font-family: 'MDI'; font-size: 28px; display: block; margin-bottom: 5px; color: #fff; cursor: pointer; }}
+    .name  {{ word-break: break-all; color: #9cdcfe; font-size: 10px; display: block; margin-bottom: 2px; cursor: pointer; }}
+    .cp    {{ color: #569cd6; font-size: 9.5px; cursor: pointer; }}
+    .glyph:hover {{ color: #4ec94e; }}
+    .name:hover  {{ color: #7ed4fe; }}
+    .cp:hover    {{ color: #7eb4f6; }}
+    .toast {{
+      position: fixed; bottom: 1.2em; left: 50%; transform: translateX(-50%);
+      background: #4ec94e; color: #000; padding: 5px 14px;
+      border-radius: 4px; font-size: 12px; opacity: 0;
+      transition: opacity 0.2s; pointer-events: none; white-space: nowrap;
+    }}
+    .toast.show {{ opacity: 1; }}
+  </style>
+</head>
+<body>
+<header>
+  <h1>NSPanel Easy — MDI Icons</h1>
+  <span class="meta">MDI v{version_str} &middot; {icon_count} icons &middot; ZI codepoints</span>
+  <input type="text" id="search" placeholder="Search icons..."
+         oninput="filter(this.value)" autocomplete="off">
+  <span id="count">{icon_count} icons</span>
+</header>
+<div class="grid" id="grid">
+{"".join(icon_html)}
+</div>
+<div class="toast" id="toast"></div>
+<script>
+  const allIcons = Array.from(document.querySelectorAll('.icon'));
+
+  function filter(q) {{
+    q = q.toLowerCase();
+    let n = 0;
+    allIcons.forEach(el => {{
+      const show = el.querySelector('.name').textContent.includes(q);
+      el.style.display = show ? '' : 'none';
+      if (show) n++;
+    }});
+    document.getElementById('count').textContent = n + ' icons';
+  }}
+
+  function copy(el, text, kind, ctx) {{
+    navigator.clipboard.writeText(text).then(() => {{
+      const card = el.closest('.icon');
+      card.classList.add('copied');
+      setTimeout(() => card.classList.remove('copied'), 700);
+      const t = document.getElementById('toast');
+      t.textContent = 'Copied ' + kind + ': ' + text + '  (' + ctx + ')';
+      t.classList.add('show');
+      clearTimeout(window._tt);
+      window._tt = setTimeout(() => t.classList.remove('show'), 1400);
+    }});
+  }}
+</script>
+</body>
+</html>
+"""
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(html)
+    print(f"  Saved: {output_path}")
+
+
+# =============================================================================
+# C++ header
+# =============================================================================
+
+def build_header(zi_map, version_str, output_path):
+    """
+    Write all_icons.h — constexpr ZI codepoint constants following ESPHome /
+    NSPanel Easy coding conventions: clang-format aligned, Doxygen ///<,
+    esphome::nspanel_easy::Icons namespace.
+    """
+    const_names = {
+        name: "MDI_" + name.upper().replace("-", "_")
+        for name in zi_map
+    }
+    if not const_names:
+        raise ValueError("No icon constants generated (zi_map is empty).")
+    max_len = max(len(c) for c in const_names.values())
+    lines = [
+        "// all_icons.h",
+        f"// Auto-generated from MDI v{version_str} — do not edit manually.",
+        "// To regenerate: python3 .github/scripts/build_mdi_fonts.py",
+        "// Source: https://github.com/Templarian/MaterialDesign-SVG",
+        "",
+        "#pragma once",
+        "",
+        "#include <cstdint>",
+        "",
+        "namespace esphome::nspanel_easy {",
+        "",
+        "/**",
+        " * @namespace Icons",
+        " * @brief MDI icon ZI codepoints for Nextion display visualization.",
+        " *",
+        " * These are post-ZiLib codepoints (BMP PUA range E000-FFFF) — the actual",
+        " * values sent over UART to the Nextion display and used in Blueprint automations.",
+        " *",
+        " * Derivation: zi_codepoint = ttf_codepoint - 0xE2001",
+        " * where ttf_codepoint is the F0xxx PUA-B address in MaterialDesignIconsDesktop.ttf.",
+        " *",
+        f" * Source:  https://github.com/Templarian/MaterialDesign-SVG v{version_str}",
+        f" * Icons:   {len(zi_map)}",
+        " */",
+        "namespace Icons {",
+        "",
+    ]
+
+    for name, zi_cp in sorted(zi_map.items()):
+        const     = const_names[name]
+        pad       = " " * (max_len - len(const))
+        cp_str    = f"\\u{zi_cp:04X}"
+        value_str = f'  constexpr const char *{const} = "{cp_str}";'
+        lines.append(f'{value_str}{pad}  ///< mdi:{name}')
+
+    lines += [
+        "",
+        "}  // namespace Icons",
+        "",
+        "}  // namespace esphome::nspanel_easy",
+        "",
+    ]
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    print(f"  Saved: {output_path}  ({len(zi_map)} constants)")
+
+
+# =============================================================================
+# Main
+# =============================================================================
+
+def main():
+    args = parse_args()
+
+    svg_dir    = Path(args.svg_dir).resolve()
+    output_dir = Path(args.output_dir).resolve()
+    meta_path  = svg_dir / "meta.json"
+
+    # Validate inputs
+    if not meta_path.exists():
+        print(f"ERROR: meta.json not found in {svg_dir}")
+        sys.exit(1)
+    if not (svg_dir / "svg").is_dir():
+        print(f"ERROR: svg/ folder not found in {svg_dir}")
+        sys.exit(1)
+
+    print(f"Loading {meta_path}...")
+    with open(meta_path) as f:
+        meta = json.load(f)
+
+    version_str  = detect_version(svg_dir)
+    ttf_filename = f"MaterialDesignIconsDesktop-{version_str}.ttf"
+
+    print(f"MDI version: {version_str}")
+    print(f"Total icons in meta.json: {len(meta)}")
+
+    if args.dry_run:
+        svg_count = sum(
+            1 for icon in meta
+            if (svg_dir / "svg" / f"{icon['name']}.svg").exists()
+        )
+        print(f"Dry run: {svg_count} SVG files found, would build {ttf_filename}")
+        return
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+    ttf_path = output_dir / ttf_filename
+
+    # Build TTF (returns TTF F0xxx codepoints)
+    print("\nBuilding TTF...")
+    name_to_ttf_cp = build_ttf(meta, svg_dir, ttf_path, version_str)
+
+    # Compute ZI codepoints (post-ZiLib remapping)
+    zi_map = build_zi_map(name_to_ttf_cp)
+    print(f"  ZI codepoint map: {len(zi_map)} icons within U+FFFF")
+
+    # Generate artifacts
+    print("\nGenerating artifacts...")
+    build_all_icons_json(zi_map,                                        output_dir / "all_icons.json")
+    build_cheatsheet(name_to_ttf_cp, zi_map, ttf_filename, output_dir / "cheatsheet.html", version_str)
+    build_header(zi_map, version_str,                                   output_dir / "all_icons.h")
+
+    # Copy to docs dir if specified
+    if args.docs_dir:
+        docs_dir = Path(args.docs_dir)
+        docs_dir.mkdir(parents=True, exist_ok=True)
+        for fname in (ttf_filename, "cheatsheet.html", "all_icons.json"):
+            shutil.copy(output_dir / fname, docs_dir / fname)
+            print(f"  Copied to docs: {docs_dir / fname}")
+
+    # Copy header to component dir if specified
+    if args.header_dir:
+        header_dir = Path(args.header_dir)
+        header_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy(output_dir / "all_icons.h", header_dir / "all_icons.h")
+        print(f"  Copied to component: {header_dir / 'all_icons.h'}")
+
+    print(f"\nDone. {len(zi_map)} icons.")
+    print(f"Output: {output_dir}")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,98 @@
+Generating landscape images...
+  copy  background/background_dark_landscape.png -> 0.png
+  copy  background/background_light_landscape.png -> 48.png
+  composite [dark] background/background_splash_landscape.png -> 32.png
+  composite [dark] buttons_pages/buttons_pages_background_active_landscape.png -> 47.png
+  composite [light] buttons_pages/buttons_pages_background_active_landscape.png -> 80.png
+  composite [dark] buttons_pages/buttons_pages_background_innactive_landscape.png -> 46.png
+  composite [light] buttons_pages/buttons_pages_background_innactive_landscape.png -> 79.png
+  composite [dark] climate/climate_background_landscape.png -> 37.png
+  composite [light] climate/climate_background_landscape.png -> 64.png
+  copy  climate/generic_slider_cursor_vertical_line_white.png -> 38.png
+  composite [dark] cover/cover_slider_active.png -> 20.png
+  composite [light] cover/cover_slider_active.png -> 75.png
+  composite [dark] cover/cover_slider_inactive.png -> 19.png
+  composite [light] cover/cover_slider_inactive.png -> 74.png
+  composite [dark] fan/fan_slider_active.png -> 40.png
+  composite [light] fan/fan_slider_active.png -> 75.png
+  composite [dark] fan/fan_slider_inactive.png -> 39.png
+  composite [light] fan/fan_slider_inactive.png -> 74.png
+  composite [dark] light/light_button_brightness_normal.png -> 22.png
+  composite [light] light/light_button_brightness_normal.png -> 76.png
+  composite [dark] light/light_button_brightness_pressed.png -> 23.png
+  composite [light] light/light_button_brightness_pressed.png -> 67.png
+  composite [dark] light/light_button_color_normal.png -> 26.png
+  composite [light] light/light_button_color_normal.png -> 78.png
+  composite [dark] light/light_button_color_pressed.png -> 27.png
+  composite [light] light/light_button_color_pressed.png -> 69.png
+  composite [dark] light/light_button_temp_normal.png -> 24.png
+  composite [light] light/light_button_temp_normal.png -> 77.png
+  composite [dark] light/light_button_temp_pressed.png -> 25.png
+  composite [light] light/light_button_temp_pressed.png -> 68.png
+  composite [dark] light/light_colorwheel.png -> 17.png
+  composite [light] light/light_colorwheel.png -> 70.png
+  composite [dark] light/light_slider_level_active.png -> 29.png
+  composite [light] light/light_slider_level_active.png -> 73.png
+  composite [dark] light/light_slider_level_inactive.png -> 28.png
+  composite [light] light/light_slider_level_inactive.png -> 72.png
+  composite [dark] light/light_slider_temp.png -> 21.png
+  composite [light] light/light_slider_temp.png -> 71.png
+  composite [dark] settings/brightness_bar_horizontal_blue.png -> 81.png
+  composite [light] settings/brightness_bar_horizontal_blue.png -> 88.png
+  composite [dark] settings/brightness_bar_horizontal_gray.png -> 82.png
+  composite [light] settings/brightness_bar_horizontal_gray.png -> 89.png
+  composite [dark] settings/button_action_dark_gray.png -> 85.png
+  composite [light] settings/button_action_dark_gray.png -> 92.png
+  composite [dark] settings/button_action_dark_gray.png -> 86.png
+  composite [light] settings/button_action_dark_gray.png -> 93.png
+  composite [dark] settings/button_action_dark_gray.png -> 87.png
+  composite [light] settings/button_action_dark_gray.png -> 94.png
+  composite [dark] settings/brightness_bar_horizontal_blue.png -> 83.png
+  composite [light] settings/brightness_bar_horizontal_blue.png -> 90.png
+  composite [dark] settings/brightness_bar_horizontal_gray.png -> 84.png
+  composite [light] settings/brightness_bar_horizontal_gray.png -> 91.png
+  composite [dark] weather/weather_unknown.png -> 1.png
+  composite [light] weather/weather_unknown.png -> 49.png
+  composite [dark] weather/weather_clear_night.png -> 15.png
+  composite [light] weather/weather_clear_night.png -> 63.png
+  composite [dark] weather/weather_cloudy.png -> 3.png
+  composite [light] weather/weather_cloudy.png -> 51.png
+  composite [dark] weather/weather_fog.png -> 8.png
+  composite [light] weather/weather_fog.png -> 56.png
+  composite [dark] weather/weather_lightning.png -> 10.png
+  composite [light] weather/weather_lightning.png -> 58.png
+  composite [dark] weather/weather_lightning_rainy_day.png -> 13.png
+  composite [light] weather/weather_lightning_rainy_day.png -> 61.png
+  composite [dark] weather/weather_lightning_rainy_night.png -> 14.png
+  composite [light] weather/weather_lightning_rainy_night.png -> 62.png
+  composite [dark] weather/weather_partly_cloudy_day.png -> 11.png
+  composite [light] weather/weather_partly_cloudy_day.png -> 59.png
+  composite [dark] weather/weather_partly_cloudy_night.png -> 12.png
+  composite [light] weather/weather_partly_cloudy_night.png -> 60.png
+  composite [dark] weather/weather_pouring.png -> 5.png
+  composite [light] weather/weather_pouring.png -> 53.png
+  composite [dark] weather/weather_rainy.png -> 4.png
+  composite [light] weather/weather_rainy.png -> 52.png
+  composite [dark] weather/weather_snowy.png -> 6.png
+  composite [light] weather/weather_snowy.png -> 54.png
+  composite [dark] weather/weather_snowy_rainy.png -> 7.png
+  composite [light] weather/weather_snowy_rainy.png -> 55.png
+  composite [dark] weather/weather_sunny.png -> 2.png
+  composite [light] weather/weather_sunny.png -> 50.png
+  composite [dark] weather/weather_windy.png -> 9.png
+  composite [light] weather/weather_windy.png -> 57.png
+  placeholder -> 16.png
+  placeholder -> 18.png
+  placeholder -> 30.png
+  placeholder -> 31.png
+  placeholder -> 33.png
+  placeholder -> 34.png
+  copy  misc/misc_unused_35.png -> 35.png
+  copy  misc/misc_unused_36.png -> 36.png
+  copy  misc/misc_unused_41.png -> 41.png
+  copy  misc/misc_unused_42.png -> 42.png
+  copy  misc/misc_unused_43.png -> 43.png
+  copy  alarm/alarm_active.png -> 45.png
+  copy  alarm/alarm_inactive.png -> 44.png
+
+Done. Files written to: /mnt/c/Users/edwar/GitHub/NSPanel-Easy/hmi/dev/ui/pics/landscape
