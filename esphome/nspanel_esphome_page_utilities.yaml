@@ -66,11 +66,11 @@ display:
     on_touch:
       then:
         - lambda: |-
-            if (touch_event) return;  // Ignore the touch, so only the release will be used
-            if (page_id == hmi::home::PAGE.id and               // Page `home`
-                component_id == hmi::home::BT_UTILITIES.id and  // Utilities button
-                page_utilities_enabled) {                       // Page utilities is enabled
-              goto_page->execute(hmi::utilities::PAGE.id);
+            if (!page_utilities_enabled) return;               // There's not to do if page utilities is disabled
+            if (touch_event) return;                           // Ignore the touch, so only the release will be used
+            if (page_id != get_page_id("home")) return;        // Only on page `home`
+            if (component_id == hmi::home::BT_UTILITIES.id) {  // Utilities button
+              goto_page->execute(get_page_id("utilities"));
               return;
             }
 
@@ -80,6 +80,16 @@ esphome:
       - -D NSPANEL_EASY_PAGE_UTILITIES
 
 script:
+  - id: !extend action_icon
+    then:
+      - lambda: |-
+          if (page != "home") return;
+          if (component_id != "bt_utilities") return;
+          page_utilities_enabled = visible;
+          disp1->send_command_printf("vis_bt_utilities=%" PRIu8, visible ? 1 : 0);
+          if (is_home_page) disp1->set_component_visibility("bt_utilities", visible);
+          ESP_LOGV("${TAG_PAGE_UTILITIES}", "page_utilities_enabled: %s", TRUEFALSE(page_utilities_enabled));
+
   - id: !extend page_change
     then:
       - lambda: |-

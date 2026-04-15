@@ -88,8 +88,6 @@ script:
     then:
       - lambda: |-
           if (current_page_id != get_page_id("settings")) return;
-          disp1->set_component_text("lbl_reboot", "${LOCALIZATION[LANG].settings.reboot}");
-          disp1->set_component_text("lbl_brightness", "${LOCALIZATION[LANG].settings.brightness}");
           disp1->set_component_text("lbl_bright", "${LOCALIZATION[LANG].settings.bright}");
           disp1->set_component_text("lbl_dim", "${LOCALIZATION[LANG].settings.dim}");
 

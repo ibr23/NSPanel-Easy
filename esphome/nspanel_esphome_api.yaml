@@ -187,6 +187,8 @@ api:
             const esphome::nspanel_easy::NSPanelEasyNextionComponent component = extractNextionComponent(id, page);
 
             action_icon->execute(
+              page.c_str(),
+              id.c_str(),
               component,
               icon.c_str(),
               icon_color.size() == 3 ? rgbTo565(icon_color) : -1,
@@ -324,6 +326,8 @@ script:
     mode: queued
     max_runs: 10
     parameters:
+      page: string
+      component_id: string
       component: esphome::nspanel_easy::NSPanelEasyNextionComponent  # Component identifier
       icon: string  # The icon code
       icon_color: int32_t  # -1 if no color should be set, otherwise the decimal RGB565 color

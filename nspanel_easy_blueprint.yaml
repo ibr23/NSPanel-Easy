@@ -6,7 +6,7 @@
 ##################################################################################################
 ---
 blueprint:
-  name: NSPanel Easy Configuration (v2026.4.15)
+  name: NSPanel Easy Configuration (v9999.99.9)
   author: Edward Firmo (https://github.com/edwardtfn)
   description: >
     # NSPanel Easy Configuration via Blueprint
@@ -4058,7 +4058,7 @@ trigger_variables:
 
 variables:
   # Version will be following release version defined automatically when merging to main
-  blueprint_version: 2026.4.15
+  blueprint_version: 9999.99.9
   pages:
     current: '{{ states(currentpage) }}'
     alarm: "alarm"
@@ -5923,7 +5923,14 @@ actions:
       - &variable_entity
         alias: Variable Entity
         variables:
-          entity_id_valid: '{{ entity_id is defined and entity_id is string and states[entity_id] is not none }}'
+          entity_id_valid: >
+            {{
+              entity_id is defined and
+              entity_id is string and
+              entity_id | length > 0 and
+              "." in entity_id and
+              states[entity_id] is not none
+            }}
           overlap_icon_valid: >
             {{
               overlap is defined and
@@ -6324,7 +6331,8 @@ actions:
                                   utilities_enabled: !input utilities_enabled
                                   bt_utilities_icon: !input home_button08_icon
                               - *delay_boot
-                              - action: 'esphome.{{ nspanel_name }}_icon'
+                              - alias: home_bt_utilities
+                                action: 'esphome.{{ nspanel_name }}_icon'
                                 data:
                                   page: home
                                   id: bt_utilities
@@ -9546,7 +9554,10 @@ actions:
                                     - variables:
                                         value_enabled: '{{ value1_enabled }}'
                                         entity_id: '{{ repeat.item.value1 if value1_enabled else "" }}'
-                                        unit_of_measurement: '{{ state_attr(entity_id, "unit_of_measurement") | default("") if value1_enabled else "" }}'
+                                    - variables:
+                                        unit_of_measurement: &utilities_value_unit_of_measurement >
+                                          {{ state_attr(entity_id, "unit_of_measurement") | default("")
+                                            if value_enabled and entity_id | length > 0 else "" }}
                                     - *variable_entity
                                     - variables:
                                         value1_val: &utilities_value_with_unit_and_translations >
@@ -9561,7 +9572,8 @@ actions:
                                           }}
                                         value_enabled: '{{ value2_enabled }}'
                                         entity_id: '{{ repeat.item.value2 if value2_enabled else "" }}'
-                                        unit_of_measurement: '{{ state_attr(entity_id, "unit_of_measurement") | default("") if value2_enabled else "" }}'
+                                    - variables:
+                                        unit_of_measurement: *utilities_value_unit_of_measurement
                                     - *variable_entity
                                     - variables:
                                         value2_val: *utilities_value_with_unit_and_translations
