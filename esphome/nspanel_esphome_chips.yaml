@@ -73,7 +73,10 @@ script:
             return;
           }
           id(chip_font_id) = new_font;
-          ESP_LOGV("${TAG_CHIPS}", "chip_font updated: %" PRIu8, new_font);
+          ESP_LOGD("${TAG_CHIPS}", "chip font updated: %" PRIu8, new_font);
+
+          // Keep the Nextion-side global in sync for page initializers
+          disp1->send_command_printf("chip_font=%" PRIu8, new_font);
 
           // Update chip-like global components on page home
           disp1->set_component_font(hmi::home::WIFI_ICON.name, new_font);
