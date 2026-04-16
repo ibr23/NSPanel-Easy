@@ -14,7 +14,7 @@ substitutions:
   nextion_update_url: ""
   upload_tft_automatically: true
   upload_tft_baud_rate: ${BAUD_RATE}
-  upload_tft_wait_ms_after_boot: 300000  # 5min
+  upload_tft_wait_ms_after_boot: 98765  # 98.8sec
   ##############################################
   TAG_UPLOAD_TFT: "nspanel.addon.upload_tft"
   DISPLAY_MODES_BLANK_TEXT: ${DISPLAY_MODES.BLANK.TEXT}
@@ -164,8 +164,8 @@ script:
             - lambda: |-
                 const uint32_t elapsed = (uint32_t)(millis() - tft_upload_first_time_synced_ms);
                 const uint32_t target = ${upload_tft_wait_ms_after_boot};
-                ESP_LOGD("${TAG_UPLOAD_TFT}", "Waiting after time sync: %u / %u ms elapsed (%.1f%%)",
-                  elapsed, target, (elapsed * 100.0f) / target);
+                if (elapsed < target)
+                  ESP_LOGD("${TAG_UPLOAD_TFT}", "TFT upload will start in %u sec", (target - elapsed) / 1000u);
             - delay: 15s
 
       # Make sure the screen is ON
