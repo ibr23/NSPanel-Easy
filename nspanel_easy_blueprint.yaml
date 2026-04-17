@@ -7553,12 +7553,13 @@ actions:
                                     - *variable_entity
                                     - variables:
                                         current_entity_state_available: '{{ entity_state not in ["unavailable"] }}'
+                                        is_page_render: '{{ trigger.id != "trigger_buttonpage_state" }}'
                                         btn_state: >  # Button state (on = true or off = false)
                                           {{
                                             (entity_state in enum.states.on and entity_domain not in ["automation"])
                                             or (entity_domain == "climate" and entity_state != "off")
                                             or (entity_domain in ["automation", "button", "input_button", "remote", "scene", "script"]
-                                                and trigger.id == "trigger_buttonpage_state"
+                                                and not is_page_render
                                                 and trigger.entity_id == repeat.item.entity)
                                           }}
                                         btn_bri_txt: >  # Buttons value (brightness, temperature, etc.)
@@ -7616,12 +7617,13 @@ actions:
                                           }}
                                         icon_font: '{{ btn_icon_font }}'
                                         bri: '{{ btn_bri }}'
-                                        label: '{{ btn_label }}'
+                                        label: '{{ btn_label if is_page_render else "" }}'
+                                        is_page_render: '{{ is_page_render }}'
                                       continue_on_error: true
                                     - if:
                                         - '{{ btn_state }}'
                                         - '{{ entity_domain in ["automation", "button", "input_button", "remote", "scene", "script"] }}'
-                                        - '{{ trigger.id == "trigger_buttonpage_state" }}'
+                                        - '{{ not is_page_render }}'
                                         - '{{ trigger.entity_id == repeat.item.entity }}'
                                       then:
                                         - delay:
@@ -7635,7 +7637,8 @@ actions:
                                             icon_color: [128, 128, 128]  # grey_light
                                             icon_font: '{{ btn_icon_font }}'
                                             bri: '{{ btn_bri }}'
-                                            label: '{{ btn_label }}'
+                                            label: ""
+                                            is_page_render: false
                                           continue_on_error: true
                                     - *delay_default
 
@@ -9704,11 +9707,10 @@ actions:
                                                   entity: '{{ "embedded_climate" if entity_id == thermostat_embedded else entity_id }}'
                                                   back_page: '{{ back_page }}'
                                                 continue_on_error: true
-                                              - conditions:
-                                                  - '{{ entity is defined }}'
-                                                  - '{{ entity.name is defined }}'
-                                                  - '{{ entity.name is string }}'
-                                                  - '{{ entity.name | length > 0 }}'
+                                              - condition: '{{ entity is defined }}'
+                                              - condition: '{{ entity.name is defined }}'
+                                              - condition: '{{ entity.name is string }}'
+                                              - condition: '{{ entity.name | length > 0 }}'
                                               - *delay_default
                                               - action: 'esphome.{{ nspanel_name }}_component_text'
                                                 data:
