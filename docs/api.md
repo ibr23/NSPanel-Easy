@@ -103,6 +103,9 @@ Example: "\uE6E8" for `mdi:lightbulb-on-outline`.
 - `icon_font` (int): The Nextion font identifier for the icon (default is 8).
 - `bri` (string): Brightness level or other dynamic information to display on the button close to the icon.
 - `label` (string): The main text label displayed on the button.
+- `is_page_render` (bool): When `true`, skips the background picture (`picc`) update for buttons in the off state,
+  as the button page Preinitialize event already set the correct background during page load.
+  Set to `false` (default) for individual button state updates triggered by entity state changes.
 
 **Home Assistant Example:**
 
@@ -117,6 +120,7 @@ data:
   icon_font: 2
   bri: "75%"
   label: "Living Room"
+  is_page_render: false    # Set to true when called from a full page render
 ```
 
 > [!NOTE]

@@ -24,14 +24,15 @@ api:
     # enhancing UI interactivity by allowing updates to button appearance and behavior based on given parameters.
     - action: button
       variables:
-        page: string       # Identifier of the page where the button is located.
-        id: string         # Unique identifier for the button.
-        state: bool        # Determines the button's state, influencing background and other visual aspects.
-        icon: string       # Icon codepoint from HASwitchPlate Material Design Icons. Example: "\uE6E8" for mdi:lightbulb-on-outline.
-        icon_color: int[]  # RGB color array for the icon.
-        icon_font: int     # Nextion font identifier for the icon, default is 8.
-        bri: string        # Brightness level or other dynamic info to be displayed close to the icon.
-        label: string      # Main text label for the button.
+        page: string          # Identifier of the page where the button is located.
+        id: string            # Unique identifier for the button.
+        state: bool           # Determines the button's state, influencing background and other visual aspects.
+        icon: string          # Icon codepoint from HASwitchPlate Material Design Icons. Example: "\uE6E8" for mdi:lightbulb-on-outline.
+        icon_color: int[]     # RGB color array for the icon.
+        icon_font: int        # Nextion font identifier for the icon, default is 8.
+        bri: string           # Brightness level or other dynamic info to be displayed close to the icon.
+        label: string         # Main text label for the button.
+        is_page_render: bool  # Set to true when called from a full page render, or false for a single button refresh
       then:
         - lambda: |-
             const uint16_t icon_color_rgb565 = rgbTo565(icon_color);
@@ -44,6 +45,7 @@ api:
             ESP_LOGV("${TAG_PAGE_BUTTONS}", "  icon_font: %i", icon_font);
             ESP_LOGV("${TAG_PAGE_BUTTONS}", "  bri: %s", bri.c_str());
             ESP_LOGV("${TAG_PAGE_BUTTONS}", "  label: %s", label.c_str());
+            ESP_LOGV("${TAG_PAGE_BUTTONS}", "  is_page_render: %s", YESNO(is_page_render));
 
             const uint8_t page_id = get_page_id(page.c_str());
             if (current_page_id != page_id) {
@@ -60,7 +62,8 @@ api:
               icon_color_rgb565,
               static_cast<uint8_t>(icon_font),
               bri.c_str(),
-              label.c_str()
+              label.c_str(),
+              is_page_render
             );
 
 esphome:
@@ -73,14 +76,15 @@ script:
     mode: queued
     max_runs: 24
     parameters:
-      page_id: uint8_t      # Identifier of the page where the button is located.
-      button_id: string     # Unique identifier for the button.
-      state: bool           # Determines the button's state, influencing background and other visual aspects.
-      icon: string          # Icon codepoint from HASwitchPlate Material Design Icons. Example: "\uE6E8" for mdi:lightbulb-on-outline.
-      icon_color: uint16_t  # RGB color (RGB565) for the icon.
-      icon_font: uint8_t    # Nextion font identifier for the icon, default is 8.
-      bri: string           # Brightness level or other dynamic info to be displayed close to the icon.
-      label: string         # Main text label for the button.
+      page_id: uint8_t      # Identifier of the page where the button is located
+      button_id: string     # Unique identifier for the button
+      state: bool           # Determines the button's state, influencing background and other visual aspects
+      icon: string          # Icon codepoint from HASwitchPlate Material Design Icons. Example: "\uE6E8" for mdi:lightbulb-on-outline
+      icon_color: uint16_t  # RGB color (RGB565) for the icon
+      icon_font: uint8_t    # Nextion font identifier for the icon, default is 8
+      bri: string           # Brightness level or other dynamic info to be displayed close to the icon
+      label: string         # Main text label for the button
+      is_page_render: bool  # When true, skips picc calls for off-state buttons (Preinitialize already set them)
     then:
       - lambda: |-
           if (current_page_id != page_id) return;
@@ -112,11 +116,14 @@ script:
           snprintf(comp_text, sizeof(comp_text), "%stext", btn);
           snprintf(comp_icon, sizeof(comp_icon), "%sicon", btn);
 
-          // Background images
-          disp1->set_component_picc(comp_pic, pic_id);
-          disp1->set_component_picc(comp_bri, pic_id);
-          disp1->set_component_picc(comp_text, pic_id);
-          disp1->set_component_picc(comp_icon, pic_id);
+          // Background images - skip for off-state buttons during page render
+          // as Preinitialize already set the correct picc
+          if (!is_page_render || state) {
+            disp1->set_component_picc(comp_pic, pic_id);
+            disp1->set_component_picc(comp_bri, pic_id);
+            disp1->set_component_picc(comp_text, pic_id);
+            disp1->set_component_picc(comp_icon, pic_id);
+          }
 
           // Foreground colors
           if (current_page_id != page_id) return;
@@ -128,14 +135,9 @@ script:
           // Text content
           if (current_page_id != page_id) return;
           disp1->set_component_text(comp_icon, icon.c_str());
-          disp1->set_component_text(comp_text, wrapText(label.c_str(), 10, ${LANG_BYTES_PER_CHAR}).c_str());
           disp1->set_component_text(comp_bri, (strcmp(bri.c_str(), "0") == 0) ? " " : bri.c_str());
 
-          // Visibility
-          if (current_page_id != page_id) return;
-          disp1->show_component(comp_pic);
-          disp1->show_component(comp_icon);
-          disp1->show_component(comp_text);
-          disp1->show_component(comp_bri);
-          disp1->show_component(btn);
+          // Button text is set on page render only; pass empty label on state updates to skip
+          if (is_page_render)
+            disp1->set_component_text(comp_text, wrapText(label.c_str(), 10, ${LANG_BYTES_PER_CHAR}).c_str());
 ...

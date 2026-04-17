@@ -35,6 +35,8 @@ Page theme_apply
                 {
                     home.weather.pic+=48
                 }
+                // buttons pages
+                pic_button_off=79 // Background picture for non-pressed buttons on buttonpageXX
                 // climate page
                 climate.b[0].pic=64
                 // cover page
@@ -64,6 +66,8 @@ Page theme_apply
                 {
                     home.weather.pic-=48
                 }
+                // buttons pages
+                pic_button_off=46 // Background picture for non-pressed buttons on buttonpageXX
                 // climate page
                 climate.b[0].pic=37
                 // cover page

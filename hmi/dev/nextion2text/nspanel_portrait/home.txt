@@ -1352,7 +1352,6 @@ TouchCap swipe
             dim=brightness // Set brightness to saved value (from HA)
         
         Touch Release Event
-            //New swipe
             if(api==0)
             {
                 page home
@@ -1366,16 +1365,16 @@ TouchCap swipe
                 if(swipec>swipedx)
                 {
                     // Navigate back based on active status
-                    if(is_buttonpage04==1)
+                    if(is_buttonpage04>=1)
                     {
                         page buttonpage04
-                    }else if(is_buttonpage03==1)
+                    }else if(is_buttonpage03>=1)
                     {
                         page buttonpage03
-                    }else if(is_buttonpage02==1)
+                    }else if(is_buttonpage02>=1)
                     {
                         page buttonpage02
-                    }else if(is_buttonpage01==1)
+                    }else if(is_buttonpage01>=1)
                     {
                         page buttonpage01
                     }
@@ -1385,16 +1384,16 @@ TouchCap swipe
                 if(swipec<swipec2)
                 {
                     // Navigate back based on active status
-                    if(is_buttonpage01==1)
+                    if(is_buttonpage01>=1)
                     {
                         page buttonpage01
-                    }else if(is_buttonpage02==1)
+                    }else if(is_buttonpage02>=1)
                     {
                         page buttonpage02
-                    }else if(is_buttonpage03==1)
+                    }else if(is_buttonpage03>=1)
                     {
                         page buttonpage03
-                    }else if(is_buttonpage04==1)
+                    }else if(is_buttonpage04>=1)
                     {
                         page buttonpage04
                     }
@@ -1407,22 +1406,22 @@ TouchCap swipe
                 // From Up to Down
                 if(swipec>100)
                 {
-                    if(is_buttonpage04==1&&is_buttonpage03==1)
+                    if(is_buttonpage04>=1&&is_buttonpage03>=1)
                     {
                         page buttonpage03
-                    }else if(is_buttonpage04==1&&is_buttonpage02==1)
+                    }else if(is_buttonpage04>=1&&is_buttonpage02>=1)
                     {
                         page buttonpage02
-                    }else if(is_buttonpage04==1&&is_buttonpage01==1)
+                    }else if(is_buttonpage04>=1&&is_buttonpage01>=1)
                     {
                         page buttonpage01
-                    }else if(is_buttonpage03==1&&is_buttonpage02==1)
+                    }else if(is_buttonpage03>=1&&is_buttonpage02>=1)
                     {
                         page buttonpage02
-                    }else if(is_buttonpage03==1&&is_buttonpage01==1)
+                    }else if(is_buttonpage03>=1&&is_buttonpage01>=1)
                     {
                         page buttonpage01
-                    }else if(is_buttonpage02==1&&is_buttonpage01==1)
+                    }else if(is_buttonpage02>=1&&is_buttonpage01>=1)
                     {
                         page buttonpage01
                     }
@@ -1432,22 +1431,22 @@ TouchCap swipe
                 if(swipec<-100)
                 {
                     // Navigate back up the sequence based on active status
-                    if(is_buttonpage01==1&&is_buttonpage02==1)
+                    if(is_buttonpage01>=1&&is_buttonpage02>=1)
                     {
                         page buttonpage02
-                    }else if(is_buttonpage01==1&&is_buttonpage03==1)
+                    }else if(is_buttonpage01>=1&&is_buttonpage03>=1)
                     {
                         page buttonpage03
-                    }else if(is_buttonpage01==1&&is_buttonpage04==1)
+                    }else if(is_buttonpage01>=1&&is_buttonpage04>=1)
                     {
                         page buttonpage04
-                    }else if(is_buttonpage02==1&&is_buttonpage03==1)
+                    }else if(is_buttonpage02>=1&&is_buttonpage03>=1)
                     {
                         page buttonpage03
-                    }else if(is_buttonpage02==1&&is_buttonpage04==1)
+                    }else if(is_buttonpage02>=1&&is_buttonpage04>=1)
                     {
                         page buttonpage04
-                    }else if(is_buttonpage03==1&&is_buttonpage04==1)
+                    }else if(is_buttonpage03>=1&&is_buttonpage04>=1)
                     {
                         page buttonpage04
                     }

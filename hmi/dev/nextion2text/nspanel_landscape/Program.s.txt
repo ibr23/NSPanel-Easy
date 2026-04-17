@@ -1,6 +1,9 @@
 Program.s
     //The following code is only run once when power on, and is generally used for global variable definition and power on initialization data
-    int sys0=0,sys1=0,sys2=0,swipex=0,swipey=0,swipex2=0,swipey2=0,swipec=0,swipec2=0,swipedx=100,swipedy=100     //At present, the definition of global variable only supports 4-byte signed integer (int), and other types of global quantity declaration are not supported. If you want to use string type, you can use variable control in the page to implement
+    //At present, the definition of global variable only supports 4-byte signed integer (int), and other types of global quantity declaration are not supported
+    //If you want to use string type, you can use variable control in the page to implement
+    int sys0=0,sys1=0,sys2=0,sys3=0
+    int swipex=0,swipey=0,swipex2=0,swipey2=0,swipec=0,swipec2=0,swipedx=100,swipedy=100
     // page home visibility items
     int vis_indr_temp=0
     int vis_bt_icon=0
@@ -12,6 +15,7 @@ Program.s
     int home_page_id=1, back_page_id=1, wakeup_page_id=1
     int theme=0  // 0 = Dark, 1 = Light
     int pic_background_main=0 // Background picture to be used on pages by default
+    int pic_button_off=46 // Background picture for non-pressed buttons on buttonpageXX
     int color_pco_main=65535  // Foreground font color for main information
     int color_pco_secondary=52857  // Foreground font color for secondary information
     int color_pco_navigation=33808  // Foreground font color for navigation components, like back button or page index

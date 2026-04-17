@@ -6859,18 +6859,15 @@ actions:
                             - action: 'esphome.{{ nspanel_name }}_command'
                               data:
                                 cmd: >
-                                  is_{{ repeat.item }}={{
-                                    1
-                                    if
-                                      buttons_pages.buttons
-                                      | selectattr("page", "defined")
-                                      | selectattr("page", "eq", repeat.item)
-                                      | selectattr("entity", "defined")
-                                      | rejectattr("entity", "eq", [])
-                                      | list
-                                      | count > 0
-                                    else 0
-                                  }}
+                                  {% set ns = namespace(mask=0) %}
+                                  {% for btn in buttons_pages.buttons
+                                        | selectattr("page", "eq", repeat.item)
+                                        | selectattr("entity", "defined")
+                                        | rejectattr("entity", "eq", []) %}
+                                    {% set slot = btn.component | replace("button", "") | int - 1 %}
+                                    {% set ns.mask = ns.mask + (2 ** slot) %}
+                                  {% endfor %}
+                                  is_{{ repeat.item }}={{ ns.mask }}
                               continue_on_error: true
 
                       - alias: Disable empty entity pages
@@ -7556,12 +7553,13 @@ actions:
                                     - *variable_entity
                                     - variables:
                                         current_entity_state_available: '{{ entity_state not in ["unavailable"] }}'
+                                        is_page_render: '{{ trigger.id != "trigger_buttonpage_state" }}'
                                         btn_state: >  # Button state (on = true or off = false)
                                           {{
                                             (entity_state in enum.states.on and entity_domain not in ["automation"])
                                             or (entity_domain == "climate" and entity_state != "off")
                                             or (entity_domain in ["automation", "button", "input_button", "remote", "scene", "script"]
-                                                and trigger.id == "trigger_buttonpage_state"
+                                                and not is_page_render
                                                 and trigger.entity_id == repeat.item.entity)
                                           }}
                                         btn_bri_txt: >  # Buttons value (brightness, temperature, etc.)
@@ -7619,12 +7617,13 @@ actions:
                                           }}
                                         icon_font: '{{ btn_icon_font }}'
                                         bri: '{{ btn_bri }}'
-                                        label: '{{ btn_label }}'
+                                        label: '{{ btn_label if is_page_render else "" }}'
+                                        is_page_render: '{{ is_page_render }}'
                                       continue_on_error: true
                                     - if:
                                         - '{{ btn_state }}'
                                         - '{{ entity_domain in ["automation", "button", "input_button", "remote", "scene", "script"] }}'
-                                        - '{{ trigger.id == "trigger_buttonpage_state" }}'
+                                        - '{{ not is_page_render }}'
                                         - '{{ trigger.entity_id == repeat.item.entity }}'
                                       then:
                                         - delay:
@@ -7638,7 +7637,8 @@ actions:
                                             icon_color: [128, 128, 128]  # grey_light
                                             icon_font: '{{ btn_icon_font }}'
                                             bri: '{{ btn_bri }}'
-                                            label: '{{ btn_label }}'
+                                            label: ""
+                                            is_page_render: false
                                           continue_on_error: true
                                     - *delay_default
 
@@ -9674,7 +9674,12 @@ actions:
                                   if last_click_button is defined and last_click_button.entity is defined
                                   else None
                                 }}
-                          - *variable_entity
+                              entity_domain: >
+                                {{
+                                  entity_id.split(".")[0]
+                                  if entity_id is string and entity_id | length > 0
+                                  else "unknown"
+                                }}
                           - choose:
                               - alias: Long click
                                 conditions: >-
@@ -9691,26 +9696,28 @@ actions:
                                                                   "fan", "input_boolean", "input_button", "light",
                                                                   "media_player", "switch", "water_heater"] }}'
                                         sequence:
+                                          - *variable_entity
                                           - variables:
                                               back_page: '{{ pages.home }}'
                                           - &entity_details_show
-                                            if: '{{ true }}'
-                                            then:
+                                            sequence:
                                               - *delay_default
                                               - action: 'esphome.{{ nspanel_name }}_entity_details_show'
                                                 data:
                                                   entity: '{{ "embedded_climate" if entity_id == thermostat_embedded else entity_id }}'
                                                   back_page: '{{ back_page }}'
                                                 continue_on_error: true
-                                              - if: '{{ entity is defined and entity.name is defined and entity.name is string and entity.name | length > 0 }}'
-                                                then:
-                                                  - *delay_default
-                                                  - action: 'esphome.{{ nspanel_name }}_component_text'
-                                                    data:
-                                                      page: ""
-                                                      id: page_label
-                                                      txt: '{{ entity.name }}'
-                                                    continue_on_error: true
+                                              - condition: '{{ entity is defined }}'
+                                              - condition: '{{ entity.name is defined }}'
+                                              - condition: '{{ entity.name is string }}'
+                                              - condition: '{{ entity.name | length > 0 }}'
+                                              - *delay_default
+                                              - action: 'esphome.{{ nspanel_name }}_component_text'
+                                                data:
+                                                  page: ""
+                                                  id: page_label
+                                                  txt: '{{ entity.name }}'
+                                                continue_on_error: true
                                       - alias: Custom hold action - Left
                                         conditions: '{{ last_click_button.hold_select == "Custom Action" and nspanel_event.component == "hw_bt_left" }}'
                                         sequence: !input left_button_hold_custom_action
