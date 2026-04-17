@@ -173,6 +173,7 @@ script:
       - lambda: |-
           wait_for_wifi->execute();
           update_flag_wifi_ready->execute();
+          refresh_wifi_icon->execute();
 
 text_sensor:
   - id: device_name  # Device name - Used by blueprint to find service's names
