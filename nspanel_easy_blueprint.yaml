@@ -7560,7 +7560,7 @@ actions:
                                           {{
                                             (entity_state in enum.states.on and entity_domain not in ["automation"])
                                             or (entity_domain == "climate" and entity_state != "off")
-                                            or (entity_domain in ["button", "input_button", "scene", "automation", "remote"]
+                                            or (entity_domain in ["automation", "button", "input_button", "remote", "scene", "script"]
                                                 and trigger.id == "trigger_buttonpage_state"
                                                 and trigger.entity_id == repeat.item.entity)
                                           }}
@@ -7617,13 +7617,13 @@ actions:
                                                 and entity.icon_color | count == 3
                                             else [200, 200, 200]
                                           }}
-                                        icon_font: '{{ btn_icon_font}}'
+                                        icon_font: '{{ btn_icon_font }}'
                                         bri: '{{ btn_bri }}'
                                         label: '{{ btn_label }}'
                                       continue_on_error: true
                                     - if:
                                         - '{{ btn_state }}'
-                                        - '{{ entity_domain in ["automation", "button", "input_button", "remote", "scene"] }}'
+                                        - '{{ entity_domain in ["automation", "button", "input_button", "remote", "scene", "script"] }}'
                                         - '{{ trigger.id == "trigger_buttonpage_state" }}'
                                         - '{{ trigger.entity_id == repeat.item.entity }}'
                                       then:
