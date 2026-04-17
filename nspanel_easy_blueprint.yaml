@@ -6859,18 +6859,15 @@ actions:
                             - action: 'esphome.{{ nspanel_name }}_command'
                               data:
                                 cmd: >
-                                  is_{{ repeat.item }}={{
-                                    1
-                                    if
-                                      buttons_pages.buttons
-                                      | selectattr("page", "defined")
-                                      | selectattr("page", "eq", repeat.item)
-                                      | selectattr("entity", "defined")
-                                      | rejectattr("entity", "eq", [])
-                                      | list
-                                      | count > 0
-                                    else 0
-                                  }}
+                                  {% set ns = namespace(mask=0) %}
+                                  {% for btn in buttons_pages.buttons
+                                        | selectattr("page", "eq", repeat.item)
+                                        | selectattr("entity", "defined")
+                                        | rejectattr("entity", "eq", []) %}
+                                    {% set slot = btn.component | replace("button", "") | int - 1 %}
+                                    {% set ns.mask = ns.mask + (2 ** slot) %}
+                                  {% endfor %}
+                                  is_{{ repeat.item }}={{ ns.mask }}
                               continue_on_error: true
 
                       - alias: Disable empty entity pages
@@ -9674,7 +9671,12 @@ actions:
                                   if last_click_button is defined and last_click_button.entity is defined
                                   else None
                                 }}
-                          - *variable_entity
+                              entity_domain: >
+                                {{
+                                  entity_id.split(".")[0]
+                                  if entity_id is string and entity_id | length > 0
+                                  else "unknown"
+                                }}
                           - choose:
                               - alias: Long click
                                 conditions: >-
@@ -9691,6 +9693,7 @@ actions:
                                                                   "fan", "input_boolean", "input_button", "light",
                                                                   "media_player", "switch", "water_heater"] }}'
                                         sequence:
+                                          - *variable_entity
                                           - variables:
                                               back_page: '{{ pages.home }}'
                                           - &entity_details_show
