@@ -9697,23 +9697,25 @@ actions:
                                           - variables:
                                               back_page: '{{ pages.home }}'
                                           - &entity_details_show
-                                            if: '{{ true }}'
-                                            then:
+                                            sequence:
                                               - *delay_default
                                               - action: 'esphome.{{ nspanel_name }}_entity_details_show'
                                                 data:
                                                   entity: '{{ "embedded_climate" if entity_id == thermostat_embedded else entity_id }}'
                                                   back_page: '{{ back_page }}'
                                                 continue_on_error: true
-                                              - if: '{{ entity is defined and entity.name is defined and entity.name is string and entity.name | length > 0 }}'
-                                                then:
-                                                  - *delay_default
-                                                  - action: 'esphome.{{ nspanel_name }}_component_text'
-                                                    data:
-                                                      page: ""
-                                                      id: page_label
-                                                      txt: '{{ entity.name }}'
-                                                    continue_on_error: true
+                                              - conditions:
+                                                  - '{{ entity is defined }}'
+                                                  - '{{ entity.name is defined }}'
+                                                  - '{{ entity.name is string }}'
+                                                  - '{{ entity.name | length > 0 }}'
+                                              - *delay_default
+                                              - action: 'esphome.{{ nspanel_name }}_component_text'
+                                                data:
+                                                  page: ""
+                                                  id: page_label
+                                                  txt: '{{ entity.name }}'
+                                                continue_on_error: true
                                       - alias: Custom hold action - Left
                                         conditions: '{{ last_click_button.hold_select == "Custom Action" and nspanel_event.component == "hw_bt_left" }}'
                                         sequence: !input left_button_hold_custom_action
