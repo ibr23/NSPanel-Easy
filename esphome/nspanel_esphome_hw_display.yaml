@@ -109,7 +109,7 @@ display:
     dump_device_info: true
     # max_commands_per_loop: 15
     # max_queue_age: 8000
-    # max_queue_size: 128     # Enable with v2026.6.0
+    # max_queue_size: 128  # Enable with v2026.6.0
     update_interval: never
     on_setup:
       then:

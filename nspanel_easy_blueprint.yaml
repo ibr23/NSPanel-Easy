@@ -6,7 +6,7 @@
 ##################################################################################################
 ---
 blueprint:
-  name: NSPanel Easy Configuration (v2026.4.18)
+  name: NSPanel Easy Configuration (v9999.99.9)
   author: Edward Firmo (https://github.com/edwardtfn)
   description: >
     # NSPanel Easy Configuration via Blueprint
@@ -4058,7 +4058,7 @@ trigger_variables:
 
 variables:
   # Version will be following release version defined automatically when merging to main
-  blueprint_version: 2026.4.18
+  blueprint_version: 9999.99.9
   pages:
     current: '{{ states(currentpage) }}'
     alarm: "alarm"
@@ -5065,7 +5065,6 @@ actions:
         color:
           blue: [0, 128, 248]
           grey_dark: [40, 44, 40]
-          grey_light: [128, 128, 128]
           grey_super_light: [200, 204, 200]
           grey_white: [225, 225, 225]
           red: [248, 0, 0]
@@ -7537,7 +7536,6 @@ actions:
                                     }}
                                   sequence: &display_button_page_button
                                     - condition: '{{ repeat.item.entity is defined and repeat.item.entity is string and repeat.item.entity | length > 0 }}'
-                                    - *delay_default
                                     - variables:
                                         entity_id: '{{ repeat.item.entity }}'
                                         overlap:
@@ -7562,7 +7560,9 @@ actions:
                                           {{
                                             (entity_state in enum.states.on and entity_domain not in ["automation"])
                                             or (entity_domain == "climate" and entity_state != "off")
-                                            or (entity_domain in ["button", "input_button", "scene", "automation", "remote"] and trigger.id is match "current_state_entity")
+                                            or (entity_domain in ["automation", "button", "input_button", "remote", "scene", "script"]
+                                                and trigger.id == "trigger_buttonpage_state"
+                                                and trigger.entity_id == repeat.item.entity)
                                           }}
                                         btn_bri_txt: >  # Buttons value (brightness, temperature, etc.)
                                           {% if not has_value(entity_id) %} 0
@@ -7585,21 +7585,47 @@ actions:
                                             }}{{ temperature_units }}
                                           {% else %} 0
                                           {% endif %}
-                                    - *delay_default
+                                        btn_icon: >
+                                          {{
+                                            entity.icon
+                                            if entity.icon is defined
+                                                and entity.icon is string
+                                                and entity.icon | length > 0
+                                            else all_icons.unknown
+                                          }}
+                                        btn_label: >
+                                          {{
+                                            entity.name
+                                            if entity.name is defined
+                                                and entity.name is string
+                                                and entity.name | length > 0
+                                            else entity_id
+                                          }}
+                                        btn_icon_font: '{{ button_pages_icon_size if is_number(button_pages_icon_size) else 8 }}'
+                                        btn_bri: '{{ btn_bri_txt if btn_bri_txt and btn_bri_txt != "0%" else "" }}'
                                     - action: 'esphome.{{ nspanel_name }}_button'
                                       data:
                                         page: '{{ repeat.item.page }}'
                                         id: '{{ repeat.item.component }}'
-                                        state: '{{ btn_state if btn_state else false }}'
-                                        icon: '{{ entity.icon }}'
-                                        icon_color: '{{ entity.icon_color }}'
-                                        icon_font: '{{ button_pages_icon_size if is_number(button_pages_icon_size) else 8 }}'
-                                        bri: '{{ btn_bri_txt if btn_bri_txt and btn_bri_txt != "0%" else "" }}'
-                                        label: '{{ entity.name }}'
+                                        state: '{{ btn_state }}'
+                                        icon: '{{ btn_icon }}'
+                                        icon_color: >
+                                          {{
+                                            entity.icon_color
+                                            if entity.icon_color is defined
+                                                and entity.icon_color is list
+                                                and entity.icon_color | count == 3
+                                            else [200, 200, 200]
+                                          }}
+                                        icon_font: '{{ btn_icon_font }}'
+                                        bri: '{{ btn_bri }}'
+                                        label: '{{ btn_label }}'
                                       continue_on_error: true
                                     - if:
-                                        - '{{ entity_domain in ["automation", "button", "input_button", "remote", "scene"] }}'
-                                        - '{{ trigger.id is match "current_state_entity" }}'
+                                        - '{{ btn_state }}'
+                                        - '{{ entity_domain in ["automation", "button", "input_button", "remote", "scene", "script"] }}'
+                                        - '{{ trigger.id == "trigger_buttonpage_state" }}'
+                                        - '{{ trigger.entity_id == repeat.item.entity }}'
                                       then:
                                         - delay:
                                             milliseconds: 800
@@ -7608,12 +7634,13 @@ actions:
                                             page: '{{ repeat.item.page }}'
                                             id: '{{ repeat.item.component }}'
                                             state: false
-                                            icon: '{{ entity.icon }}'
-                                            icon_color: '{{ nextion.color.grey_light }}'
-                                            icon_font: '{{ button_pages_icon_size if is_number(button_pages_icon_size) else 8 }}'
-                                            bri: '{{ btn_bri_txt }}'
-                                            label: '{{ entity.name }}'
+                                            icon: '{{ btn_icon }}'
+                                            icon_color: [128, 128, 128]  # grey_light
+                                            icon_font: '{{ btn_icon_font }}'
+                                            bri: '{{ btn_bri }}'
+                                            label: '{{ btn_label }}'
                                           continue_on_error: true
+                                    - *delay_default
 
                       ## PAGE LIGHT ##
                       - alias: Light settings page
