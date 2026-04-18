@@ -6,7 +6,7 @@
 ##################################################################################################
 ---
 blueprint:
-  name: NSPanel Easy Configuration (v2026.4.21)
+  name: NSPanel Easy Configuration (v9999.99.9)
   author: Edward Firmo (https://github.com/edwardtfn)
   description: >
     # NSPanel Easy Configuration via Blueprint
@@ -3900,28 +3900,33 @@ blueprint:
                 - label: 48px
                   value: '10'
         delay:
-          name: Command Delay to Prevent Overload
+          name: Command Delay
           description: >
-            Adjusts the delay between sequential commands to the Nextion display, preventing overload and synchronization issues.
-            While increasing delay enhances stability, it may slow down page rendering.
-          default: 25
+            Small delay between sequential Home Assistant action calls to the panel.
+            Helps ensure ordering when many calls are dispatched in quick succession.
+            The Nextion-side command pacer handles display buffer protection, so this value can usually stay low.
+            Increase only if you observe missing or out-of-order commands on busy networks.
+          default: 10
           selector:
             number:
               min: 0
-              max: 250
+              max: 25
               step: 1
               unit_of_measurement: milliseconds
               mode: box
         delay_boot:
-          name: Command Delay to Prevent Overload during panel's boot
+          name: Command Delay During Boot
           description: >
-            Adjusts the delay between sequential commands to the Nextion display, preventing overload and synchronization issues.
-            While increasing delay enhances stability, it may slow down the boot sequence.
-          default: 375
+            Delay between sequential Home Assistant service calls to the panel during the boot sequence.
+            Boot involves a large burst of commands (settings, icons, component initialization),
+            so a slightly higher value than the runtime delay is needed to ensure reliable boot.
+            Values below ~25 ms have been observed to cause Nextion buffer overflows during boot.
+            Values above 100 ms are rarely needed.
+          default: 50
           selector:
             number:
               min: 0
-              max: 2500
+              max: 250
               step: 1
               unit_of_measurement: milliseconds
               mode: box
@@ -4058,7 +4063,7 @@ trigger_variables:
 
 variables:
   # Version will be following release version defined automatically when merging to main
-  blueprint_version: 2026.4.21
+  blueprint_version: 9999.99.9
   pages:
     current: '{{ states(currentpage) }}'
     alarm: "alarm"
@@ -6161,6 +6166,7 @@ actions:
                     trigger.event.data is defined
                   else none
                 }}
+          - condition: '{{ nspanel_event is not none }}'
           - choose:
               ##### BOOT NSPANEL - boot init #####
               - alias: Boot init
@@ -7028,6 +7034,7 @@ actions:
               - alias: Page changed
                 conditions:
                   - '{{ nspanel_event.type == "page_changed"}}'
+                  - '{{ nspanel_event.page is defined }}'
                 sequence:
                   - choose:
                       ## PAGE HOME ##
@@ -8179,8 +8186,6 @@ actions:
                       ## PAGE CLIMATE ##
                       - alias: Climate page
                         conditions:
-                          - '{{ nspanel_event is defined }}'
-                          - '{{ nspanel_event.page is defined }}'
                           - '{{ nspanel_event.page == pages.climate }}'
                         sequence: &refresh_page_climate
                           - *get_entity_id_from_event_or_trigger
@@ -8450,8 +8455,6 @@ actions:
                       ## PAGE BUTTON ##
                       - alias: Button page
                         conditions:
-                          - '{{ nspanel_event is defined }}'
-                          - '{{ nspanel_event.page is defined }}'
                           - '{{ nspanel_event.page == pages.button }}'
                         sequence: &refresh_page_button
                           - *get_entity_id_from_event_or_trigger
@@ -8488,8 +8491,6 @@ actions:
                       ## PAGE SWITCH ##
                       - alias: Switch page
                         conditions:
-                          - '{{ nspanel_event is defined }}'
-                          - '{{ nspanel_event.page is defined }}'
                           - '{{ nspanel_event.page == pages.switch }}'
                         sequence: &refresh_page_switch
                           - *get_entity_id_from_event_or_trigger
@@ -8526,8 +8527,6 @@ actions:
                       ## PAGE WATER HEATER ##
                       - alias: Water Heater page
                         conditions:
-                          - '{{ nspanel_event is defined }}'
-                          - '{{ nspanel_event.page is defined }}'
                           - '{{ nspanel_event.page == pages.water_heater }}'
                         sequence: &refresh_page_water_heater
                           - &variables_water_heater_entity
@@ -10638,7 +10637,6 @@ actions:
                       )
                   ) in enum.states.on
                 }}
-          - *delay_default
           - action: 'esphome.{{ nspanel_name }}_component_val'
             data:
               page: mem
@@ -10650,13 +10648,14 @@ actions:
                 }}
               val: '{{ 1 if button_state else 0 }}'
             continue_on_error: true
+          # Re-evaluate the entity state after a short settle window;
+          # if it changed meanwhile, update the Nextion indicator again.
           - delay:
               milliseconds: 250
           - variables:
               button_state_new: *button_state_var
           - if: '{{ button_state_new != button_state }}'
             then:
-              - *delay_default
               - action: 'esphome.{{ nspanel_name }}_component_val'
                 data:
                   page: mem

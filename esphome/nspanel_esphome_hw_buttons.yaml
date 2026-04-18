@@ -35,17 +35,19 @@ binary_sensor:
         invalid_cooldown: ${invalid_cooldown}
         then:
           - lambda: |-
-              ESP_LOGD("${TAG_HW_BUTTONS}", "Left button - Long click");
+              ESP_LOGV("${TAG_HW_BUTTONS}", "Left button - Long click detected");
               button_left_press_long->execute();
               ha_button->execute(page_names[current_page_id], "hw_bt_left", "long_click");
+              ESP_LOGD("${TAG_HW_BUTTONS}", "Left button - Long click dispatched");
       - timing: &short_click-timing
           - ON for at most 0.8s
         invalid_cooldown: ${invalid_cooldown}
         then:
           - lambda: |-
-              ESP_LOGD("${TAG_HW_BUTTONS}", "Left button - Short click");
+              ESP_LOGV("${TAG_HW_BUTTONS}", "Left button - Short click detected");
               button_left_press_short->execute();
               ha_button->execute(page_names[current_page_id], "hw_bt_left", "short_click");
+              ESP_LOGD("${TAG_HW_BUTTONS}", "Left button - Short click dispatched");
     on_release:
       then:
         - script.execute: button_left_release
@@ -59,16 +61,18 @@ binary_sensor:
         invalid_cooldown: ${invalid_cooldown}
         then:
           - lambda: |-
-              ESP_LOGD("${TAG_HW_BUTTONS}", "Right button - Long click");
+              ESP_LOGV("${TAG_HW_BUTTONS}", "Right button - Long click detected");
               button_right_press_long->execute();
               ha_button->execute(page_names[current_page_id], "hw_bt_right", "long_click");
+              ESP_LOGD("${TAG_HW_BUTTONS}", "Right button - Long click dispatched");
       - timing: *short_click-timing
         invalid_cooldown: ${invalid_cooldown}
         then:
           - lambda: |-
-              ESP_LOGD("${TAG_HW_BUTTONS}", "Right button - Short click");
+              ESP_LOGV("${TAG_HW_BUTTONS}", "Right button - Short click detected");
               button_right_press_short->execute();
               ha_button->execute(page_names[current_page_id], "hw_bt_right", "short_click");
+              ESP_LOGD("${TAG_HW_BUTTONS}", "Right button - Short click dispatched");
     on_release:
       then:
         - script.execute: button_right_release
