@@ -126,7 +126,8 @@ display:
 
     on_touch:
       then:
-        - script.execute: timer_reset_all
+        - lambda: |-
+            if (touch_event) timer_reset_all->execute();  // Reset timers on touch, but not on release (to avoid two calls per touch)
 
 esphome:
   platformio_options:
