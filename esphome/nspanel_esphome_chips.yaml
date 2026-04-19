@@ -28,15 +28,8 @@ script:
       - lambda: |-
           if (page != "chips") return;  // Only handle chip components (limited pages)
 
-          // Match component name against chip name table
-          uint8_t idx = CHIP_COUNT;  // sentinel: not found
-          for (uint8_t i = 0; i < CHIP_COUNT; ++i) {
-            if (component_id == CHIP_NAMES[i]) {
-              idx = i;
-              break;
-            }
-          }
-          if (idx == CHIP_COUNT) return;  // not a chip component
+          const uint8_t idx = find_chip_index(component_id);
+          if (idx == UINT8_MAX) return;
 
           // Update shadow state
           ChipState &the_chip = chip_states[idx];
@@ -89,20 +82,44 @@ script:
             feed_wdt_delay(${DELAY_SHORT});
           }
 
+  - id: !extend action_component_color
+    then:
+      - lambda: |-
+          if (page != "chips") return;
+
+          const uint8_t idx = find_chip_index(component);
+          if (idx == UINT8_MAX) return;
+
+          ChipState &the_chip = chip_states[idx];
+          if (the_chip.color == color) return;
+
+          the_chip.color = color;
+          if (is_chips_page)
+            disp1->set_component_font_color(CHIP_NAMES[idx], color);
+
+  - id: !extend action_component_text
+    then:
+      - lambda: |-
+          if (page != "chips") return;
+
+          const uint8_t idx = find_chip_index(component);
+          if (idx == UINT8_MAX) return;
+
+          ChipState &the_chip = chip_states[idx];
+          if (strcmp(the_chip.icon, txt.c_str()) == 0) return;
+
+          strncpy(the_chip.icon, txt.c_str(), sizeof(the_chip.icon) - 1);
+          the_chip.icon[sizeof(the_chip.icon) - 1] = '\0';
+          if (is_chips_page)
+            disp1->set_component_text(CHIP_NAMES[idx], the_chip.icon);
+
   - id: !extend action_component_visibility
     then:
       - lambda: |-
           if (page != "chips") return;
 
-          // Match against chip name table
-          uint8_t idx = CHIP_COUNT;
-          for (uint8_t i = 0; i < CHIP_COUNT; ++i) {
-            if (component == CHIP_NAMES[i]) {
-              idx = i;
-              break;
-            }
-          }
-          if (idx == CHIP_COUNT) return;
+          const uint8_t idx = find_chip_index(component);
+          if (idx == UINT8_MAX) return;
 
           if (chip_states[idx].visible != visible) {
             chip_states[idx].visible = visible;

@@ -15,11 +15,9 @@ display:
     on_touch:
       then:
         - lambda: |-
-            if (
-                  page_id == get_page_id("light") and  // Page light
-                  !touch_event and                 // Release
-                  component_id == 29               // power button
-                ) {
+            if (page_id == get_page_id("light")) return;  // Page light
+            if (touch_event) return;                      // Ignore touch and process only release
+            if (component_id == 27) {                     // power button
               fire_ha_event("action_call", {
                 {"action", "light.toggle"},
                 {"entity", detailed_entity->state.c_str()}

@@ -31,8 +31,9 @@ light:
               ESP_LOGV("${TAG_ADDON_DISPLAY_LIGHT}", "Skipping turn_on - boot not complete");
               return;
             }
-            if (current_page_id == get_page_id("screensaver")) disp1->goto_page(wakeup_page_id);
-            timer_reset_all->execute();
+            // Delegate to wakeup script:
+            // handles wake-page navigation (including climate and theme_pending_apply special cases) and timer reset.
+            wakeup->execute(true);
     on_turn_off:
       then:
         - lambda: |-
@@ -84,6 +85,10 @@ script:
             call.perform();
           } else if (current_page_id != get_page_id("screensaver") && !display_light->current_values.is_on()) {
             auto call = display_light->turn_on();
+            // Explicitly set brightness to the device's configured value.
+            // This prevents Home Assistant from pushing back its cached brightness for this light,
+            // which would override the user's Display Brightness setting.
+            call.set_brightness(display_brightness->state / 100.0f);
             call.perform();
           }
 

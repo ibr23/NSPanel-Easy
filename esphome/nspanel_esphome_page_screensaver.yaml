@@ -168,7 +168,7 @@ script:
           page_screensaver_apply_settings_with_delay->stop();
           timer_sleep->stop();
 
-  - id: timer_sleep      # Handles the sleep (go to screensaver page) after a timeout
+  - id: timer_sleep  # Handles the sleep (go to screensaver page) after a timeout
     mode: restart
     then:
       - if:

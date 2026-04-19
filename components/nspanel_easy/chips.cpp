@@ -3,6 +3,7 @@
 #ifdef NSPANEL_EASY_CHIPS
 
 #include "chips.h"
+#include <string>
 
 namespace esphome::nspanel_easy {
 

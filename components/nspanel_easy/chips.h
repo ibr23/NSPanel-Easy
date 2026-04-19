@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <string>
 
 /**
  * @file chips.h
@@ -80,6 +81,21 @@ static constexpr uint8_t CHIP_IDX_USER = 3;     ///< First user chip (chip01) in
 extern ChipState chip_states[CHIP_COUNT];
 
 extern bool is_chips_page;
+
+/**
+ * @brief Find the chip index for a given component name.
+ *
+ * @param name Unscoped Nextion component name (e.g. "chip01").
+ * @return Index into chip_states[] / CHIP_NAMES[], or UINT8_MAX if not found.
+ */
+inline uint8_t find_chip_index(const std::string &name) {
+  for (uint8_t i = 0; i < CHIP_COUNT; ++i) {
+    if (name == CHIP_NAMES[i]) {
+      return i;
+    }
+  }
+  return UINT8_MAX;  // sentinel: not found
+}
 
 }  // namespace esphome::nspanel_easy
 
