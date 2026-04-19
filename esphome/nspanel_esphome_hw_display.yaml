@@ -520,7 +520,7 @@ script:
     # and points at structural call patterns that may be worth investigating individually.
     # Switching to 'restart' produces a debug-message cascade (3 child 'restarting' lines per call)
     # plus a new warning on set_brightness, which is louder than the original warning.
-    mode: restart
+    mode: single
     then:
       # Extended by:
       #  - page_screensaver
