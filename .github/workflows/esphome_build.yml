@@ -104,14 +104,16 @@ jobs:
         firmware:
           - name: Customizations
             yaml-file: .test/esphome_idf_climate_heat_customizations.yaml
-          - name: Basic (IDF)
-            yaml-file: .test/esphome_idf_basic.yaml
-          - name: Basic (Arduino)
-            yaml-file: .test/esphome_ard_basic.yaml
+          - name: Climate Cool + Bluetooth Proxy
+            yaml-file: .test/esphome_idf_climate_cool_bluetooth_proxy.yaml
           - name: BLE Tracker
             yaml-file: .test/esphome_idf_ble_tracker.yaml
           - name: Bluetooth Proxy
             yaml-file: .test/esphome_idf_bluetooth_proxy.yaml
+          - name: Basic (IDF)
+            yaml-file: .test/esphome_idf_basic.yaml
+          - name: Basic (Arduino)
+            yaml-file: .test/esphome_ard_basic.yaml
           - name: Climate Cool
             yaml-file: .test/esphome_idf_climate_cool.yaml
           - name: Climate Heat
@@ -120,8 +122,6 @@ jobs:
             yaml-file: .test/esphome_idf_climate_dual.yaml
           - name: Cover
             yaml-file: .test/esphome_idf_cover.yaml
-          - name: Climate Cool + Bluetooth Proxy
-            yaml-file: .test/esphome_idf_climate_cool_bluetooth_proxy.yaml
           - name: Display as a Light
             yaml-file: .test/esphome_idf_display_as_light.yaml
     steps:
@@ -150,14 +150,16 @@ jobs:
         firmware:
           - name: Customizations
             yaml-file: .test/esphome_idf_climate_heat_customizations.yaml
-          - name: Basic (IDF)
-            yaml-file: .test/esphome_idf_basic.yaml
-          - name: Basic (Arduino)
-            yaml-file: .test/esphome_ard_basic.yaml
+          - name: Climate Cool + Bluetooth Proxy
+            yaml-file: .test/esphome_idf_climate_cool_bluetooth_proxy.yaml
           - name: BLE Tracker
             yaml-file: .test/esphome_idf_ble_tracker.yaml
           - name: Bluetooth Proxy
             yaml-file: .test/esphome_idf_bluetooth_proxy.yaml
+          - name: Basic (IDF)
+            yaml-file: .test/esphome_idf_basic.yaml
+          - name: Basic (Arduino)
+            yaml-file: .test/esphome_ard_basic.yaml
           - name: Climate Cool
             yaml-file: .test/esphome_idf_climate_cool.yaml
           - name: Climate Heat
@@ -166,8 +168,6 @@ jobs:
             yaml-file: .test/esphome_idf_climate_dual.yaml
           - name: Cover
             yaml-file: .test/esphome_idf_cover.yaml
-          - name: Climate Cool + Bluetooth Proxy
-            yaml-file: .test/esphome_idf_climate_cool_bluetooth_proxy.yaml
           - name: Display as a Light
             yaml-file: .test/esphome_idf_display_as_light.yaml
     steps:
