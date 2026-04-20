@@ -158,15 +158,14 @@ substitutions:
                 lambda: |-
                   // Only trigger upload if the UART is at a known good rate
                   // (i.e. scan found a response — not reverted to ${BAUD_RATE} on failure)
-                  return !system_flags.baud_fallback_active
-                      || tf_uart->get_baud_rate() != ${BAUD_RATE};
+                  return !system_flags.baud_fallback_active || tf_uart->get_baud_rate() != ${BAUD_RATE};
               then:
                 - logger.log:
                     level: INFO
                     tag: nspanel.hw.uart
                     format: "Baud scan: triggering TFT upload"
                 - lambda: |-
-                    system_flags.baud_fallback_active = true;
+                    system_flags.baud_fallback_active = (tf_uart->get_baud_rate() != ${BAUD_RATE});
                 - button.press: tft_update
 
 packages:
