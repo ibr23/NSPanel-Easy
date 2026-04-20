@@ -4176,7 +4176,7 @@ script:
             return;
           }
           if (component == "units_separator") {
-            id(units_separator) = txt.c_str();
+            id(units_separator) = txt;
             localization_units_separator_update->execute();
             return;
           }

@@ -97,12 +97,12 @@ script:
           static char buffer[15];
           #if NSPANEL_EASY_HW_TEMPERATURE_IS_FAHRENHEIT
           // Fahrenheit with no decimal
-          snprintf(buffer, sizeof(buffer), "%.0f%s${temp_units}",
-                                            id(units_separator).c_str(), celsius_to_fahrenheit(temp_nspanel->state));
+          snprintf(buffer, sizeof(buffer), "%.0f%s${temp_units}", celsius_to_fahrenheit(temp_nspanel->state),
+                                                                  id(units_separator).c_str());
           #else
           // Celsius with one decimal
-          snprintf(buffer, sizeof(buffer), "%.1f%s${temp_units}",
-                                            id(units_separator).c_str(), temp_nspanel->state);
+          snprintf(buffer, sizeof(buffer), "%.1f%s${temp_units}", temp_nspanel->state,
+                                                                  id(units_separator).c_str());
           #endif
 
           disp1->set_component_text(hmi::home::INDR_TEMP.name,
