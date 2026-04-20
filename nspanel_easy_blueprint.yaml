@@ -6851,14 +6851,6 @@ actions:
                           - variables:
                               screensaver_display_time: !input screensaver_display_time
                               screensaver_time_font: !input screensaver_display_time_font_size
-                          - action: 'esphome.{{ nspanel_name }}_component_color'
-                            data:
-                              page: screensaver
-                              id: text
-                              color: !input screensaver_display_time_font_color
-                            continue_on_error: true
-                          - *delay_boot
-
                           - action: 'esphome.{{ nspanel_name }}_component_val'
                             data:
                               page: mem
@@ -6880,6 +6872,14 @@ actions:
                               page: mem
                               id: screensaver_bco
                               color: !input screensaver_background_color
+                            continue_on_error: true
+                          - *delay_boot
+
+                          - action: 'esphome.{{ nspanel_name }}_component_color'
+                            data:
+                              page: mem
+                              id: screensaver_pco
+                              color: !input screensaver_display_time_font_color
                             continue_on_error: true
                           - *delay_boot
 

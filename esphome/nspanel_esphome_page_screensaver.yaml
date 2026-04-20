@@ -80,15 +80,15 @@ script:
     then:
       - lambda: |-
           if (page != "mem") return;
-          if (component == hmi::screensaver::TEXT.name) {
-            id(screensaver_display_time_color) = color;
-            disp1->send_command_printf("screensaver_pco=%" PRIu16, id(screensaver_display_time_color));
+          if (component == "screensaver_bco" && id(screensaver_background_color) != color) {
+            id(screensaver_background_color) = color;
+            disp1->send_command_printf("screensaver_bco=%" PRIu16, id(screensaver_background_color));
             page_screensaver_apply_settings->execute();
             return;
           }
-          if (component == "screensaver_bco" and id(screensaver_background_color) != color) {
-            id(screensaver_background_color) = color;
-            disp1->send_command_printf("screensaver_bco=%" PRIu16, id(screensaver_background_color));
+          if (component == "screensaver_pco" && id(screensaver_display_time_color) != color) {
+            id(screensaver_display_time_color) = color;
+            disp1->send_command_printf("screensaver_pco=%" PRIu16, id(screensaver_display_time_color));
             page_screensaver_apply_settings->execute();
             return;
           }
