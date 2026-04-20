@@ -7455,7 +7455,13 @@ actions:
                                                 txt: &value_with_unit_and_translations >
                                                   {{
                                                     (
-                                                      (states(entity_id, rounded=true) ~ (units_separator ~ unit_of_measurement if unit_of_measurement is string and unit_of_measurement | length > 0 else ""))
+                                                      (
+                                                        states(entity_id, rounded=true) ~ (
+                                                          units_separator ~ unit_of_measurement
+                                                          if unit_of_measurement is string and unit_of_measurement | length > 0
+                                                          else ""
+                                                        )
+                                                      )
                                                       if is_number(entity_state)
                                                       else state_translated(entity_id)
                                                     ) | regex_replace('\s+', ' ') | trim
