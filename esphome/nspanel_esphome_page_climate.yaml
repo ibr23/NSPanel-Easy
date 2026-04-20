@@ -140,6 +140,12 @@ script:
             change_climate_state->execute(embedded == "1", key.c_str(), value.c_str());
           }
 
+  - id: !extend localization_units_separator_update
+    then:
+      - lambda: |-
+          if (current_page_id != get_page_id("climate")) return;
+          set_climate->execute();
+
   - id: !extend page_change
     then:
       - lambda: if (new_page_id == get_page_id("climate")) page_climate->execute();

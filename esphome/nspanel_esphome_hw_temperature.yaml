@@ -113,7 +113,6 @@ script:
       - lambda: |-
           ESP_LOGCONFIG("${TAG_HW_TEMPERATURE}", "Temperature unit: ${temp_units}");
 
-
   - id: !extend localization_units_separator_update
     then:
       - script.execute: display_embedded_temp
