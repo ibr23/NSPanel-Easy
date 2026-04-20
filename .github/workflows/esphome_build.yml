@@ -102,6 +102,8 @@ jobs:
       max-parallel: 8
       matrix:
         firmware:
+          - name: Customizations
+            yaml-file: .test/esphome_idf_climate_heat_customizations.yaml
           - name: Basic (IDF)
             yaml-file: .test/esphome_idf_basic.yaml
           - name: Basic (Arduino)
@@ -118,8 +120,6 @@ jobs:
             yaml-file: .test/esphome_idf_climate_dual.yaml
           - name: Cover
             yaml-file: .test/esphome_idf_cover.yaml
-          - name: Customizations
-            yaml-file: .test/esphome_idf_climate_heat_customizations.yaml
           - name: Climate Cool + Bluetooth Proxy
             yaml-file: .test/esphome_idf_climate_cool_bluetooth_proxy.yaml
           - name: Display as a Light
@@ -148,6 +148,8 @@ jobs:
       max-parallel: 8
       matrix:
         firmware:
+          - name: Customizations
+            yaml-file: .test/esphome_idf_climate_heat_customizations.yaml
           - name: Basic (IDF)
             yaml-file: .test/esphome_idf_basic.yaml
           - name: Basic (Arduino)
@@ -164,8 +166,6 @@ jobs:
             yaml-file: .test/esphome_idf_climate_dual.yaml
           - name: Cover
             yaml-file: .test/esphome_idf_cover.yaml
-          - name: Customizations
-            yaml-file: .test/esphome_idf_climate_heat_customizations.yaml
           - name: Climate Cool + Bluetooth Proxy
             yaml-file: .test/esphome_idf_climate_cool_bluetooth_proxy.yaml
           - name: Display as a Light
