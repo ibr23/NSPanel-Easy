@@ -308,7 +308,9 @@ Button button_up
                 fanslider.val++
                 sys0=100*fanslider.val/fanslider.maxval
                 covx sys0,va0.txt,0,0
-                fan_value.txt=va0.txt+"%"
+                fan_value.txt=va0.txt
+                fan_value.txt+=home.units_sep.txt
+                fan_value.txt+="%"
             }
             if(fanslider.val>fanslider.minval)
             {
@@ -363,7 +365,9 @@ Button button_down
                 fanslider.val--
                 sys0=100*fanslider.val/fanslider.maxval
                 covx sys0,va0.txt,0,0
-                fan_value.txt=va0.txt+"%"
+                fan_value.txt=va0.txt
+                fan_value.txt+=home.units_sep.txt
+                fan_value.txt+="%"
             }
             if(fanslider.val>fanslider.minval)
             {
