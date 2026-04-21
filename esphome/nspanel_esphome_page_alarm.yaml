@@ -8,11 +8,6 @@
 ---
 substitutions:
   require_disarm_before_rearm: false
-
-  PAGE_ALARM_DELAY_DEFAULT: ${DELAY_DEFAULT}
-  PAGE_ALARM_DELAY_LONG: ${DELAY_LONG}
-  PAGE_ALARM_DELAY_SHORT: ${DELAY_SHORT}
-
   TAG_PAGE_ALARM: nspanel.page.alarm
 
 api:
@@ -82,8 +77,6 @@ api:
               #else  // ESPHome < v2025.11.0
               disp1->send_command_printf("vis %s,%i", button_name, should_hide ? 0 : 1);
               #endif  // ESPHOME_VERSION_CODE
-
-              feed_wdt_delay(${PAGE_ALARM_DELAY_SHORT});
             };
 
             // Set detailed entity sensor
@@ -110,7 +103,6 @@ api:
             ESP_LOGV("${TAG_PAGE_ALARM}", "Page - Params");
             disp1->set_component_text("code_format", code_format.c_str());
             disp1->set_component_text("code_arm_req", code_arm_required ? "1" : "0");
-            feed_wdt_delay(${PAGE_ALARM_DELAY_SHORT});
 
             // Buttons - Text
             ESP_LOGV("${TAG_PAGE_ALARM}", "Buttons - Text");
@@ -126,7 +118,6 @@ api:
                                       10, ${LANG_BYTES_PER_CHAR}).c_str());
             disp1->set_component_text("bt_disarm_text", wrapText("${LANG_ALARM_DISARM}",
                                       10, ${LANG_BYTES_PER_CHAR}).c_str());
-            feed_wdt_delay(${PAGE_ALARM_DELAY_SHORT});
 
             ESP_LOGV("${TAG_PAGE_ALARM}", "Done!");
 

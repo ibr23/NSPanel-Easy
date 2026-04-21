@@ -84,9 +84,8 @@ script:
             id(home_custom_buttons_font_id) = val;
             for (int i = 1; i <= 7; ++i) {
               disp1->send_command_printf("home.button%02d.font=%" PRIu8, i, val);
-              feed_wdt_delay(${DELAY_SHORT});
             }
-            feed_wdt_delay(${DELAY_DEFAULT});
+            App.feed_wdt();
             disp1->set_component_font(hmi::home::BT_NOTIFIC.name, val);
             disp1->set_component_font(hmi::home::BT_QRCODE.name, val);
             disp1->set_component_font(hmi::home::BT_ENTITIES.name, val);
@@ -152,7 +151,7 @@ script:
           // Draw the filled circle behind the button, then trigger a repaint
           disp1->send_command_printf("cirs %" PRIu16 ",%" PRIu16 ",%" PRIu16 ",color_containers",
                                       circle_x, circle_y, circle_radius);
-          feed_wdt_delay(${DELAY_SHORT});
+          App.feed_wdt();
           disp1->send_command_printf("ref %s", component_id.c_str());
 
           ESP_LOGD("${TAG_PAGE_HOME}", "Drew circle for %s at (%" PRIu16 ",%" PRIu16 ")",
@@ -168,13 +167,11 @@ script:
           #if defined(USE_ESP32_BLE_SERVER) || defined(USE_ESP32_BLE_CLIENT) || defined(USE_BLUETOOTH_PROXY)
           disp1->set_component_font(hmi::home::BT_ICON.name, id(chip_font_id));
           action_component_visibility->execute("home", "bt_icon", true);
-          feed_wdt_delay(${DELAY_DEFAULT});
           #endif
 
           // Custom buttons icon size
           for (uint8_t i = 1; i <= 7; ++i) {
             disp1->send_command_printf("home.button%02d.font=%i", i, id(home_custom_buttons_font_id));
-            feed_wdt_delay(${DELAY_SHORT});
           }
 
           // Other components icons size and color

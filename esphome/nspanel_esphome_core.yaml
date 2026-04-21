@@ -11,10 +11,6 @@ substitutions:
   ## Change only in your      ##
   ## local yaml substitutions ##
   ##############################
-  DELAY_DEFAULT: 25  # delay in msec
-  DELAY_LONG: 125    # delay in msec
-  DELAY_SHORT: 5     # delay in msec
-
   TAG_CORE: "nspanel.core"
 
 packages:

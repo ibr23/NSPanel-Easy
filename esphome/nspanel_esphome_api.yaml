@@ -127,12 +127,9 @@ api:
             else if (entity_id.domain == "input_button") entity_id.domain = "button";
             if (entity_id.domain != "invalid" or entity == "embedded_climate") {
               detailed_entity->publish_state(entity);
-              delay(${DELAY_DEFAULT});
               goto_page->execute(get_page_id(entity_id.domain.c_str()));
-              delay(${DELAY_DEFAULT});
               disp1->send_command_printf("back_page_id=%" PRIu8, get_page_id(back_page.c_str()));
               if (entity_id.domain == "climate") {
-                delay(${DELAY_DEFAULT});
                 disp1->set_component_value("climate.embedded", (entity == "embedded_climate") ? 1 : 0);
               }
             }

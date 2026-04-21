@@ -8,9 +8,6 @@
 
 ---
 substitutions:
-  PAGE_MEDIA_PLAYER_DELAY_DEFAULT: ${DELAY_DEFAULT}
-  PAGE_MEDIA_PLAYER_DELAY_LONG: ${DELAY_LONG}
-  PAGE_MEDIA_PLAYER_DELAY_SHORT: ${DELAY_SHORT}
   COMPONENT_ID_MEDIA_PLAYER_BT_VOL_DOWN: 6
   COMPONENT_ID_MEDIA_PLAYER_BT_VOL_UP: 7
   MEDIA_PLAYER_FEATURE_PAUSE: 1
@@ -89,7 +86,7 @@ api:
             disp1->set_component_text("artist", wrapText(media_artist.c_str(),
                                                           display_portrait ? 26 : 40,
                                                           ${LANG_BYTES_PER_CHAR}).c_str());
-            feed_wdt_delay(${DELAY_SHORT});
+            App.feed_wdt();
 
             // Button - ON/OFF
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "Button - ON/OFF");
@@ -102,7 +99,7 @@ api:
             } else {
               disp1->hide_component("bt_on_off");
             }
-            feed_wdt_delay(${DELAY_SHORT});
+            App.feed_wdt();
 
             // Button - Play/Pause
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "Button - Play/Pause");
@@ -118,7 +115,7 @@ api:
             } else {
               disp1->hide_component("bt_play_pause");
             }
-            feed_wdt_delay(${DELAY_SHORT});
+            App.feed_wdt();
 
             // Button - Previous track
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "Button - Previous track");
@@ -140,7 +137,7 @@ api:
             } else {
               disp1->hide_component("bt_mute");
             }
-            feed_wdt_delay(${DELAY_SHORT});
+            App.feed_wdt();
 
             // Volume set
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "Volume set");
@@ -159,7 +156,7 @@ api:
 
             disp1->set_component_visibility("bt_vol_down", has_volume_step);
             disp1->set_component_visibility("bt_vol_up", has_volume_step);
-            feed_wdt_delay(${DELAY_SHORT});
+            App.feed_wdt();
 
             // Media progress bar
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "Media progress bar");

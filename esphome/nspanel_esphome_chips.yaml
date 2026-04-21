@@ -79,7 +79,6 @@ script:
           if (!is_chips_page) return;
           for (uint8_t i = 0; i < CHIP_COUNT; ++i) {
             disp1->send_command_printf("%s.font=%" PRIu8, CHIP_NAMES[i], new_font);
-            feed_wdt_delay(${DELAY_SHORT});
           }
 
   - id: !extend action_component_color
@@ -154,6 +153,5 @@ script:
             disp1->set_component_visibility(name, the_chip.visible);
             disp1->set_component_font_color(name, the_chip.color);
             disp1->set_component_text(name, the_chip.icon);
-            feed_wdt_delay(${DELAY_SHORT});
           }  // for each chip
 ...

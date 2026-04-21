@@ -47,20 +47,15 @@ script:
           wait_for_wifi->execute();
       - script.wait: wait_for_wifi
 
-      - delay: ${DELAY_DEFAULT}ms
-      - if:
-          condition:
-            - lambda: |-
-                return !system_flags.wifi_ready;
-          then:
-            - lambda: |-
-                boot_log->execute("Boot", "Wi-Fi not available");
-          else:  # Wi-Fi connected
-            - lambda: |-
-                boot_log->execute("Boot", "Wi-Fi connected");
-                page_boot_show_ip->execute();
+      - lambda: |-
+          if (system_flags.wifi_ready) {  // Wi-Fi connected
+            boot_log->execute("Boot", "Wi-Fi connected");
+            page_boot_show_ip->execute();
+          } else {
+            boot_log->execute("Boot", "Wi-Fi NOT available");
+          }
 
-      - lambda: wait_for_api->execute();
+          wait_for_api->execute();
       - script.wait: wait_for_api
       - lambda: |-
           if (system_flags.api_ready) {
@@ -73,9 +68,7 @@ script:
           boot_log->execute("Boot", "Publish Nextion state");
           nextion_init->publish_state(disp1->is_setup());
 
-      # Wait for a response from the blueprint
-      - delay: ${DELAY_DEFAULT}ms
-      - lambda: |-
+          // Wait for a response from the blueprint
           boot_request_blueprint_settings->execute("start");
           wait_for_blueprint->execute();
       - script.wait: wait_for_blueprint
@@ -83,7 +76,6 @@ script:
           if (not system_flags.blueprint_ready) {
             boot_log->execute("Boot", "Blueprint not available");
           }
-          feed_wdt_delay(${DELAY_DEFAULT});
 
           // Display settings
           boot_log->execute("Boot", "Sending display settings");
@@ -91,22 +83,16 @@ script:
           disp1->send_command_printf("brightness_dim=%i", int(display_dim_brightness->state));
           disp1->send_command_printf("brightness_sleep=%i", int(display_sleep_brightness->state));
           disp1->send_command_printf("wakeup_page_id=%" PRIu8, get_page_id(wakeup_page_name->current_option()));
-          feed_wdt_delay(${DELAY_DEFAULT});
 
-      - script.execute: boot_nextion
+          boot_nextion->execute();
       - script.wait: boot_nextion
 
       - lambda: |-
           // Wrap-up
-          feed_wdt_delay(${DELAY_DEFAULT});
           boot_log->execute("Boot", "Wait to finish");
-          feed_wdt_delay(${DELAY_DEFAULT});
           wait_for_wifi->execute();
-          feed_wdt_delay(${DELAY_DEFAULT});
           wait_for_api->execute();
-          feed_wdt_delay(${DELAY_DEFAULT});
           wait_for_blueprint->execute();
-          feed_wdt_delay(${DELAY_DEFAULT});
       - script.wait: wait_for_wifi
       - script.wait: wait_for_api
       - script.wait: wait_for_blueprint
@@ -115,10 +101,8 @@ script:
       - script.wait: boot_wrap_up
 
       - lambda: |-
-          feed_wdt_delay(${DELAY_DEFAULT});
           set_brightness->execute(display_brightness->state);
           boot_log->execute("Boot", "Jump to wake-up page");
-          feed_wdt_delay(${DELAY_DEFAULT});
           wakeup->execute(true);
           system_flags.boot_completed = true;
 
