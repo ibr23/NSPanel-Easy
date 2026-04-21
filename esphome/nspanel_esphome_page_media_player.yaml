@@ -166,22 +166,37 @@ api:
             disp1->set_component_visibility("bt_vol_down", has_vol_step);
             disp1->set_component_visibility("bt_vol_up", has_vol_step);
 
-            // Media progress bar. "media_duration > 0" is the cue that a finite track
-            // is loaded (livestreams report 0). prg_timer drives the client-side
-            // progress animation and must be gated on actual playback.
+            // Media progress bar.
+            // "media_duration > 0" is the cue that a finite track is loaded
+            // (livestreams report 0). The bar is always visible as a layout
+            // anchor; only its color and value change between active and
+            // empty states. The flanking time text fields are hidden when
+            // there is no duration since they have nothing to show.
             const bool has_duration = media_duration > 0;
-            if (has_duration &&
-                (media_duration != last_media_duration || media_position != last_media_position)) {
-              last_media_duration = media_duration;
-              last_media_position = media_position;
-              const int capped_pos = std::min(media_position + media_position_delta, media_duration);
-              disp1->set_component_value("prg_current", capped_pos);
-              disp1->set_component_value("prg_total", media_duration);
+            if (has_duration) {
+              if (media_duration != last_media_duration || media_position != last_media_position) {
+                last_media_duration = media_duration;
+                last_media_position = media_position;
+                const int capped_pos = std::min(media_position + media_position_delta, media_duration);
+                disp1->set_component_value("prg_current", capped_pos);
+                disp1->set_component_value("prg_total", media_duration);
+              }
+              // Active fill — explicit color, overrides design-time pco.
+              disp1->set_component_foreground_color("time_progress", ${COLOR_BLUE_INDIGO});
+            } else {
+              // Empty bar: zero progress, theme-aware dim color, no animation.
+              // Use the Nextion runtime variable color_pco_unsupported so
+              // the bar follows the active theme without ESPHome having to
+              // know which theme is current.
+              disp1->set_component_value("prg_current", 0);
+              disp1->send_command("time_progress.pco=color_pco_unsupported");
+              last_media_duration = 0;
+              last_media_position = 0;
             }
             disp1->send_command_printf("prg_timer.en=%i", (has_duration && state_playing) ? 1 : 0);
             disp1->set_component_visibility("time_current", has_duration);
             disp1->set_component_visibility("time_total", has_duration);
-            disp1->set_component_visibility("time_progress", has_duration);
+            disp1->set_component_visibility("time_progress", true);
 
             ESP_LOGV("${TAG_PAGE_MEDIA_PLAYER}", "Action: page_media_player completed");
 
