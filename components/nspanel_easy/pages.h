@@ -22,12 +22,12 @@ namespace esphome::nspanel_easy {
  * such as settings, home, weather information, and more.
  */
 constexpr const char *const page_names[] = {
-    "boot",         "home",         "weather01",    "weather02",   "weather03",    "weather04",    "weather05",
-    "climate",      "settings",     "screensaver",  "light",       "cover",        "buttonpage01", "buttonpage02",
-    "buttonpage03", "buttonpage04", "notification", "qrcode",      "entitypage01", "entitypage02", "entitypage03",
-    "entitypage04", "fan",          "alarm",        "keyb_num",    "media_player", "confirm",      "utilities",
-    "home_smpl",    "debug",        "water_heater", "theme_apply", "switch",       "button",       "canvas",
-    "popup_select"};
+    "boot",         "home",         "weather01",    "weather02",    "weather03",    "weather04",
+    "weather05",    "climate",      "settings",     "screensaver",  "light",        "cover",
+    "buttonpage01", "buttonpage02", "buttonpage03", "buttonpage04", "notification", "qrcode",
+    "entitypage01", "entitypage02", "entitypage03", "entitypage04", "fan",          "alarm",
+    "keyb_num",     "media_player", "confirm",      "utilities",    "home_smpl",    "debug",
+    "water_heater", "theme_apply",  "switch",       "button",       "canvas",       "popup_select"};
 
 constexpr size_t PAGE_COUNT = sizeof(page_names) / sizeof(page_names[0]);
 static_assert(PAGE_COUNT <= UINT8_MAX, "PAGE_COUNT exceeds uint8_t range");
