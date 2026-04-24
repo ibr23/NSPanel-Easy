@@ -341,7 +341,7 @@ script:
           // Reset globals
           reset_globals->execute(new_page_id);
 
-        # Wait for other processes to finish before telling the blueprint about a new page
+      # Wait for other processes to finish before telling the blueprint about a new page
       - script.wait: reset_globals
       - script.wait: stop_page_constructors
 
