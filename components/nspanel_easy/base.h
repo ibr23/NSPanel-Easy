@@ -81,8 +81,7 @@ struct BlueprintStatusFlags {
   uint8_t reserved : 4;             ///< Reserved (not used in percentage calculation)
 
   // Default constructor - all flags start as false (zero-initialized)
-  BlueprintStatusFlags()
-      : page_home(0), relay_settings(0), version(0), hw_buttons_settings(0), reserved(0) {}
+  BlueprintStatusFlags() : page_home(0), relay_settings(0), version(0), hw_buttons_settings(0), reserved(0) {}
 
   /**
    * `@brief` Check if all active flags are set
@@ -97,9 +96,7 @@ struct BlueprintStatusFlags {
    * `@brief` Count active flags set
    * `@return` Number of flags set
    */
-  uint8_t count_active_flags_set() const {
-    return page_home + relay_settings + version + hw_buttons_settings;
-  }
+  uint8_t count_active_flags_set() const { return page_home + relay_settings + version + hw_buttons_settings; }
 
   /**
    * `@brief` Calculate percentage of active flags that are set
