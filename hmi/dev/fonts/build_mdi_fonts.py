@@ -344,6 +344,7 @@ def build_ttf(meta, svg_dir, output_path, version_str):
     metrics = {".notdef": (UNITS_PER_EM, 0)}
     for _, name, _ in icons:
         g = glyphs[name]
+        g.recalcBounds(None)
         if g.numberOfContours > 0:
             # xMin is always 0 here (we shifted it in the render loop),
             # so the glyph width equals xMax.  Fall back to UPM for any
