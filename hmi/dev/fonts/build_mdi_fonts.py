@@ -233,9 +233,9 @@ def build_ttf(meta, svg_dir, output_path, version_str):
     fb.setupGlyphOrder([".notdef"] + [name for _, name, _ in icons])
     fb.setupCharacterMap({cp: name for cp, name, _ in icons})
 
-    # All glyphs share the same advance (= UPM) and zero LSB, matching the
-    # reference @mdi/font webfont build.  Per-glyph horizontal centering is
-    # encoded in the SVG source itself, not in hmtx.
+    # Placeholder hmtx entry for .notdef so FontBuilder is satisfied during
+    # the glyph-build pass below; the real per-glyph advances are filled in
+    # after rendering (see the second setupHorizontalMetrics call below).
     metrics = {".notdef": (UNITS_PER_EM, 0)}
     fb.setupHorizontalMetrics(metrics)
     fb.setupHorizontalHeader(ascent=ASCENT, descent=DESCENT, lineGap=0)
