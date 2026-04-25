@@ -143,7 +143,18 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
-          if (new_page_id == get_page_id("screensaver")) page_screensaver->execute();
+          if (new_page_id == get_page_id("screensaver")) {
+            page_screensaver->execute();
+            return;
+          }
+          if (last_page_id == new_page_id) return;  // Same page re-announce, ignore
+          if (last_page_id == get_page_id("screensaver")) {
+            // Wake-from-screensaver does not generate an on_touch event in
+            // ESPHome (Nextion consumes the wake touch internally), so the
+            // global timer reset path is bypassed. Reset here to avoid stale
+            // dim/sleep timers carrying over from before the screensaver.
+            timer_reset_all->execute();
+          }
 
   - id: page_screensaver
     mode: restart
