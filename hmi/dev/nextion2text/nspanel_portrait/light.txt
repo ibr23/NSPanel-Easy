@@ -1007,27 +1007,35 @@ Hotspot sub_calc
             }
             //
             // Determine field within quadrant (tan*100000 comparison).
-            sys0=100000*sya1
-            sys0/=sya0
-            if(sys0>=26794)
+            // Guard against division by zero when touch is exactly on the vertical axis
+            // (sya0==0 means tan(angle)=infinity, which falls past every threshold).
+            if(sya0==0)
             {
-                field.val++
-            }
-            if(sys0>=57735)
+                field.val+=5
+            }else
             {
-                field.val++
-            }
-            if(sys0>=99999)
-            {
-                field.val++
-            }
-            if(sys0>=173205)
-            {
-                field.val++
-            }
-            if(sys0>=373205)
-            {
-                field.val++
+                sys0=100000*sya1
+                sys0/=sya0
+                if(sys0>=26794)
+                {
+                    field.val++
+                }
+                if(sys0>=57735)
+                {
+                    field.val++
+                }
+                if(sys0>=99999)
+                {
+                    field.val++
+                }
+                if(sys0>=173205)
+                {
+                    field.val++
+                }
+                if(sys0>=373205)
+                {
+                    field.val++
+                }
             }
         
 Hotspot sub_hsv
