@@ -59,8 +59,8 @@ Page boot
 Variable (string) version
     Attributes
         ID            : 5
-        Scope         : global
-        Text          : 18.0
+        Scope         : local
+        Text          : 19.0
         Max. Text Size: 5
     
 Variable (int32) log_len
