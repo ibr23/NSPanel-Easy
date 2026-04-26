@@ -354,6 +354,12 @@ script:
             ESP_LOGD("${TAG_HW_DISPLAY}", "Entity shown: %s", detailed_entity->state.c_str());
           }
 
+          // Reset timers
+          if (current_page_id != ${PAGE_SCREENSAVER_ID}) {
+                ESP_LOGV("${TAG_HW_DISPLAY}", "Reset timers");
+                timer_reset_all->execute();
+          }
+
           // Report new page to Blueprint
           if (last_page_id != UINT8_MAX and last_page_id != new_page_id) {
             ESP_LOGV("${TAG_HW_DISPLAY}", "Report new page to Blueprint");
