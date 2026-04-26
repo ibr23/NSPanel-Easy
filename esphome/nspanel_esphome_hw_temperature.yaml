@@ -85,8 +85,8 @@ script:
       - lambda: |-
           if (system_flags.tft_upload_active) return;
           if (!id(embedded_indoor_temp) and
-              system_flags.api_ready and
-              system_flags.wifi_ready and
+              api_server->is_connected() and
+              wifi_component->is_connected() and
               current_page_id != ${PAGE_BOOT_ID})
             return;
           if (isnan(temp_nspanel->state)) {

@@ -422,14 +422,18 @@ script:
           });
           ESP_LOGV("${TAG_API}", "'button_click' event sent");
 
+  - id: !extend page_home
+    then:
+      - script.execute: update_flag_api_ready
+
   - id: !extend refresh_wifi_icon
     then:
       - lambda: |-
           // Update API status (only when changed)
           static bool api_previous = false;
-          if (system_flags.api_ready != api_previous) {
-            disp1->send_command_printf("api=%i", system_flags.api_ready ? 1 : 0);
-            api_previous = system_flags.api_ready;
+          if (api_server->is_connected() != api_previous) {
+            
+            api_previous = api_server->is_connected();
           }
 
   - id: !extend stop_all
@@ -446,17 +450,13 @@ script:
   - id: update_flag_api_ready
     then:
       - lambda: |-
-          const bool previous_flag_api_ready = system_flags.api_ready;
-          system_flags.api_ready = api_server->is_connected();
-          if (previous_flag_api_ready != system_flags.api_ready) {
-            refresh_wifi_icon->execute();
-          }
+          disp1->send_command(api_server->is_connected() ? "api=1" : "api=0");
 
   - id: !extend watchdog_round
     then:
       - lambda: |-
           update_flag_api_ready->execute();
-          if (!system_flags.api_ready and
+          if (!api_server->is_connected() and
               current_page_id != get_page_id("boot") and
               current_page_id != get_page_id("confirm") and
               current_page_id != get_page_id("home") and

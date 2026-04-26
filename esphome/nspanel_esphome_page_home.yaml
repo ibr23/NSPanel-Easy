@@ -193,6 +193,7 @@ script:
     then:
     # Extended by:
     # - hw_relays
+    # - hw_wifi
 
   - id: page_home_weather_pic
     mode: restart
