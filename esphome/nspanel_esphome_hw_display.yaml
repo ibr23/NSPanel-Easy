@@ -356,8 +356,8 @@ script:
 
           // Reset timers
           if (current_page_id != ${PAGE_SCREENSAVER_ID}) {
-                ESP_LOGV("${TAG_HW_DISPLAY}", "Reset timers");
-                timer_reset_all->execute();
+            ESP_LOGV("${TAG_HW_DISPLAY}", "Reset timers");
+            timer_reset_all->execute();
           }
 
           // Report new page to Blueprint
