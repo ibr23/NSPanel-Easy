@@ -49,7 +49,7 @@ script:
     then:
       # Report Wi-Fi status
       - lambda: |-
-          if (system_flags.wifi_ready) {
+          if (wifi_component->is_connected()) {
             ESP_LOGCONFIG("${TAG_HW_WIFI}", "WiFi: Connected (%d dBm)", wifi_component->wifi_rssi());
           } else {
             ESP_LOGE("${TAG_HW_WIFI}", "WiFi: DISCONNECTED");
@@ -63,21 +63,9 @@ script:
     mode: single
     then:
       - lambda: |-
-          if (not is_device_ready_for_tasks()) {
-            return;
-          }
-
-          // Update API status (only when changed)
-          static bool api_previous = false;
-          const bool api_new = system_flags.wifi_ready and system_flags.api_ready and system_flags.blueprint_ready;
-          if (api_new != api_previous) {
-            disp1->send_command_printf("api=%i", api_new ? 1 : 0);
-            api_previous = api_new;
-          }
-
           // Determine current icon
-          const char* icon_new = system_flags.wifi_ready ?
-            (system_flags.api_ready ?
+          const char* icon_new = wifi_component->is_connected() ?
+            (api_server->is_connected() ?
               (system_flags.blueprint_ready ?
                 Icons::MDI_WIFI :
                 Icons::MDI_HOME_ASSISTANT) :
@@ -94,7 +82,7 @@ script:
           #if ${_WIFI_ICON_COLORS}
           // Determine new color based on connection state and WiFi signal strength
           uint16_t color_new;
-          if (system_flags.wifi_ready && system_flags.api_ready && system_flags.blueprint_ready) {
+          if (wifi_component->is_connected() && api_server->is_connected() && system_flags.blueprint_ready) {
             // All systems operational - color-code based on RSSI signal strength
             const int rssi = wifi_component->wifi_rssi();
             if (rssi >= -60) {
@@ -127,17 +115,7 @@ script:
     then:
       - lambda: |-
           refresh_wifi_icon->stop();
-          update_flag_wifi_ready->stop();
           wait_for_wifi->stop();
-
-  - id: update_flag_wifi_ready
-    then:
-      - lambda: |-
-          const bool previous_flag_wifi_ready = system_flags.wifi_ready;
-          system_flags.wifi_ready = wifi_component->is_connected();
-          if (previous_flag_wifi_ready != system_flags.wifi_ready) {
-            refresh_wifi_icon->execute();
-          }
 
   - id: wait_for_wifi
     mode: single
@@ -159,8 +137,7 @@ script:
           count: 300  # seconds
           then:
             - lambda: |-
-                update_flag_wifi_ready->execute();
-                if (system_flags.wifi_ready) {
+                if (wifi_component->is_connected()) {
                   wait_for_wifi->stop();
                 }
                 if (iteration % 5 == 1) {  // Log every 5 seconds (at iterations 1, 6, 11, etc.)
@@ -172,7 +149,6 @@ script:
     then:
       - lambda: |-
           wait_for_wifi->execute();
-          update_flag_wifi_ready->execute();
           refresh_wifi_icon->execute();
 
 text_sensor:

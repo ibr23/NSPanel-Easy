@@ -65,14 +65,30 @@ script:
             // Look it up in cache.options and derive the bitmask position.
             const auto& options = popup_select_cache_options;
             popup_select_cache_mask = 0;
-            if (txt.empty()) return;
-            for (size_t i = 0; i < options.size(); ++i) {
-              if (options[i] == txt) {
-                popup_select_cache_mask = (1u << i);
-                return;
+            if (!txt.empty()) {
+              for (size_t i = 0; i < options.size(); ++i) {
+                if (options[i] == txt) {
+                  popup_select_cache_mask = (1u << i);
+                  break;
+                }
+              }
+              if (popup_select_cache_mask == 0) {
+                ESP_LOGW("${TAG_PAGE_POPUP_SELECT}", "popup_select_current value '%s' not in options list", txt.c_str());
               }
             }
-            ESP_LOGW("${TAG_PAGE_POPUP_SELECT}", "popup_select_current value '%s' not in options list", txt.c_str());
+
+            // Auto-open the picker when current_page is "select" and cache is fully populated.
+            // Blueprint pushes context, mode, options, current in order; current is the last
+            // field, so by the time it arrives all required fields are set. The check on
+            // current_page_id ensures this only triggers from the select page (not from
+            // light effect updates or once the picker is already overlaid).
+            if (current_page_id == get_page_id("select") &&
+                popup_select_cache_mode != UINT8_MAX &&
+                !popup_select_cache_options.empty()) {
+              ESP_LOGD("${TAG_PAGE_POPUP_SELECT}", "Cache complete on select page, opening picker");
+              std::string placeholder_title = "${LOCALIZATION[LANG].select.please_select}";
+              popup_select_open->execute(last_page_id, placeholder_title);
+            }
             return;
           }
 

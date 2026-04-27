@@ -48,7 +48,7 @@ script:
       - script.wait: wait_for_wifi
 
       - lambda: |-
-          if (system_flags.wifi_ready) {  // Wi-Fi connected
+          if (wifi_component->is_connected()) {  // Wi-Fi connected
             boot_log->execute("Boot", "Wi-Fi connected");
             page_boot_show_ip->execute();
           } else {
@@ -58,7 +58,7 @@ script:
           wait_for_api->execute();
       - script.wait: wait_for_api
       - lambda: |-
-          if (system_flags.api_ready) {
+          if (api_server->is_connected()) {
             boot_log->execute("Boot", "API connected");
           } else {
             boot_log->execute("Boot", "API not available");
@@ -179,7 +179,7 @@ script:
           count: 300  # seconds
           then:
             - lambda: |-
-                if (system_flags.wifi_ready) wait_for_wifi->stop();
+                if (wifi_component->is_connected()) wait_for_wifi->stop();
                 if (iteration % 5 == 1) boot_log->execute("Boot", "Waiting for Wi-Fi...");
             - delay: 1s
 

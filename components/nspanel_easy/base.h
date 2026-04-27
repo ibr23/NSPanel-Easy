@@ -19,9 +19,7 @@ namespace esphome::nspanel_easy {
  * Memory efficient: 16 individual bools would use 16 bytes; this uses only 2 bytes.
  */
 struct SystemFlags {
-  // Boot/initialization flags (bits 0-8)
-  uint16_t wifi_ready : 1;                 ///< WiFi connection established
-  uint16_t api_ready : 1;                  ///< Home Assistant API connection ready
+  // Boot/initialization flags
   uint16_t baud_rate_set : 1;              ///< UART baud rate configured
   uint16_t nextion_ready : 1;              ///< Nextion display communication ready
   uint16_t blueprint_ready : 1;            ///< Blueprint component initialized
@@ -30,26 +28,24 @@ struct SystemFlags {
   uint16_t version_check_ok : 1;           ///< All component versions verified
   uint16_t display_settings_received : 1;  ///< All display settings received
 
-  // Runtime operation flags (bits 9-11)
+  // Runtime operation flags
   uint16_t tft_upload_active : 1;  ///< TFT firmware upload in progress
   uint16_t ota_in_progress : 1;    ///< Over-the-air update active
   uint16_t display_sleep : 1;      ///< Display is in sleep mode
 
-  // Baud rate negotiation flags (bits 12-13)
+  // Baud rate negotiation flags
   uint16_t baud_fallback_active : 1;      ///< UART is operating at fallback baud rate
   uint16_t baud_negotiation_enabled : 1;  ///< Baud rate negotiation is active (BAUD_RATE != BAUD_RATE_FALLBACK)
 
-  // Baud scan flag (bit 14)
+  // Baud scan flag
   uint16_t baud_scan_success : 1;  ///< Last baud rate scan found a responsive rate
 
-  // Reserved flags (bit 15)
-  uint16_t reserved : 1;
+  // Reserved flags
+  uint16_t reserved : 3;
 
   // Default constructor - all flags start as false (zero-initialized)
   SystemFlags()
-      : wifi_ready(0),
-        api_ready(0),
-        baud_rate_set(0),
+      : baud_rate_set(0),
         nextion_ready(0),
         blueprint_ready(0),
         tft_ready(0),

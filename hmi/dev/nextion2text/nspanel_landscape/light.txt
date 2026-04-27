@@ -23,6 +23,10 @@ Page light
             {
                 page home_page_id
             }
+            // Hide new hotspots
+            vis sub_calc,0
+            vis sub_hsv,0
+            vis sub_send,0
             // Brightness control components (shown by default)
             vis light_button,1
             vis lightslider,1
@@ -187,6 +191,36 @@ Variable (int32) t
 Variable (int32) f
     Attributes
         ID   : 31
+        Scope: local
+        Value: 0
+    
+Variable (int32) va_active
+    Attributes
+        ID   : 37
+        Scope: local
+        Value: 0
+    
+Variable (int32) va_lastF
+    Attributes
+        ID   : 38
+        Scope: local
+        Value: 0
+    
+Variable (int32) va_lastR
+    Attributes
+        ID   : 39
+        Scope: local
+        Value: 0
+    
+Variable (int32) va_idle
+    Attributes
+        ID   : 40
+        Scope: local
+        Value: 0
+    
+Variable (int32) va_committed
+    Attributes
+        ID   : 41
         Scope: local
         Value: 0
     
@@ -486,160 +520,40 @@ Picture colorwheel
     
     Events
         Touch Press Event
-            // Circular Color Picker for Nextion (c) Max Zuidberg 2022
-            // This Source Code Form is subject to the terms of the Mozilla Public
-            // License, v. 2.0. If a copy of the MPL was not distributed with this
-            // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+            // Mark wheel as actively touched.
+            va_active.val=1
+            va_idle.val=0
+            va_committed.val=0
             //
-            // Put this code in the touch press or release
-            // event of the pic component with the color wheel.
-            // Requires the two variables field.val and ring.val
-            //
-            // sya0 = x, sya1 = sya1
-            // Note the usage of the hidden sya0, sya1 variables
-            // within event code as local, temporary variable is fine.
+            // Compute initial field/ring from press coords.
             sya0=tch0
             sya1=tch1
-            //
-            // Convert absolute coordinates to coordinates relative to
-            // the color wheel center.
-            // sys0 = x_center, sys1 = y_center
             sys0=colorwheel.w/2
             sys0+=colorwheel.x
             sys1=colorwheel.h/2
             sys1+=colorwheel.y
             sya0-=sys0
             sya1-=sys1
+            click sub_calc,1
             //
-            // Determine ring
-            ring.val=0
-            // sys0 = r^2 = x^2 + y^2
-            sys0=sya0*sya0
-            sys1=sya1*sya1
-            sys0+=sys1
-            // repeat for all rings
-            if(sys0>=156)
-            {
-                ring.val++
-            }
-            if(sys0>=625)
-            {
-                ring.val++
-            }
-            if(sys0>=1406)
-            {
-                ring.val++
-            }
-            if(sys0>=2500)
-            {
-                ring.val++
-            }
-            if(sys0>=3906)
-            {
-                ring.val++
-            }
-            if(sys0>=5625)
-            {
-                ring.val++
-            }
-            if(sys0>=7656)
-            {
-                ring.val++
-            }
+            // Save as last values, update preview.
+            va_lastF.val=field.val
+            va_lastR.val=ring.val
+            click sub_hsv,1
             //
-            // Determine quadrant (0-3). Note: pixel y coords are inverted
-            // compared to mathematical y coords. But we want math. quadrants.
-            sya1*=-1
-            sys2=0
-            if(sya1<0)
-            {
-                sys2+=2
-            }
-            sys0=sya0*sya1
-            if(sys0<0)
-            {
-                sys2+=1
-                // In this case we also want to swap x and y otherwise the
-                // atan(abs(x/y)) (calculated below) gives values running
-                // "the wrong way" (cw instead of ccw).
-                sys1=sya1
-                sya1=sya0
-                sya0=sys1
-            }
-            //
-            field.val=sys2*6
-            //
-            // x,y sign is not required anymore
-            if(sya0<0)
-            {
-                sya0*=-1
-            }
-            if(sya1<0)
-            {
-                sya1*=-1
-            }
-            //
-            // Determine field in ring quadrant
-            // Factor 100000 chosen more or less arbitrarily.
-            // sys0 = 100000 * tan_a = 100000 * y / x
-            sys0=100000*sya1
-            sys0/=sya0
-            // repeat for all fields
-            if(sys0>=26794)
-            {
-                field.val++
-            }
-            if(sys0>=57735)
-            {
-                field.val++
-            }
-            if(sys0>=99999)
-            {
-                field.val++
-            }
-            if(sys0>=173205)
-            {
-                field.val++
-            }
-            if(sys0>=373205)
-            {
-                field.val++
-            }
-            covx r.val,va1.txt,0,0
-            covx g.val,va2.txt,0,0
-            covx b.val,va3.txt,0,0
-            va1.txt=""
-            va2.txt=""
-            va3.txt=""
+            // Start polling.
+            tm_poll.en=1
         
         Touch Release Event
-            // Adjust field.val "orientation" and offset to match the h value of the colors in the wheel
-            h.val=23-field.val// 0 <= field.val <= 23
-            // h is expected to be 0-6*256 (see hsv2rgb)
-            h.val*=6*256
-            h.val/=24// Number of fields
+            // Stop polling.
+            tm_poll.en=0
+            va_active.val=0
             //
-            // s is expected to be 0-256 (see hsv2rgb)
-            s.val=ring.val*256
-            s.val/=8// Number of rings
-            // no "value" selectable; fix it to the maximum (matching the colors in the wheels shown.
-            v.val=255
-            click hsv2rgb,0
-            click rgb888to565,0
-            //colPreview.bco=rgb565.val
-            covx r.val,va1.txt,0,0
-            covx g.val,va2.txt,0,0
-            covx b.val,va3.txt,0,0
-            lightsetting.txt="light,rgb_color,"+va1.txt+","+va2.txt+","+va3.txt
-            printh 92
-            prints "localevent",0
-            printh 00
-            prints lightsetting.txt,0
-            printh 00
-            printh FF FF FF
-            va1.txt=""
-            va2.txt=""
-            va3.txt=""
+            // If we haven't already committed during idle, send now.
+            if(va_committed.val==0)
+            {
+                click sub_send,1
+            }
         
 Slider lightslider
     Attributes
@@ -1009,4 +923,277 @@ Hotspot rgb888to565
             sys1=b.val>>3
             sys2+=sys1
             rgb565.val=sys2
+        
+Hotspot sub_calc
+    Attributes
+        ID               : 36
+        Scope            : local
+        Dragging         : 0
+        Send Component ID: disabled
+        Opacity          : 127
+        x coordinate     : 0
+        y coordinate     : 0
+        Width            : 60
+        Height           : 60
+        Effect           : load
+        Effect Priority  : 0
+        Effect Time      : 300
+    
+    Events
+        Touch Press Event
+            // Field/ring calculation subroutine. Reads sya0, sya1 (relative coords).
+            // Writes field.val and ring.val.
+            // Caller must set sya0, sya1 before calling: click sub_calc,1
+            //
+            // Determine ring (squared radius comparison).
+            ring.val=0
+            sys0=sya0*sya0
+            sys1=sya1*sya1
+            sys0+=sys1
+            if(sys0>=156)
+            {
+                ring.val++
+            }
+            if(sys0>=625)
+            {
+                ring.val++
+            }
+            if(sys0>=1406)
+            {
+                ring.val++
+            }
+            if(sys0>=2500)
+            {
+                ring.val++
+            }
+            if(sys0>=3906)
+            {
+                ring.val++
+            }
+            if(sys0>=5625)
+            {
+                ring.val++
+            }
+            if(sys0>=7656)
+            {
+                ring.val++
+            }
+            //
+            // Determine quadrant. Pixel y is inverted vs. math y.
+            sya1*=-1
+            sys2=0
+            if(sya1<0)
+            {
+                sys2+=2
+            }
+            sys0=sya0*sya1
+            if(sys0<0)
+            {
+                sys2+=1
+                sys1=sya1
+                sya1=sya0
+                sya0=sys1
+            }
+            field.val=sys2*6
+            //
+            // Drop signs.
+            if(sya0<0)
+            {
+                sya0*=-1
+            }
+            if(sya1<0)
+            {
+                sya1*=-1
+            }
+            //
+            // Determine field within quadrant (tan*100000 comparison).
+            // Guard against division by zero when touch is exactly on the vertical axis
+            // (sya0==0 means tan(angle)=infinity, which falls past every threshold).
+            if(sya0==0)
+            {
+                field.val+=5
+            }else
+            {
+                sys0=100000*sya1
+                sys0/=sya0
+                if(sys0>=26794)
+                {
+                    field.val++
+                }
+                if(sys0>=57735)
+                {
+                    field.val++
+                }
+                if(sys0>=99999)
+                {
+                    field.val++
+                }
+                if(sys0>=173205)
+                {
+                    field.val++
+                }
+                if(sys0>=373205)
+                {
+                    field.val++
+                }
+            }
+        
+Hotspot sub_hsv
+    Attributes
+        ID               : 43
+        Scope            : local
+        Dragging         : 0
+        Send Component ID: disabled
+        Opacity          : 127
+        x coordinate     : 0
+        y coordinate     : 0
+        Width            : 60
+        Height           : 60
+        Effect           : load
+        Effect Priority  : 0
+        Effect Time      : 300
+    
+    Events
+        Touch Press Event
+            // HSV preview subroutine. Reads field.val, ring.val.
+            // Computes RGB and draws preview circle inside color_button.
+            // Does NOT send to HA.
+            //
+            h.val=23-field.val
+            h.val*=6*256
+            h.val/=24
+            //
+            s.val=ring.val*256
+            s.val/=8
+            //
+            v.val=255
+            click hsv2rgb,0
+            click rgb888to565,0
+            //
+            // Draw filled preview circle, full size of color_button minus 1px margin.
+            // Center: (x + w/2, y + h/2). Radius: min(w,h)/2 - 1.
+            sys0=color_button.w
+            sys0/=2
+            sys0+=color_button.x
+            sys1=color_button.h
+            sys1/=2
+            sys1+=color_button.y
+            sys2=color_button.w
+            if(color_button.h<sys2)
+            {
+                sys2=color_button.h
+            }
+            sys2/=2
+            cirs sys0,sys1,sys2,rgb565.val
+        
+Hotspot sub_send
+    Attributes
+        ID               : 44
+        Scope            : local
+        Dragging         : 0
+        Send Component ID: disabled
+        Opacity          : 127
+        x coordinate     : 0
+        y coordinate     : 0
+        Width            : 60
+        Height           : 60
+        Effect           : load
+        Effect Priority  : 0
+        Effect Time      : 300
+    
+    Events
+        Touch Press Event
+            // Send current color to HA. Reads r.val, g.val, b.val (already computed by sub_hsv).
+            covx r.val,va1.txt,0,0
+            covx g.val,va2.txt,0,0
+            covx b.val,va3.txt,0,0
+            lightsetting.txt="light,rgb_color,"+va1.txt+","+va2.txt+","+va3.txt
+            printh 92
+            prints "localevent",0
+            printh 00
+            prints lightsetting.txt,0
+            printh 00
+            printh FF FF FF
+            va1.txt=""
+            va2.txt=""
+            va3.txt=""
+            va_committed.val=1
+        
+Timer tm_poll
+    Attributes
+        ID         : 42
+        Scope      : local
+        Period (ms): 100
+        Enabled    : no
+    
+    Events
+        Timer Event
+            // Safety: if not active, disable and bail.
+            if(va_active.val==0)
+            {
+                tm_poll.en=0
+            }
+            //
+            // Pre-compute bounds (Nextion if doesn't accept inline math).
+            sys0=colorwheel.x
+            sys1=colorwheel.x+colorwheel.w
+            sys2=colorwheel.y
+            sya0=colorwheel.y+colorwheel.h
+            //
+            // Bounds check: ignore samples outside the wheel.
+            // Keeps last valid field/ring per design choice.
+            if(tch0<sys0)
+            {
+                tm_poll.en=tm_poll.en
+            }else if(tch0>=sys1)
+            {
+                tm_poll.en=tm_poll.en
+            }else if(tch1<sys2)
+            {
+                tm_poll.en=tm_poll.en
+            }else if(tch1>=sya0)
+            {
+                tm_poll.en=tm_poll.en
+            }else
+            {
+                // In bounds. Compute relative coords and run calc.
+                sya0=tch0
+                sya1=tch1
+                sys0=colorwheel.w/2
+                sys0+=colorwheel.x
+                sys1=colorwheel.h/2
+                sys1+=colorwheel.y
+                sya0-=sys0
+                sya1-=sys1
+                click sub_calc,1
+                //
+                // Did field or ring change?
+                if(field.val!=va_lastF.val)
+                {
+                    va_lastF.val=field.val
+                    va_lastR.val=ring.val
+                    va_idle.val=0
+                    va_committed.val=0
+                    click sub_hsv,1
+                }else if(ring.val!=va_lastR.val)
+                {
+                    va_lastF.val=field.val
+                    va_lastR.val=ring.val
+                    va_idle.val=0
+                    va_committed.val=0
+                    click sub_hsv,1
+                }else
+                {
+                    // No change. Bump idle counter.
+                    va_idle.val++
+                    if(va_idle.val>=10)
+                    {
+                        // 10 ticks * 100ms = 1s of stillness. Commit.
+                        if(va_committed.val==0)
+                        {
+                            click sub_send,1
+                        }
+                    }
+                }
+            }
         

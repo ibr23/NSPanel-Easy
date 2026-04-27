@@ -136,6 +136,7 @@ api:
             else if (entity_id.domain == "alarm_control_panel") entity_id.domain = "alarm";
             else if (entity_id.domain == "input_boolean") entity_id.domain = "switch";
             else if (entity_id.domain == "input_button") entity_id.domain = "button";
+            else if (entity_id.domain == "input_select") entity_id.domain = "select";
             if (entity_id.domain != "invalid" or entity == "embedded_climate") {
               detailed_entity->publish_state(entity);
               goto_page->execute(get_page_id(entity_id.domain.c_str()));
@@ -421,6 +422,10 @@ script:
           });
           ESP_LOGV("${TAG_API}", "'button_click' event sent");
 
+  - id: !extend page_home
+    then:
+      - script.execute: update_flag_api_ready
+
   - id: !extend stop_all
     then:
       - lambda: |-
@@ -435,17 +440,13 @@ script:
   - id: update_flag_api_ready
     then:
       - lambda: |-
-          const bool previous_flag_api_ready = system_flags.api_ready;
-          system_flags.api_ready = api_server->is_connected();
-          if (previous_flag_api_ready != system_flags.api_ready) {
-            refresh_wifi_icon->execute();
-          }
+          disp1->send_command(api_server->is_connected() ? "api=1" : "api=0");
 
   - id: !extend watchdog_round
     then:
       - lambda: |-
           update_flag_api_ready->execute();
-          if (!system_flags.api_ready and
+          if (!api_server->is_connected() and
               current_page_id != get_page_id("boot") and
               current_page_id != get_page_id("confirm") and
               current_page_id != get_page_id("home") and

@@ -1,0 +1,63 @@
+#####################################################################################################
+#####                 NSPanel Easy - https://github.com/edwardtfn/NSPanel-Easy                  #####
+#####################################################################################################
+##### ESPHOME - Page Select                                                                     #####
+##### PLEASE only make changes if it is necessary and also the required knowledge is available. #####
+##### For normal use with the Blueprint, no changes are necessary.                              #####
+#####################################################################################################
+
+---
+substitutions:
+  TAG_PAGE_SELECT: nspanel.page.select
+
+esphome:
+  platformio_options:
+    build_flags:
+      - -D NSPANEL_EASY_PAGE_SELECT
+
+script:
+  - id: !extend page_change
+    then:
+      - lambda: |-
+          if (new_page_id != get_page_id("select")) return;
+          page_select->execute();
+
+  - id: page_select
+    mode: single
+    then:  # There's nothing here so far
+
+  - id: !extend picker_selected
+    then:
+      - lambda: |-
+          if (context != "select_option") return;
+          if (mask == 0) {
+            ESP_LOGV("${TAG_PAGE_SELECT}", "select_option deselect ignored");
+            return;
+          }
+          const size_t dot = entity.find('.');
+          if (dot == std::string::npos) {
+            ESP_LOGW("${TAG_PAGE_SELECT}", "Invalid entity '%s'", entity.c_str());
+            return;
+          }
+          const std::string domain = entity.substr(0, dot);
+          const std::string service = domain + ".select_option";
+          ESP_LOGD("${TAG_PAGE_SELECT}", "Dispatch: %s entity=%s option=%s",
+                                          service.c_str(), entity.c_str(), value.c_str());
+          fire_ha_event("action_call", {
+            {"action", service.c_str()},
+            {"entity", entity.c_str()},
+            {"key", "option"},
+            {"value", value.c_str()}
+          });
+
+  - id: !extend reset_globals
+    then:
+      - lambda: |-
+          if (new_page_id == get_page_id("select")) {
+            display_entity_keep = true;
+          }
+
+  - id: !extend stop_page_constructors
+    then:
+      - lambda: page_select->stop();
+...

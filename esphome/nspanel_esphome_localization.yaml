@@ -101,6 +101,8 @@ substitutions:
         pm: nm.
       light:
         select_effect: Kies effek
+      select:
+        please_select: Kies asseblief
     ar:     # Arabic
       bytes_per_char: 2
       weekdays:
@@ -179,6 +181,8 @@ substitutions:
         pm: مساءً
       light:
         select_effect: اختر التأثير
+      select:
+        please_select: الرجاء الاختيار
     bg:     # Bulgarian
       bytes_per_char: 1
       weekdays:
@@ -257,6 +261,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Избор на ефект
+      select:
+        please_select: Моля, изберете
     bn:     # Bengali
       bytes_per_char: 3
       weekdays:
@@ -335,6 +341,8 @@ substitutions:
         pm: অপরাহ্ন
       light:
         select_effect: ইফেক্ট নির্বাচন করুন
+      select:
+        please_select: অনুগ্রহ করে নির্বাচন করুন
     bs:     # Bosnian
       bytes_per_char: 1
       weekdays:
@@ -413,6 +421,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Odaberi efekat
+      select:
+        please_select: Molimo odaberite
     ca:     # Catalan
       bytes_per_char: 1
       weekdays:
@@ -491,6 +501,8 @@ substitutions:
         pm: p.m.
       light:
         select_effect: Selecciona l'efecte
+      select:
+        please_select: Si us plau, seleccioneu
     cs:     # Czech
       bytes_per_char: 1
       weekdays:
@@ -569,6 +581,8 @@ substitutions:
         pm: odp.
       light:
         select_effect: Vybrat efekt
+      select:
+        please_select: Vyberte prosím
     cy:     # Welsh
       bytes_per_char: 1
       weekdays:
@@ -647,6 +661,8 @@ substitutions:
         pm: pm
       light:
         select_effect: Dewis effaith
+      select:
+        please_select: Dewiswch os gwelwch yn dda
     da:     # Danish
       bytes_per_char: 1
       weekdays:
@@ -725,6 +741,8 @@ substitutions:
         pm: EM
       light:
         select_effect: Vælg effekt
+      select:
+        please_select: Vælg venligst
     de:     # German
       bytes_per_char: 1
       weekdays:
@@ -803,6 +821,8 @@ substitutions:
         pm: nachm.
       light:
         select_effect: Effekt auswählen
+      select:
+        please_select: Bitte auswählen
     el:     # Greek
       bytes_per_char: 2
       weekdays:
@@ -881,6 +901,8 @@ substitutions:
         pm: μμ
       light:
         select_effect: Επιλογή εφέ
+      select:
+        please_select: Παρακαλώ επιλέξτε
     en:     # English
       bytes_per_char: 1
       weekdays:
@@ -959,6 +981,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Select effect
+      select:
+        please_select: Please select
     es:     # Spanish
       bytes_per_char: 1
       weekdays:
@@ -1037,6 +1061,8 @@ substitutions:
         pm: p.m.
       light:
         select_effect: Seleccionar efecto
+      select:
+        please_select: Por favor, selecciona
     et:     # Estonian
       bytes_per_char: 1
       weekdays:
@@ -1115,6 +1141,8 @@ substitutions:
         pm: p.l.
       light:
         select_effect: Vali efekt
+      select:
+        please_select: Palun vali
     eu:     # Basque
       bytes_per_char: 1
       weekdays:
@@ -1193,6 +1221,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Hautatu efektua
+      select:
+        please_select: Mesedez, aukeratu
     fa:     # Farsi (Persian)
       bytes_per_char: 2
       weekdays:
@@ -1271,6 +1301,8 @@ substitutions:
         pm: ب.ظ
       light:
         select_effect: انتخاب افکت
+      select:
+        please_select: لطفاً انتخاب کنید
     fi:     # Finnish
       bytes_per_char: 1
       weekdays:
@@ -1349,6 +1381,8 @@ substitutions:
         pm: iltapäivä
       light:
         select_effect: Valitse tehoste
+      select:
+        please_select: Valitse
     fr:     # French
       bytes_per_char: 1
       weekdays:
@@ -1427,6 +1461,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Sélectionner l'effet
+      select:
+        please_select: Veuillez sélectionner
     gl:     # Galician
       bytes_per_char: 1
       weekdays:
@@ -1505,6 +1541,8 @@ substitutions:
         pm: p.m.
       light:
         select_effect: Seleccionar efecto
+      select:
+        please_select: Por favor, selecciona
     he:     # Hebrew
       bytes_per_char: 2
       weekdays:
@@ -1583,6 +1621,8 @@ substitutions:
         pm: צ"החא
       light:
         select_effect: בחר אפקט
+      select:
+        please_select: אנא בחר
     hi:     # Hindi
       bytes_per_char: 3
       weekdays:
@@ -1661,6 +1701,8 @@ substitutions:
         pm: अपराह्न
       light:
         select_effect: प्रभाव चुनें
+      select:
+        please_select: कृपया चुनें
     hr:     # Croatian
       bytes_per_char: 1
       weekdays:
@@ -1739,6 +1781,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Odaberi efekt
+      select:
+        please_select: Molimo odaberite
     hu:     # Hungarian
       bytes_per_char: 1
       weekdays:
@@ -1817,6 +1861,8 @@ substitutions:
         pm: DU
       light:
         select_effect: Effekt kiválasztása
+      select:
+        please_select: Kérjük, válasszon
     id:     # Indonesian
       bytes_per_char: 1
       weekdays:
@@ -1895,6 +1941,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Pilih efek
+      select:
+        please_select: Silakan pilih
     is:     # Icelandic
       bytes_per_char: 1
       weekdays:
@@ -1973,6 +2021,8 @@ substitutions:
         pm: e.h.
       light:
         select_effect: Velja brellu
+      select:
+        please_select: Vinsamlegast veldu
     it:     # Italian
       bytes_per_char: 1
       weekdays:
@@ -2051,6 +2101,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Seleziona effetto
+      select:
+        please_select: Per favore, seleziona
     ja:     # Japanese
       bytes_per_char: 3
       weekdays:
@@ -2129,6 +2181,8 @@ substitutions:
         pm: 午後
       light:
         select_effect: エフェクトを選択
+      select:
+        please_select: 選択してください
     jv:     # Javanese
       bytes_per_char: 1
       weekdays:
@@ -2207,6 +2261,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Pilih efek
+      select:
+        please_select: Mangga pilih
     ko:     # Korean
       bytes_per_char: 3
       weekdays:
@@ -2285,6 +2341,8 @@ substitutions:
         pm: 오후
       light:
         select_effect: 효과 선택
+      select:
+        please_select: 선택해 주세요
     lt:     # Lithuanian
       bytes_per_char: 1
       weekdays:
@@ -2363,6 +2421,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Pasirinkti efektą
+      select:
+        please_select: Pasirinkite
     lv:     # Latvian
       bytes_per_char: 1
       weekdays:
@@ -2441,6 +2501,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Izvēlēties efektu
+      select:
+        please_select: Lūdzu, izvēlieties
     mk:     # Macedonian
       bytes_per_char: 2
       weekdays:
@@ -2519,6 +2581,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Избери ефект
+      select:
+        please_select: Ве молиме изберете
     ms:     # Malay
       bytes_per_char: 1
       weekdays:
@@ -2597,6 +2661,8 @@ substitutions:
         pm: PTG
       light:
         select_effect: Pilih kesan
+      select:
+        please_select: Sila pilih
     nb:     # Norwegian Bokmål
       bytes_per_char: 1
       weekdays:
@@ -2675,6 +2741,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Velg effekt
+      select:
+        please_select: Vennligst velg
     nl:     # Dutch
       bytes_per_char: 1
       weekdays:
@@ -2753,6 +2821,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Effect selecteren
+      select:
+        please_select: Selecteer alstublieft
     pa:     # Punjabi (Gurmukhi)
       bytes_per_char: 3
       weekdays:
@@ -2831,6 +2901,8 @@ substitutions:
         pm: ਸ਼ਾਮ
       light:
         select_effect: ਪ੍ਰਭਾਵ ਚੁਣੋ
+      select:
+        please_select: ਕਿਰਪਾ ਕਰਕੇ ਚੁਣੋ
     pl:     # Polish
       bytes_per_char: 1
       weekdays:
@@ -2909,6 +2981,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Wybierz efekt
+      select:
+        please_select: Proszę wybrać
     pt:     # Portuguese
       bytes_per_char: 1
       weekdays:
@@ -2987,6 +3061,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Selecionar efeito
+      select:
+        please_select: Por favor, selecione
     ro:     # Romanian
       bytes_per_char: 1
       weekdays:
@@ -3065,6 +3141,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Selectează efectul
+      select:
+        please_select: Vă rugăm să selectați
     ru:     # Russian
       bytes_per_char: 2
       weekdays:
@@ -3143,6 +3221,8 @@ substitutions:
         pm: ПП
       light:
         select_effect: Выбрать эффект
+      select:
+        please_select: Пожалуйста, выберите
     sk:     # Slovak
       bytes_per_char: 1
       weekdays:
@@ -3221,6 +3301,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Vybrať efekt
+      select:
+        please_select: Vyberte prosím
     sl:     # Slovenian
       bytes_per_char: 1
       weekdays:
@@ -3299,6 +3381,8 @@ substitutions:
         pm: pop.
       light:
         select_effect: Izberi učinek
+      select:
+        please_select: Prosim, izberite
     sq:     # Albanian
       bytes_per_char: 1
       weekdays:
@@ -3377,6 +3461,8 @@ substitutions:
         pm: MD
       light:
         select_effect: Zgjidh efektin
+      select:
+        please_select: Ju lutemi zgjidhni
     sr:     # Serbian
       bytes_per_char: 2
       weekdays:
@@ -3455,6 +3541,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Изабери ефекат
+      select:
+        please_select: Молимо изаберите
     sv:     # Swedish
       bytes_per_char: 1
       weekdays:
@@ -3533,6 +3621,8 @@ substitutions:
         pm: EM
       light:
         select_effect: Välj effekt
+      select:
+        please_select: Var god välj
     sw:     # Swahili
       bytes_per_char: 1
       weekdays:
@@ -3611,6 +3701,8 @@ substitutions:
         pm: PM
       light:
         select_effect: Chagua athari
+      select:
+        please_select: Tafadhali chagua
     ta:     # Tamil
       bytes_per_char: 3
       weekdays:
@@ -3689,6 +3781,8 @@ substitutions:
         pm: பிற்பகல்
       light:
         select_effect: விளைவைத் தேர்ந்தெடு
+      select:
+        please_select: தயவுசெய்து தேர்ந்தெடுக்கவும்
     th:     # Thai
       bytes_per_char: 3
       weekdays:
@@ -3767,6 +3861,8 @@ substitutions:
         pm: PM
       light:
         select_effect: เลือกเอฟเฟกต์
+      select:
+        please_select: โปรดเลือก
     tr:     # Turkish
       bytes_per_char: 1
       weekdays:
@@ -3845,6 +3941,8 @@ substitutions:
         pm: ÖS
       light:
         select_effect: Efekt seç
+      select:
+        please_select: Lütfen seçin
     uk:     # Ukrainian
       bytes_per_char: 2
       weekdays:
@@ -3923,6 +4021,8 @@ substitutions:
         pm: ПП
       light:
         select_effect: Вибрати ефект
+      select:
+        please_select: Будь ласка, виберіть
     ur:     # Urdu
       bytes_per_char: 2
       weekdays:
@@ -4001,6 +4101,8 @@ substitutions:
         pm: شام
       light:
         select_effect: ایفیکٹ منتخب کریں
+      select:
+        please_select: براہ کرم منتخب کریں
     vi:     # Vietnamese
       bytes_per_char: 2
       weekdays:
@@ -4079,6 +4181,8 @@ substitutions:
         pm: CH
       light:
         select_effect: Chọn hiệu ứng
+      select:
+        please_select: Vui lòng chọn
     zh-cn:  # Simplified Chinese
       bytes_per_char: 3
       weekdays:
@@ -4157,6 +4261,8 @@ substitutions:
         pm: 下午
       light:
         select_effect: 选择效果
+      select:
+        please_select: 请选择
     zh-tw:  # Traditional Chinese
       bytes_per_char: 3
       weekdays:
@@ -4235,6 +4341,8 @@ substitutions:
         pm: 下午
       light:
         select_effect: 選擇效果
+      select:
+        please_select: 請選擇
   LANG_BYTES_PER_CHAR: "${LOCALIZATION[LANG].bytes_per_char}"
   LANG_ALARM_HOME: "${LOCALIZATION[LANG].alarm.home}"
   LANG_ALARM_AWAY: "${LOCALIZATION[LANG].alarm.away}"
