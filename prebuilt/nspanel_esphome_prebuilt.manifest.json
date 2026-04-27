@@ -1,6 +1,6 @@
 {
   "name": "NSPanel Easy Pre-built",
-  "version": "2026.4.28",
+  "version": "2026.4.29",
   "home_assistant_domain": "esphome",
   "new_install_prompt_erase": false,
   "builds": [
@@ -8,9 +8,9 @@
       "chipFamily": "ESP32",
       "ota": {
         "path": "nspanel_esphome_prebuilt.bin",
-        "md5": "fa28742bd282d2d4399f01069883db6d",
-        "summary": "NSPanel Easy Pre-built v2026.4.28",
-        "release_url": "https://github.com/edwardtfn/NSPanel-Easy/releases/tag/v2026.4.28"
+        "md5": "0c8ef2dd0eb4022580ab21e65242bd0c",
+        "summary": "NSPanel Easy Pre-built v2026.4.29",
+        "release_url": "https://github.com/edwardtfn/NSPanel-Easy/releases/tag/v2026.4.29"
       }
     }
   ]
