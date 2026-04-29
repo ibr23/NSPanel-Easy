@@ -449,9 +449,9 @@ blueprint:
             select:
               multiple: false
               options:
-                - label: 24px
+                - label: 26px
                   value: '7'
-                - label: 32px
+                - label: 36px
                   value: '8'
         home_custom_button01:
           name: Home page - Custom button 1 - Entity (Optional)
@@ -662,9 +662,9 @@ blueprint:
             select:
               multiple: false
               options:
-                - label: 24px
+                - label: 26px
                   value: '7'
-                - label: 32px
+                - label: 36px
                   value: '8'
         chip01:
           name: Chip 01 - Entity (Optional)
@@ -885,9 +885,9 @@ blueprint:
             select:
               multiple: false
               options:
-                - label: 24px
+                - label: 26px
                   value: '7'
-                - label: 32px
+                - label: 36px
                   value: '8'
                 - label: 48px
                   value: '10'
@@ -1455,9 +1455,9 @@ blueprint:
             select:
               multiple: false
               options:
-                - label: 24px
+                - label: 26px
                   value: '7'
-                - label: 32px
+                - label: 36px
                   value: '8'
                 - label: 48px
                   value: '10'
@@ -3908,9 +3908,9 @@ blueprint:
             select:
               multiple: false
               options:
-                - label: 24px
+                - label: 26px
                   value: '7'
-                - label: 32px
+                - label: 36px
                   value: '8'
                 - label: 48px
                   value: '10'
