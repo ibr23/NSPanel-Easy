@@ -90,9 +90,9 @@ Text time
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 111
+        x coordinate            : 100
         y coordinate            : 50
-        Width                   : 160
+        Width                   : 171
         Height                  : 62
         Effect                  : load
         Effect Priority         : 0
@@ -564,7 +564,7 @@ Text value01_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 161
-        y coordinate            : 199
+        y coordinate            : 201
         Width                   : 25
         Height                  : 25
         Effect                  : load
@@ -618,7 +618,7 @@ Text value03_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 161
-        y coordinate            : 250
+        y coordinate            : 252
         Width                   : 25
         Height                  : 25
         Effect                  : load
@@ -645,7 +645,7 @@ Text value02_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 161
-        y coordinate            : 224
+        y coordinate            : 226
         Width                   : 25
         Height                  : 25
         Effect                  : load
@@ -733,9 +733,9 @@ Text indr_temp_icon
         Send Component ID       : on release
         Opacity                 : 127
         x coordinate            : 156
-        y coordinate            : 163
+        y coordinate            : 157
         Width                   : 35
-        Height                  : 35
+        Height                  : 40
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -759,10 +759,10 @@ Text bt_notific
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 265
+        x coordinate            : 264
         y coordinate            : 280
-        Width                   : 40
-        Height                  : 40
+        Width                   : 42
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -793,10 +793,10 @@ Text bt_qrcode
         Dragging                : 0
         Send Component ID       : on release
         Opacity                 : 127
-        x coordinate            : 165
+        x coordinate            : 164
         y coordinate            : 328
-        Width                   : 40
-        Height                  : 40
+        Width                   : 42
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -820,10 +820,10 @@ Text bt_entities
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 215
+        x coordinate            : 214
         y coordinate            : 328
-        Width                   : 40
-        Height                  : 40
+        Width                   : 42
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -869,10 +869,10 @@ Text button07
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 265
+        x coordinate            : 264
         y coordinate            : 328
-        Width                   : 40
-        Height                  : 40
+        Width                   : 42
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -940,10 +940,10 @@ Text button01
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 15
+        x coordinate            : 14
         y coordinate            : 376
-        Width                   : 40
-        Height                  : 40
+        Width                   : 42
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -977,10 +977,10 @@ Text button02
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 64
+        x coordinate            : 63
         y coordinate            : 376
-        Width                   : 40
-        Height                  : 40
+        Width                   : 42
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -1014,10 +1014,10 @@ Text button03
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 115
+        x coordinate            : 114
         y coordinate            : 376
-        Width                   : 40
-        Height                  : 40
+        Width                   : 42
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -1051,10 +1051,10 @@ Text button04
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 165
+        x coordinate            : 164
         y coordinate            : 376
-        Width                   : 40
-        Height                  : 40
+        Width                   : 42
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -1088,10 +1088,10 @@ Text button05
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 215
+        x coordinate            : 214
         y coordinate            : 376
-        Width                   : 40
-        Height                  : 40
+        Width                   : 42
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -1125,10 +1125,10 @@ Text button06
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 265
+        x coordinate            : 264
         y coordinate            : 376
-        Width                   : 40
-        Height                  : 40
+        Width                   : 42
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -1162,10 +1162,10 @@ Text bt_utilities
         Dragging                : 0
         Send Component ID       : on release
         Opacity                 : 127
-        x coordinate            : 215
+        x coordinate            : 214
         y coordinate            : 280
-        Width                   : 40
-        Height                  : 40
+        Width                   : 42
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -1190,7 +1190,7 @@ Text value04_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 321
+        y coordinate            : 323
         Width                   : 25
         Height                  : 25
         Effect                  : load

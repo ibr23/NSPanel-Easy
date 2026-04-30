@@ -308,7 +308,7 @@ Text value01_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 53
+        y coordinate            : 55
         Width                   : 28
         Height                  : 28
         Effect                  : load
@@ -335,7 +335,7 @@ Text value02_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 86
+        y coordinate            : 87
         Width                   : 28
         Height                  : 28
         Effect                  : load
@@ -362,7 +362,7 @@ Text value03_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 116
+        y coordinate            : 118
         Width                   : 28
         Height                  : 28
         Effect                  : load
@@ -389,7 +389,7 @@ Text value04_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 146
+        y coordinate            : 148
         Width                   : 28
         Height                  : 28
         Effect                  : load
@@ -416,7 +416,7 @@ Text value05_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 176
+        y coordinate            : 178
         Width                   : 28
         Height                  : 28
         Effect                  : load
@@ -443,7 +443,7 @@ Text value06_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 206
+        y coordinate            : 208
         Width                   : 28
         Height                  : 28
         Effect                  : load
@@ -470,7 +470,7 @@ Text value07_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 236
+        y coordinate            : 238
         Width                   : 28
         Height                  : 28
         Effect                  : load
@@ -497,7 +497,7 @@ Text value08_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 266
+        y coordinate            : 268
         Width                   : 28
         Height                  : 28
         Effect                  : load
@@ -551,7 +551,7 @@ Text value02
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 330
-        y coordinate            : 88
+        y coordinate            : 87
         Width                   : 120
         Height                  : 28
         Effect                  : load
@@ -713,7 +713,7 @@ Text value08
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 330
-        y coordinate            : 267
+        y coordinate            : 268
         Width                   : 120
         Height                  : 28
         Effect                  : load
@@ -779,7 +779,7 @@ Button button_back
         Back. Picture ID (Pressed)          : 65535
         Cropped Back. Picture ID (Pressed)  : 0
         Horizontal Alignment                : center
-        Vertical Alignment                  : top
+        Vertical Alignment                  : center
         State                               : unpressed
         Text                                : \xee\x85\x98
         Max. Text Size                      : 3

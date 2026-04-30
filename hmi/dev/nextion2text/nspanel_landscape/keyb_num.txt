@@ -174,14 +174,14 @@ Button bclose
         Effect Time               : 300
         Fill                      : solid color
         Style                     : flat
-        Font ID                   : 10
+        Font ID                   : 8
         Back. Color               : 14823
         Back. Picture ID (Pressed): 65535
         Back. Color (Pressed)     : 63488
         Font Color (Unpressed)    : 65535
         Font Color (Pressed)      : 65535
         Horizontal Alignment      : center
-        Vertical Alignment        : top
+        Vertical Alignment        : center
         State                     : unpressed
         Text                      : \xee\x85\x98
         Max. Text Size            : 3
@@ -622,14 +622,14 @@ Button bview
         Effect Time               : 300
         Fill                      : solid color
         Style                     : flat
-        Font ID                   : 10
+        Font ID                   : 8
         Back. Color               : 14823
         Back. Picture ID (Pressed): 65535
         Back. Color (Pressed)     : 65504
         Font Color (Unpressed)    : 65535
         Font Color (Pressed)      : 65535
         Horizontal Alignment      : center
-        Vertical Alignment        : top
+        Vertical Alignment        : center
         State                     : unpressed
         Text                      : \xee\x88\x87
         Max. Text Size            : 3

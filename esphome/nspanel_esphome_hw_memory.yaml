@@ -11,7 +11,9 @@ substitutions:
   ## Change only in your      ##
   ## local yaml substitutions ##
   ##############################
-  GPIO_PSRAM_CLK_PIN: 5
+  GPIO_PSRAM_CLK_PIN:
+    number: 5
+    ignore_strapping_warning: true
   GPIO_PSRAM_CS_PIN: 18
   TAG_HW_MEMORY: nspanel.hw.memory
   WIFI_USE_PSRAM: true

@@ -180,10 +180,10 @@ Text home_icon
         Dragging                : 0
         Send Component ID       : disabled
         Opacity                 : 127
-        x coordinate            : 139
+        x coordinate            : 136
         y coordinate            : 364
-        Width                   : 41
-        Height                  : 45
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -288,10 +288,10 @@ Text grid_icon
         Dragging                : 0
         Send Component ID       : disabled
         Opacity                 : 127
-        x coordinate            : 139
+        x coordinate            : 136
         y coordinate            : 68
-        Width                   : 41
-        Height                  : 45
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -396,10 +396,10 @@ Text group01_icon
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 20
+        x coordinate            : 17
         y coordinate            : 68
-        Width                   : 41
-        Height                  : 45
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -504,10 +504,10 @@ Text group02_icon
         Dragging                : 0
         Send Component ID       : disabled
         Opacity                 : 127
-        x coordinate            : 263
+        x coordinate            : 260
         y coordinate            : 68
-        Width                   : 41
-        Height                  : 45
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -612,10 +612,10 @@ Text group03_icon
         Dragging                : 0
         Send Component ID       : disabled
         Opacity                 : 127
-        x coordinate            : 20
+        x coordinate            : 17
         y coordinate            : 217
-        Width                   : 41
-        Height                  : 45
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -720,10 +720,10 @@ Text group04_icon
         Dragging                : 0
         Send Component ID       : disabled
         Opacity                 : 127
-        x coordinate            : 263
+        x coordinate            : 260
         y coordinate            : 217
-        Width                   : 41
-        Height                  : 45
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -828,10 +828,10 @@ Text group05_icon
         Dragging                : 0
         Send Component ID       : disabled
         Opacity                 : 127
-        x coordinate            : 20
+        x coordinate            : 17
         y coordinate            : 365
-        Width                   : 41
-        Height                  : 45
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -936,10 +936,10 @@ Text group06_icon
         Dragging                : 0
         Send Component ID       : disabled
         Opacity                 : 127
-        x coordinate            : 263
+        x coordinate            : 260
         y coordinate            : 365
-        Width                   : 41
-        Height                  : 45
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -1232,7 +1232,7 @@ Button button_back
         Back. Picture ID (Pressed)          : 65535
         Cropped Back. Picture ID (Pressed)  : 0
         Horizontal Alignment                : center
-        Vertical Alignment                  : top
+        Vertical Alignment                  : center
         State                               : unpressed
         Text                                : \xee\x85\x98
         Max. Text Size                      : 3

@@ -266,7 +266,7 @@ Text current_temp
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 84
-        y coordinate            : 39
+        y coordinate            : 47
         Width                   : 314
         Height                  : 55
         Effect                  : load
@@ -292,10 +292,10 @@ Text page_label
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 10
-        y coordinate            : 0
-        Width                   : 374
-        Height                  : 22
+        x coordinate            : 48
+        y coordinate            : 8
+        Width                   : 300
+        Height                  : 30
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -319,10 +319,10 @@ Text target_icon
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 211
-        y coordinate            : 149
-        Width                   : 30
-        Height                  : 30
+        x coordinate            : 12
+        y coordinate            : 8
+        Width                   : 35
+        Height                  : 35
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -347,7 +347,7 @@ Text value01_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 29
-        y coordinate            : 97
+        y coordinate            : 111
         Width                   : 30
         Height                  : 30
         Effect                  : load
@@ -358,7 +358,7 @@ Text value01_icon
         Font ID                 : 7
         Cropped Back. Picture ID: 37
         Horizontal Alignment    : right
-        Vertical Alignment      : bottom
+        Vertical Alignment      : center
         Input Type              : character
         Text                    : 
         Max. Text Size          : 10
@@ -374,7 +374,7 @@ Text value01
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 60
-        y coordinate            : 103
+        y coordinate            : 111
         Width                   : 70
         Height                  : 30
         Effect                  : load
@@ -401,7 +401,7 @@ Text value02_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 135
-        y coordinate            : 97
+        y coordinate            : 111
         Width                   : 30
         Height                  : 30
         Effect                  : load
@@ -412,7 +412,7 @@ Text value02_icon
         Font ID                 : 7
         Cropped Back. Picture ID: 37
         Horizontal Alignment    : right
-        Vertical Alignment      : bottom
+        Vertical Alignment      : center
         Input Type              : character
         Text                    : 
         Max. Text Size          : 10
@@ -428,7 +428,7 @@ Text value02
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 166
-        y coordinate            : 103
+        y coordinate            : 111
         Width                   : 70
         Height                  : 30
         Effect                  : load
@@ -455,7 +455,7 @@ Text value03_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 241
-        y coordinate            : 97
+        y coordinate            : 111
         Width                   : 30
         Height                  : 30
         Effect                  : load
@@ -466,7 +466,7 @@ Text value03_icon
         Font ID                 : 7
         Cropped Back. Picture ID: 37
         Horizontal Alignment    : right
-        Vertical Alignment      : bottom
+        Vertical Alignment      : center
         Input Type              : character
         Text                    : 
         Max. Text Size          : 10
@@ -482,7 +482,7 @@ Text value03
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 272
-        y coordinate            : 103
+        y coordinate            : 111
         Width                   : 70
         Height                  : 30
         Effect                  : load
@@ -509,7 +509,7 @@ Text value04_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 348
-        y coordinate            : 97
+        y coordinate            : 111
         Width                   : 30
         Height                  : 30
         Effect                  : load
@@ -520,7 +520,7 @@ Text value04_icon
         Font ID                 : 7
         Cropped Back. Picture ID: 37
         Horizontal Alignment    : right
-        Vertical Alignment      : bottom
+        Vertical Alignment      : center
         Input Type              : character
         Text                    : 
         Max. Text Size          : 10
@@ -536,7 +536,7 @@ Text value04
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 378
-        y coordinate            : 103
+        y coordinate            : 111
         Width                   : 70
         Height                  : 30
         Effect                  : load
@@ -563,9 +563,9 @@ Text button01
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 25
-        y coordinate            : 264
-        Width                   : 45
-        Height                  : 45
+        y coordinate            : 261
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -601,9 +601,9 @@ Text button02
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 85
-        y coordinate            : 264
-        Width                   : 45
-        Height                  : 45
+        y coordinate            : 261
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -639,9 +639,9 @@ Text button03
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 145
-        y coordinate            : 264
-        Width                   : 45
-        Height                  : 45
+        y coordinate            : 261
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -677,9 +677,9 @@ Text button04
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 205
-        y coordinate            : 264
-        Width                   : 45
-        Height                  : 45
+        y coordinate            : 261
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -715,9 +715,9 @@ Text button05
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 265
-        y coordinate            : 264
-        Width                   : 45
-        Height                  : 45
+        y coordinate            : 261
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -753,9 +753,9 @@ Text button06
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 325
-        y coordinate            : 264
-        Width                   : 45
-        Height                  : 45
+        y coordinate            : 261
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -791,9 +791,9 @@ Text button07
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 385
-        y coordinate            : 264
-        Width                   : 45
-        Height                  : 45
+        y coordinate            : 261
+        Width                   : 48
+        Height                  : 48
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -829,7 +829,7 @@ Text button08
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 30
-        y coordinate            : 48
+        y coordinate            : 56
         Width                   : 45
         Height                  : 45
         Effect                  : load
@@ -874,7 +874,7 @@ Text button09
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 408
-        y coordinate            : 48
+        y coordinate            : 56
         Width                   : 45
         Height                  : 45
         Effect                  : load
@@ -1162,7 +1162,7 @@ Button button_back
         Back. Picture ID (Pressed)          : 65535
         Cropped Back. Picture ID (Pressed)  : 37
         Horizontal Alignment                : center
-        Vertical Alignment                  : top
+        Vertical Alignment                  : center
         State                               : unpressed
         Text                                : \xee\x85\x98
         Max. Text Size                      : 3

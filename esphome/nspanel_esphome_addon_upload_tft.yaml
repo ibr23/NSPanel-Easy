@@ -14,7 +14,7 @@ substitutions:
   nextion_update_url: ""
   upload_tft_automatically: true
   upload_tft_baud_rate: ${BAUD_RATE}
-  upload_tft_wait_ms_after_boot: 181000  # 181sec
+  upload_tft_wait_ms_after_setup: 29000  # 29sec
   ##############################################
   TAG_UPLOAD_TFT: "nspanel.addon.upload_tft"
   DISPLAY_MODES_BLANK_TEXT: ${DISPLAY_MODES.BLANK.TEXT}
@@ -184,12 +184,17 @@ display:
   - id: !extend disp1
     exit_reparse_on_start: true
     tft_url: "http://unused"  # This is an intentional placeholder URL and will be replaced dynamically
-
-globals:
-  - id: first_time_synced_ms
-    type: uint32_t
-    restore_value: false
-    initial_value: '0'
+    on_setup:
+      then:
+        - lambda: |-
+            if (tft_upload_first_time_synced_ms > 0) return;  // First time sync already registered
+            tft_upload_first_time_synced_ms = millis();
+            #if NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
+            const uint32_t elapsed = (uint32_t)(millis() - tft_upload_first_time_synced_ms);
+            const uint32_t target = ${upload_tft_wait_ms_after_setup};
+            if (elapsed < target)
+              ESP_LOGI("${TAG_UPLOAD_TFT}", "Starting auto-upload count down: %u sec", (target - elapsed) / 1000u);
+            #endif  // NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
 
 script:
   - id: !extend check_versions
@@ -266,13 +271,20 @@ script:
       - while:
           condition:
             - lambda: return not tft_upload_manual_request;
-            - lambda: return (uint32_t)(millis() - tft_upload_first_time_synced_ms) < ${upload_tft_wait_ms_after_boot};
+            - lambda: |-
+                if (tft_upload_first_time_synced_ms == 0)
+                  return true;  // Panel hasn't synced yet — keep waiting
+                return (uint32_t)(millis() - tft_upload_first_time_synced_ms) < ${upload_tft_wait_ms_after_setup};
           then:
             - lambda: |-
-                const uint32_t elapsed = (uint32_t)(millis() - tft_upload_first_time_synced_ms);
-                const uint32_t target = ${upload_tft_wait_ms_after_boot};
-                if (elapsed < target)
-                  ESP_LOGD("${TAG_UPLOAD_TFT}", "TFT upload will start in %u sec", (target - elapsed) / 1000u);
+                if (tft_upload_first_time_synced_ms == 0) {
+                  ESP_LOGD("${TAG_UPLOAD_TFT}", "Waiting for display to sync before TFT upload");
+                } else {
+                  const uint32_t elapsed = (uint32_t)(millis() - tft_upload_first_time_synced_ms);
+                  const uint32_t target = ${upload_tft_wait_ms_after_setup};
+                  if (elapsed < target)
+                    ESP_LOGD("${TAG_UPLOAD_TFT}", "TFT upload will start in %u sec", (target - elapsed) / 1000u);
+                }
             - delay: 15s
 
       # Make sure the screen is ON
@@ -460,12 +472,4 @@ select:
     options:
       - ${DISPLAY_MODES.BLANK.TEXT}
       - ${DISPLAY_MODES.EASY_EU.TEXT}
-
-time:
-  - id: !extend time_provider
-    on_time_sync:
-      then:
-        - lambda: |-
-            if (tft_upload_first_time_synced_ms > 0) return;  // First time sync already registered
-            tft_upload_first_time_synced_ms = millis();
 ...

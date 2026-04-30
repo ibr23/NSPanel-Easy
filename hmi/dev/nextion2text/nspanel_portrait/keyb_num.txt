@@ -174,7 +174,7 @@ Button bclose
         Effect Time               : 300
         Fill                      : solid color
         Style                     : flat
-        Font ID                   : 10
+        Font ID                   : 8
         Back. Color               : 14823
         Back. Picture ID (Pressed): 65535
         Back. Color (Pressed)     : 63488
@@ -622,7 +622,7 @@ Button bview
         Effect Time               : 300
         Fill                      : solid color
         Style                     : flat
-        Font ID                   : 10
+        Font ID                   : 8
         Back. Color               : 14823
         Back. Picture ID (Pressed): 65535
         Back. Color (Pressed)     : 65504

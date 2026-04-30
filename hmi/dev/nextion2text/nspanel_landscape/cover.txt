@@ -76,9 +76,9 @@ Text battery_value
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 326
-        y coordinate            : 69
+        y coordinate            : 66
         Width                   : 60
-        Height                  : 30
+        Height                  : 35
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -378,7 +378,7 @@ Button button_back
         Back. Picture ID (Pressed)          : 65535
         Cropped Back. Picture ID (Pressed)  : 0
         Horizontal Alignment                : center
-        Vertical Alignment                  : top
+        Vertical Alignment                  : center
         State                               : unpressed
         Text                                : \xee\x85\x98
         Max. Text Size                      : 3

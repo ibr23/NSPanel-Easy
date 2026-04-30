@@ -25,20 +25,21 @@ consider [buying me an ice cream][buymeacoffee] - it fuels the late-night coding
 
 ## Table of Contents
 
-1. [Project Highlights](#-project-highlights)
-2. [Prerequisites](#-prerequisites)
-3. [Where to Buy](#-where-to-buy)
-4. [Architecture](#-architecture)
-5. [Documentation & Resources](#-documentation--resources)
-6. [Features](#-features)
-7. [Pages Overview](#-pages-overview)
-8. [Home Assistant Integration](#-home-assistant-integration)
-9. [Contributing](#-contributing)
-10. [Community & Support](#-community--support)
-11. [Acknowledgements](#-acknowledgements)
-12. [Donations](#-donations)
+1. [Project Highlights](#project-highlights)
+2. [Prerequisites](#prerequisites)
+3. [Where to Buy](#where-to-buy)
+4. [Architecture](#architecture)
+5. [Documentation & Resources](#documentation--resources)
+6. [Features](#features)
+7. [Pages Overview](#pages-overview)
+8. [Home Assistant Integration](#home-assistant-integration)
+9. [Contributing](#contributing)
+10. [Community & Support](#community--support)
+11. [Acknowledgements](#acknowledgements)
+12. [Fonts and Licensing](#fonts-and-licensing)
+13. [Donations](#donations)
 
-## 🌟 Project Highlights
+## Project Highlights
 
 - **No Coding Required:** Customize your NSPanel entirely through a Home Assistant Blueprint UI.
 - **Quick Setup:** Get your panel up and running in minutes with a guided graphical interface.
@@ -46,7 +47,7 @@ consider [buying me an ice cream][buymeacoffee] - it fuels the late-night coding
 - **Modular Architecture:** Include only the packages you need, keeping firmware lean and efficient.
 - **Community-Driven:** Built by the community, for the community. Your feedback and contributions shape every release.
 
-## 📋 Prerequisites
+## Prerequisites
 
 - **Home Assistant** - a running instance (see [home-assistant.io](https://www.home-assistant.io/))
 - **ESPHome** - installed as a Home Assistant add-on or standalone (see [esphome.io](https://esphome.io/))
@@ -56,13 +57,13 @@ consider [buying me an ice cream][buymeacoffee] - it fuels the late-night coding
 > This project uses the **ESP-IDF** framework exclusively.
 > Arduino framework support has been deprecated and is no longer maintained.
 
-## 🛒 Where to Buy
+## Where to Buy
 
 Need a Sonoff NSPanel? Our [Where to Buy](docs/where_to_buy.md) guide lists retailers
 across multiple regions — including affiliate links that support this project at no
 extra cost to you, and pre-flashed options for those who prefer a ready-to-go setup.
 
-## 🏗 Architecture
+## Architecture
 
 NSPanel Easy comprises three tightly integrated components that work together:
 
@@ -76,7 +77,7 @@ NSPanel Easy comprises three tightly integrated components that work together:
 > Each component is versioned independently and designed to be compatible across releases.
 > You do not need to update all three at once - update each at your own pace as new versions become available.
 
-## 📚 Documentation & Resources
+## Documentation & Resources
 
 Full documentation lives in the [docs/](docs/README.md) folder — also published
 as a browsable site at [edwardtfn.github.io/NSPanel-Easy](https://edwardtfn.github.io/NSPanel-Easy/).
@@ -96,7 +97,7 @@ Quick links for the most common needs:
 - **Feature Requests:** [Open a new feature request](https://github.com/edwardtfn/NSPanel-Easy/labels/new%20feature%20request) to share your ideas.
 - **Changelog:** Every merged PR automatically generates a [GitHub Release](https://github.com/edwardtfn/NSPanel-Easy/releases) with detailed notes.
 
-## 🚀 Features
+## Features
 
 ### Display & Navigation
 
@@ -144,7 +145,7 @@ Quick links for the most common needs:
 - Built-in temperature sensor with calibration support
 - Buzzer for audible feedback and RTTTL melody playback
 
-## 📖 Pages Overview
+## Pages Overview
 
 ### Home
 
@@ -249,7 +250,7 @@ Accessible via long-press on the time area of the Home page:
 
 ![Boot US](docs/pics/us_boot.png)
 
-## 🏠 Home Assistant Integration
+## Home Assistant Integration
 
 ### Device Page
 
@@ -273,7 +274,7 @@ The Blueprint provides a visual interface for defining what appears on your pane
 ![Blueprint 04](docs/pics/ha_blueprint_04.png)
 ![Blueprint 05](docs/pics/ha_blueprint_05.png)
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions of all kinds - code, documentation, translations, and testing.
 
@@ -286,14 +287,14 @@ We welcome contributions of all kinds - code, documentation, translations, and t
 > Not a developer? You can still help by improving documentation, translating strings, testing open PRs,
 > or [buying me an ice cream][buymeacoffee] 🍦
 
-## 🌍 Community & Support
+## Community & Support
 
 Whether you need help, want to share your setup, or just want to follow along - we'd love to have you.
 
 - **[GitHub Issues & Feature Requests](https://github.com/edwardtfn/NSPanel-Easy/issues)**
 - **[Discord Server][discord]**
 
-## 🎉 Acknowledgements
+## Acknowledgements
 
 A huge thank you to everyone who has contributed to making this project a reality.
 Your feedback, testing, and code contributions have been invaluable.
@@ -310,7 +311,29 @@ Special thanks to the projects that inspired and informed this work:
 - [sairon](https://github.com/sairon/esphome-nspanel-lovelace-ui)
 - [SmartHome Yourself](https://www.youtube.com/c/SmarthomeyourselfDe_DIY)
 
-## 💖 Donations
+## Fonts and Licensing
+
+NSPanel Easy bundles the following fonts in its display firmware.
+Each font is used in accordance with its respective license,
+and the full license texts are included in the [`licenses/`](licenses/) directory.
+
+### Sarasa UI SemiBold
+
+Used for all display text, icon companion glyphs, and page indicators.
+
+- Source: [be5invis/Sarasa-Gothic](https://github.com/be5invis/Sarasa-Gothic)
+- License: [SIL Open Font License 1.1](licenses/Sarasa-OFL-1.1.txt)
+- Copyright: Renzhi Li (Belleve Invis), with portions from Adobe Source Han Sans and Iosevka
+
+### Material Design Icons
+
+Used for all UI icons displayed alongside text on the panel.
+
+- Source: [Pictogrammers Material Design Icons](https://pictogrammers.com/library/mdi/)
+- License: [Apache License 2.0](licenses/MDI-Apache-2.0.mdx)
+- Copyright: Pictogrammers and contributors
+
+## Donations
 
 This project is built with love and maintained in my spare time.
 If NSPanel Easy has made your life easier,

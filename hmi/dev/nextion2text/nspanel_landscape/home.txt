@@ -90,9 +90,9 @@ Text time
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 251
+        x coordinate            : 246
         y coordinate            : 45
-        Width                   : 160
+        Width                   : 168
         Height                  : 62
         Effect                  : load
         Effect Priority         : 0
@@ -136,7 +136,7 @@ Text indr_temp
         Font ID                 : 4
         Cropped Back. Picture ID: 0
         Horizontal Alignment    : left
-        Vertical Alignment      : bottom
+        Vertical Alignment      : center
         Input Type              : character
         Text                    : 
         Max. Text Size          : 8
@@ -224,7 +224,7 @@ Text value01
         Font ID                 : 3
         Cropped Back. Picture ID: 0
         Horizontal Alignment    : left
-        Vertical Alignment      : top
+        Vertical Alignment      : center
         Input Type              : character
         Text                    : 
         Max. Text Size          : 30
@@ -564,7 +564,7 @@ Text value01_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 194
+        y coordinate            : 196
         Width                   : 25
         Height                  : 25
         Effect                  : load
@@ -574,7 +574,7 @@ Text value01_icon
         Associated Keyboard     : none
         Font ID                 : 7
         Cropped Back. Picture ID: 0
-        Horizontal Alignment    : right
+        Horizontal Alignment    : center
         Vertical Alignment      : center
         Input Type              : character
         Text                    : 
@@ -645,7 +645,7 @@ Text value02_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 222
+        y coordinate            : 224
         Width                   : 25
         Height                  : 25
         Effect                  : load
@@ -655,7 +655,7 @@ Text value02_icon
         Associated Keyboard     : none
         Font ID                 : 7
         Cropped Back. Picture ID: 0
-        Horizontal Alignment    : right
+        Horizontal Alignment    : center
         Vertical Alignment      : center
         Input Type              : character
         Text                    : 
@@ -683,7 +683,7 @@ Text value02
         Font ID                 : 3
         Cropped Back. Picture ID: 0
         Horizontal Alignment    : left
-        Vertical Alignment      : top
+        Vertical Alignment      : center
         Input Type              : character
         Text                    : 
         Max. Text Size          : 30
@@ -733,9 +733,9 @@ Text indr_temp_icon
         Send Component ID       : on release
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 156
+        y coordinate            : 150
         Width                   : 35
-        Height                  : 35
+        Height                  : 40
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -743,7 +743,7 @@ Text indr_temp_icon
         Associated Keyboard     : none
         Font ID                 : 8
         Cropped Back. Picture ID: 0
-        Horizontal Alignment    : right
+        Horizontal Alignment    : center
         Vertical Alignment      : center
         Input Type              : character
         Text                    : 
@@ -761,8 +761,8 @@ Text bt_notific
         Opacity                 : 127
         x coordinate            : 255
         y coordinate            : 230
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -795,8 +795,8 @@ Text bt_qrcode
         Opacity                 : 127
         x coordinate            : 305
         y coordinate            : 230
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -822,8 +822,8 @@ Text bt_entities
         Opacity                 : 127
         x coordinate            : 355
         y coordinate            : 230
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -871,8 +871,8 @@ Text button07
         Opacity                 : 127
         x coordinate            : 405
         y coordinate            : 230
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -942,8 +942,8 @@ Text button01
         Opacity                 : 127
         x coordinate            : 304
         y coordinate            : 140
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -979,8 +979,8 @@ Text button02
         Opacity                 : 127
         x coordinate            : 354
         y coordinate            : 140
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -1016,8 +1016,8 @@ Text button03
         Opacity                 : 127
         x coordinate            : 404
         y coordinate            : 140
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -1053,8 +1053,8 @@ Text button04
         Opacity                 : 127
         x coordinate            : 305
         y coordinate            : 185
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -1090,8 +1090,8 @@ Text button05
         Opacity                 : 127
         x coordinate            : 355
         y coordinate            : 185
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -1127,8 +1127,8 @@ Text button06
         Opacity                 : 127
         x coordinate            : 405
         y coordinate            : 185
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -1164,8 +1164,8 @@ Text bt_utilities
         Opacity                 : 127
         x coordinate            : 205
         y coordinate            : 230
-        Width                   : 40
-        Height                  : 40
+        Width                   : 45
+        Height                  : 42
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -1190,7 +1190,7 @@ Text value03_icon
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 15
-        y coordinate            : 250
+        y coordinate            : 252
         Width                   : 25
         Height                  : 25
         Effect                  : load
@@ -1200,7 +1200,7 @@ Text value03_icon
         Associated Keyboard     : none
         Font ID                 : 7
         Cropped Back. Picture ID: 0
-        Horizontal Alignment    : right
+        Horizontal Alignment    : center
         Vertical Alignment      : center
         Input Type              : character
         Text                    : 
@@ -1228,7 +1228,7 @@ Text value03
         Font ID                 : 3
         Cropped Back. Picture ID: 0
         Horizontal Alignment    : left
-        Vertical Alignment      : top
+        Vertical Alignment      : center
         Input Type              : character
         Text                    : 
         Max. Text Size          : 30
