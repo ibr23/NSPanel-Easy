@@ -330,7 +330,7 @@ Used for all display text, icon companion glyphs, and page indicators.
 Used for all UI icons displayed alongside text on the panel.
 
 - Source: [Pictogrammers Material Design Icons](https://pictogrammers.com/library/mdi/)
-- License: [Apache License 2.0](licenses/MDI-Apache-2.0.txt)
+- License: [Apache License 2.0](licenses/MDI-Apache-2.0.mdx)
 - Copyright: Pictogrammers and contributors
 
 ## Donations
