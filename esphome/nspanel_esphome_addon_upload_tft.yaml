@@ -196,12 +196,6 @@ display:
               ESP_LOGI("${TAG_UPLOAD_TFT}", "Starting auto-upload count down: %u sec", (target - elapsed) / 1000u);
             #endif  // NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
 
-globals:
-  - id: first_time_synced_ms
-    type: uint32_t
-    restore_value: false
-    initial_value: '0'
-
 script:
   - id: !extend check_versions
     then:
