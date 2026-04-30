@@ -271,13 +271,20 @@ script:
       - while:
           condition:
             - lambda: return not tft_upload_manual_request;
-            - lambda: return (uint32_t)(millis() - tft_upload_first_time_synced_ms) < ${upload_tft_wait_ms_after_setup};
+            - lambda: |-
+                if (tft_upload_first_time_synced_ms == 0)
+                  return true;  // Panel hasn't synced yet — keep waiting
+                return (uint32_t)(millis() - tft_upload_first_time_synced_ms) < ${upload_tft_wait_ms_after_setup};
           then:
             - lambda: |-
-                const uint32_t elapsed = (uint32_t)(millis() - tft_upload_first_time_synced_ms);
-                const uint32_t target = ${upload_tft_wait_ms_after_setup};
-                if (elapsed < target)
-                  ESP_LOGD("${TAG_UPLOAD_TFT}", "TFT upload will start in %u sec", (target - elapsed) / 1000u);
+                if (tft_upload_first_time_synced_ms == 0) {
+                  ESP_LOGD("${TAG_UPLOAD_TFT}", "Waiting for display to sync before TFT upload");
+                } else {
+                  const uint32_t elapsed = (uint32_t)(millis() - tft_upload_first_time_synced_ms);
+                  const uint32_t target = ${upload_tft_wait_ms_after_setup};
+                  if (elapsed < target)
+                    ESP_LOGD("${TAG_UPLOAD_TFT}", "TFT upload will start in %u sec", (target - elapsed) / 1000u);
+                }
             - delay: 15s
 
       # Make sure the screen is ON
