@@ -273,8 +273,9 @@ such as:
 [W][nextion:xxx]: Not connected
 ```
 
-This is expected. The firmware is negotiating the UART baud rate with the Nextion
-display, which can take some time on first boot, especially if the panel still has
+This is expected. The firmware first probes the configured UART baud rate and, if needed,
+runs a scan across Nextion-supported rates (including a display power-cycle),
+which can take some time on first boot, especially if the panel still has
 the original Sonoff firmware (which uses a different baud rate than NSPanel Easy).
 
 Once the baud rate is detected, the firmware checks the TFT version. If the version
