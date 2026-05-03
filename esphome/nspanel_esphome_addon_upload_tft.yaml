@@ -111,6 +111,8 @@ button:
 display:
   - id: !extend disp1
     exit_reparse_on_start: true
+    tft_upload_http_timeout: 10s
+    tft_upload_watchdog_timeout: 15s
     tft_url: "http://unused"  # This is an intentional placeholder URL and will be replaced dynamically
     on_setup:
       then:
@@ -122,6 +124,20 @@ display:
             const uint32_t target = ${upload_tft_wait_ms_after_setup};
             if (elapsed < target)
               ESP_LOGI("${TAG_UPLOAD_TFT}", "Starting auto-upload count down: %u sec", (target - elapsed) / 1000u);
+            #endif  // NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
+        - delay: !lambda |-
+            // Wait only when auto-upload is enabled
+            #if NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
+            const uint32_t elapsed = (uint32_t)(millis() - tft_upload_first_time_synced_ms);
+            const uint32_t target = ${upload_tft_wait_ms_after_setup};
+            return (elapsed < target) ? (target - elapsed) : 0;
+            #else
+            return 0;
+            #endif  // NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
+        - lambda: |-
+            // Triggers the auto-upload engine
+            #if NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
+            check_versions->execute(!blueprint_status_flags.version || version_tft->state.empty());
             #endif  // NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
 
 script:

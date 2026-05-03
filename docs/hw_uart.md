@@ -22,7 +22,9 @@ The following keys are available to be used in your `substitutions`:
 | Key | Required | Supported values | Default | Description |
 | :- | :-: | :-: | :-: | :- |
 | `BAUD_RATE` | Optional | `921600`, `115200`, `9600`, `230400`, `57600`, `38400`, `256000`, `512000`, `250000`, `19200`, `31250`, `4800`, `2400` | `921600` | Target operating baud rate between the ESP32 and the Nextion display. The TFT firmware shipped with NSPanel Easy enforces this rate on every boot, so changing it requires reflashing the TFT after the change. See [`BAUD_RATE` behaviour](#baud_rate-behaviour). |
-| `BAUD_RATE_PROBE_MS` | Optional | Positive integer (milliseconds) | `1500` | Per-rate probe window during the [boot baud rate scan](#boot-baud-rate-scan) and the diagnostic [Scan baud rate button](addon_upload_tft.md#include_button_scan_baud_rate-behaviour). Increase only if your hardware shows marginal UART timing on a given rate; the default is generous for stable hardware. |
+| `BAUD_RATE_TIMEOUT` | Optional | ESPHome duration string | `41s` | Time the panel waits for the display to respond at `BAUD_RATE` before triggering the [boot baud rate scan](#boot-baud-rate-scan). Also applied between retries in the reboot loop when the scan finds no responsive rate. |
+| `BAUD_RATE_DELAY_AFTER_POWER_ON` | Optional | ESPHome duration string | `2s` | Delay between powering the display on and starting the first probe inside the baud rate scan. Increase if your hardware needs longer to initialize before responding. |
+| `BAUD_RATE_PROBE_MS` | Optional | Positive integer (milliseconds) | `1500` | Per-rate probe window during the [boot baud rate scan](#boot-baud-rate-scan) and the diagnostic [Scan baud rate button](addon_upload_tft.md#include_button_scan_baud_rate-behaviour). Increase only if your hardware shows marginal UART timing on a given rate. |
 <!-- markdownlint-enable MD013 -->
 
 ### `BAUD_RATE` behaviour
@@ -80,12 +82,14 @@ legacy TFTs.
 
 ### Timing
 
-With the default `BAUD_RATE_PROBE_MS=1500`, scan duration is roughly:
+With the default settings (`BAUD_RATE_TIMEOUT=41s`, `BAUD_RATE_DELAY_AFTER_POWER_ON=2s`,
+`BAUD_RATE_PROBE_MS=1500`), scan duration is roughly:
 
 - Best case (display answers at `BAUD_RATE`): ~1.5 seconds
 - Common case (display at one of the top three rates): 1.5 to 4.5 seconds
 - Worst case (display at the slowest scanned rate, or no display at all):
-  approximately 20 seconds for a full sweep, plus the 4-second power-cycle
+  approximately 20 seconds for a full sweep, plus the power-cycle and post-power-on
+  delays
 
 ## Diagnostic entities
 

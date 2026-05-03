@@ -289,6 +289,21 @@ existing settings (entities, buttons, language, weather, etc.) are preserved as-
 > [!TIP]
 > If you have multiple panels, repeat this process for each panel's automation.
 
+> [!IMPORTANT]
+> After the OTA reboot, the ESPHome logs may show repeated warnings such as
+> `[W][nextion:xxx]: Not connected` for a couple of minutes. This is expected:
+> the new firmware negotiates the UART baud rate with the Nextion display on
+> first boot, and the previous firmware likely used a different rate.
+>
+> Once negotiation completes, the firmware will detect the TFT version mismatch
+> and start the upload automatically (unless you've disabled auto-upload).
+> The TFT transfer takes 10–20 minutes — you can follow progress in the logs
+> or on the panel itself.
+>
+> If after several minutes nothing has started, restart the panel by cutting
+> and restoring power. If the issue persists, see the
+> [TFT Transfer Troubleshooting Guide](tft_upload.md).
+
 <!-- markdownlint-enable MD028 -->
 
 ![Automation YAML with the new Blueprint path](pics/ha_automation_yaml_new_path.png)

@@ -106,7 +106,6 @@ display:
     platform: nextion
     uart_id: tf_uart
     command_spacing: 1ms
-    dump_device_info: true
     update_interval: never
     on_setup:
       then:
@@ -536,27 +535,25 @@ script:
   - id: wait_for_display
     mode: single
     then:
-      - if:
+      - while:
           condition:
             - lambda: return !disp1->is_setup();
           then:
+            - lambda: |-
+                ESP_LOGE("${TAG_HW_DISPLAY}", "Display is not set. Restarting.");
+                screen_power->turn_off();
+            - delay: 2s
             - switch.turn_on: screen_power
-            - wait_until:
-                condition:
-                  - lambda: return disp1->is_setup();
-                timeout: 41s  # Prime; gives primary rate enough time before scan triggers
+            - delay: ${BAUD_RATE_TIMEOUT}
             - if:
                 condition:
                   - lambda: return !disp1->is_setup();
                 then:
-                  # Primary rate did not produce a setup within 41s.
-                  # Scan all Nextion-supported rates to find where the display speaks.
-                  # baud_scan power-cycles the display itself.
+                  # Display still not setup after another ${BAUD_RATE_TIMEOUT} — rescan.
+                  # baud_scan power-cycles the display itself, so the
+                  # next iteration's power-off is redundant but harmless.
                   - script.execute: baud_scan
                   - script.wait: baud_scan
-
-                  # If scan succeeded, give the display a moment to fire on_setup
-                  # at the discovered rate.
                   - if:
                       condition:
                         - lambda: return system_flags.baud_scan_success;
@@ -565,17 +562,6 @@ script:
                             condition:
                               - lambda: return disp1->is_setup();
                             timeout: 19s
-
-                  - while:
-                      condition:
-                        - lambda: return !disp1->is_setup();
-                      then:
-                        - lambda: |-
-                            ESP_LOGE("${TAG_HW_DISPLAY}", "Display is not set. Restarting.");
-                            screen_power->turn_off();
-                        - delay: 2s
-                        - switch.turn_on: screen_power
-                        - delay: 41s
 
   - id: wait_for_version_tft
     mode: single

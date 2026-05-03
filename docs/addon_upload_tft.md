@@ -148,7 +148,7 @@ Assistant scripts or automations using the `esphome.<panel>_upload_tft` service 
 
 > [!NOTE]
 > The boot process automatically scans baud rates when the display does not respond at
-> the configured rate within 41 seconds (see [Boot baud rate scan](#boot-baud-rate-scan)
+> the configured rate within a couple of minutes (see [Boot baud rate scan](#boot-baud-rate-scan)
 > below). The diagnostic button described here is a manual fallback for cases where the
 > automatic scan did not run, did not succeed, or where you want to force a rescan
 > without rebooting the panel.
@@ -158,9 +158,6 @@ When set to `true`, this add-on exposes a "Scan baud rate" button. Pressing it:
 1. Power-cycles the Nextion display
 2. Probes each Nextion-supported baud rate for a response
 3. On success, switches the ESP UART to the discovered rate and starts a TFT upload
-
-The button is registered as `internal: true` by default. To expose it in Home Assistant,
-also set `button_scan_baud_rate_internal: "false"`.
 
 ### Display model options
 
@@ -319,7 +316,7 @@ section in the installation guide for detailed instructions.
 ## Boot baud rate scan
 
 If the display does not respond at the configured baud rate (default 921600 bps) within
-41 seconds of boot, the panel automatically scans all Nextion-supported baud rates to
+a couple of minutes of boot, the panel automatically scans all Nextion-supported baud rates to
 find one where the display answers. This recovers panels in the following situations:
 
 - A previous TFT upload was interrupted, leaving the display at an unexpected rate

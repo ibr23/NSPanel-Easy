@@ -12,8 +12,10 @@ substitutions:
   ## Change only in your      ##
   ## local yaml substitutions ##
   ##############################
-  BAUD_RATE: "921600"       # Target operating baud rate
-  BAUD_RATE_PROBE_MS: 1500  # Per-rate probe window during baud scan (ms)
+  BAUD_RATE: "921600"                 # Target operating baud rate
+  BAUD_RATE_PROBE_MS: 1500            # Per-rate probe window during baud scan (ms)
+  BAUD_RATE_TIMEOUT: 11s              # Wait at primary rate before triggering baud scan
+  BAUD_RATE_DELAY_AFTER_POWER_ON: 2s  # Delay after display power-on before probing
   GPIO_DISPLAY_NEXTION_RX_PIN: 17
   GPIO_DISPLAY_NEXTION_TX_PIN: 16
   TAG_HW_UART: nspanel.hw.uart
@@ -53,7 +55,7 @@ script:
       - switch.turn_off: screen_power
       - delay: 2s
       - switch.turn_on: screen_power
-      - delay: 2s
+      - delay: ${BAUD_RATE_DELAY_AFTER_POWER_ON}
 
       - lambda: |-
           // Scan order: primary first, then 921600 (if not already primary),
@@ -123,19 +125,44 @@ script:
               App.feed_wdt();
             }
 
-            // Send probe
-            disp1->send_command("get sleep");
+            // Exit reparse mode first - stock/legacy TFTs may be in reparse mode
+            // where ASCII commands are silently discarded. The exit-reparse magic
+            // sequence works regardless of the current mode.
+            disp1->set_protocol_reparse_mode(false);  // Calls exit_reparse_mode_ internally; harmless if already out
 
-            // Spin waiting for response
+            // Then send our probe directly via UART, bypassing the Nextion component
+            // queue (which may drop commands while disconnected).
+            const char probe_cmd[] = "get sleep\xFF\xFF\xFF";
+            tf_uart->write_array(reinterpret_cast<const uint8_t *>(probe_cmd),
+                                sizeof(probe_cmd) - 1);
+            tf_uart->flush();
+            ESP_LOGD("${TAG_HW_UART}", "Baud scan: probe sent (%zu bytes)",
+                    sizeof(probe_cmd) - 1);
+
+            // Spin waiting for response, log all bytes received
             const uint32_t probe_until = millis() + ${BAUD_RATE_PROBE_MS};
             bool got_response = false;
+            uint32_t total_bytes = 0;
+            char rx_log[96] = {0};
+            size_t rx_log_idx = 0;
             while (millis() < probe_until) {
-              if (tf_uart->available() > 0) {
+              while (tf_uart->available() > 0) {
+                uint8_t b;
+                tf_uart->read_byte(&b);
+                ++total_bytes;
+                if (rx_log_idx < sizeof(rx_log) - 4) {
+                  rx_log_idx += snprintf(&rx_log[rx_log_idx],
+                                        sizeof(rx_log) - rx_log_idx,
+                                        "%02X ", b);
+                }
                 got_response = true;
-                break;
               }
               delay(1);
               App.feed_wdt();
+            }
+            if (total_bytes > 0) {
+              ESP_LOGI("${TAG_HW_UART}", "Baud scan: rx %" PRIu32 " bytes at %" PRIu32 " bps: %s",
+                                          total_bytes, rate, rx_log);
             }
 
             // Flush probe response
@@ -183,6 +210,8 @@ script:
                         tf_uart->get_baud_rate());
           ESP_LOGCONFIG("${TAG_HW_UART}", "  Baud rate (compiled): %" PRIu32 " bps",
                         static_cast<uint32_t>(${BAUD_RATE}));
+          ESP_LOGCONFIG("${TAG_HW_UART}", "  Scan trigger:         ${BAUD_RATE_TIMEOUT}");
+          ESP_LOGCONFIG("${TAG_HW_UART}", "  Power-on delay:       ${BAUD_RATE_DELAY_AFTER_POWER_ON}");
           ESP_LOGCONFIG("${TAG_HW_UART}", "  Probe window:         %u ms",
                         static_cast<unsigned>(${BAUD_RATE_PROBE_MS}));
           if (system_flags.baud_fallback_active) {
