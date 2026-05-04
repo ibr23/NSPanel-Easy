@@ -178,9 +178,9 @@ Text date
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 221
+        x coordinate            : 121
         y coordinate            : 110
-        Width                   : 230
+        Width                   : 293
         Height                  : 30
         Effect                  : load
         Effect Priority         : 0
@@ -189,7 +189,7 @@ Text date
         Associated Keyboard     : none
         Font ID                 : 3
         Cropped Back. Picture ID: 0
-        Horizontal Alignment    : center
+        Horizontal Alignment    : right
         Vertical Alignment      : bottom
         Input Type              : character
         Text                    : 

@@ -58,7 +58,7 @@ script:
           wait_for_api->execute();
       - script.wait: wait_for_api
       - lambda: |-
-          if (api_server->is_connected()) {
+          if (api_server->is_connected_with_state_subscription()) {
             boot_log->execute("Boot", "API connected");
           } else {
             boot_log->execute("Boot", "API not available");

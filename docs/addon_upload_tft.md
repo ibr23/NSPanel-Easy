@@ -104,11 +104,11 @@ The following keys are available to be used in your `substitutions`:
 | Key | Required | Supported values | Default | Description |
 | :- | :-: | :-: | :-: | :- |
 | `upload_tft_automatically` | Optional | `true` or `false` | `true` | When enabled, the device will automatically upload the TFT file when a version mismatch is detected after boot. When disabled, you must manually press the "Update TFT display" button in Home Assistant. |
-| `upload_tft_baud_rate` | Optional | Positive integer (bps) | `115200` | Baud rate used for the serial transfer to the Nextion display. Lower values are more reliable on noisy setups; higher values are faster. Common values: `9600`, `115200`, `921600`. |
 | `upload_tft_wait_ms_after_setup` | Optional | Positive integer (milliseconds) | `300000` (5 min) | Time to wait after display setup completes before starting an automatic TFT upload. This delay allows the system to stabilize after boot. Reduce for faster updates; increase if you experience boot instability. |
 | `nextion_update_base_url` | Optional | Valid HTTP/HTTPS base URL | `https://raw.githubusercontent.com/edwardtfn/NSPanel-Easy/v${version}/hmi` | Base URL used when building the TFT download URL automatically. Override this to host TFT files on a local server while still benefiting from automatic model and version selection. |
 | `nextion_update_url` | Optional | Valid HTTP/HTTPS URL | _(empty)_ | Full URL override for the TFT file. When set, this takes absolute priority. The model selector and version logic are completely bypassed and this URL is used as-is. Use only when you need full control over the TFT source, such as for custom TFT files. See [important note below](#nextion_update_url-behaviour). |
 | `include_action_upload_tft` | Optional | `true` or `false` | `false` | When set to `true`, registers the `upload_tft` API action, allowing the TFT upload to be triggered from Home Assistant scripts or automations via `esphome.<panel>_upload_tft`. Disabled by default to reduce memory usage at boot. See [important note below](#include_action_upload_tft-behaviour). |
+| `include_button_scan_baud_rate` | Optional | `true` or `false` | `false` | When set to `true`, registers a "Scan baud rate" diagnostic button that probes all Nextion-supported baud rates to find a working rate, then triggers a TFT upload at the discovered rate. Useful for recovering panels that cannot communicate at the configured rate. See [important note below](#include_button_scan_baud_rate-behaviour). |
 <!-- markdownlint-enable MD013 -->
 
 ### `nextion_update_url` behaviour
@@ -133,8 +133,8 @@ the recommended configuration for most users.
 
 When set to `false` (the default), the `upload_tft` API action is not registered.
 All other functionality of this add-on remains fully operational: automatic TFT upload on
-version mismatch, the "Update TFT display" button in Home Assistant, and baud rate negotiation
-are all unaffected.
+version mismatch, the "Update TFT display" button in Home Assistant, and the boot baud
+rate scan are all unaffected.
 
 Set this to `true` only if you need to trigger TFT uploads programmatically from Home
 Assistant scripts or automations using the `esphome.<panel>_upload_tft` service call.
@@ -143,6 +143,21 @@ Assistant scripts or automations using the `esphome.<panel>_upload_tft` service 
 > If you were previously calling `esphome.<panel>_upload_tft` from an automation or script,
 > add `include_action_upload_tft: true` to your substitutions to restore that behaviour.
 > This is a breaking change introduced to improve boot stability on memory-constrained devices.
+
+### `include_button_scan_baud_rate` behaviour
+
+> [!NOTE]
+> The boot process automatically scans baud rates when the display does not respond at
+> the configured rate within a couple of minutes (see [Boot baud rate scan](#boot-baud-rate-scan)
+> below). The diagnostic button described here is a manual fallback for cases where the
+> automatic scan did not run, did not succeed, or where you want to force a rescan
+> without rebooting the panel.
+
+When set to `true`, this add-on exposes a "Scan baud rate" button. Pressing it:
+
+1. Power-cycles the Nextion display
+2. Probes each Nextion-supported baud rate for a response
+3. On success, switches the ESP UART to the discovered rate and starts a TFT upload
 
 ### Display model options
 
@@ -266,9 +281,8 @@ When `upload_tft_automatically` is set to `true` (the default), the device will:
 2. Receive the current TFT version from the display.
 3. Compare it with the expected version from the firmware.
 4. If a mismatch is detected, wait for the configured delay
-5. If a mismatch is detected, wait for the configured delay
    (`upload_tft_wait_ms_after_setup`) after display setup completes.
-6. Automatically start the TFT upload.
+5. Automatically start the TFT upload.
 
 > [!NOTE]
 > The wait period exists to prevent the TFT upload from starting before the boot process
@@ -298,6 +312,27 @@ the TFT upload may fail due to insufficient memory.
 In such cases, you can temporarily remove memory-heavy components, perform the TFT update,
 and then re-add them. See the [Memory Optimization](install.md#memory-optimization-strategies)
 section in the installation guide for detailed instructions.
+
+## Boot baud rate scan
+
+If the display does not respond at the configured baud rate (default 921600 bps) within
+a couple of minutes of boot, the panel automatically scans all Nextion-supported baud rates to
+find one where the display answers. This recovers panels in the following situations:
+
+- A previous TFT upload was interrupted, leaving the display at an unexpected rate
+- The display is running stock or legacy firmware (typically 9600 or 115200 bps)
+- A user manually changed the rate via Nextion commands
+
+When the scan finds a working rate, the panel continues operating at that rate for
+the current session and triggers a TFT upload. The new TFT enforces the configured
+rate on its next boot, so subsequent boots return to the configured rate automatically.
+
+If the scan finds no responsive rate, the panel power-cycles the display and repeats
+the wait-and-scan cycle indefinitely.
+
+The scan typically completes within seconds for known-good displays. Probe timing can
+be tuned via the `BAUD_RATE_PROBE_MS` substitution (default 1500 ms per rate).
+See the [Hardware UART configuration](hw_uart.md) for details.
 
 ## Troubleshooting
 

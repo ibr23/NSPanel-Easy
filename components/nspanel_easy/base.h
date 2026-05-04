@@ -33,15 +33,12 @@ struct SystemFlags {
   uint16_t ota_in_progress : 1;    ///< Over-the-air update active
   uint16_t display_sleep : 1;      ///< Display is in sleep mode
 
-  // Baud rate negotiation flags
-  uint16_t baud_fallback_active : 1;      ///< UART is operating at fallback baud rate
-  uint16_t baud_negotiation_enabled : 1;  ///< Baud rate negotiation is active (BAUD_RATE != BAUD_RATE_FALLBACK)
-
-  // Baud scan flag
-  uint16_t baud_scan_success : 1;  ///< Last baud rate scan found a responsive rate
+  // Baud rate flags
+  uint16_t baud_fallback_active : 1;  ///< UART is operating at non-primary rate (detected via scan)
+  uint16_t baud_scan_success : 1;     ///< Last baud rate scan found a responsive rate
 
   // Reserved flags
-  uint16_t reserved : 3;
+  uint16_t reserved : 4;
 
   // Default constructor - all flags start as false (zero-initialized)
   SystemFlags()
@@ -56,7 +53,6 @@ struct SystemFlags {
         ota_in_progress(0),
         display_sleep(0),
         baud_fallback_active(0),
-        baud_negotiation_enabled(0),
         baud_scan_success(0),
         reserved(0) {}
 };

@@ -317,7 +317,7 @@ NSPanel Easy bundles the following fonts in its display firmware.
 Each font is used in accordance with its respective license,
 and the full license texts are included in the [`licenses/`](licenses/) directory.
 
-### Sarasa UI SemiBold
+### Sarasa Gothic
 
 Used for all display text, icon companion glyphs, and page indicators.
 

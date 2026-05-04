@@ -171,7 +171,7 @@ ota:
     password: !remove
 ```
 
-> [!ATTENTION]
+> [!IMPORTANT]
 > Be aware of the implications before removing components or settings.
 > Some of them are crucial for allowing your panel to interact correctly with the blueprint or for enabling ESPHome to install the firmware Over The Air.
 > Incorrect removals could render your panel unusable, potentially requiring a reflash via a serial cable.
@@ -252,7 +252,7 @@ api:
 
 Set IP address manually.
 
-> [!ATTENTION]
+> [!IMPORTANT]
 > At least one DNS server is required to enable TFT transfer directly from GitHub, otherwise use `nextion_update_url`.
 
 ```yaml
@@ -794,9 +794,9 @@ This is using ESPHome capability to prevents the two relays to be active at the 
 like to control a cover like discussed in
 [Blackymas/NSPanel_HA_Blueprint#965](https://github.com/Blackymas/NSPanel_HA_Blueprint/issues/965).
 
-> [!ATTENTION]
+> [!WARNING]
 > There are some considerations about using software interlocking on the [ESPHome GPIO Switch documentation](https://esphome.io/components/switch/gpio.html#interlocking).
-Please read that carefully to understand what this is doing.
+> Please read that carefully to understand what this is doing.
 
 ```yaml
 switch:

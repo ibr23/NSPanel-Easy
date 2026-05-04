@@ -262,9 +262,39 @@ The firmware installation process will take a few minutes.
 After completion, reassemble your panel and mount it back on the wall.
 Power it up, and it should appear online in the ESPHome Dashboard within a couple of minutes, running the latest firmware.
 
+#### What to Expect on First Boot
+
+After the firmware is flashed and the panel powers up for the first time, the system
+goes through several startup steps before the display becomes responsive. During this
+period — usually a couple of minutes — the ESPHome logs will show repeated warnings
+such as:
+
+```text
+[W][nextion:xxx]: Not connected
+```
+
+This is expected. The firmware first probes the configured UART baud rate and, if needed,
+runs a scan across Nextion-supported rates (including a display power-cycle),
+which can take some time on first boot, especially if the panel still has
+the original Sonoff firmware (which uses a different baud rate than NSPanel Easy).
+
+Once the baud rate is detected, the firmware checks the TFT version. If the version
+does not match what the firmware expects, auto-upload can start automatically when
+`upload_tft_automatically: true` and a valid non-blank **Display Model** is selected.
+The TFT transfer typically takes 10–20 minutes, and you can follow progress in ESPHome logs.
+
+> [!TIP]
+> Auto-upload of the TFT is enabled by default. To disable it, add the substitution
+> `upload_tft_automatically: false` to your ESPHome YAML and re-flash.
+
+If `upload_tft_automatically` is enabled and, after a few minutes, the panel is still
+showing only `Not connected` warnings with no upload start, see the
+[TFT Transfer Troubleshooting Guide](tft_upload.md).
+
 ### Integrating your panel to Home Assistant
 
-Once your panel loaded the new ESPHome firmware, it should be automatically detected by Home Assistant and you should get a notification about that.
+Once your panel loaded the new ESPHome firmware,
+it should be automatically detected by Home Assistant and you should get a notification about that.
 If that isn't happening, you can manually add it as a new integration with the following steps:
 > [!TIP]
 > You can use [this link](https://my.home-assistant.io/redirect/config_flow_start/?domain=esphome)
@@ -348,11 +378,11 @@ Make sure to select and upload the correct TFT file corresponding to your specif
 ### Select the right file
 
 Open the device's page under [ESPHome integration's page](https://my.home-assistant.io/redirect/integration/?domain=esphome)
-and look for **Update TFT display** and **Update TFT display - Model** under the **Configuration** area.
+and look for **Update TFT display** and **Display Model** under the **Configuration** area.
 
 ![image](pics/ha_device_configuration_tft_upload_controls.png)
 
-Expand the **Update TFT display - Model** control and find the model that better fits your panel:
+Expand the **Display Model** control and find the model that better fits your panel:
 
 ![image](pics/ha_device_configuration_tft_upload_model.png)
 
@@ -367,10 +397,6 @@ The options are:
   instructions. Useful for first-time installations to clear the Nextion Active Reparse Mode
   left by Sonoff's original firmware or other custom implementations before uploading the
   full TFT file.
-- **Custom TFT URL (`nextion_update_url` substitution):** If you set `nextion_update_url`,
-  ESPHome bypasses automatic model/version URL building and uses that exact file URL. This is
-  a configuration override, not a model-selector option. See the
-  [Upload TFT Add-on documentation](addon_upload_tft.md) for details.
 
 ### Uploading to Nextion
 

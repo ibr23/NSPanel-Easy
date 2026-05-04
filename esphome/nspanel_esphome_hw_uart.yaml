@@ -13,9 +13,9 @@ substitutions:
   ## local yaml substitutions ##
   ##############################
   BAUD_RATE: "921600"                 # Target operating baud rate
-  BAUD_RATE_FALLBACK: "115200"        # Fallback for stock/legacy Nextion firmware
-  BAUD_RATE_UPGRADE_RETRIES: "3"      # Max renegotiation attempts back to primary rate
-  BAUD_RATE_UPGRADE_PROBE_MS: "5000"  # Probe window after baud upgrade command (ms)
+  BAUD_RATE_PROBE_MS: 1500            # Per-rate probe window during baud scan (ms)
+  BAUD_RATE_TIMEOUT: 11s              # Wait at primary rate before triggering baud scan
+  BAUD_RATE_DELAY_AFTER_POWER_ON: 2s  # Delay after display power-on before probing
   GPIO_DISPLAY_NEXTION_RX_PIN: 17
   GPIO_DISPLAY_NEXTION_TX_PIN: 16
   TAG_HW_UART: nspanel.hw.uart
@@ -27,272 +27,180 @@ esphome:
 
 script:
   # ---------------------------------------------------------------------------
-  # baud_negotiate
+  # baud_scan
   #
-  # Called when the Nextion fails to set up at BAUD_RATE (primary rate).
-  # Switches the ESP UART to BAUD_RATE_FALLBACK, power-cycles the display,
-  # and waits for on_setup to fire at the fallback rate.
+  # Power-cycles the Nextion display and scans Nextion-supported baud rates
+  # for a response. On success, switches the ESP UART to the discovered rate
+  # and updates system_flags accordingly.
   #
-  # On fallback success:
-  #   version_tft == 0  -> stock or foreign TFT; stay at fallback and delegate
-  #                         reparse exit to upload_tft as normal.
-  #   version_tft  > 0  -> old NSPanel Easy / Blackymas TFT (program.s = 115200);
-  #                         hand off to baud_upgrade to renegotiate primary rate.
+  # Scan order: ${BAUD_RATE} is tried first (matches user's primary preference).
+  # When ${BAUD_RATE} != 921600, 921600 is tried second since it is the most
+  # common rate for new TFTs. The remaining rates follow Nextion-supported
+  # rates ordered by likelihood of use in NSPanel Easy installs.
   #
-  # On fallback failure:
-  #   Exit silently; the wait_for_display reboot loop takes over.
+  # On success: baud_scan_success = true, UART set to detected rate,
+  #             baud_fallback_active set if detected rate != ${BAUD_RATE}.
+  # On failure: baud_scan_success = false, UART restored to ${BAUD_RATE}.
+  #
+  # This script power-cycles the display itself; callers do not need to.
   # ---------------------------------------------------------------------------
-  - id: baud_negotiate
+  - id: baud_scan
     mode: single
     then:
       - lambda: |-
-          #if ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
-            if (!system_flags.baud_negotiation_enabled) {
-              ESP_LOGW("${TAG_HW_UART}", "Baud negotiate: called with negotiation disabled - stopping");
-              baud_negotiate->stop();
-              return;
-            }
-            ESP_LOGW("${TAG_HW_UART}", "Baud negotiate: primary rate %" PRIu32 " bps failed",
-                                        static_cast<uint32_t>(${BAUD_RATE}));
-            ESP_LOGI("${TAG_HW_UART}", "Baud negotiate: switching UART to fallback %" PRIu32 " bps",
-                                        static_cast<uint32_t>(${BAUD_RATE_FALLBACK}));
-            boot_log->execute("Baud", "Trying fallback rate");
+          ESP_LOGI("${TAG_HW_UART}", "Baud scan: starting");
+          boot_log->execute("Baud", "Scanning baud rates");
 
-            // Flush RX before sending the rate-change command
+      # Power-cycle the display to ensure a clean UART state
+      - switch.turn_off: screen_power
+      - delay: 2s
+      - switch.turn_on: screen_power
+      - delay: ${BAUD_RATE_DELAY_AFTER_POWER_ON}
+
+      - lambda: |-
+          // Scan order: primary first, then 921600 (if not already primary),
+          // then the rest of Nextion-supported rates ordered by likelihood.
+          static const uint32_t BAUD_RATES[] = {
+              ${BAUD_RATE},
+              #if ${BAUD_RATE} != 921600
+                921600,
+              #endif  // ${BAUD_RATE} != 921600
+              #if ${BAUD_RATE} != 115200
+                115200,
+              #endif  // ${BAUD_RATE} != 115200
+              #if ${BAUD_RATE} != 9600
+                9600,
+              #endif  // ${BAUD_RATE} != 9600
+              #if ${BAUD_RATE} != 230400
+                230400,
+              #endif  // ${BAUD_RATE} != 230400
+              #if ${BAUD_RATE} != 57600
+                57600,
+              #endif  // ${BAUD_RATE} != 57600
+              #if ${BAUD_RATE} != 38400
+                38400,
+              #endif  // ${BAUD_RATE} != 38400
+              #if ${BAUD_RATE} != 256000
+                256000,
+              #endif  // ${BAUD_RATE} != 256000
+              #if ${BAUD_RATE} != 512000
+                512000,
+              #endif  // ${BAUD_RATE} != 512000
+              #if ${BAUD_RATE} != 250000
+                250000,
+              #endif  // ${BAUD_RATE} != 250000
+              #if ${BAUD_RATE} != 19200
+                19200,
+              #endif  // ${BAUD_RATE} != 19200
+              #if ${BAUD_RATE} != 31250
+                31250,
+              #endif  // ${BAUD_RATE} != 31250
+              #if ${BAUD_RATE} != 4800
+                4800,
+              #endif  // ${BAUD_RATE} != 4800
+              #if ${BAUD_RATE} != 2400
+                2400,
+              #endif  // ${BAUD_RATE} != 2400
+          };
+          static const size_t BAUD_RATE_COUNT = sizeof(BAUD_RATES) / sizeof(BAUD_RATES[0]);
+
+          bool found = false;
+
+          for (size_t i = 0; i < BAUD_RATE_COUNT && !found; ++i) {
+            const uint32_t rate = BAUD_RATES[i];
+            ESP_LOGI("${TAG_HW_UART}", "Baud scan: trying %" PRIu32 " bps", rate);
+
+            // Switch ESP UART to candidate rate
+            tf_uart->set_baud_rate(rate);
+            tf_uart->load_settings();
+
+            // Flush any RX noise
+            uint32_t flush_until = millis() + 100;
+            while (millis() < flush_until) {
+              while (tf_uart->available()) {
+                uint8_t discard;
+                tf_uart->read_byte(&discard);
+              }
+              delay(1);
+              App.feed_wdt();
+            }
+
+            // Exit reparse mode first - stock/legacy TFTs may be in reparse mode
+            // where ASCII commands are silently discarded. The exit-reparse magic
+            // sequence works regardless of the current mode.
+            disp1->set_protocol_reparse_mode(false);  // Calls exit_reparse_mode_ internally; harmless if already out
+
+            // Then send our probe directly via UART, bypassing the Nextion component
+            // queue (which may drop commands while disconnected).
+            const char probe_cmd[] = "get sleep\xFF\xFF\xFF";
+            tf_uart->write_array(reinterpret_cast<const uint8_t *>(probe_cmd),
+                                sizeof(probe_cmd) - 1);
+            tf_uart->flush();
+            ESP_LOGD("${TAG_HW_UART}", "Baud scan: probe sent (%zu bytes)",
+                    sizeof(probe_cmd) - 1);
+
+            // Spin waiting for response, log all bytes received
+            const uint32_t probe_until = millis() + ${BAUD_RATE_PROBE_MS};
+            bool got_response = false;
+            uint32_t total_bytes = 0;
+            char rx_log[96] = {0};
+            size_t rx_log_idx = 0;
+            while (millis() < probe_until) {
+              while (tf_uart->available() > 0) {
+                uint8_t b;
+                tf_uart->read_byte(&b);
+                ++total_bytes;
+                if (rx_log_idx < sizeof(rx_log) - 4) {
+                  rx_log_idx += snprintf(&rx_log[rx_log_idx],
+                                        sizeof(rx_log) - rx_log_idx,
+                                        "%02X ", b);
+                }
+                got_response = true;
+              }
+              delay(1);
+              App.feed_wdt();
+            }
+            if (total_bytes > 0) {
+              ESP_LOGI("${TAG_HW_UART}", "Baud scan: rx %" PRIu32 " bytes at %" PRIu32 " bps: %s",
+                                          total_bytes, rate, rx_log);
+            }
+
+            // Flush probe response
             while (tf_uart->available()) {
               uint8_t discard;
               tf_uart->read_byte(&discard);
             }
 
-            // Instruct Nextion to switch to fallback rate (session only)
-            disp1->send_command_printf("baud=%" PRIu32, static_cast<uint32_t>(${BAUD_RATE_FALLBACK}));
-          #else
-            ESP_LOGW("${TAG_HW_UART}", "Baud negotiate: called with equal rates - stopping");
-            baud_negotiate->stop();
-          #endif  // ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
-
-      # Wait for TX to drain and Nextion to finish transmitting at old rate
-      - script.execute: wait_for_uart_drain
-      - script.wait: wait_for_uart_drain
-      - delay: 150ms
-
-      - lambda: |-
-          #if ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
-            // Switch ESP UART to fallback rate
-            tf_uart->set_baud_rate(${BAUD_RATE_FALLBACK});
-            tf_uart->load_settings();
-            baud_rate_active->update();
-
-            // Synchronously flush RX - absorbs post-switch noise and Nextion
-            // restart bytes before the component resumes parsing
-            const uint32_t flush_until = millis() + 500;
-            uint32_t discarded = 0;
-            while (millis() < flush_until) {
-              while (tf_uart->available()) {
-                uint8_t discard;
-                tf_uart->read_byte(&discard);
-                ++discarded;
-              }
-              delay(1);
+            if (got_response) {
+              ESP_LOGI("${TAG_HW_UART}", "Baud scan: found active rate %" PRIu32 " bps", rate);
+              found = true;
+            } else {
+              ESP_LOGD("${TAG_HW_UART}", "Baud scan: no response at %" PRIu32 " bps", rate);
+              delay(50);
               App.feed_wdt();
             }
-            if (discarded > 0)
-              ESP_LOGD("${TAG_HW_UART}", "Baud negotiate: flushed %" PRIu32 " rx byte(s) post-switch", discarded);
-          #endif  // ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
-
-      # Power-cycle so the Nextion re-sends its init sequence at fallback rate
-      - switch.turn_off: screen_power
-      - delay: 2s
-      - switch.turn_on: screen_power
-
-      - wait_until:
-          condition:
-            - lambda: return disp1->is_setup();
-          timeout: 19s
-
-      - if:
-          condition:
-            - lambda: return !disp1->is_setup();
-          then:
-            - lambda: |-
-                ESP_LOGE("${TAG_HW_UART}", "Baud negotiate: fallback rate also failed");
-                boot_log->execute("Baud", "Fallback also failed");
-          else:
-            - lambda: |-
-                system_flags.baud_fallback_active = true;
-                system_flags.baud_rate_set = true;
-                ESP_LOGW("${TAG_HW_UART}", "Baud negotiate: connected at fallback %" PRIu32 " bps",
-                                            static_cast<uint32_t>(${BAUD_RATE_FALLBACK}));
-                boot_log->execute("Baud", "Connected at fallback rate");
-            - script.execute: wait_for_version_tft
-            - script.wait: wait_for_version_tft
-            - if:
-                condition:
-                  - lambda: |-
-                      if (version_tft->state.empty()) return false;
-                      int major = 0;
-                      sscanf(version_tft->state.c_str(), "%d", &major);
-                      return major > 0;
-                then:
-                  - script.execute: baud_upgrade
-                  - script.wait: baud_upgrade
-                else:
-                  - lambda: |-
-                      ESP_LOGI("${TAG_HW_UART}", "Baud negotiate: stock/foreign TFT (version=0), "
-                                                "staying at fallback rate; upload_tft handles reparse exit");
-                      boot_log->execute("Baud", "Stock TFT - stay at fallback");
-
-  # ---------------------------------------------------------------------------
-  # baud_upgrade
-  #
-  # Called after a successful fallback connection with our TFT confirmed
-  # (version_tft > 0, program.s still sets 115200). Sends the session-only
-  # Nextion baud command, switches the ESP UART, then probes for any response
-  # bytes within BAUD_RATE_UPGRADE_PROBE_MS to confirm the switch succeeded.
-  #
-  # Uses `baud` (session only), NOT `bauds` (flash write). The new TFT's
-  # program.s will enforce BAUD_RATE on every subsequent boot, so no
-  # persistent write is needed.
-  #
-  # Retries up to BAUD_RATE_UPGRADE_RETRIES times. On exhaustion, stays at
-  # the fallback rate for this session and logs a warning.
-  # ---------------------------------------------------------------------------
-  - id: baud_upgrade
-    mode: single
-    then:
-      - lambda: |-
-          #if ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
-            if (!system_flags.baud_negotiation_enabled) {
-              ESP_LOGW("${TAG_HW_UART}", "Baud upgrade: called with negotiation disabled - stopping");
-              baud_upgrade->stop();
-              return;
-            }
-            ESP_LOGI("${TAG_HW_UART}", "Baud upgrade: attempting to upgrade to %" PRIu32 " bps",
-                                        static_cast<uint32_t>(${BAUD_RATE}));
-            boot_log->execute("Baud", "Upgrading to primary rate");
-          #else
-            ESP_LOGW("${TAG_HW_UART}", "Baud upgrade: called with equal rates - stopping");
-            baud_upgrade->stop();
-          #endif  // ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
-
-      - repeat:
-          count: ${BAUD_RATE_UPGRADE_RETRIES}
-          then:
-            - lambda: |-
-                if (!system_flags.baud_fallback_active) return;
-
-                ESP_LOGD("${TAG_HW_UART}", "Baud upgrade: attempt %u / %u",
-                                            static_cast<unsigned>(iteration + 1u),
-                                            static_cast<unsigned>(${BAUD_RATE_UPGRADE_RETRIES}));
-                ESP_LOGD("${TAG_HW_UART}", "Baud upgrade: waiting for queues to drain");
-
-            # Wait for both the Nextion command queue and the UART RX buffer
-            # to be empty before issuing the baud change command. The boot
-            # sequence may have queued many display commands that must complete
-            # at the current rate before we switch.
-            - wait_until:
-                condition:
-                  - lambda: return (disp1->queue_size() == 0 && tf_uart->available() == 0);
-                timeout: 10s
-
-            - lambda: |-
-                if (!system_flags.baud_fallback_active) return;
-
-                // Flush any residual RX bytes after queue drain
-                while (tf_uart->available()) {
-                  uint8_t discard;
-                  tf_uart->read_byte(&discard);
-                }
-
-                // Instruct Nextion to switch to primary rate (session only)
-                disp1->send_command_printf("baud=%" PRIu32, static_cast<uint32_t>(${BAUD_RATE}));
-
-            # Wait for TX to drain and Nextion to finish at old rate
-            - script.execute: wait_for_uart_drain
-            - script.wait: wait_for_uart_drain
-            - delay: 150ms
-
-            - lambda: |-
-                if (!system_flags.baud_fallback_active) return;
-
-                // Switch ESP UART to primary rate
-                tf_uart->set_baud_rate(${BAUD_RATE});
-                tf_uart->load_settings();
-                baud_rate_active->update();
-
-                // Synchronously flush RX post-switch noise
-                const uint32_t flush_until = millis() + 500;
-                uint32_t discarded = 0;
-                while (millis() < flush_until) {
-                  while (tf_uart->available()) {
-                    uint8_t discard;
-                    tf_uart->read_byte(&discard);
-                    ++discarded;
-                  }
-                  delay(1);
-                  App.feed_wdt();
-                }
-                if (discarded > 0)
-                  ESP_LOGD("${TAG_HW_UART}", "Baud upgrade: flushed %" PRIu32 " rx byte(s) post-switch", discarded);
-
-                // Send probe and wait synchronously for a response.
-                // We must not yield to the main loop here — the component's
-                // RX processing would consume the response bytes before we
-                // can see them via tf_uart->available().
-                ESP_LOGD("${TAG_HW_UART}", "Baud upgrade: sending probe");
-                disp1->send_command("get sleep");
-
-                // Spin for up to BAUD_RATE_UPGRADE_PROBE_MS waiting for bytes
-                const uint32_t probe_until = millis() + ${BAUD_RATE_UPGRADE_PROBE_MS};
-                bool got_response = false;
-                while (millis() < probe_until) {
-                  if (tf_uart->available() > 0) {
-                    got_response = true;
-                    break;
-                  }
-                  delay(1);
-                  App.feed_wdt();
-                }
-
-                if (got_response) {
-                  // Flush probe response bytes
-                  while (tf_uart->available()) {
-                    uint8_t discard;
-                    tf_uart->read_byte(&discard);
-                  }
-                  system_flags.baud_fallback_active = false;
-                  ESP_LOGI("${TAG_HW_UART}", "Baud upgrade: success - now at %" PRIu32 " bps",
-                                              static_cast<uint32_t>(${BAUD_RATE}));
-                  boot_log->execute("Baud", "Upgraded to primary rate");
-                } else {
-                  ESP_LOGW("${TAG_HW_UART}", "Baud upgrade: probe failed on attempt %u - reverting UART",
-                                              static_cast<unsigned>(iteration + 1u));
-                  tf_uart->set_baud_rate(${BAUD_RATE_FALLBACK});
-                  tf_uart->load_settings();
-                  baud_rate_active->update();
-                  disp1->send_command_printf("baud=%" PRIu32, static_cast<uint32_t>(${BAUD_RATE_FALLBACK}));
-                }
-
-            - delay: 500ms
-
-      - lambda: |-
-          if (system_flags.baud_fallback_active) {
-            ESP_LOGW("${TAG_HW_UART}", "Baud upgrade: all %u retries exhausted - "
-                                      "staying at fallback %" PRIu32 " bps for this session",
-                                      static_cast<unsigned>(${BAUD_RATE_UPGRADE_RETRIES}),
-                                      static_cast<uint32_t>(${BAUD_RATE_FALLBACK}));
-            boot_log->execute("Baud", "Upgrade failed - staying at fallback");
           }
 
-  - id: !extend boot_preparation
-    then:
-      - lambda: |-
-          #if ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
-            system_flags.baud_negotiation_enabled = true;
-          #else
-            system_flags.baud_negotiation_enabled = false;
-          #endif  // ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
-          ESP_LOGD("${TAG_HW_UART}", "Baud rate negotiation: %s", YESNO(system_flags.baud_negotiation_enabled));
+          if (!found) {
+            ESP_LOGE("${TAG_HW_UART}", "Baud scan: no response at any rate");
+            // Restore compiled primary rate so the system is not left stranded
+            tf_uart->set_baud_rate(${BAUD_RATE});
+            tf_uart->load_settings();
+          }
+
+          // Persist scan outcome for callers
+          system_flags.baud_scan_success = found;
+          system_flags.baud_fallback_active = found && (tf_uart->get_baud_rate() != ${BAUD_RATE});
+          system_flags.baud_rate_set = found;
+
+          // Update baud rate sensor to reflect current UART state
+          baud_rate_active->update();
+
+          if (found) {
+            boot_log->execute("Baud", "Scan complete - rate found");
+          } else {
+            boot_log->execute("Baud", "Scan complete - no rate found");
+          }
 
   - id: !extend dump_config
     then:
@@ -302,21 +210,23 @@ script:
                         tf_uart->get_baud_rate());
           ESP_LOGCONFIG("${TAG_HW_UART}", "  Baud rate (compiled): %" PRIu32 " bps",
                         static_cast<uint32_t>(${BAUD_RATE}));
-          #if ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
-            ESP_LOGCONFIG("${TAG_HW_UART}", "  Baud rate (fallback): %" PRIu32 " bps",
-                          static_cast<uint32_t>(${BAUD_RATE_FALLBACK}));
-            if (system_flags.baud_fallback_active)
-              ESP_LOGW("${TAG_HW_UART}", "  Mode: FALLBACK");
-            else
-              ESP_LOGCONFIG("${TAG_HW_UART}", "  Mode: primary rate");
-          #endif  // ${BAUD_RATE} != ${BAUD_RATE_FALLBACK}
+          ESP_LOGCONFIG("${TAG_HW_UART}", "  Scan trigger:         ${BAUD_RATE_TIMEOUT}");
+          ESP_LOGCONFIG("${TAG_HW_UART}", "  Power-on delay:       ${BAUD_RATE_DELAY_AFTER_POWER_ON}");
+          ESP_LOGCONFIG("${TAG_HW_UART}", "  Probe window:         %u ms",
+                        static_cast<unsigned>(${BAUD_RATE_PROBE_MS}));
+          if (system_flags.baud_fallback_active) {
+            ESP_LOGW("${TAG_HW_UART}", "  Mode: FALLBACK (detected via scan)");
+          } else if (tf_uart->get_baud_rate() == static_cast<uint32_t>(${BAUD_RATE})) {
+            ESP_LOGCONFIG("${TAG_HW_UART}", "  Mode: primary rate");
+          } else {
+            ESP_LOGW("${TAG_HW_UART}", "  Mode: non-primary rate (no scan run)");
+          }
           ESP_LOGCONFIG("${TAG_HW_UART}", "  Queue size: %d", tf_uart->available());
 
   - id: !extend stop_all
     then:
       - lambda: |-
-          baud_negotiate->stop();
-          baud_upgrade->stop();
+          baud_scan->stop();
           wait_for_uart_drain->stop();
 
   - id: wait_for_uart_drain

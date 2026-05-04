@@ -164,7 +164,7 @@ script:  # Scripts
           count: 60  # seconds
           then:
             - lambda: |-
-                if (api_server->is_connected()) wait_for_api->stop();
+                if (api_server->is_connected_with_state_subscription()) wait_for_api->stop();
                 if (iteration % 5 == 1) boot_log->execute("Boot", "Waiting for API");
             - delay: 1s
 

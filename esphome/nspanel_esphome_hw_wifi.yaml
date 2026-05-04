@@ -65,7 +65,7 @@ script:
       - lambda: |-
           // Determine current icon
           const char* icon_new = wifi_component->is_connected() ?
-            (api_server->is_connected() ?
+            (api_server->is_connected_with_state_subscription() ?
               (system_flags.blueprint_ready ?
                 Icons::MDI_WIFI :
                 Icons::MDI_HOME_ASSISTANT) :
@@ -82,7 +82,9 @@ script:
           #if ${_WIFI_ICON_COLORS}
           // Determine new color based on connection state and WiFi signal strength
           uint16_t color_new;
-          if (wifi_component->is_connected() && api_server->is_connected() && system_flags.blueprint_ready) {
+          if (wifi_component->is_connected() &&
+              api_server->is_connected_with_state_subscription() &&
+              system_flags.blueprint_ready) {
             // All systems operational - color-code based on RSSI signal strength
             const int rssi = wifi_component->wifi_rssi();
             if (rssi >= -60) {

@@ -35,8 +35,9 @@ that text will be replaced by the IP address, which can be useful for troublesho
 #### Baud rate (bps)
 
 On the top right corner, it’s shown the baud rate used by the display to communicate to ESPHome.
-By default, all the communication should happen at 115200 bps, but as 921600 bps is also supported,
-the display will alternate between these 2 rates every 30 seconds until ESPHome gets connected.
+If the display does not respond at the configured rate (default 921600 bps) within a few minutes,
+the panel will run a baud scan across the supported Nextion rates.
+This typically completes within seconds for known-good displays.
 
 #### Framework
 
@@ -72,7 +73,7 @@ You can use this button to force a reboot of your panel. This button is availabl
 | Possible causes | Suggestions |
 | :-- | :-- |
 | You may have an older version of ESPHome installed or ESPHome is not installed. | Make sure you have the latest version of ESPHome and flash your device again. |
-| Baud rate mismatch. | The default baud rate for this project is 115200 bps, however your device might be set with a different baud rate. Use the baud rate selector under your device's page to adjust to the same baud rate as the display, then change it back to 115200 bps, which will instruct the display to start using that. |
+| Baud rate mismatch. | The default baud rate for this project is 921600 bps. The panel will automatically scan all supported rates if the display does not respond within 41 seconds. If the scan does not resolve the issue, check that your display firmware was built for this project. |
 <!-- markdownlint-enable MD013 MD033 -->
 
 ### Blueprint is not detected
@@ -88,10 +89,10 @@ In some cases you can also see duplicate entities on the device's page in Home A
 <!-- markdownlint-disable MD013 MD033 -->
 | Possible causes | Suggestions |
 | :-- | :-- |
-| You may have an older version of the blueprint installed or the blueprint isn't installed into your Home Assistant. | [Install the blueprint](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Fedwardtfn%2FNSPanel-Easy%2Frefs%2Ftags%2Flatest%2Fnspanel_easy_blueprint.yaml).<br>[Update the blueprint](howto.md#update-blueprint).|
+| You may have an older version of the blueprint installed or the blueprint isn't installed into your Home Assistant. | [Install the blueprint](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fraw.githubusercontent.com%2Fedwardtfn%2FNSPanel-Easy%2Frefs%2Ftags%2Flatest%2Fnspanel_easy_blueprint.yaml).<br>[Update the blueprint](howto.md#update-blueprint). |
 | You don't have an automation created using the blueprint. | On Home Assistant, go to **Settings** --> **Automations & Scenes** --> **Blueprints** --> **NSPanel Configuration** --> **CREATE AUTOMATION** and follow the [instructions to setup your automation](blueprint.md).<br>**Attention!!** You need one automation per panel, if you have more than one panel set. |
 | Your panel is not selected in the automation. | Open the automation related to your panel and make sure the right device is set on the **NSPanel device** field. |
-| Your panel's connection to Home Assistant may have issues.<br>This could be from an invalid entity Id (e.g. ending with `_2`), or some action missing registration. | Reconnect the Panel's device to Home Assistant:<br>1. Go to **Settings** --> **Devices & services** --> **ESPHome**<br>2. Delete the device<br>3. Restart Home Assistant host<br>4. Go back to **Settings** --> **Devices & services**<br>5. Click **Add integration**<br>6. Select **ESPHome**<br>7. Enter your panel's hostname or IP address.|
+| Your panel's connection to Home Assistant may have issues.<br>This could be from an invalid entity Id (e.g. ending with `_2`), or some action missing registration. | Reconnect the Panel's device to Home Assistant:<br>1. Go to **Settings** --> **Devices & services** --> **ESPHome**<br>2. Delete the device<br>3. Restart Home Assistant host<br>4. Go back to **Settings** --> **Devices & services**<br>5. Click **Add integration**<br>6. Select **ESPHome**<br>7. Enter your panel's hostname or IP address. |
 <!-- markdownlint-enable MD013 MD033 -->
 
 ## Additional Tips and Resources

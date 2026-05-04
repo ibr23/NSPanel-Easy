@@ -117,7 +117,8 @@ script:
             relay_1->toggle();
             return;
           }
-          if (id(hardware_settings).relay1_fallback and (!api_server->is_connected() or !wifi_component->is_connected())) {
+          if (id(hardware_settings).relay1_fallback and
+              (!api_server->is_connected_with_state_subscription() or !wifi_component->is_connected())) {
             relay_1->toggle();
             return;
           }
@@ -129,7 +130,8 @@ script:
             relay_2->toggle();
             return;
           }
-          if (id(hardware_settings).relay2_fallback and (!api_server->is_connected() or !wifi_component->is_connected())) {
+          if (id(hardware_settings).relay2_fallback and
+              (!api_server->is_connected_with_state_subscription() or !wifi_component->is_connected())) {
             relay_2->toggle();
             return;
           }

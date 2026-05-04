@@ -178,9 +178,9 @@ Text date
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 41
+        x coordinate            : 0
         y coordinate            : 117
-        Width                   : 230
+        Width                   : 271
         Height                  : 30
         Effect                  : load
         Effect Priority         : 0

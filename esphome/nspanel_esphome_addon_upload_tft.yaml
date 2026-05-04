@@ -13,7 +13,6 @@ substitutions:
   nextion_update_base_url: "https://raw.githubusercontent.com/edwardtfn/NSPanel-Easy/v${version}/hmi"
   nextion_update_url: ""
   upload_tft_automatically: true
-  upload_tft_baud_rate: ${BAUD_RATE}
   upload_tft_wait_ms_after_setup: 29000  # 29sec
   ##############################################
   TAG_UPLOAD_TFT: "nspanel.addon.upload_tft"
@@ -49,113 +48,42 @@ substitutions:
                   upload_tft->execute(url.c_str());
                 }
   include_button_scan_baud_rate: false
-  _pkg_button_scan_baud_rate:  # To do: move this to an external package after v2024.6.0
-    # NSPanel Easy - Baud Rate Scanner (Diagnostic Add-on)
-    #
-    # Usage: Paste this into your local panel's YAML file.
-    #
-    # This add-on adds a button that:
-    #   1. Power-cycles the Nextion display
-    #   2. Scans all Nextion-supported baud rates for a response
-    #   3. If found, switches the ESP UART to that rate and triggers TFT upload
-    #
-    # Scan order is optimized for NSPanel Easy common cases first.
+  _pkg_button_scan_baud_rate:
     button:
-      - id: baud_scan
+      - id: baud_scan_button
         name: Scan baud rate
         platform: template
         icon: mdi:magnify
+        internal: false
         entity_category: diagnostic
         on_press:
+          - script.execute: baud_scan_with_upload
+
+    # NSPanel Easy - Baud Rate Scanner (Diagnostic Add-on)
+    #
+    # Usage: Set substitution include_button_scan_baud_rate: true on your
+    # local panel YAML to compile this button.
+    #
+    # The button delegates to baud_scan_with_upload, which runs the shared
+    # baud_scan script and, on success, triggers a TFT upload at the
+    # discovered rate. The script is stoppable via stop_all.
+    script:
+      - id: baud_scan_with_upload
+        mode: single
+        then:
+          - script.execute: baud_scan
+          - script.wait: baud_scan
           - lambda: |-
-              ESP_LOGI("${TAG_UPLOAD_TFT}", "Baud scan: starting");
-
-          # Power-cycle the display to ensure a clean UART state
-          - switch.turn_off: screen_power
-          - delay: 2s
-          - switch.turn_on: screen_power
-          - delay: 2s
-
-          - lambda: |-
-              static const uint32_t BAUD_RATES[] = {
-                  921600, 115200, 9600, 230400, 57600, 38400,
-                  256000, 512000, 250000, 19200, 31250, 4800, 2400
-              };
-              static const size_t BAUD_RATE_COUNT = sizeof(BAUD_RATES) / sizeof(BAUD_RATES[0]);
-              static const uint32_t PROBE_TIMEOUT_MS = 500;
-
-              bool found = false;
-
-              for (size_t i = 0; i < BAUD_RATE_COUNT && !found; ++i) {
-                const uint32_t rate = BAUD_RATES[i];
-                ESP_LOGI("${TAG_UPLOAD_TFT}", "Baud scan: trying %" PRIu32 " bps", rate);
-
-                // Switch ESP UART to candidate rate
-                tf_uart->set_baud_rate(rate);
-                tf_uart->load_settings();
-
-                // Flush any RX noise
-                uint32_t flush_until = millis() + 100;
-                while (millis() < flush_until) {
-                  while (tf_uart->available()) {
-                    uint8_t discard;
-                    tf_uart->read_byte(&discard);
-                  }
-                  delay(1);
-                  App.feed_wdt();
-                }
-
-                // Send probe
-                disp1->send_command("get sleep");
-
-                // Spin waiting for response
-                const uint32_t probe_until = millis() + PROBE_TIMEOUT_MS;
-                bool got_response = false;
-                while (millis() < probe_until) {
-                  if (tf_uart->available() > 0) {
-                    got_response = true;
-                    break;
-                  }
-                  delay(1);
-                  App.feed_wdt();
-                }
-
-                // Flush probe response
-                while (tf_uart->available()) {
-                  uint8_t discard;
-                  tf_uart->read_byte(&discard);
-                }
-
-                if (got_response) {
-                  ESP_LOGI("${TAG_UPLOAD_TFT}", "Baud scan: found active rate %" PRIu32 " bps", rate);
-                  found = true;
-                  // baud_rate_active text sensor updated after lambda
-                } else {
-                  ESP_LOGD("${TAG_UPLOAD_TFT}", "Baud scan: no response at %" PRIu32 " bps", rate);
-                  // Revert to a safe rate before next attempt
-                  tf_uart->set_baud_rate(${BAUD_RATE_FALLBACK});
-                  tf_uart->load_settings();
-                  delay(50);
-                  App.feed_wdt();
-                }
+              if (!system_flags.baud_scan_success) {
+                ESP_LOGW("${TAG_UPLOAD_TFT}", "Baud scan: no rate found, TFT upload skipped");
+                return;
               }
+              ESP_LOGI("${TAG_UPLOAD_TFT}", "Baud scan: triggering TFT upload");
+              tft_update->press();
 
-              if (!found) {
-                ESP_LOGE("${TAG_UPLOAD_TFT}", "Baud scan: no response at any rate");
-                // Restore compiled primary rate so the system is not left stranded
-                tf_uart->set_baud_rate(${BAUD_RATE});
-                tf_uart->load_settings();
-              }
-              // Persist scan outcome — used by the gate below
-              system_flags.baud_scan_success = found;
-
-              // Update baud rate sensor to reflect current UART state
-              baud_rate_active->update();
-              if (system_flags.baud_scan_success) {
-                ESP_LOGI("${TAG_UPLOAD_TFT}", "Baud scan: triggering TFT upload");
-                system_flags.baud_fallback_active = (tf_uart->get_baud_rate() != ${BAUD_RATE});
-                tft_update->press();
-              }
+      - id: !extend stop_all
+        then:
+          - lambda: baud_scan_with_upload->stop();
 
 packages:
   action_upload_tft: ${ _pkg_action_upload_tft if include_action_upload_tft else {} }
@@ -183,6 +111,8 @@ button:
 display:
   - id: !extend disp1
     exit_reparse_on_start: true
+    tft_upload_http_timeout: 10s
+    tft_upload_watchdog_timeout: 15s
     tft_url: "http://unused"  # This is an intentional placeholder URL and will be replaced dynamically
     on_setup:
       then:
@@ -194,6 +124,20 @@ display:
             const uint32_t target = ${upload_tft_wait_ms_after_setup};
             if (elapsed < target)
               ESP_LOGI("${TAG_UPLOAD_TFT}", "Starting auto-upload count down: %u sec", (target - elapsed) / 1000u);
+            #endif  // NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
+        - delay: !lambda |-
+            // Wait only when auto-upload is enabled
+            #if NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
+            const uint32_t elapsed = (uint32_t)(millis() - tft_upload_first_time_synced_ms);
+            const uint32_t target = ${upload_tft_wait_ms_after_setup};
+            return (elapsed < target) ? (target - elapsed) : 0;
+            #else
+            return 0;
+            #endif  // NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
+        - lambda: |-
+            // Triggers the auto-upload engine
+            #if NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
+            check_versions->execute(!blueprint_status_flags.version || version_tft->state.empty());
             #endif  // NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
 
 script:
@@ -250,9 +194,9 @@ script:
           timeout: 10s
       - delay: 2s
       - lambda: |-
-          const uint32_t upload_baud = system_flags.baud_fallback_active
-              ? static_cast<uint32_t>(${BAUD_RATE_FALLBACK})
-              : tf_uart->get_baud_rate();
+          // Always upload at the currently negotiated rate. The new TFT will
+          // enforce ${BAUD_RATE} on its next boot regardless of the upload rate.
+          const uint32_t upload_baud = tf_uart->get_baud_rate();
           ESP_LOGD("${TAG_UPLOAD_TFT}", "Starting TFT upload at %" PRIu32 " bps", upload_baud);
           tft_upload_result = disp1->upload_tft(upload_baud, !disp1->is_setup());
 

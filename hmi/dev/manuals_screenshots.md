@@ -36,38 +36,47 @@ progress.val=65
 
 ```nextion
 page home
-date.txt="Sunday, 29/11"
-outdoor_temp.txt="8.9°"
-time.txt="12:34"
-vis wifi_icon,1
-wifi_icon.txt=""
-weather.pic=11
-left_bt_text.txt="Ceiling lights"
-left_bt_pic.pic=32
-icon_top_01.txt=""
-right_bt_text.txt="Desk lights"
-icon_top_03.txt=""
-icon_top_03.pco=64164
-icon_top_06.txt=""
-icon_top_08.txt="侀"
-current_temp.txt="21.6 °C"
-indoortempicon.txt=""
-value01_state.txt="47%"
-value01_icon.txt=""
-bt_notific.txt=""
-vis bt_notific,1
-bt_qrcode.txt=""
-vis bt_qrcode,1
 bt_entities.txt=""
-vis bt_entities,1
-bt_alarm.txt=""
-bt_alarm.pco=19818
-vis bt_alarm,1
+bt_notific.txt=""
+bt_qrcode.txt=""
 button01.txt=""
 button02.txt=""
 button03.txt=""
-value03_state.txt="715 W"
+button07.pco=19818
+button07.txt=""
+chip01.pco=64164
+chip01.txt=""
+chip03.txt=""
+chip05.txt="侀"
+chip_relay1.txt=""
+date.txt="Sunday, November 29"
+indr_temp_icon.txt=""
+indr_temp.txt="21.6 °C"
+left_bt_text.txt="Ceiling lights"
+meridiem.txt="PM"
+outdoor_temp.txt="18.9°C"
+right_bt_text.txt="Desk lights"
+time.txt="12:34"
+value01_icon.txt=""
+value01.txt="47%"
 value03_icon.txt=""
+value03.txt="715 W"
+weather.pic=11
+wifi_icon.txt=""
+vis bt_entities,1
+vis bt_notific,1
+vis bt_qrcode,1
+vis button01,1
+vis button02,1
+vis button03,1
+vis button07,1
+vis indr_temp,1
+vis indr_temp_icon,1
+vis value01,1
+vis value01_icon,1
+vis value03,1
+vis value03_icon,1
+vis wifi_icon,1
 ```
 
 ![Home EU](../../docs/pics/eu_home.png)

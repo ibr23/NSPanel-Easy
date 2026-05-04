@@ -22,9 +22,19 @@ api:
   on_client_connected:
     then:
       - lambda: |-
-          update_flag_api_ready->execute();
           boot_log->execute("API", "Client connected");
-          // dump_config->execute();
+      - wait_until:
+          condition:
+            api.connected:
+              state_subscription_only: true
+          timeout: 30s
+      - lambda: |-
+          if (!api_server->is_connected_with_state_subscription()) {
+            ESP_LOGD("${TAG_API}", "Client connected but did not subscribe to states (likely logger-only)");
+            return;
+          }
+          boot_log->execute("API", "Home Assistant is connected");
+          update_flag_api_ready->execute();
 
   on_client_disconnected:
     then:
@@ -396,7 +406,7 @@ script:
     then:
       - lambda: |-
           // Report API status
-          if (api_server->is_connected()) {
+          if (api_server->is_connected_with_state_subscription()) {
             ESP_LOGCONFIG("${TAG_API}", "API: Connected");
           } else {
             ESP_LOGW("${TAG_API}", "API: DISCONNECTED");
@@ -440,13 +450,13 @@ script:
   - id: update_flag_api_ready
     then:
       - lambda: |-
-          disp1->send_command(api_server->is_connected() ? "api=1" : "api=0");
+          disp1->send_command(api_server->is_connected_with_state_subscription() ? "api=1" : "api=0");
 
   - id: !extend watchdog_round
     then:
       - lambda: |-
           update_flag_api_ready->execute();
-          if (!api_server->is_connected() and
+          if (!api_server->is_connected_with_state_subscription() and
               current_page_id != get_page_id("boot") and
               current_page_id != get_page_id("confirm") and
               current_page_id != get_page_id("home") and
