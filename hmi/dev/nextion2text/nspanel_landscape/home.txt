@@ -590,10 +590,10 @@ Text value04
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 314
-        y coordinate            : 5
-        Width                   : 100
-        Height                  : 25
+        x coordinate            : 303
+        y coordinate            : 2
+        Width                   : 119
+        Height                  : 30
         Effect                  : load
         Effect Priority         : 0
         Effect Time             : 300
@@ -617,7 +617,7 @@ Text value04_icon
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 416
+        x coordinate            : 422
         y coordinate            : 2
         Width                   : 30
         Height                  : 30
