@@ -142,6 +142,7 @@ script:
             // Spin waiting for response, log all bytes received
             const uint32_t probe_until = millis() + ${BAUD_RATE_PROBE_MS};
             bool got_response = false;
+            uint8_t consecutive_ff = 0;
             uint32_t total_bytes = 0;
             char rx_log[96] = {0};
             size_t rx_log_idx = 0;
@@ -156,10 +157,15 @@ script:
                                         "%02X ", b);
                 }
                 if (b == 0xFF) {
-                  got_response = true;
-                  break;
+                  if (++consecutive_ff >= 3) {
+                    got_response = true;
+                    break;
+                  }
+                } else {
+                  consecutive_ff = 0;
                 }
               }
+              if (got_response) break;
               delay(1);
               App.feed_wdt();
             }
