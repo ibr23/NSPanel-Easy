@@ -7059,8 +7059,10 @@ actions:
                               - '{{ nspanel_event.key is defined }}'
                               - '{{ nspanel_event.value is defined }}'
                               - '{{ nspanel_event.entity is defined }}'
+                          - variables:
+                              call_data: '{{ {nspanel_event.key: nspanel_event.value} }}'
                           - action: '{{ nspanel_event.action }}'
-                            data: {"{{ nspanel_event.key }}":"{{ nspanel_event.value }}"}
+                            data: '{{ call_data }}'
                             target:
                               entity_id: '{{ nspanel_event.entity }}'
                             continue_on_error: true
