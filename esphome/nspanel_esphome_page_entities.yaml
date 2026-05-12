@@ -106,7 +106,9 @@ script:
   - id: !extend page_home
     then:
       - lambda: |-
-          disp1->set_component_visibility("bt_entities", page_entities_enabled);
+          if (current_page_id == get_page_id("home")) {
+            disp1->set_component_visibility("bt_entities", page_entities_enabled);
+          }
 
   - id: !extend stop_page_constructors
     then:
