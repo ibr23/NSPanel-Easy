@@ -143,6 +143,17 @@ display:
             #endif  // NSPANEL_EASY_ADDON_UPLOAD_TFT_AUTOMATICALLY
 
 script:
+  - id: !extend action_component_text
+    then:
+      - lambda: |-
+          if (system_flags.tft_upload_active) return;
+          if (page != "mem") return;
+          if (txt.empty()) return;
+          if (component == "upload_tft") {
+            tft_upload_manual_request = true;
+            upload_tft->execute(txt.c_str());
+          }
+
   - id: !extend check_versions
     then:
       - lambda: |-
