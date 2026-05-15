@@ -115,9 +115,9 @@ Text temperature
         Dragging                : 0
         Send Component ID       : on press and release
         Opacity                 : 127
-        x coordinate            : 20
+        x coordinate            : 0
         y coordinate            : 256
-        Width                   : 100
+        Width                   : 140
         Height                  : 23
         Effect                  : load
         Effect Priority         : 0
