@@ -3,4 +3,5 @@ reviews:
   auto_review:
     ignore_title_keywords:
       - "[skip-versioning]"
+  pre_merge_checks_timeout_ms: 300000
 ...
