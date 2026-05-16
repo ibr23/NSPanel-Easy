@@ -446,5 +446,4 @@ text_sensor:
       then:
         - lambda: |-
             climate_embedded_visible = (x == "${CLIMATE_EMBEDDED_SENTINEL}");
-            disp1->send_command_printf("climate_embedded=%i", climate_embedded_visible ? 1 : 0);
 ...

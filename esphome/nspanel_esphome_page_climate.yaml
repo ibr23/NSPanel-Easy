@@ -91,6 +91,7 @@ script:
           if (page != "mem") return;
           if (component == "embedded_climate") {
             id(is_embedded_thermostat) = (val != 0);
+            disp1->send_command_printf("climate_embedded=%i", id(is_embedded_thermostat) ? 1 : 0);
           }
 
   - id: change_climate_state
@@ -146,10 +147,7 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
-          if (new_page_id != get_page_id("climate")) {
-            climate_main_from_home = false;
-            return;
-          }
+          if (new_page_id != get_page_id("climate")) return;
           page_climate->execute();
 
   - id: page_climate

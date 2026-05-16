@@ -378,14 +378,6 @@ script:
             disp1->set_backlight_brightness(brightness / 100.0f);
           }
 
-  - id: set_component_font_color_DEPRECATED
-    mode: single
-    parameters:
-      component_id: string
-      color: uint16_t
-    then:
-      - lambda: disp1->set_component_font_color(component_id.c_str(), color);
-
   - id: !extend stop_all
     then:
       - lambda: |-
@@ -395,7 +387,6 @@ script:
           page_change->stop();
           reset_globals->stop();
           set_brightness->stop();
-          set_component_font_color_DEPRECATED->stop();
           theme_update->stop();
           theme_update_all->stop();
           theme_update_dark->stop();
