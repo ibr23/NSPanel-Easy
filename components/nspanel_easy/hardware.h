@@ -71,9 +71,9 @@ inline HardwareSettings from_raw(uint8_t raw) {
  * @return Raw byte value with all settings packed as bitfields
  */
 inline uint8_t to_raw(const HardwareSettings &s) {
-  return  (s.button_left_enabled << 0) | (s.button_left_state << 1) | (s.button_right_enabled << 2) |
-          (s.button_right_state << 3)  | (s.relay1_local << 4)      | (s.relay1_fallback << 5)      |
-          (s.relay2_local << 6)        | (s.relay2_fallback << 7);
+  return (s.button_left_enabled << 0) | (s.button_left_state << 1) | (s.button_right_enabled << 2) |
+         (s.button_right_state << 3) | (s.relay1_local << 4) | (s.relay1_fallback << 5) | (s.relay2_local << 6) |
+         (s.relay2_fallback << 7);
 }
 
 /**

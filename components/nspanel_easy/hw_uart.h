@@ -33,8 +33,8 @@ namespace esphome::nspanel_easy {
  *       rate. Callers that prepend their own target accept the cost of
  *       probing that rate twice in the worst case.
  */
-constexpr uint32_t NEXTION_SUPPORTED_BAUD_RATES[] = { 921600, 115200, 9600,  57600,  38400, 19200, 256000,
-                                                      512000,   4800, 2400, 230400, 250000, 31250 };
+constexpr uint32_t NEXTION_SUPPORTED_BAUD_RATES[] = {921600, 115200, 9600, 57600,  38400,  19200, 256000,
+                                                     512000, 4800,   2400, 230400, 250000, 31250};
 
 constexpr size_t NEXTION_SUPPORTED_BAUD_RATES_COUNT =
     sizeof(NEXTION_SUPPORTED_BAUD_RATES) / sizeof(NEXTION_SUPPORTED_BAUD_RATES[0]);
