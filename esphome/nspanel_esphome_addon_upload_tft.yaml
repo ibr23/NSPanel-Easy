@@ -373,6 +373,10 @@ script:
                                         esp_get_free_heap_size(), heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
           #endif  // USE_ESP32_BLE
 
+      - lambda: |-
+          ESP_LOGD("${TAG_UPLOAD_TFT}", "Mark boot as successful");
+      - safe_mode.mark_successful
+
       ### Attempt twice
       - script.execute: upload_tft_sequence_attempt
       - script.wait: upload_tft_sequence_attempt
