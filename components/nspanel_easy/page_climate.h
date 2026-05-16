@@ -10,6 +10,7 @@
 namespace esphome::nspanel_easy {
 
 extern bool climate_main_from_home;
+extern bool climate_embedded_visible;
 extern float set_climate_current_temp;
 extern uint32_t set_climate_supported_features;
 extern float set_climate_target_temp;

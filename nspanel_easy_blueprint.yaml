@@ -6672,16 +6672,20 @@ actions:
 
                           - alias: Embedded climate
                             sequence:
+                              - variables:
+                                  embedded_climate: '{{ climate == thermostat_embedded }}'
                               - action: 'esphome.{{ action_prefix }}_component_val'
                                 data:
                                   page: mem
                                   id: embedded_climate
-                                  val: '{{ 1 if climate == thermostat_embedded else 0 }}'
+                                  val: '{{ 1 if embedded_climate else 0 }}'
                                 continue_on_error: true
                               - *delay_boot
 
                           - alias: Embedded indoor temperature
                             sequence:
+                              - variables:
+                                  embedded_indoor_temperature: '{{ indoor_temperature_sensor == nspaneltemp }}'
                               - action: 'esphome.{{ action_prefix }}_component_val'
                                 data:
                                   page: mem

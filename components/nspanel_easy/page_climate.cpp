@@ -7,6 +7,7 @@
 namespace esphome::nspanel_easy {
 
 bool climate_main_from_home = false;
+bool climate_embedded_visible = false;
 float set_climate_current_temp;
 uint32_t set_climate_supported_features;
 float set_climate_target_temp;

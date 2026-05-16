@@ -71,7 +71,7 @@ Page debug
             covx vis_bt_entities,aux.txt,0,0
             pages_flags.txt+=aux.txt
             system_vars.txt+="\r- bauds: "
-            covx bauds,aux.txt,0,0
+            covx baud,aux.txt,0,0
             system_vars.txt+=aux.txt
             system_vars.txt+="\r- recmod: "
             covx recmod,aux.txt,0,0

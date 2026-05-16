@@ -142,18 +142,21 @@ api:
             ESP_LOGV("${TAG_API}", "  entity:    '%s'", entity.c_str());
             ESP_LOGV("${TAG_API}", "  back_page: '%s'", back_page.c_str());
             HomeAssistantEntity entity_id = extractHomeAssistantEntity(entity);
-            if (entity == "embedded_climate")                   entity_id.domain = "climate";
-            else if (entity_id.domain == "alarm_control_panel") entity_id.domain = "alarm";
+            if      (entity_id.domain == "alarm_control_panel") entity_id.domain = "alarm";
             else if (entity_id.domain == "input_boolean")       entity_id.domain = "switch";
             else if (entity_id.domain == "input_button")        entity_id.domain = "button";
             else if (entity_id.domain == "input_select")        entity_id.domain = "select";
-            if (entity_id.domain != "invalid" or entity == "embedded_climate") {
+            #ifdef NSPANEL_EASY_ADDON_CLIMATE_BASE
+            if (entity == "embedded_climate")                   entity_id.domain = "climate";
+            #endif  // NSPANEL_EASY_ADDON_CLIMATE_BASE
+            if (entity_id.domain != "invalid"
+                #ifdef NSPANEL_EASY_ADDON_CLIMATE_BASE
+                or entity == "embedded_climate"
+                #endif  // NSPANEL_EASY_ADDON_CLIMATE_BASE
+                ) {
               detailed_entity->publish_state(entity);
               goto_page->execute(get_page_id(entity_id.domain.c_str()));
               disp1->send_command_printf("back_page_id=%" PRIu8, get_page_id(back_page.c_str()));
-              if (entity_id.domain == "climate") {
-                disp1->set_component_value("climate.embedded", (entity == "embedded_climate") ? 1 : 0);
-              }
             }
 
     - action: icon  # Updates icon, color, and visibility for display components

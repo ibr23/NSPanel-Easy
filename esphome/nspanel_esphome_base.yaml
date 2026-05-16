@@ -56,12 +56,6 @@ external_components:
     components:
       - nspanel_easy
 
-globals:
-  - id: is_embedded_thermostat  # Is embedded thermostat set as main climate entity?
-    type: bool
-    restore_value: true
-    initial_value: 'false'
-
 interval:
   - interval: 89s  # Intentionally a prime to reduce the occurences of this happening together with the time update
     startup_delay: 89s

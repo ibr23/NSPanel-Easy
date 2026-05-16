@@ -7,6 +7,7 @@
 #####################################################################################################
 ---
 substitutions:
+  CLIMATE_EMBEDDED_SENTINEL: embedded_climate
   TAG_PAGE_CLIMATE: nspanel.page.climate
 
 api:
@@ -44,8 +45,6 @@ api:
             if (current_page_id == get_page_id("climate"))
               detailed_entity->publish_state(entity.c_str());
 
-            climate_main_from_home = false;
-
             set_climate_current_temp = current_temp;
             set_climate_supported_features = supported_features;
             set_climate_target_temp = target_temp;
@@ -69,9 +68,7 @@ display:
                 id(is_climate) and                                // Is climate available?
                 (component_id == hmi::home::INDR_TEMP.id or       // Indoor temperature
                 component_id == hmi::home::INDR_TEMP_ICON.id)) {  // Indoor temp icon
-              climate_main_from_home = true;
-              detailed_entity->publish_state((id(is_embedded_thermostat)) ? "embedded_climate" : "");
-              disp1->set_component_value("climate.embedded", id(is_embedded_thermostat) ? 1 : 0);
+              detailed_entity->publish_state(id(is_embedded_thermostat) ? "${CLIMATE_EMBEDDED_SENTINEL}" : "");
               goto_page->execute(get_page_id("climate"));
               return;
             }
@@ -81,24 +78,29 @@ esphome:
     build_flags:
       - -D NSPANEL_EASY_PAGE_CLIMATE
 
+globals:
+  - id: is_embedded_thermostat  # Is embedded thermostat set as main climate entity?
+    type: bool
+    restore_value: true
+    initial_value: 'false'
+
 script:
   - id: !extend action_component_val
     then:
       - lambda: |-
           if (page != "mem") return;
           if (component == "embedded_climate") {
-            id(is_embedded_thermostat) = val;
+            id(is_embedded_thermostat) = (val != 0);
           }
 
   - id: change_climate_state
     mode: restart
     parameters:
-      embedded: bool
       key: string
       value: string
     then:
       - lambda: |-
-          if (embedded) return;
+          if (climate_embedded_visible) return;
           if (key == "hvac_mode") {
             fire_ha_event("action_call", {
               {"action", "climate.set_hvac_mode"},
@@ -122,18 +124,17 @@ script:
     then:
       - lambda: |-
           if (params[0] == "climate") {
-              // CSV Format: climate,key,<value>,...
-              // params[0]=page, params[1]=key, params[2]=value,...
+              // CSV Format: climate,key,<value>
+              // params[0]=page, params[1]=key, params[2]=value
 
-            if (params_count != 4) {
+            if (params_count != 3) {
               ESP_LOGW("${TAG_PAGE_CLIMATE}", "Bad params");
               return;
             }
 
             const std::string& key = params[1];
             const std::string& value = params[2];
-            const std::string& embedded = params[3];
-            change_climate_state->execute(embedded == "1", key.c_str(), value.c_str());
+            change_climate_state->execute(key.c_str(), value.c_str());
           }
 
   - id: !extend localization_units_separator_update
@@ -191,6 +192,7 @@ script:
             ESP_LOGW("${TAG_PAGE_CLIMATE}", "Invalid temp_step (<= 0); skipping climate render");
             return;
           }
+          disp1->set_component_value("embedded", set_climate_embedded_climate ? 1 : 0);
           disp1->send_command_printf("climateslider.maxval=%i", set_climate_total_steps);
           disp1->send_command_printf("slider_high.maxval=%i", set_climate_total_steps);
           disp1->send_command_printf("slider_low.maxval=%i", set_climate_total_steps);

@@ -4,6 +4,7 @@ Program.s
     //If you want to use string type, you can use variable control in the page to implement
     int sys0=0,sys1=0,sys2=0,sys3=0
     int swipex=0,swipey=0,swipex2=0,swipey2=0,swipec=0,swipec2=0,swipedx=100,swipedy=100
+    int climate_embedded=0
     // page home visibility items
     int vis_indr_temp=0
     int vis_bt_icon=0

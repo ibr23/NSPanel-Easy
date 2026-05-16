@@ -724,6 +724,8 @@ text_sensor:
     internal: false
     disabled_by_default: false
     update_interval: never
+    # Extended by:
+    #   - addon_climate_base
 
   - id: disp1_local_event
     name: NSPanel local event

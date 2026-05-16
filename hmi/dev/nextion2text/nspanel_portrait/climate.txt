@@ -19,7 +19,7 @@ Page climate
     
     Events
         Preinitialize Event
-            if(api==0&&embedded.val==0)
+            if(api==0&&climate_embedded==0)
             {
                 page home_page_id
             }
@@ -93,12 +93,11 @@ Page climate
             sendme
         
         Page Exit Event
-            covx embedded.val,va2.txt,0,0
             if(timer0.en==1)
             {
                 timer0.en=0
                 covx temp_number0.val,va1.txt,0,0
-                climatesetting.txt="climate,temperature,"+va1.txt+","+va2.txt
+                climatesetting.txt="climate,temperature,"+va1.txt
                 printh 92
                 prints "localevent",0
                 printh 00
@@ -110,7 +109,7 @@ Page climate
             {
                 timer1.en=0
                 covx temp_number1.val,va1.txt,0,0
-                climatesetting.txt="climate,target_temp_high,"+va1.txt+","+va2.txt
+                climatesetting.txt="climate,target_temp_high,"+va1.txt
                 printh 92
                 prints "localevent",0
                 printh 00
@@ -122,7 +121,7 @@ Page climate
             {
                 timer2.en=0
                 covx temp_number2.val,va1.txt,0,0
-                climatesetting.txt="climate,target_temp_low,"+va1.txt+","+va2.txt
+                climatesetting.txt="climate,target_temp_low,"+va1.txt
                 printh 92
                 prints "localevent",0
                 printh 00
@@ -176,85 +175,79 @@ Variable (int32) va0
         Scope: local
         Value: 0
     
-Variable (int32) embedded
-    Attributes
-        ID   : 35
-        Scope: global
-        Value: 0
-    
 Variable (string) va2
     Attributes
-        ID            : 36
+        ID            : 35
         Scope         : local
         Text          : 
         Max. Text Size: 10
     
 Variable (string) click_comp
     Attributes
-        ID            : 38
+        ID            : 37
         Scope         : local
         Text          : 
         Max. Text Size: 8
     
 Variable (int32) active_slider
     Attributes
-        ID   : 41
+        ID   : 40
         Scope: local
         Value: 1
     
 Variable (int32) is_temp_range
     Attributes
-        ID   : 43
+        ID   : 42
         Scope: local
         Value: 0
     
 Variable (int32) temp_number1
     Attributes
-        ID   : 47
+        ID   : 46
         Scope: local
         Value: 0
     
 Variable (int32) temp_number2
     Attributes
-        ID   : 48
+        ID   : 47
         Scope: local
         Value: 0
     
 Variable (string) temp_unit
     Attributes
-        ID            : 49
+        ID            : 48
         Scope         : local
         Text          : \xc2\xb0
         Max. Text Size: 10
     
 Variable (int32) temp_low_max
     Attributes
-        ID   : 50
+        ID   : 49
         Scope: local
         Value: 0
     
 Variable (int32) temp_high_min
     Attributes
-        ID   : 51
+        ID   : 50
         Scope: local
         Value: 0
     
 Variable (int32) temp_gap
     Attributes
-        ID   : 52
+        ID   : 51
         Scope: local
         Value: 0
     
 Variable (string) dec_separator
     Attributes
-        ID            : 53
+        ID            : 52
         Scope         : local
         Text          : .
         Max. Text Size: 5
     
 Variable (int32) button_font
     Attributes
-        ID   : 54
+        ID   : 53
         Scope: global
         Value: 8
     
@@ -584,12 +577,10 @@ Text button01
     
     Events
         Touch Release Event
-            covx embedded.val,va2.txt,0,0
-            lastclick.txt="climate,hvac_mode,auto,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
-            prints lastclick.txt,0
+            prints "climate,hvac_mode,auto",0
             printh 00
             printh FF FF FF
         
@@ -622,12 +613,10 @@ Text button02
     
     Events
         Touch Release Event
-            covx embedded.val,va2.txt,0,0
-            lastclick.txt="climate,hvac_mode,heat_cool,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
-            prints lastclick.txt,0
+            prints "climate,hvac_mode,heat_cool",0
             printh 00
             printh FF FF FF
         
@@ -660,12 +649,10 @@ Text button03
     
     Events
         Touch Release Event
-            covx embedded.val,va2.txt,0,0
-            lastclick.txt="climate,hvac_mode,heat,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
-            prints lastclick.txt,0
+            prints "climate,hvac_mode,heat",0
             printh 00
             printh FF FF FF
         
@@ -698,12 +685,10 @@ Text button04
     
     Events
         Touch Release Event
-            covx embedded.val,va2.txt,0,0
-            lastclick.txt="climate,hvac_mode,cool,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
-            prints lastclick.txt,0
+            prints "climate,hvac_mode,cool",0
             printh 00
             printh FF FF FF
         
@@ -736,12 +721,10 @@ Text button05
     
     Events
         Touch Release Event
-            covx embedded.val,va2.txt,0,0
-            lastclick.txt="climate,hvac_mode,dry,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
-            prints lastclick.txt,0
+            prints "climate,hvac_mode,dry",0
             printh 00
             printh FF FF FF
         
@@ -774,12 +757,10 @@ Text button06
     
     Events
         Touch Release Event
-            covx embedded.val,va2.txt,0,0
-            lastclick.txt="climate,hvac_mode,fan_only,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
-            prints lastclick.txt,0
+            prints "climate,hvac_mode,fan_only",0
             printh 00
             printh FF FF FF
         
@@ -812,12 +793,10 @@ Text button07
     
     Events
         Touch Release Event
-            covx embedded.val,va2.txt,0,0
-            lastclick.txt="climate,hvac_mode,off,"+va2.txt
             printh 92
             prints "localevent",0
             printh 00
-            prints lastclick.txt,0
+            prints "climate,hvac_mode,off",0
             printh 00
             printh FF FF FF
         
@@ -944,7 +923,7 @@ Text target_high
         
 Text target_low
     Attributes
-        ID                      : 42
+        ID                      : 41
         Scope                   : local
         Dragging                : 0
         Send Component ID       : on press and release
@@ -1036,7 +1015,7 @@ Slider slider_high
         
 Slider slider_low
     Attributes
-        ID                             : 40
+        ID                             : 39
         Scope                          : local
         Dragging                       : 0
         Send Component ID              : on press and release
@@ -1097,7 +1076,7 @@ Slider slider_low
         
 Slider climateslider
     Attributes
-        ID                             : 44
+        ID                             : 43
         Scope                          : local
         Dragging                       : 0
         Send Component ID              : on press and release
@@ -1144,7 +1123,7 @@ Slider climateslider
         
 Button button_back
     Attributes
-        ID                                  : 37
+        ID                                  : 36
         Scope                               : local
         Dragging                            : 0
         Send Component ID                   : on press and release
@@ -1342,9 +1321,8 @@ Timer timer0
     Events
         Timer Event
             timer0.en=0
-            covx embedded.val,va2.txt,0,0
             covx temp_number0.val,va1.txt,0,0
-            climatesetting.txt="climate,temperature,"+va1.txt+","+va2.txt
+            climatesetting.txt="climate,temperature,"+va1.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -1354,7 +1332,7 @@ Timer timer0
         
 Timer click_timer
     Attributes
-        ID         : 39
+        ID         : 38
         Scope      : local
         Period (ms): 800
         Enabled    : no
@@ -1372,7 +1350,7 @@ Timer click_timer
         
 Timer timer1
     Attributes
-        ID         : 45
+        ID         : 44
         Scope      : local
         Period (ms): 1000
         Enabled    : no
@@ -1380,9 +1358,8 @@ Timer timer1
     Events
         Timer Event
             timer1.en=0
-            covx embedded.val,va2.txt,0,0
             covx temp_number1.val,va1.txt,0,0
-            climatesetting.txt="climate,target_temp_high,"+va1.txt+","+va2.txt
+            climatesetting.txt="climate,target_temp_high,"+va1.txt
             printh 92
             prints "localevent",0
             printh 00
@@ -1392,7 +1369,7 @@ Timer timer1
         
 Timer timer2
     Attributes
-        ID         : 46
+        ID         : 45
         Scope      : local
         Period (ms): 1000
         Enabled    : no
@@ -1400,9 +1377,8 @@ Timer timer2
     Events
         Timer Event
             timer2.en=0
-            covx embedded.val,va2.txt,0,0
             covx temp_number2.val,va1.txt,0,0
-            climatesetting.txt="climate,target_temp_low,"+va1.txt+","+va2.txt
+            climatesetting.txt="climate,target_temp_low,"+va1.txt
             printh 92
             prints "localevent",0
             printh 00
