@@ -185,8 +185,8 @@ script:
   - id: !extend page_change
     then:
       - lambda: |-
-          if (new_page_id == get_page_id("home"))
-            page_home->execute();
+          if (new_page_id != get_page_id("home")) return;
+          page_home->execute();
 
   - id: page_home
     mode: single
