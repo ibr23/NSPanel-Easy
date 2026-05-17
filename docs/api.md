@@ -596,7 +596,7 @@ For detailed descriptions of each feature and its corresponding bitmask value, r
 - `temp_offset` (int): Offset applied to the temperature reading for calibration.
 - `climate_icon` (string): Icon representing the current climate status,
 selected from [HASwitchPlate Material Design Icons](https://htmlpreview.github.io/?https://github.com/jobr99/Generate-HASP-Fonts/blob/master/cheatsheet.html).
-- `entity` (string): Entity ID for the climate device. Use "embedded_climate" to use the entity from add-on climate.
+- `entity` (string): Entity ID for the climate device. Use the special value "embedded_climate" to control the panel's built-in climate add-on.
 
 **Home Assistant Example:**
 
