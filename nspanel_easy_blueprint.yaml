@@ -5073,7 +5073,7 @@ actions:
         color:
           blue: [0, 128, 248]
           grey_dark: [40, 44, 40]
-          grey_super_light: [200, 204, 200]
+          grey_super_light: [200, 204, 200]  # 52857
           grey_white: [225, 225, 225]
           red: [248, 0, 0]
           white: [255, 255, 255]
@@ -7954,6 +7954,21 @@ actions:
                         conditions: '{{ nspanel_event.page == pages.cover }}'
                         sequence: &refresh_page_cover
                           - *get_entity_id_from_event_or_trigger
+                          - *variable_entity
+                          - variables:
+                              current_position: '{{ (state_attr(entity_id, "current_position") | int ) | round(0) }}'
+                          - alias: Cover state
+                            action: 'esphome.{{ action_prefix }}_component_text_list'
+                            data:
+                              page: mem
+                              id: command
+                              txt_list:
+                                - 'coverslider.val={{ current_position }}'
+                                - 'cover_value.txt="{{ current_position ~ units_separator }}%"'
+                            continue_on_error: true
+                          - *delay_default
+
+                          - condition: '{{ trigger.id == "nspanel_event" }}'  # Page constructor
                           - variables:
                               entity_device_class_raw: >-
                                 {{
@@ -7983,76 +7998,50 @@ actions:
                                     if (entity_device_class ~ "-closed") in device_class_icons.cover
                                     else all_icons["window-closed"]
                                   }}
-                          - *variable_entity
                           - *entity_details_title_with_icon
-                          ##### Cover Open/close Icons #####
-                          - action: 'esphome.{{ action_prefix }}_component_text_list'
+                          - alias: Cover open-close icons
+                            action: 'esphome.{{ action_prefix }}_component_text_list'
                             data:
-                              page: cover
-                              id: cover_open
+                              page: mem
+                              id: command
                               txt_list:
-                                - '{{ cover_icons.open }}'
+                                - 'cover_open.txt="{{ cover_icons.open }}"'
+                                - 'cover_close.txt="{{ cover_icons.close }}"'
                             continue_on_error: true
                           - *delay_default
-                          - action: 'esphome.{{ action_prefix }}_component_text_list'
-                            data:
-                              page: cover
-                              id: cover_close
-                              txt_list:
-                                - '{{ cover_icons.close }}'
-                            continue_on_error: true
-                          - *delay_default
-
-                          ##### COVER State
-                          - action: 'esphome.{{ action_prefix }}_component_val'
-                            data:
-                              page: cover
-                              id: coverslider
-                              val: '{{ (state_attr(entity_id, "current_position") | int ) | round(0) }}'
-                            continue_on_error: true
-                          - *delay_default
-                          - action: 'esphome.{{ action_prefix }}_component_text_list'
-                            data:
-                              page: cover
-                              id: cover_value
-                              txt_list:
-                                - '{{ (state_attr(entity_id, "current_position") | int ) | round(0) ~ units_separator ~ "%" }}'
-                            continue_on_error: true
-                          - *delay_default
-
-                          ##### COVER Battery ICON Yes / NO #####
-                          - variables:
-                              battery_attribute: '{{ state_attr(entity_id, "battery") | default("unavailable") }}'
-                              battery_level: >
-                                {% if battery_attribute and battery_attribute not in enum.states.unknown %}
-                                  {{ battery_attribute }}
-                                {% elif expand(device_entities(device_id(entity_id)))
+                          - alias: Cover battery icon
+                            sequence:
+                              - variables:
+                                  battery_attribute: '{{ state_attr(entity_id, "battery") | default("unavailable") }}'
+                                  battery_level: >
+                                    {% if battery_attribute and battery_attribute not in enum.states.unknown %}
+                                      {{ battery_attribute }}
+                                    {% elif expand(device_entities(device_id(entity_id)))
+                                            | selectattr("attributes.device_class", "defined")
+                                            | selectattr("attributes.device_class", "eq", "battery")
+                                            | map(attribute="state")
+                                            | map("float", default=none)
+                                            | select("ne", none)
+                                            | list
+                                            | count > 0 %}
+                                      {{
+                                        expand(device_entities(device_id(entity_id)))
                                         | selectattr("attributes.device_class", "defined")
                                         | selectattr("attributes.device_class", "eq", "battery")
                                         | map(attribute="state")
                                         | map("float", default=none)
                                         | select("ne", none)
                                         | list
-                                        | count > 0 %}
-                                  {{
-                                    expand(device_entities(device_id(entity_id)))
-                                    | selectattr("attributes.device_class", "defined")
-                                    | selectattr("attributes.device_class", "eq", "battery")
-                                    | map(attribute="state")
-                                    | map("float", default=none)
-                                    | select("ne", none)
-                                    | list
-                                    | first
-                                    | round(0)
-                                  }}
-                                {% elif has_value(entity_id | replace("cover.","sensor.") ~ "_battery") %}
-                                  {{ states(entity_id | replace("cover.","sensor.") ~ "_battery", rounded=true) | default("unavailable") }}
-                                {% elif has_value(entity_id | replace("cover.","sensor.") | replace("cover", "battery")) %}
-                                  {{ states(entity_id | replace("cover.","sensor.") | replace("cover", "battery"), rounded=true) | default("unavailable") }}
-                                {% else %} unavailable
-                                {% endif %}
-                          - if: '{{ is_number(battery_level) }}'
-                            then:
+                                        | first
+                                        | round(0)
+                                      }}
+                                    {% elif has_value(entity_id | replace("cover.","sensor.") ~ "_battery") %}
+                                      {{ states(entity_id | replace("cover.","sensor.") ~ "_battery", rounded=true) | default("unavailable") }}
+                                    {% elif has_value(entity_id | replace("cover.","sensor.") | replace("cover", "battery")) %}
+                                      {{ states(entity_id | replace("cover.","sensor.") | replace("cover", "battery"), rounded=true) | default("unavailable") }}
+                                    {% else %} unavailable
+                                    {% endif %}
+                              - condition: '{{ is_number(battery_level) }}'
                               - variables:
                                   battery_icon: >
                                     {% if battery_level >= 80 %}
@@ -8066,28 +8055,14 @@ actions:
                                     {% endif %}
                               - action: 'esphome.{{ action_prefix }}_component_text_list'
                                 data:
-                                  page: cover
-                                  id: battery_value
+                                  page: mem
+                                  id: command
                                   txt_list:
-                                    - '{{ battery_level ~ units_separator ~ "%" }}'
+                                    - 'battery_value.txt="{{ battery_level ~ units_separator }}%"'
+                                    - 'battery_icon.txt="{{ all_icons[battery_icon] }}"'
+                                    - 'battery_icon.pco=52857'  # nextion.color.grey_super_light
                                 continue_on_error: true
                               - *delay_default
-                              ### ICON Battery Font Color ###
-                              - action: 'esphome.{{ action_prefix }}_component_color'
-                                data:
-                                  page: cover
-                                  id: battery_icon
-                                  color: '{{ nextion.color.grey_super_light }}'
-                                continue_on_error: true
-                              - *delay_default
-                              ### ICON Battery Font ###
-                              - action: 'esphome.{{ action_prefix }}_component_text_list'
-                                data:
-                                  page: cover
-                                  id: battery_icon
-                                  txt_list:
-                                    - '{{ all_icons[battery_icon] }}'
-                                continue_on_error: true
 
                       - alias: Fan settings page
                         conditions: '{{ nspanel_event.page == pages.fan }}'
