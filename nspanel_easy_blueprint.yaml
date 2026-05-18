@@ -7956,17 +7956,21 @@ actions:
                           - *get_entity_id_from_event_or_trigger
                           - *variable_entity
                           - variables:
-                              current_position: '{{ (state_attr(entity_id, "current_position") | int ) | round(0) }}'
+                              current_position_attr: '{{ state_attr(entity_id, "current_position") }}'
                           - alias: Cover state
-                            action: 'esphome.{{ action_prefix }}_component_text_list'
-                            data:
-                              page: mem
-                              id: command
-                              txt_list:
-                                - 'coverslider.val={{ current_position }}'
-                                - 'cover_value.txt="{{ current_position ~ units_separator }}%"'
-                            continue_on_error: true
-                          - *delay_default
+                            if: '{{ is_number(current_position_attr) }}'
+                            then:
+                              - variables:
+                                  current_position: '{{ current_position_attr | round(0) | int }}'
+                              - action: 'esphome.{{ action_prefix }}_component_text_list'
+                                data:
+                                  page: mem
+                                  id: command
+                                  txt_list:
+                                    - 'coverslider.val={{ current_position }}'
+                                    - 'cover_value.txt="{{ current_position ~ units_separator }}%"'
+                                continue_on_error: true
+                              - *delay_default
 
                           - condition: '{{ trigger.id == "nspanel_event" }}'  # Page constructor
                           - variables:
@@ -8014,7 +8018,7 @@ actions:
                               - variables:
                                   battery_attribute: '{{ state_attr(entity_id, "battery") | default("unavailable") }}'
                                   battery_level: >
-                                    {% if battery_attribute and battery_attribute not in enum.states.unknown %}
+                                    {% if is_number(battery_attribute) %}
                                       {{ battery_attribute }}
                                     {% elif expand(device_entities(device_id(entity_id)))
                                             | selectattr("attributes.device_class", "defined")
