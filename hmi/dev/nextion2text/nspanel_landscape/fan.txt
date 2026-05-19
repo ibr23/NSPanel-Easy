@@ -23,28 +23,37 @@ Page fan
             {
                 page home_page_id
             }
+            // Oscillate and preset mode buttons (hidden by default)
             vis bt_oscillate,0
-            fan.pic=pic_background_main
-            button_back.font=button_back_font
-            button_back.picc=pic_background_main
-            button_back.picc2=pic_background_main
-            button_back.pco=color_pco_navigation
-            icon_state.picc=pic_background_main
-            icon_state.pco=color_pco_main
-            page_label.picc=pic_background_main
-            page_label.pco=color_pco_main
-            fan_value.picc=pic_background_main
-            fan_value.pco=color_pco_main
-            button_up.picc=pic_background_main
-            button_up.picc2=pic_background_main
-            button_up.pco=color_pco_secondary
-            button_down.picc=pic_background_main
-            button_down.picc2=pic_background_main
-            button_down.pco=color_pco_secondary
-            power_button.picc=pic_background_main
-            power_button.pco=color_pco_secondary
-            bt_oscillate.picc=pic_background_main
-            bt_oscillate.pco=color_pco_secondary
+            vis mode_button,0
+            // Light mode only: override HMI defaults (which target dark theme).
+            // Dark theme uses the component defaults directly, so no else branch.
+            if(theme==1)
+            {
+                fan.pic=pic_background_main
+                button_back.font=button_back_font
+                button_back.picc=pic_background_main
+                button_back.picc2=pic_background_main
+                button_back.pco=color_pco_navigation
+                icon_state.picc=pic_background_main
+                icon_state.pco=color_pco_main
+                page_label.picc=pic_background_main
+                page_label.pco=color_pco_main
+                fan_value.picc=pic_background_main
+                fan_value.pco=color_pco_main
+                button_up.picc=pic_background_main
+                button_up.picc2=pic_background_main
+                button_up.pco=color_pco_secondary
+                button_down.picc=pic_background_main
+                button_down.picc2=pic_background_main
+                button_down.pco=color_pco_secondary
+                power_button.picc=pic_background_main
+                power_button.pco=color_pco_secondary
+                bt_oscillate.picc=pic_background_main
+                bt_oscillate.pco=color_pco_secondary
+                mode_button.picc=pic_background_main
+                mode_button.pco=color_pco_secondary
+            }
             dim=brightness
             sendme
         
@@ -151,7 +160,7 @@ Text bt_oscillate
         Send Component ID       : on press and release
         Opacity                 : 127
         x coordinate            : 27
-        y coordinate            : 67
+        y coordinate            : 60
         Width                   : 60
         Height                  : 60
         Effect                  : load
@@ -204,6 +213,37 @@ Text power_button
     Events
         Touch Release Event
             power_button.pco=31
+        
+Text mode_button
+    Attributes
+        ID                      : 15
+        Scope                   : local
+        Dragging                : 0
+        Send Component ID       : on press and release
+        Opacity                 : 127
+        x coordinate            : 27
+        y coordinate            : 140
+        Width                   : 60
+        Height                  : 60
+        Effect                  : load
+        Effect Priority         : 0
+        Effect Time             : 300
+        Fill                    : crop image
+        Associated Keyboard     : none
+        Font ID                 : 10
+        Cropped Back. Picture ID: 0
+        Horizontal Alignment    : center
+        Vertical Alignment      : center
+        Input Type              : character
+        Text                    : \xef\x95\x81
+        Max. Text Size          : 3
+        Word wrap               : disabled
+        Horizontal Spacing      : 0
+        Vertical Spacing        : 0
+    
+    Events
+        Touch Release Event
+            mode_button.pco=31
         
 Slider fanslider
     Attributes

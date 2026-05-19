@@ -103,6 +103,8 @@ substitutions:
         select_effect: Kies effek
       select:
         please_select: Kies asseblief
+      fan:
+        select_preset_mode: Kies vooraf ingestelde modus
     ar:     # Arabic
       bytes_per_char: 2
       weekdays:
@@ -183,6 +185,8 @@ substitutions:
         select_effect: اختر التأثير
       select:
         please_select: الرجاء الاختيار
+      fan:
+        select_preset_mode: اختر الوضع المسبق
     bg:     # Bulgarian
       bytes_per_char: 1
       weekdays:
@@ -263,6 +267,8 @@ substitutions:
         select_effect: Избор на ефект
       select:
         please_select: Моля, изберете
+      fan:
+        select_preset_mode: Изберете предварителен режим
     bn:     # Bengali
       bytes_per_char: 3
       weekdays:
@@ -343,6 +349,8 @@ substitutions:
         select_effect: ইফেক্ট নির্বাচন করুন
       select:
         please_select: অনুগ্রহ করে নির্বাচন করুন
+      fan:
+        select_preset_mode: প্রিসেট মোড নির্বাচন করুন
     bs:     # Bosnian
       bytes_per_char: 1
       weekdays:
@@ -423,6 +431,8 @@ substitutions:
         select_effect: Odaberi efekat
       select:
         please_select: Molimo odaberite
+      fan:
+        select_preset_mode: Odaberite predefinirani način
     ca:     # Catalan
       bytes_per_char: 1
       weekdays:
@@ -503,6 +513,8 @@ substitutions:
         select_effect: Selecciona l'efecte
       select:
         please_select: Si us plau, seleccioneu
+      fan:
+        select_preset_mode: Seleccioneu el mode predefinit
     cs:     # Czech
       bytes_per_char: 1
       weekdays:
@@ -583,6 +595,8 @@ substitutions:
         select_effect: Vybrat efekt
       select:
         please_select: Vyberte prosím
+      fan:
+        select_preset_mode: Vyberte přednastavený režim
     cy:     # Welsh
       bytes_per_char: 1
       weekdays:
@@ -663,6 +677,8 @@ substitutions:
         select_effect: Dewis effaith
       select:
         please_select: Dewiswch os gwelwch yn dda
+      fan:
+        select_preset_mode: Dewiswch fodd rhagosodedig
     da:     # Danish
       bytes_per_char: 1
       weekdays:
@@ -743,6 +759,8 @@ substitutions:
         select_effect: Vælg effekt
       select:
         please_select: Vælg venligst
+      fan:
+        select_preset_mode: Vælg forudindstillet tilstand
     de:     # German
       bytes_per_char: 1
       weekdays:
@@ -823,6 +841,8 @@ substitutions:
         select_effect: Effekt auswählen
       select:
         please_select: Bitte auswählen
+      fan:
+        select_preset_mode: Voreingestellten Modus wählen
     el:     # Greek
       bytes_per_char: 2
       weekdays:
@@ -903,6 +923,8 @@ substitutions:
         select_effect: Επιλογή εφέ
       select:
         please_select: Παρακαλώ επιλέξτε
+      fan:
+        select_preset_mode: Επιλέξτε προκαθορισμένη λειτουργία
     en:     # English
       bytes_per_char: 1
       weekdays:
@@ -983,6 +1005,8 @@ substitutions:
         select_effect: Select effect
       select:
         please_select: Please select
+      fan:
+        select_preset_mode: Select preset mode
     es:     # Spanish
       bytes_per_char: 1
       weekdays:
@@ -1063,6 +1087,8 @@ substitutions:
         select_effect: Seleccionar efecto
       select:
         please_select: Por favor, selecciona
+      fan:
+        select_preset_mode: Selecciona el modo predefinido
     et:     # Estonian
       bytes_per_char: 1
       weekdays:
@@ -1143,6 +1169,8 @@ substitutions:
         select_effect: Vali efekt
       select:
         please_select: Palun vali
+      fan:
+        select_preset_mode: Vali eelseadistatud režiim
     eu:     # Basque
       bytes_per_char: 1
       weekdays:
@@ -1223,6 +1251,8 @@ substitutions:
         select_effect: Hautatu efektua
       select:
         please_select: Mesedez, aukeratu
+      fan:
+        select_preset_mode: Aukeratu aurrezarpen modua
     fa:     # Farsi (Persian)
       bytes_per_char: 2
       weekdays:
@@ -1303,6 +1333,8 @@ substitutions:
         select_effect: انتخاب افکت
       select:
         please_select: لطفاً انتخاب کنید
+      fan:
+        select_preset_mode: حالت از پیش تعیین‌شده را انتخاب کنید
     fi:     # Finnish
       bytes_per_char: 1
       weekdays:
@@ -1383,6 +1415,8 @@ substitutions:
         select_effect: Valitse tehoste
       select:
         please_select: Valitse
+      fan:
+        select_preset_mode: Valitse esiasetustila
     fr:     # French
       bytes_per_char: 1
       weekdays:
@@ -1463,6 +1497,8 @@ substitutions:
         select_effect: Sélectionner l'effet
       select:
         please_select: Veuillez sélectionner
+      fan:
+        select_preset_mode: Sélectionner le mode prédéfini
     gl:     # Galician
       bytes_per_char: 1
       weekdays:
@@ -1543,6 +1579,8 @@ substitutions:
         select_effect: Seleccionar efecto
       select:
         please_select: Por favor, selecciona
+      fan:
+        select_preset_mode: Selecciona o modo predefinido
     he:     # Hebrew
       bytes_per_char: 2
       weekdays:
@@ -1623,6 +1661,8 @@ substitutions:
         select_effect: בחר אפקט
       select:
         please_select: אנא בחר
+      fan:
+        select_preset_mode: בחר מצב מוגדר מראש
     hi:     # Hindi
       bytes_per_char: 3
       weekdays:
@@ -1703,6 +1743,8 @@ substitutions:
         select_effect: प्रभाव चुनें
       select:
         please_select: कृपया चुनें
+      fan:
+        select_preset_mode: प्रीसेट मोड चुनें
     hr:     # Croatian
       bytes_per_char: 1
       weekdays:
@@ -1783,6 +1825,8 @@ substitutions:
         select_effect: Odaberi efekt
       select:
         please_select: Molimo odaberite
+      fan:
+        select_preset_mode: Odaberite unaprijed postavljeni način
     hu:     # Hungarian
       bytes_per_char: 1
       weekdays:
@@ -1863,6 +1907,8 @@ substitutions:
         select_effect: Effekt kiválasztása
       select:
         please_select: Kérjük, válasszon
+      fan:
+        select_preset_mode: Válassz előre beállított módot
     id:     # Indonesian
       bytes_per_char: 1
       weekdays:
@@ -1943,6 +1989,8 @@ substitutions:
         select_effect: Pilih efek
       select:
         please_select: Silakan pilih
+      fan:
+        select_preset_mode: Pilih mode preset
     is:     # Icelandic
       bytes_per_char: 1
       weekdays:
@@ -2023,6 +2071,8 @@ substitutions:
         select_effect: Velja brellu
       select:
         please_select: Vinsamlegast veldu
+      fan:
+        select_preset_mode: Veldu forstillt ham
     it:     # Italian
       bytes_per_char: 1
       weekdays:
@@ -2103,6 +2153,8 @@ substitutions:
         select_effect: Seleziona effetto
       select:
         please_select: Per favore, seleziona
+      fan:
+        select_preset_mode: Seleziona modalità preimpostata
     ja:     # Japanese
       bytes_per_char: 3
       weekdays:
@@ -2183,6 +2235,8 @@ substitutions:
         select_effect: エフェクトを選択
       select:
         please_select: 選択してください
+      fan:
+        select_preset_mode: プリセットモードを選択
     jv:     # Javanese
       bytes_per_char: 1
       weekdays:
@@ -2263,6 +2317,8 @@ substitutions:
         select_effect: Pilih efek
       select:
         please_select: Mangga pilih
+      fan:
+        select_preset_mode: Pilih mode preset
     ko:     # Korean
       bytes_per_char: 3
       weekdays:
@@ -2343,6 +2399,8 @@ substitutions:
         select_effect: 효과 선택
       select:
         please_select: 선택해 주세요
+      fan:
+        select_preset_mode: 사전 설정 모드 선택
     lt:     # Lithuanian
       bytes_per_char: 1
       weekdays:
@@ -2423,6 +2481,8 @@ substitutions:
         select_effect: Pasirinkti efektą
       select:
         please_select: Pasirinkite
+      fan:
+        select_preset_mode: Pasirinkite išankstinį režimą
     lv:     # Latvian
       bytes_per_char: 1
       weekdays:
@@ -2503,6 +2563,8 @@ substitutions:
         select_effect: Izvēlēties efektu
       select:
         please_select: Lūdzu, izvēlieties
+      fan:
+        select_preset_mode: Izvēlieties iepriekšiestatīto režīmu
     mk:     # Macedonian
       bytes_per_char: 2
       weekdays:
@@ -2583,6 +2645,8 @@ substitutions:
         select_effect: Избери ефект
       select:
         please_select: Ве молиме изберете
+      fan:
+        select_preset_mode: Изберете однапред поставен режим
     ms:     # Malay
       bytes_per_char: 1
       weekdays:
@@ -2663,6 +2727,8 @@ substitutions:
         select_effect: Pilih kesan
       select:
         please_select: Sila pilih
+      fan:
+        select_preset_mode: Pilih mod pratetap
     nb:     # Norwegian Bokmål
       bytes_per_char: 1
       weekdays:
@@ -2743,6 +2809,8 @@ substitutions:
         select_effect: Velg effekt
       select:
         please_select: Vennligst velg
+      fan:
+        select_preset_mode: Velg forhåndsinnstilt modus
     nl:     # Dutch
       bytes_per_char: 1
       weekdays:
@@ -2823,6 +2891,8 @@ substitutions:
         select_effect: Effect selecteren
       select:
         please_select: Selecteer alstublieft
+      fan:
+        select_preset_mode: Selecteer voorinstelling
     pa:     # Punjabi (Gurmukhi)
       bytes_per_char: 3
       weekdays:
@@ -2903,6 +2973,8 @@ substitutions:
         select_effect: ਪ੍ਰਭਾਵ ਚੁਣੋ
       select:
         please_select: ਕਿਰਪਾ ਕਰਕੇ ਚੁਣੋ
+      fan:
+        select_preset_mode: ਪ੍ਰੀਸੈੱਟ ਮੋਡ ਚੁਣੋ
     pl:     # Polish
       bytes_per_char: 1
       weekdays:
@@ -2983,6 +3055,8 @@ substitutions:
         select_effect: Wybierz efekt
       select:
         please_select: Proszę wybrać
+      fan:
+        select_preset_mode: Wybierz tryb wstępny
     pt:     # Portuguese
       bytes_per_char: 1
       weekdays:
@@ -3063,6 +3137,8 @@ substitutions:
         select_effect: Selecionar efeito
       select:
         please_select: Por favor, selecione
+      fan:
+        select_preset_mode: Selecionar modo predefinido
     ro:     # Romanian
       bytes_per_char: 1
       weekdays:
@@ -3143,6 +3219,8 @@ substitutions:
         select_effect: Selectează efectul
       select:
         please_select: Vă rugăm să selectați
+      fan:
+        select_preset_mode: Selectați modul presetat
     ru:     # Russian
       bytes_per_char: 2
       weekdays:
@@ -3223,6 +3301,8 @@ substitutions:
         select_effect: Выбрать эффект
       select:
         please_select: Пожалуйста, выберите
+      fan:
+        select_preset_mode: Выберите предустановленный режим
     sk:     # Slovak
       bytes_per_char: 1
       weekdays:
@@ -3303,6 +3383,8 @@ substitutions:
         select_effect: Vybrať efekt
       select:
         please_select: Vyberte prosím
+      fan:
+        select_preset_mode: Vyberte prednastavený režim
     sl:     # Slovenian
       bytes_per_char: 1
       weekdays:
@@ -3383,6 +3465,8 @@ substitutions:
         select_effect: Izberi učinek
       select:
         please_select: Prosim, izberite
+      fan:
+        select_preset_mode: Izberite prednastavljeni način
     sq:     # Albanian
       bytes_per_char: 1
       weekdays:
@@ -3463,6 +3547,8 @@ substitutions:
         select_effect: Zgjidh efektin
       select:
         please_select: Ju lutemi zgjidhni
+      fan:
+        select_preset_mode: Zgjidh modalitetin e paracaktuar
     sr:     # Serbian
       bytes_per_char: 2
       weekdays:
@@ -3543,6 +3629,8 @@ substitutions:
         select_effect: Изабери ефекат
       select:
         please_select: Молимо изаберите
+      fan:
+        select_preset_mode: Изаберите унапред подешени режим
     sv:     # Swedish
       bytes_per_char: 1
       weekdays:
@@ -3623,6 +3711,8 @@ substitutions:
         select_effect: Välj effekt
       select:
         please_select: Var god välj
+      fan:
+        select_preset_mode: Välj förinställt läge
     sw:     # Swahili
       bytes_per_char: 1
       weekdays:
@@ -3703,6 +3793,8 @@ substitutions:
         select_effect: Chagua athari
       select:
         please_select: Tafadhali chagua
+      fan:
+        select_preset_mode: Chagua hali iliyowekwa
     ta:     # Tamil
       bytes_per_char: 3
       weekdays:
@@ -3783,6 +3875,8 @@ substitutions:
         select_effect: விளைவைத் தேர்ந்தெடு
       select:
         please_select: தயவுசெய்து தேர்ந்தெடுக்கவும்
+      fan:
+        select_preset_mode: முன்னமைப்பு பயன்முறையைத் தேர்ந்தெடுக்கவும்
     th:     # Thai
       bytes_per_char: 3
       weekdays:
@@ -3863,6 +3957,8 @@ substitutions:
         select_effect: เลือกเอฟเฟกต์
       select:
         please_select: โปรดเลือก
+      fan:
+        select_preset_mode: เลือกโหมดพรีเซ็ต
     tr:     # Turkish
       bytes_per_char: 1
       weekdays:
@@ -3943,6 +4039,8 @@ substitutions:
         select_effect: Efekt seç
       select:
         please_select: Lütfen seçin
+      fan:
+        select_preset_mode: Ön ayar modunu seçin
     uk:     # Ukrainian
       bytes_per_char: 2
       weekdays:
@@ -4023,6 +4121,8 @@ substitutions:
         select_effect: Вибрати ефект
       select:
         please_select: Будь ласка, виберіть
+      fan:
+        select_preset_mode: Виберіть попередньо встановлений режим
     ur:     # Urdu
       bytes_per_char: 2
       weekdays:
@@ -4103,6 +4203,8 @@ substitutions:
         select_effect: ایفیکٹ منتخب کریں
       select:
         please_select: براہ کرم منتخب کریں
+      fan:
+        select_preset_mode: پری سیٹ موڈ منتخب کریں
     vi:     # Vietnamese
       bytes_per_char: 2
       weekdays:
@@ -4183,6 +4285,8 @@ substitutions:
         select_effect: Chọn hiệu ứng
       select:
         please_select: Vui lòng chọn
+      fan:
+        select_preset_mode: Chọn chế độ cài sẵn
     zh-cn:  # Simplified Chinese
       bytes_per_char: 3
       weekdays:
@@ -4263,6 +4367,8 @@ substitutions:
         select_effect: 选择效果
       select:
         please_select: 请选择
+      fan:
+        select_preset_mode: 选择预设模式
     zh-tw:  # Traditional Chinese
       bytes_per_char: 3
       weekdays:
@@ -4343,6 +4449,9 @@ substitutions:
         select_effect: 選擇效果
       select:
         please_select: 請選擇
+      fan:
+        select_preset_mode: 選擇預設模式
+
   LANG_BYTES_PER_CHAR: "${LOCALIZATION[LANG].bytes_per_char}"
   LANG_ALARM_HOME: "${LOCALIZATION[LANG].alarm.home}"
   LANG_ALARM_AWAY: "${LOCALIZATION[LANG].alarm.away}"

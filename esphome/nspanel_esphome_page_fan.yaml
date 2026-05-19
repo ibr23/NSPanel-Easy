@@ -34,6 +34,12 @@ display:
                     {"entity", detailed_entity->state.c_str()}
                   });
                   break;
+                case 15:  // mode_button
+                  popup_select_open->execute(
+                    get_page_id("fan"),
+                    std::string("${LOCALIZATION[LANG].fan.select_preset_mode}")
+                  );
+                  break;
               }
             }
 
@@ -85,6 +91,28 @@ script:
   - id: page_fan
     mode: single
     then:  # There's nothing here so far
+
+  - id: !extend picker_selected
+    then:
+      - lambda: |-
+          if (context != "fan_preset_mode") return;
+
+          if (mask == 0) {
+            // No selection — fan entities always have a current preset mode if they support it;
+            // deselect tap is a no-op for v1.
+            ESP_LOGV("${TAG_PAGE_FAN}", "fan_preset_mode deselect ignored");
+            return;
+          }
+
+          ESP_LOGD("${TAG_PAGE_FAN}", "Dispatch: fan.set_preset_mode entity='%s' preset_mode='%s'", entity.c_str(),
+                                                                                                    value.c_str());
+
+          fire_ha_event("action_call", {
+            {"action", "fan.set_preset_mode"},
+            {"entity", entity.c_str()},
+            {"key", "preset_mode"},
+            {"value", value.c_str()}
+          });
 
   - id: !extend reset_globals
     then:

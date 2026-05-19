@@ -6,7 +6,7 @@
 ##################################################################################################
 ---
 blueprint:
-  name: NSPanel Easy Configuration (v2026.5.11)
+  name: NSPanel Easy Configuration (v9999.99.9)
   author: Edward Firmo (https://github.com/edwardtfn)
   description: >
     # NSPanel Easy Configuration via Blueprint
@@ -4071,7 +4071,7 @@ trigger_variables:
 
 variables:
   # Version will be following release version defined automatically when merging to main
-  blueprint_version: 2026.5.11
+  blueprint_version: 9999.99.9
   pages:
     current: '{{ states(currentpage) }}'
     alarm: "alarm"
@@ -8101,6 +8101,82 @@ actions:
                                 - 'button_down.pco={{ color_rgb565.grey_white if fan.percentage > 0 else color_rgb565.grey_dark }}'
                                 - 'power_button.pco=50712'  # [192, 192, 192]
                             continue_on_error: true
+                          - *delay_default
+
+                          - alias: FAN Preset mode
+                            if: '{{ fan.supported_features | bitwise_and(8) > 0 }}'
+                            then:
+                              - variables:
+                                  current_preset_mode_raw: '{{ state_attr(entity_id, "preset_mode") }}'
+                                  current_preset_mode: >-
+                                    {{
+                                      current_preset_mode_raw | trim
+                                      if current_preset_mode_raw is defined and current_preset_mode_raw is string and current_preset_mode_raw | length > 0
+                                      else ""
+                                    }}
+
+                              ##### Construction-only: push options + show mode button #####
+                              - if: '{{ nspanel_event is defined and nspanel_event.type == "page_changed" }}'
+                                then:
+                                  - variables:
+                                      preset_modes_raw_attr: '{{ state_attr(entity_id, "preset_modes") }}'
+                                      preset_modes_raw: >
+                                        {{
+                                          preset_modes_raw_attr
+                                          if
+                                            preset_modes_raw_attr is defined and
+                                            preset_modes_raw_attr is iterable and
+                                            preset_modes_raw_attr is not string
+                                          else []
+                                        }}
+                                  - variables:
+                                      preset_modes_truncated: >
+                                        {%- if preset_modes_raw | length <= 8 -%}
+                                          {{ preset_modes_raw }}
+                                        {%- elif current_preset_mode | length == 0 or current_preset_mode in preset_modes_raw[:8] -%}
+                                          {{ preset_modes_raw[:8] }}
+                                        {%- else -%}
+                                          {{ [current_preset_mode] + (preset_modes_raw[:7] | reject("equalto", current_preset_mode) | list) }}
+                                        {%- endif -%}
+                                  - action: 'esphome.{{ nspanel_name }}_component_text_list'
+                                    data:
+                                      page: mem
+                                      id: popup_select_context
+                                      txt_list:
+                                        - 'fan_preset_mode'
+                                    continue_on_error: true
+                                  - *delay_default
+                                  - action: 'esphome.{{ nspanel_name }}_component_val'
+                                    data:
+                                      page: mem
+                                      id: popup_select_mode
+                                      val: 0
+                                    continue_on_error: true
+                                  - *delay_default
+                                  - action: 'esphome.{{ nspanel_name }}_component_text_list'
+                                    data:
+                                      page: mem
+                                      id: popup_select_options
+                                      txt_list: '{{ preset_modes_truncated }}'
+                                    continue_on_error: true
+                                  - *delay_default
+                                  - action: 'esphome.{{ nspanel_name }}_components_visibility'
+                                    data:
+                                      page: fan
+                                      ids: ["mode_button"]
+                                      visible: true
+                                    continue_on_error: true
+                                  - *delay_default
+
+                              ##### Always (construction and updates): push current preset_mode #####
+                              - action: 'esphome.{{ nspanel_name }}_component_text_list'
+                                data:
+                                  page: mem
+                                  id: popup_select_current
+                                  txt_list:
+                                    - '{{ current_preset_mode }}'
+                                continue_on_error: true
+                              - *delay_default
 
                       - alias: Media player settings page
                         conditions: '{{ nspanel_event.page == pages.media_player }}'
