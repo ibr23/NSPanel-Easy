@@ -680,6 +680,7 @@ select:
       - home
       - qrcode
       - utilities
+      - home_smpl
     initial_option: home
     optimistic: true
     restore_value: true
