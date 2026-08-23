@@ -6,7 +6,7 @@
 ##################################################################################################
 ---
 blueprint:
-  name: NSPanel Easy Configuration (v2026.8.3)
+  name: NSPanel Easy Configuration (v2026.8.7)
   author: Edward Firmo (https://github.com/edwardtfn)
   description: >
     # NSPanel Easy Configuration via Blueprint
@@ -4389,7 +4389,7 @@ blueprint:
                   value: '6'
                 - label: 112px
                   value: '11'
-                - label: 192px
+                - label: 188px
                   value: '12'
         screensaver_display_time_font_color:
           name: Screen saver - Display time font color
@@ -4448,6 +4448,67 @@ blueprint:
             number:
               min: 0
               max: 5000
+              unit_of_measurement: milliseconds
+    entity_details_pages_settings:
+      name: Entity details pages
+      icon: mdi:card-account-details-outline
+      collapsed: true
+      input:
+        entity_details_pages_debounce:
+          name: Entity details pages - Debounce
+          description: >
+            Minimum interval (msec) between two redraws of an open entity details page.
+            After each redraw the automation waits this long before watching for the next
+            change, so a rapidly-changing entity (a dimming light, a running media player)
+            cannot redraw the page faster than this. Lower values feel more responsive but
+            send more commands to the panel over a serial link that is easily saturated;
+            higher values reduce panel load at the cost of a visible lag.
+          default: 1000
+          selector:
+            number:
+              min: 250
+              max: 10000
+              unit_of_measurement: milliseconds
+        entity_details_pages_update_interval:
+          name: Entity details pages - Fallback update interval
+          description: >
+            How long (seconds) to wait for a change before redrawing an open entity details
+            page anyway. Redraws are normally driven by the entity itself, so this only acts
+            as a safety net for updates that arrive without a state change. Lower values
+            mean more redundant redraws; higher values mean a missed update can stay on
+            screen for longer.
+          default: 60
+          selector:
+            number:
+              min: 5
+              max: 900
+              unit_of_measurement: seconds
+        entity_details_pages_max_refreshes:
+          name: Entity details pages - Maximum refreshes
+          description: >
+            Safety limit on how many times an open entity details page can be redrawn before
+            the refresh loop gives up. The loop normally ends when the page is closed; this
+            only stops it running forever if the panel stops reporting which page it is
+            showing. There is no need to change this under normal use.
+          default: 3600
+          selector:
+            number:
+              min: 1
+              max: 10000
+        entity_details_pages_sync_timeout:
+          name: Entity details pages - Synchronisation timeout
+          description: >
+            How long (msec) to wait for the panel to report which page and entity it is
+            showing, before giving up on refreshing that page. The panel reports this a
+            moment after the page opens, and the refresh cannot start until it arrives.
+            Raise this if details pages sometimes do not update on a busy network or a
+            heavily loaded Home Assistant instance. There is no need to change it under
+            normal use.
+          default: 2000
+          selector:
+            number:
+              min: 100
+              max: 10000
               unit_of_measurement: milliseconds
     advanced_settings:
       name: Advanced settings
@@ -4650,7 +4711,7 @@ trigger_variables:
 
 variables:
   # Version will be following release version defined automatically when merging to main
-  blueprint_version: 2026.8.3
+  blueprint_version: 2026.8.7
 
   pages:
     current: '{{ states(currentpage) }}'
@@ -4699,6 +4760,7 @@ variables:
       - fan
       - light
       - media_player
+      - select
       - switch
       - timer
       - water_heater
@@ -5227,42 +5289,6 @@ triggers:
         trigger: state
         entity_id: !input entities_entity32
 
-  - triggers:  # Home page - Chips
-      - alias: Chip 01
-        id: trigger_chip_state
-        trigger: state
-        entity_id: !input chip01
-
-      - alias: Chip 02
-        id: trigger_chip_state
-        trigger: state
-        entity_id: !input chip02
-
-      - alias: Chip 03
-        id: trigger_chip_state
-        trigger: state
-        entity_id: !input chip03
-
-      - alias: Chip 04
-        id: trigger_chip_state
-        trigger: state
-        entity_id: !input chip04
-
-      - alias: Chip 05
-        id: trigger_chip_state
-        trigger: state
-        entity_id: !input chip05
-
-      - alias: Chip 06
-        id: trigger_chip_state
-        trigger: state
-        entity_id: !input chip06
-
-      - alias: Chip 07
-        id: trigger_chip_state
-        trigger: state
-        entity_id: !input chip07
-
   - triggers:  # Home page - Values
       - alias: Value 01
         id: home_values_state
@@ -5303,56 +5329,6 @@ triggers:
           - unavailable
         for:
           seconds: 1
-
-  - triggers:  # Home page - Custom buttons
-      - alias: Custom button 01
-        id: home_custom_buttons
-        trigger: event
-        event_type: state_changed
-        event_data:
-          entity_id: !input home_custom_button01
-
-      - alias: Custom button 02
-        id: home_custom_buttons
-        trigger: event
-        event_type: state_changed
-        event_data:
-          entity_id: !input home_custom_button02
-
-      - alias: Custom button 03
-        id: home_custom_buttons
-        trigger: event
-        event_type: state_changed
-        event_data:
-          entity_id: !input home_custom_button03
-
-      - alias: Custom button 04
-        id: home_custom_buttons
-        trigger: event
-        event_type: state_changed
-        event_data:
-          entity_id: !input home_custom_button04
-
-      - alias: Custom button 05
-        id: home_custom_buttons
-        trigger: event
-        event_type: state_changed
-        event_data:
-          entity_id: !input home_custom_button05
-
-      - alias: Custom button 06
-        id: home_custom_buttons
-        trigger: event
-        event_type: state_changed
-        event_data:
-          entity_id: !input home_custom_button06
-
-      - alias: Custom button 07
-        id: home_custom_buttons
-        trigger: event
-        event_type: state_changed
-        event_data:
-          entity_id: !input alarm  # Name kept to keep compatibility with older versions
 
   - triggers:  # Climate page
       - alias: Climate entity
@@ -5699,12 +5675,6 @@ conditions:
     }}
   - >  # Update page Home only when visible or home_page_background_update is enabled
     {{ trigger.id not in ["home_values_state"] or home_page_background_update or pages.current == pages.home }}
-  - >  # Update page Home only when visible or home_page_background_update is enabled
-    {{
-      trigger.id not in ["trigger_chip_state"] or
-      home_page_background_update or
-      pages.current in [ pages.home, pages.screensaver ]
-    }}
   - >  # Do not update values when page utilities is not visible
     {{ trigger.id != "utilities_page" or pages.current == pages.utilities }}
   - >  # Do not update values when page entities is not visible
@@ -5735,22 +5705,6 @@ conditions:
       trigger.id != "indoortemp_state" or
       ((home_page_background_update or pages.current == pages.home ) and not embedded_indoor_temperature)
     }}
-  - condition: or  # Do not update component if state haven't changed (ignore attributes changed) - event based triggers
-    conditions:
-      - '{{ trigger.id != "home_custom_buttons" }}'
-      - condition: and
-        conditions:
-          - '{{ home_page_background_update or pages.current == pages.home }}'
-          - '{{ trigger.event is defined and trigger.event.data is defined }}'
-          - '{{ trigger.event.data.entity_id is defined }}'
-          - '{{ trigger.event.data.entity_id is not match "media_player." }}'
-      - condition: and
-        conditions:
-          - '{{ home_page_background_update or pages.current == pages.home }}'
-          - '{{ trigger.event is defined and trigger.event.data is defined }}'
-          - '{{ trigger.event.data.new_state is defined and trigger.event.data.new_state.state is defined }}'
-          - '{{ trigger.event.data.old_state is defined and trigger.event.data.old_state.state is defined }}'
-          - '{{ trigger.event.data.new_state.state != trigger.event.data.old_state.state }}'
 # yamllint enable rule:line-length
 
 actions:
@@ -6001,44 +5955,6 @@ actions:
             label_color_rgb: !input home_value04_label_color
             page: home
             component: value04
-
-      ##### Chips #####
-      chips:
-        - entity: !input chip01
-          inverted: !input chip01_inverted
-          icon: !input chip01_icon
-          icon_color_rgb: !input chip01_icon_color
-          component: chip01
-        - entity: !input chip02
-          inverted: !input chip02_inverted
-          icon: !input chip02_icon
-          icon_color_rgb: !input chip02_icon_color
-          component: chip02
-        - entity: !input chip03
-          inverted: !input chip03_inverted
-          icon: !input chip03_icon
-          icon_color_rgb: !input chip03_icon_color
-          component: chip03
-        - entity: !input chip04
-          inverted: !input chip04_inverted
-          icon: !input chip04_icon
-          icon_color_rgb: !input chip04_icon_color
-          component: chip04
-        - entity: !input chip05
-          inverted: !input chip05_inverted
-          icon: !input chip05_icon
-          icon_color_rgb: !input chip05_icon_color
-          component: chip05
-        - entity: !input chip06
-          inverted: !input chip06_inverted
-          icon: !input chip06_icon
-          icon_color_rgb: !input chip06_icon_color
-          component: chip06
-        - entity: !input chip07
-          inverted: !input chip07_inverted
-          icon: !input chip07_icon
-          icon_color_rgb: !input chip07_icon_color
-          component: chip07
 
       ##### Button pages #####
       buttons_pages:
@@ -6747,6 +6663,7 @@ actions:
           milliseconds: !input delay
       - variables:
           entity_id: '{{ None }}'
+          forced_icon_state: '{{ None }}'
           overlap:
             icon: '{{ None }}'
             icon_color: '{{ None }}'
@@ -6758,8 +6675,8 @@ actions:
             {{
               entity_id is defined and
               entity_id is string and
-              entity_id | length > 0 and
-              "." in entity_id and
+              entity_id | length > 2 and
+              entity_id.split(".") | count == 2 and
               states[entity_id] is not none
             }}
           overlap_icon_valid: >
@@ -6777,6 +6694,7 @@ actions:
           entity_has_value: '{{ has_value(entity_id) if entity_id_valid }}'
           entity_domain: '{{ states[entity_id].domain if entity_id_valid }}'
           entity_icon: '{{ state_attr(entity_id, "icon") | default("") if entity_id_valid }}'
+          icon_state: '{{ forced_icon_state | default(entity_state, true) }}'
           entity_icon_valid: >
             {{
               entity_icon is defined and
@@ -6808,8 +6726,17 @@ actions:
           entity_state_is_unknown: '{{ ((not entity_state_is_on) and (not entity_state_is_off)) if entity_id_valid }}'
           entity_icon_color_tmp: >
             {%- if entity_id_valid -%}
-              {%- set default_color = overlap.icon_color if overlap_icon_color_valid else nextion.color.on -%}
-              {{ default_color if (not entity_state_is_off and not entity_state_is_unknown) else nextion.color.off }}
+              {%- set entity_color_attr = state_attr(entity_id, "color") | default("") -%}
+              {%- if entity_color_attr is string and entity_color_attr is match "#[0-9a-fA-F]{6}$" -%}
+                {%- set own_color = [entity_color_attr[1:3] | int(base=16), entity_color_attr[3:5] | int(base=16), entity_color_attr[5:7] | int(base=16)] -%}
+              {%- elif entity_color_attr is list and entity_color_attr | count == 3 -%}
+                {%- set own_color = entity_color_attr -%}
+              {%- else -%}
+                {%- set own_color = none -%}
+              {%- endif -%}
+              {%- set default_color = own_color if own_color is not none else (overlap.icon_color if overlap_icon_color_valid else nextion.color.on) -%}
+              {%- set has_explicit_color = own_color is not none or overlap_icon_color_valid -%}
+              {{ default_color if (entity_state_is_on or (has_explicit_color and not entity_state_is_off and entity_state not in enum.states.unknown)) else nextion.color.off }}
             {%- else -%}
               {{ overlap.icon_color if overlap_icon_color_valid else [0, 0, 0] }}
             {%- endif -%}
@@ -6977,7 +6904,7 @@ actions:
                 {%- elif entity_device_class is string and
                     entity_device_class | length > 0 and
                     entity_domain in device_class_icons -%}
-                  {%- set state_suffix = "" if entity_domain in ["button", "event", "sensor"] else ("-" + entity_state) -%}
+                  {%- set state_suffix = "" if entity_domain in ["button", "event", "sensor"] else ("-" + icon_state) -%}
                   {%- set device_class_key = entity_device_class + state_suffix -%}
                   {%- if device_class_key in device_class_icons[entity_domain] -%}
                     {{ all_icons[device_class_icons[entity_domain][device_class_key]] }}
@@ -7058,6 +6985,157 @@ actions:
 
                       # Stop here if this is initial boot as Nextion may not be ready
                       - condition: '{{ global_settings_setup }}'
+
+                      - alias: API Subscriptions
+                        sequence:
+                          - variables:
+                              chips:
+                                ##### Chips #####
+                                - entity: !input chip01
+                                  inverted: !input chip01_inverted
+                                  icon: !input chip01_icon
+                                  icon_color_rgb: !input chip01_icon_color
+                                  page: chips
+                                  component: chip01
+                                - entity: !input chip02
+                                  inverted: !input chip02_inverted
+                                  icon: !input chip02_icon
+                                  icon_color_rgb: !input chip02_icon_color
+                                  page: chips
+                                  component: chip02
+                                - entity: !input chip03
+                                  inverted: !input chip03_inverted
+                                  icon: !input chip03_icon
+                                  icon_color_rgb: !input chip03_icon_color
+                                  page: chips
+                                  component: chip03
+                                - entity: !input chip04
+                                  inverted: !input chip04_inverted
+                                  icon: !input chip04_icon
+                                  icon_color_rgb: !input chip04_icon_color
+                                  page: chips
+                                  component: chip04
+                                - entity: !input chip05
+                                  inverted: !input chip05_inverted
+                                  icon: !input chip05_icon
+                                  icon_color_rgb: !input chip05_icon_color
+                                  page: chips
+                                  component: chip05
+                                - entity: !input chip06
+                                  inverted: !input chip06_inverted
+                                  icon: !input chip06_icon
+                                  icon_color_rgb: !input chip06_icon_color
+                                  page: chips
+                                  component: chip06
+                                - entity: !input chip07
+                                  inverted: !input chip07_inverted
+                                  icon: !input chip07_icon
+                                  icon_color_rgb: !input chip07_icon_color
+                                  page: chips
+                                  component: chip07
+
+                              ##### API subscriptions #####
+                              # Components driven directly by ESPHome through Home Assistant state
+                              # subscriptions. The panel renders these locally, so this automation does
+                              # not trigger on their entities at all.
+                              api_subs_mapping: >
+                                {{
+                                  (
+                                    chips
+                                    | map('combine', {'page': 'chips'})
+                                    | list
+                                  ) + (
+                                    home_page.custom_buttons
+                                    | map('combine', {'page': 'home'})
+                                    | list
+                                  )
+                                }}
+                              api_subscriptions: >
+                                {{
+                                  api_subs_mapping
+                                  | selectattr("entity", "defined")
+                                  | selectattr("entity", "string")
+                                  | rejectattr("entity", "eq", "")
+                                  | selectattr("entity", "search", "^[^.]+\\.[^.]+$")
+                                  | list
+                                }}
+
+                          ###### API subscriptions ######
+                          - &push_subscriptions
+                            alias: Push API subscriptions
+                            sequence:
+                              - repeat:
+                                  for_each: '{{ api_subscriptions }}'
+                                  sequence:
+                                    - condition: '{{ repeat.item.entity.split(".") | count == 2 }}'
+                                    - variables:
+                                        entity_id: '{{ repeat.item.entity }}'
+                                        icon_color_rgb_valid: >
+                                          {{
+                                            repeat.item.icon_color_rgb is defined and
+                                            repeat.item.icon_color_rgb is list and
+                                            repeat.item.icon_color_rgb | count == 3
+                                          }}
+                                        overlap:
+                                          icon: >
+                                            {{
+                                              repeat.item.icon
+                                              if
+                                                repeat.item.icon is defined and
+                                                repeat.item.icon is string and
+                                                repeat.item.icon | length > 0 and
+                                                repeat.item.icon is match "mdi:" and
+                                                repeat.item.icon.split("mdi:")[1] in all_icons
+                                              else
+                                                None
+                                            }}
+                                          icon_color: '{{ repeat.item.icon_color_rgb if icon_color_rgb_valid else None }}'
+
+                                    # Domains whose appearance varies across the visible
+                                    # state set are resolved on-device, so send no icon
+                                    # unless the user set an explicit override.
+                                    - variables:
+                                        resolved_on_device: >
+                                          {{
+                                            entity_id.split(".")[0] in
+                                            ["alarm_control_panel", "climate", "cover", "lock", "water_heater"]
+                                          }}
+
+                                    # A chip is only ever visible in one state, so its
+                                    # icon must be resolved for that state rather than
+                                    # for whatever the entity happens to be doing now.
+                                    # Resolve both, and let the panel pick.
+                                    - variables:
+                                        forced_icon_state: 'on'
+                                    - *variable_entity
+                                    - variables:
+                                        sub_device_class: '{{ entity_device_class | default("", true) }}'
+                                        sub_icon_on: '{{ "" if resolved_on_device and not overlap_icon_valid else entity.icon }}'
+
+                                    - variables:
+                                        forced_icon_state: 'off'
+                                    - *variable_entity
+                                    - variables:
+                                        sub_icon_off: '{{ "" if resolved_on_device and not overlap_icon_valid else entity.icon }}'
+
+                                    - action: 'esphome.{{ action_prefix }}_api_subscribe'
+                                      data:
+                                        page: '{{ repeat.item.page }}'
+                                        component: '{{ repeat.item.component }}'
+                                        entity: '{{ entity_id }}'
+                                        device_class: '{{ sub_device_class }}'
+                                        icon_on: '{{ sub_icon_on }}'
+                                        icon_off: '{{ sub_icon_off }}'
+                                        color_on: '{{ repeat.item.icon_color_rgb if icon_color_rgb_valid else nextion.color.on }}'
+                                        color_off: '{{ repeat.item.icon_color_rgb if icon_color_rgb_valid else nextion.color.off }}'
+                                        inverted: '{{ repeat.item.inverted | default(false) }}'
+                                      continue_on_error: true
+                                    - *delay_default
+
+                              - action: 'esphome.{{ action_prefix }}_api_subscribe_end'
+                                data:
+                                  count: '{{ api_subscriptions | count }}'
+                                continue_on_error: true
 
                       - &variables_hardware
                         variables:
@@ -7947,6 +8025,27 @@ actions:
                 sequence:
                   - variables:
                       page_constructor: true
+                      entity_id: &variable_entity_id_from_trigger >
+                        {{
+                          nspanel_event.entity
+                          if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
+                          else (
+                            trigger.entity_id
+                            if trigger.entity_id is defined
+                            else (
+                              trigger.event.data.entity_id
+                              if trigger is defined and trigger.event is defined and trigger.event.data is defined and trigger.event.data.entity_id is defined
+                              else ""
+                            )
+                          )
+                        }}
+                      entity_id_valid: *variable_entity_id_valid
+                      original_state:
+                        page: '{{ nspanel_event.page }}'
+                        entity_id: '{{ entity_id }}'
+                        entity_id_valid: '{{ entity_id_valid }}'
+                        entity_domain: '{{ entity_id.split(".")[0] if entity_id_valid else "" }}'
+
                   - choose:
                       - alias: Home page
                         conditions: '{{ nspanel_event.page == pages.home }}'
@@ -8101,56 +8200,6 @@ actions:
                                     - '{{ indoor_temp_trimmed }}'
                                 continue_on_error: true
 
-                          ###### Custom buttons ######
-                          - repeat:
-                              for_each: '{{ home_page.custom_buttons | list }}'
-                              sequence: &display_home_page_custom_buttons
-                                - variables:
-                                    custom_button_entity_id_is_valid: '{{ repeat.item.entity is defined and repeat.item.entity is string and repeat.item.entity.split(".") | count == 2 }}'
-                                - condition: '{{ custom_button_entity_id_is_valid or page_constructor }}'
-                                - if: '{{ custom_button_entity_id_is_valid }}'
-                                  then:
-                                    - variables:
-                                        entity_id: '{{ repeat.item.entity }}'
-                                        overlap:
-                                          icon: >
-                                            {{
-                                              repeat.item.icon
-                                              if
-                                                repeat.item.icon is defined and
-                                                repeat.item.icon is string and
-                                                repeat.item.icon | length > 0 and
-                                                repeat.item.icon is match "mdi:" and
-                                                repeat.item.icon.split("mdi:")[1] in all_icons
-                                              else
-                                                None
-                                            }}
-                                    - *variable_entity
-                                    - action: 'esphome.{{ action_prefix }}_icon'
-                                      data:
-                                        page: home
-                                        id: '{{ repeat.item.component }}'
-                                        icon: '{{ entity.icon if entity.icon is defined else all_icons.blank }}'
-                                        icon_color: >
-                                          {{
-                                            entity.icon_color
-                                            if entity.icon_color is defined and entity.icon_color is list and entity.icon_color | count == 3
-                                            else [0, 0, 0]
-                                          }}
-                                        visible: true
-                                      continue_on_error: true
-                                  else:
-                                    - action: 'esphome.{{ action_prefix }}_icon'
-                                      data:
-                                        page: home
-                                        id: '{{ repeat.item.component }}'
-                                        icon: '{{ all_icons.blank }}'
-                                        icon_color: '{{ [0, 0, 0] }}'
-                                        visible: false
-                                      continue_on_error: true
-                                - *delay_default
-
-
                           ###### Climate chip ######
                           - &update_home_page_climate_chip
                             if: '{{ (not embedded_climate) and climate is string and climate is match "climate." }}'
@@ -8194,90 +8243,7 @@ actions:
                                 continue_on_error: true
                               - *delay_default
 
-                          ###### Status / Chips bar ######
-                          - &update_chips_bar
-                            repeat:
-                              for_each: >
-                                {{
-                                  chips
-                                  | selectattr("entity", "defined")
-                                  | rejectattr("entity", "eq", [])
-                                  | list
-                                }}
-                              sequence:
-                                - &update_individual_chip
-                                  if: '{{ repeat.item.entity is defined and repeat.item.entity is string and repeat.item.entity.split(".") | count == 2 }}'
-                                  then:
-                                    - variables:
-                                        icon_color_rgb_valid: >
-                                          {{
-                                            repeat.item.icon_color_rgb is defined and
-                                            repeat.item.icon_color_rgb is list and
-                                            repeat.item.icon_color_rgb | count == 3
-                                          }}
-                                        entity_id: '{{ repeat.item.entity }}'
-                                        overlap:
-                                          icon: >
-                                            {{
-                                              repeat.item.icon
-                                              if
-                                                repeat.item.icon is defined and
-                                                repeat.item.icon is string and
-                                                repeat.item.icon | length > 0 and
-                                                repeat.item.icon is match "mdi:" and
-                                                repeat.item.icon.split("mdi:")[1] in all_icons
-                                              else
-                                                None
-                                            }}
-                                          icon_color: '{{ repeat.item.icon_color_rgb if icon_color_rgb_valid else None }}'
-                                    - *variable_entity
-                                    - condition: '{{ entity_has_value }}'
-                                    - variables:
-                                        entity_hvac_action: '{{ state_attr(entity_id, "hvac_action") | default("") if entity_domain == "climate" else "unknown" }}'
-                                        entity_state: >
-                                          {{
-                                            (entity_hvac_action if entity_hvac_action and entity_hvac_action not in enum.states.unknown else entity_state)
-                                            if entity_domain == "climate" else entity_state
-                                          }}
-                                        chip_visible: >
-                                          {{
-                                            (
-                                              (not repeat.item.inverted) and
-                                              (
-                                                (entity_state in enum.states.on) or
-                                                (entity_domain != "climate" and entity_domain in enum.states and entity_state in enum.states[entity_domain].on) or
-                                                (entity_domain == "climate" and entity_state in ["heating", "cooling", "drying", "fan_only"])
-                                              )
-                                            ) or
-                                            (
-                                              (repeat.item.inverted) and
-                                              (
-                                                (entity_state in enum.states.off) or
-                                                (entity_domain in enum.states and entity_state in enum.states[entity_domain].off) or
-                                                (entity_domain == "climate" and entity_state not in ["heating", "cooling", "drying", "fan_only"])
-                                              )
-                                            )
-                                          }}
-                                    - condition: '{{ entity.icon is defined and entity.icon is string and entity.icon | length > 0 }}'
-                                    - action: 'esphome.{{ action_prefix }}_icon'
-                                      data:
-                                        page: chips
-                                        id: '{{ repeat.item.component }}'
-                                        icon: '{{ entity.icon }}'
-                                        icon_color: >
-                                          {% if icon_color_rgb_valid %}
-                                            {{ repeat.item.icon_color_rgb }}
-                                          {% elif entity.icon_color is defined and
-                                                  entity.icon_color is list and
-                                                  entity.icon_color | count == 3 %}
-                                            {{ entity.icon_color }}
-                                          {% else %}
-                                            [255, 255, 255]
-                                          {% endif %}
-                                        visible: '{{ chip_visible }}'
-                                      continue_on_error: true
-                                    - *delay_default
-
+                          ###### Home page values ######
                           - repeat:
                               for_each: >
                                 {{
@@ -8401,7 +8367,7 @@ actions:
                                           continue_on_error: true
                                     - *delay_default
 
-                      - alias: Button pages
+                      - alias: Buttons pages
                         conditions: '{{ nspanel_event.page in pages.buttonpages }}'
                         sequence: &refresh_page_buttonpage
                           - &variables_page_buttons
@@ -8605,21 +8571,8 @@ actions:
                         sequence: &refresh_page_light
                           - &get_entity_id_from_event_or_trigger
                             variables:
-                              entity_id: >
-                                {{
-                                  nspanel_event.entity
-                                  if nspanel_event is defined and nspanel_event.entity is defined and nspanel_event.entity is string and nspanel_event.entity | length > 1
-                                  else (
-                                    trigger.entity_id
-                                    if trigger.entity_id is defined
-                                    else (
-                                      trigger.event.data.entity_id
-                                      if trigger is defined and trigger.event is defined and trigger.event.data is defined and trigger.event.data.entity_id is defined
-                                      else ""
-                                    )
-                                  )
-                                }}
-                              entity_id_valid: *variable_entity_id_valid
+                              entity_id: '{{ original_state.entity_id }}'
+                              entity_id_valid: '{{ original_state.entity_id_valid }}'
                           - *variable_entity
                           - &entity_details_title_with_icon
                             alias: Fill title of entity details page
@@ -8668,6 +8621,7 @@ actions:
                                       | map(attribute="value") | list
                                       | select("in", ["brightness"])
                                       | list | length > 0 or
+                                    state_attr(entity_id, "brightness") is not none or
                                     state_attr(entity_id, "brightness") | int(-1) >= 0
                                   )
                                 }}
@@ -8877,7 +8831,7 @@ actions:
                                 continue_on_error: true
                               - *delay_default
 
-                          - condition: '{{ trigger.id == "nspanel_event" }}'  # Page constructor
+                          - condition: '{{ page_constructor }}'  # Page constructor
                           - variables:
                               entity_device_class_raw: >-
                                 {{
@@ -9324,6 +9278,7 @@ actions:
                               friendly_name_raw: '{{ state_attr(climate_entity, "friendly_name") }}'
                               friendly_name: '{{ friendly_name_raw if friendly_name_raw and friendly_name_raw is string else "" }}'
                           - if:
+                              - '{{ page_constructor }}'
                               - '{{ not embedded_climate }}'
                               - '{{ nspanel_event is defined }}'
                               - '{{ nspanel_event.page is defined }}'
@@ -9672,6 +9627,7 @@ actions:
                               friendly_name_raw: '{{ state_attr(water_heater_entity, "friendly_name") }}'
                               friendly_name: '{{ friendly_name_raw if friendly_name_raw and friendly_name_raw is string else "" }}'
                           - if:
+                              - '{{ page_constructor }}'
                               - '{{ nspanel_event is defined }}'
                               - '{{ nspanel_event.page is defined }}'
                               - '{{ nspanel_event.page == pages.water_heater }}'
@@ -10724,7 +10680,7 @@ actions:
                                 }}
 
                           ##### Construction-only: push options + context + mode + title #####
-                          - if: '{{ nspanel_event is defined and nspanel_event.type == "page_changed" }}'
+                          - if: '{{ page_constructor }}'
                             then:
                               - variables:
                                   options_raw_attr: '{{ state_attr(entity_id, "options") }}'
@@ -10860,6 +10816,119 @@ actions:
                                 - 'duration_label.txt="{{ duration_label }}"'
                                 - 'tick.en=1'
                             continue_on_error: true
+
+                  - condition:
+                      - '{{ detailed_entity | length > 0 }}'
+                      - '{{ original_state.entity_id_valid }}'
+                      - '{{ nspanel_event.page in pages.detailed_entity }}'
+                  - alias: Wait for the panel state sensors to catch up
+                    wait_template: &condition_is_currentpage_sensor_updated >
+                      {{
+                        states(currentpage) == original_state.page and
+                        states(detailed_entity) == original_state.entity_id
+                      }}
+                    timeout:
+                      milliseconds: !input entity_details_pages_sync_timeout
+                    continue_on_timeout: true
+                  - condition: *condition_is_currentpage_sensor_updated
+                  - variables:
+                      page_constructor: false
+                      entity_details_pages_max_refreshes: !input entity_details_pages_max_refreshes
+                  - alias: Entity details pages refresh
+                    repeat:
+                      while: &conditions_entity_details_pages_loop >
+                        {{
+                          repeat.index <= entity_details_pages_max_refreshes and
+                          original_state.entity_id_valid and
+                          original_state.entity_id == (states(detailed_entity) if detailed_entity | length > 0 else '') and
+                          original_state.page in pages.detailed_entity and
+                          original_state.page == states(currentpage)
+                        }}
+                      sequence:
+                        - variables:
+                            entity_initial_stamp: >
+                              {{
+                                states[original_state.entity_id].last_updated | string
+                                if states[original_state.entity_id] is not none
+                                else ''
+                              }}
+                            entity_id: '{{ original_state.entity_id }}'
+                            entity_id_valid: '{{ original_state.entity_id_valid }}'
+                            entity_domain: '{{ original_state.entity_domain }}'
+                        - delay:
+                            milliseconds: !input entity_details_pages_debounce
+                        - wait_template: >
+                            {{
+                              original_state.page != states(currentpage) or
+                              states(detailed_entity) != original_state.entity_id or
+                              (
+                                states[original_state.entity_id].last_updated | string
+                                if states[original_state.entity_id] is not none
+                                else ''
+                              ) != entity_initial_stamp
+                            }}
+                          timeout:
+                            seconds: !input entity_details_pages_update_interval
+                          continue_on_timeout: true
+                        - condition: *conditions_entity_details_pages_loop
+                        - variables:
+                            current_page_from_sensor: '{{ states(currentpage) }}'
+                        - choose:
+                            - alias: Alarm page
+                              conditions:
+                                - '{{ current_page_from_sensor == pages.alarm }}'
+                                - '{{ original_state.entity_domain in ["alarm_control_panel"] }}'
+                              sequence: *refresh_page_alarm
+                            - alias: Button page
+                              conditions:
+                                - '{{ current_page_from_sensor == pages.button }}'
+                                - '{{ original_state.entity_domain in ["button", "input_button"] }}'
+                              sequence: *refresh_page_button
+                            - alias: Climate page
+                              conditions:
+                                - '{{ current_page_from_sensor == pages.climate }}'
+                                - '{{ original_state.entity_domain in ["climate"] }}'
+                              sequence: *refresh_page_climate
+                            - alias: Cover settings page
+                              conditions:
+                                - '{{ current_page_from_sensor == pages.cover }}'
+                                - '{{ original_state.entity_domain in ["cover"] }}'
+                              sequence: *refresh_page_cover
+                            - alias: Fan page
+                              conditions:
+                                - '{{ current_page_from_sensor == pages.fan }}'
+                                - '{{ original_state.entity_domain in ["fan"] }}'
+                              sequence: *refresh_page_fan
+                            - alias: Light settings page
+                              conditions:
+                                - '{{ current_page_from_sensor == pages.light }}'
+                                - '{{ original_state.entity_domain in ["light"] }}'
+                              sequence: *refresh_page_light
+                            - alias: Media player page
+                              conditions:
+                                - '{{ current_page_from_sensor == pages.media_player }}'
+                                - '{{ original_state.entity_domain in ["media_player"] }}'
+                              sequence: *refresh_page_media_player
+                            - alias: Select page
+                              conditions:
+                                - '{{ current_page_from_sensor == pages.select }}'
+                                - '{{ original_state.entity_domain in ["select", "input_select"] }}'
+                              sequence: *refresh_page_select
+                            - alias: Switch page
+                              conditions:
+                                - '{{ current_page_from_sensor == pages.switch }}'
+                                - '{{ original_state.entity_domain in ["switch", "input_boolean"] }}'
+                              sequence: *refresh_page_switch
+                            - alias: Timer page
+                              conditions:
+                                - '{{ current_page_from_sensor == pages.timer }}'
+                                - '{{ original_state.entity_domain in ["timer"] }}'
+                              sequence: *refresh_page_timer
+                            - alias: Water Heater page
+                              conditions:
+                                - '{{ current_page_from_sensor == pages.water_heater }}'
+                                - '{{ original_state.entity_domain in ["water_heater"] }}'
+                              sequence: *refresh_page_water_heater
 
               - alias: Button click
                 conditions:
@@ -11745,19 +11814,6 @@ actions:
           - variables:
               detailed_entity_state: '{{ states(detailed_entity) if detailed_entity | length > 0 else "" }}'
           - choose:
-              - alias: Alarm page
-                conditions:
-                  - '{{ pages.current == pages.alarm }}'
-                  - '{{ trigger.entity_id is match "alarm_control_panel." }}'
-                  - '{{ trigger.entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_alarm
-              - alias: Button page
-                conditions:
-                  - '{{ pages.current == pages.button }}'
-                  - '{{ trigger.entity_id.split(".") | count == 2 }}'
-                  - '{{ trigger.entity_id.split(".")[0] in ["button", "input_button"] }}'
-                  - '{{ trigger.entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_button
               - alias: Buttons pages
                 conditions:
                   - '{{ pages.current in pages.buttonpages }}'
@@ -11787,77 +11843,6 @@ actions:
                           | list %}
                         {{ by_entity + by_state }}
                       sequence: *display_button_page_button
-              - alias: Climate page
-                conditions:
-                  - '{{ pages.current == pages.climate }}'
-                  - '{{ trigger.entity_id is match "climate." }}'
-                  - '{{ trigger.entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_climate
-              - alias: Cover settings page
-                conditions:
-                  - '{{ pages.current == pages.cover }}'
-                  - '{{ trigger.entity_id is match "cover." }}'
-                  - '{{ trigger.entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_cover
-              - alias: Fan page
-                conditions:
-                  - '{{ pages.current == pages.fan }}'
-                  - '{{ trigger.entity_id is match "fan." }}'
-                  - '{{ trigger.entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_fan
-              - alias: Light settings page
-                conditions:
-                  - '{{ pages.current == pages.light }}'
-                  - '{{ trigger.entity_id is match "light." }}'
-                  - '{{ trigger.entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_light
-              - alias: Media player page
-                conditions:
-                  - '{{ pages.current == pages.media_player }}'
-                  - '{{ trigger.entity_id is match "media_player." }}'
-                  - '{{ trigger.entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_media_player
-              - alias: Select page
-                conditions:
-                  - '{{ pages.current == pages.select or pages.current == pages.popup_select }}'
-                  - '{{ trigger.entity_id is match "(input_)?select\\." }}'
-                  - '{{ trigger.entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_select
-              - alias: Switch page
-                conditions:
-                  - '{{ pages.current == pages.switch }}'
-                  - '{{ trigger.entity_id.split(".") | count == 2 }}'
-                  - '{{ trigger.entity_id.split(".")[0] in ["switch", "input_boolean"] }}'
-                  - '{{ trigger.entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_switch
-              - alias: Timer page
-                conditions:
-                  - '{{ pages.current == pages.timer }}'
-                  - '{{ trigger.entity_id is match "timer." }}'
-                  - '{{ trigger.entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_timer
-              - alias: Water Heater page
-                conditions:
-                  - '{{ pages.current == pages.water_heater }}'
-                  - '{{ trigger.entity_id is match "water_heater." }}'
-                  - '{{ trigger.entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_water_heater
-
-      - alias: Update chips bar
-        conditions:
-          - condition: trigger
-            id: trigger_chip_state
-        sequence:
-          - repeat:
-              for_each: >
-                {{
-                  chips
-                  | selectattr("entity", "defined")
-                  | selectattr("entity", "eq", trigger.entity_id)
-                  | list
-                }}
-              sequence:
-                - *update_individual_chip
 
       - alias: Update climate page
         conditions:
@@ -11979,74 +11964,6 @@ actions:
                     }}
                   val: '{{ 1 if button_state_new else 0 }}'
                 continue_on_error: true
-
-      - alias: Update home page - Custom buttons
-        conditions:
-          - condition: trigger
-            id:
-              - home_custom_buttons
-        sequence:
-          - variables:
-              trigger_entity_id: '{{ trigger.entity_id if trigger.entity_id is defined else trigger.event.data.entity_id }}'
-              detailed_entity_state: '{{ states(detailed_entity) if detailed_entity | length > 0 else "" }}'
-          - choose:
-              - alias: "Home page"
-                conditions:
-                  - '{{ pages.current in pages.home }}'
-                sequence:
-                  - repeat:
-                      for_each: '{{ home_page.custom_buttons | selectattr("entity", "defined") | selectattr("entity", "eq", trigger_entity_id) | list }}'
-                      sequence: *display_home_page_custom_buttons
-              - alias: 'Light settings page'
-                conditions:
-                  - '{{ pages.current == pages.light }}'
-                  - '{{ trigger_entity_id is match "light." }}'
-                  - '{{ trigger_entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_light
-              - alias: 'Cover settings page'
-                conditions:
-                  - '{{ pages.current == pages.cover }}'
-                  - '{{ trigger_entity_id is match "cover." }}'
-                  - '{{ trigger_entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_cover
-              - alias: 'Climate page'
-                conditions:
-                  - '{{ pages.current == pages.climate }}'
-                  - '{{ trigger_entity_id is match "climate." }}'
-                  - '{{ trigger_entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_climate
-              - alias: 'Fan page'
-                conditions:
-                  - '{{ pages.current == pages.fan }}'
-                  - '{{ trigger_entity_id is match "fan." }}'
-                  - '{{ trigger_entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_fan
-              - alias: 'Media player page'
-                conditions:
-                  - '{{ pages.current == pages.media_player }}'
-                  - '{{ trigger_entity_id is match "media_player." }}'
-                  - '{{ trigger_entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_media_player
-              - alias: Switch page
-                conditions:
-                  - '{{ pages.current == pages.switch }}'
-                  - '{{ trigger_entity_id.split(".") | count == 2 }}'
-                  - '{{ trigger_entity_id.split(".")[0] in ["switch", "input_boolean"] }}'
-                  - '{{ trigger_entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_switch
-              - alias: Button page
-                conditions:
-                  - '{{ pages.current == pages.button }}'
-                  - '{{ trigger_entity_id.split(".") | count == 2 }}'
-                  - '{{ trigger_entity_id.split(".")[0] in ["button", "input_button"] }}'
-                  - '{{ trigger_entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_button
-              - alias: 'Alarm page'
-                conditions:
-                  - '{{ pages.current == pages.alarm }}'
-                  - '{{ trigger_entity_id is match "alarm_control_panel." }}'
-                  - '{{ trigger_entity_id == detailed_entity_state }}'
-                sequence: *refresh_page_alarm
 
       - alias: Update home page - Entities
         conditions:
