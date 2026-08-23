@@ -17,3 +17,4 @@ SyncNextion2TXT.cmd
 /components/nspanel_easy/__pycache__
 
 local
+esphome/sync.ffs_db

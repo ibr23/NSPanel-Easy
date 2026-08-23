@@ -703,6 +703,41 @@ select:
         # Extended by:
         # - page_screensaver
 
+  - id: home_page_name
+    name: Home page
+    platform: template
+    options:
+      - buttonpage01
+      - buttonpage02
+      - buttonpage03
+      - buttonpage04
+      - climate
+      - entitypage01
+      - entitypage02
+      - entitypage03
+      - entitypage04
+      - home
+      - qrcode
+      - utilities
+      - home_smpl
+    initial_option: home
+    optimistic: true
+    restore_value: true
+    internal: false
+    entity_category: config
+    icon: mdi:page-next-outline
+    update_interval: never
+    on_value:
+      then:
+        - lambda: |-
+            home_page_id = get_page_id(x.c_str());
+            if (home_page_id != get_page_id("boot") and home_page_id != get_page_id("screensaver"))
+              disp1->send_command_printf("home_page_id=%" PRIu8, home_page_id);
+            wait_to_be_ready->execute();
+        - script.wait: wait_to_be_ready
+        # Extended by:
+        # - page_screensaver
+
 switch:
   - id: screen_power  # Controls the display's power source
     name: Nextion display - Power
